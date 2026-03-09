@@ -1,0 +1,84 @@
+{
+  "name": "flipshop-meta",
+  "version": "1.0.0",
+  "description": "Host metarepo for Flipshop. You don't want this package unless you're working on the Flipshop project: see @flipshop/flipshop, probably, or the variants in the README.",
+  "private": true,
+  "workspaces": [
+    "src/*"
+  ],
+  "scripts": {
+    "shipme": "         echo 'I am not a package, but I am still awesome'",
+    "build": "          echo 'I do not build, but I am still groovy'",
+    "ship:it": "        ./scripts/shipit.sh",
+    "ver:show": "       ./scripts/version-show.sh",
+    "ver:clobber": "    ./scripts/version-clobber.sh",
+    "ver:extract": "    ./scripts/version-extract.sh",
+    "ver:bump": "       yarn workspace internals version patch",
+    "tsc:clean": "      ./scripts/tsclean.sh",
+    "_1": " echo .",
+    "test": "           yarn node --experimental-vm-modules                      $(yarn bin jest)",
+    "test:plain": "     yarn node --experimental-vm-modules --enable-source-maps $(yarn bin jest)",
+    "test:coverage": "  yarn node --experimental-vm-modules --enable-source-maps $(yarn bin jest) --coverage",
+    "test:watch": "     yarn node --experimental-vm-modules --enable-source-maps $(yarn bin jest) --watch",
+    "twitch": "         yarn node --experimental-vm-modules --enable-source-maps $(yarn bin jest) --watch",
+    "_2": " echo .",
+    "git:yarnicles": "  git ci -m 'chore: pkgs + yarnicles' .yarn yarn.lock .yarnrc.yml package.json",
+    "_z": "echo ."
+  },
+  "dependencies": {
+    "esm-seedrandom": "3.0.5-esm.2",
+    "lodash": "^4.17.21",
+    "luxon": "^3.6.1",
+    "sprintf-js": "^1.1.3"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.0.4",
+    "@jest/types": "^30.0.1",
+    "@types/chai": "^5.2.2",
+    "@types/chai-arrays": "^2.0.3",
+    "@types/chai-as-promised": "^8.0.2",
+    "@types/jest": "^30.0.0",
+    "@types/lodash": "^4.17.18",
+    "@types/luxon": "^3",
+    "@types/node": "^24.0.14",
+    "@types/seedrandom": "^3",
+    "@types/sinon": "^17.0.4",
+    "@types/sinon-chai": "^4.0.0",
+    "@types/snowball-stemmers": "^0.6.2",
+    "@types/sprintf-js": "^1",
+    "chai": "^5.2.0",
+    "jest": "^30.0.2",
+    "jest-util": "^30.0.2",
+    "seedrandom": "^3.0.5",
+    "sinon": "^21.0.0",
+    "sinon-chai": "^4.0.0",
+    "ts-jest": "^29.4.0",
+    "ts-jest-resolver": "^2.0.1",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [
+    "workshop",
+    "fasteners"
+  ],
+  "author": "flip kromer and the flipshop team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrflip/flipshop"
+  },
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "README.md"
+  ],
+  "packageManager": "yarn@4.13.0"
+}
