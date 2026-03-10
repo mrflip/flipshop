@@ -6,5 +6,8 @@
     {
       "path": "../freeword"
     }
-  ]
+  ],
+  "settings": {
+    "typescript.tsdk": "flipshop/.yarn/sdks/typescript/lib"
+  }
 }

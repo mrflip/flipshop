@@ -8,7 +8,7 @@
     "module":                             "NodeNext",
     "moduleResolution":                   "nodenext",
     "incremental":                        true,
-    "noEmit":                             true,  /* Disable emitting files from a compilation. */
+    // "noEmit":                             true,  /* Disable emitting files from a compilation. */
     /* Typechecking strictness that are as strict as reasonable */
     //
     "strict":                             true,  /* true  = strict -- must annotate non-inferrable types (in particular all function inputs) */

@@ -6,8 +6,8 @@ import type {
   ScrewT,  ExternalDriveScrewT, InternalDriveScrewT, NutT,
   DriverTitle, WrenchTitle, FastenerDrive,  HeadForm, DrillTitle,
   ExternalDrive, InternalDrive, KeydriveTitle,
-} from './FastenerTypes'
-import { MM2Inch } from './FastenerTypes'
+} from './FastenerTypes.ts'
+import { MM2Inch } from './FastenerTypes.ts'
 
 class Thing {
   constructor(props: object) { Object.assign(this, _.omitBy(props, _.isNil)) }

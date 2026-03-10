@@ -1,0 +1,29 @@
+{
+  "$schema":  "https://json.schemastore.org/tsconfig",
+  "display":  "Node 23",
+  "exclude":  ["node_modules", "built", "**/built/**/*", "built/**/*", "**/.yarn/**/*", "**/aside/**/*"],
+  "extends":  "../tsconfig-base.json",
+  "references": [
+    { "path":               "../tsconfig.json"               },
+  ],
+  //
+  "compilerOptions": {
+    // where do we sit in the world?
+    "rootDir":                            "..",
+    "composite":                          false,   // and not referenced by others
+    // when (never) and where (out of sight) to put the build artifacts
+    "tsBuildInfoFile":                    "../.tsbuildinfo-flipshop-tests",
+    "outDir":                             "../built/flipshop-tests",
+    "noEmit":                             true,
+    //
+    "isolatedModules":                    true,   /* ts-jest wants this */
+    //
+    // "paths": {  /* make the tests work with the monorepo, so local package imports work */
+    //   "@flipshop/meta":                 ["../src/index.ts"],
+    // },
+    /* specify one, you have to specify all; testGlobals makes ts-jest work with jest+chai mix */
+    "types":                              ["./testGlobals.d.ts", "jest", "chai", "node", "sinon", "snowball-stemmers"],
+    // true to see super-long error messages
+    "noErrorTruncation":                  false
+  }
+}

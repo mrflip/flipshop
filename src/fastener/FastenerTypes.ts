@@ -1,4 +1,4 @@
-import type { Optionalize } from '../utils/TSTools'
+import type { Optionalize } from '../utils/TSTools.ts'
 
 export type MM         = number
 export type Inch       = number
