@@ -8,6 +8,7 @@
     }
   ],
   "settings": {
-    "typescript.tsdk": "flipshop/.yarn/sdks/typescript/lib"
+    "typescript.tsdk": "flipshop/.yarn/sdks/typescript/lib",
+    "claudeCode.allowDangerouslySkipPermissions": true
   }
 }

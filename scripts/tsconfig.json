@@ -1,0 +1,24 @@
+{
+  "$schema":            "https://json.schemastore.org/tsconfig",
+  "display":            "Node 23",
+  "extends":            "../tsconfig-base.json",
+  "include":            ["**/*.ts", "**/*.js", "**/*.json"],
+  "exclude":            ["node_modules", "built", "**/built/**/*", "built/**/*", "**/.yarn/**/*"],
+  //
+  "references":  [
+    { "path": "../tsconfig.json" }
+  ],
+
+  "compilerOptions": {
+    "tsBuildInfoFile":                    "../.tsbuildinfo-flipshop-scripts",
+    "outDir":                             "./built",
+    "rootDir":                            ".",
+    "composite":                          true,
+    //
+    "noImplicitAny":                      false,
+    "noImplicitOverride":                 false,
+    //
+    "noErrorTruncation":                  false  // true to see super-long error messages
+    //
+  }
+}

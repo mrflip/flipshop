@@ -6,5 +6,5 @@ ROOTDIR=$(realpath "$SCRIPTDIR/..")
 cd "$ROOTDIR"
 
 shopt -s nullglob
-rm -rf .tsbuildinfo* built meta/built mungers/*/built repos/*/built
+rm -rf .*tsbuildinfo* built */built
 shopt -u nullglob
