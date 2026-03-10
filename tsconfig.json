@@ -1,27 +1,22 @@
 {
   "$schema":                "https://json.schemastore.org/tsconfig",
-  // "extends":                "./tsconfig-base.json",
+  // "extends":             "./tsconfig-base.json",
   "files":                  [],
   "include":                [],
   // "include":                            ["src/**/*.ts", "db/**/*.ts", "src/**/*.js"],
-  "references": [
-    { "path": "./meta/tsconfig.json" },
-    { "path": "./mungers/wiktionary/tsconfig.json" },
-  ],
+  // "references": [
+  //   { "path":            "./meta/tsconfig.json" },
+  //   { "path":            "./mungers/wiktionary/tsconfig.json" },
+  // ],
   "compilerOptions": {
     "tsBuildInfoFile":                    "./.tsbuildinfo-flipshop-internals",
     "outDir":                             "./built/internals",  /* Specify the path to .tsbuildinfo incremental compilation file. */
-    "lib":                                ["esnext"],
-    "incremental":                        true,
+    "rootDir":                            "./src",
     "composite":                          true,
-    "noEmit":                             true, /* Disable emitting files from a compilation. */
-
-    "preserveSymlinks":                   true,
-    "target":                             "ESNext",
-    "module":                             "NodeNext",
-    "moduleResolution":                   "nodenext",
-    "esModuleInterop":                    true,
-
-    "noErrorTruncation":                  false // true to see all errors
+    //
+    "noImplicitAny":                      false,
+    "noImplicitOverride":                 false,
+    //
+    "noErrorTruncation":                  false  // true to see super-long error messages
   }
 }

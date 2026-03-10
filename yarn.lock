@@ -409,6 +409,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@freeword/meta@link:../freeword/meta::locator=flipshop-meta%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@freeword/meta@link:../freeword/meta::locator=flipshop-meta%40workspace%3A."
+  languageName: node
+  linkType: soft
+
 "@gar/promise-retry@npm:^1.0.0":
   version: 1.0.2
   resolution: "@gar/promise-retry@npm:1.0.2"
@@ -1944,6 +1950,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "flipshop-meta@workspace:."
   dependencies:
+    "@freeword/meta": "link:../freeword/meta"
     "@jest/globals": "npm:^30.0.4"
     "@jest/types": "npm:^30.0.1"
     "@types/chai": "npm:^5.2.2"

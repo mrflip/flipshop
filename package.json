@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "shipme": "         echo 'I am not a package, but I am still awesome'",
-    "build": "          echo 'I do not build, but I am still groovy'",
+    "build": "          yarn tsc   --build --verbose",
     "ship:it": "        ./scripts/shipit.sh",
     "ver:show": "       ./scripts/version-show.sh",
     "ver:clobber": "    ./scripts/version-clobber.sh",
@@ -26,6 +26,7 @@
     "_z": "echo ."
   },
   "dependencies": {
+    "@freeword/meta": "link:../freeword/meta",
     "esm-seedrandom": "3.0.5-esm.2",
     "lodash": "^4.17.21",
     "luxon": "^3.6.1",
