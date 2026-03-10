@@ -25,14 +25,14 @@ const jestConfig: JestConfigWithTsJest = {
   //   'composables/**/*.ts',
   //   '!**/*.d.ts',
   // ],
-  // moduleNameMapper: {
-  //   '^@flipshop/meta$':                    '<rootDir>/meta',
+  moduleNameMapper: {
+    '^@flipshop/flipshop$':                    '<rootDir>/src',
   //   '^@flipshop/meta/checks$':             '<rootDir>/meta/src/checks.ts',
   //   '^@flipshop/meta/(.*)$':               '<rootDir>/meta/$1',
   //   // Remove or comment out the old '@/...' mappings to src
   //   // '^@/db/(.*)$': '<rootDir>/db/$1',
   //   // '^@/(.*)$': '<rootDir>/src/$1',
-  // },
+  },
   // tsconfig: 'tsconfig.test.json',
 }
 

@@ -1,13 +1,14 @@
 import type { Optionalize } from '../utils/TSTools.ts'
+import * as CK from '@freeword/meta/checks.js'
+import * as FE from './FastenerEnums.ts'
 
 export type MM         = number
 export type Inch       = number
 export type Title      = string
 export type SKU        = string
-export type DrillTitle = string
 export const MM2Inch = 25.4
 
-export const CsvTitles = [
+export const FastenerMasterDataCols = [
   'title', 'nom_size', 'common', 'pitch', 'tpi', 'maj_diam', 'maj_diam_in', 'spec',
   'thruhole_close', 'thruhole_reg', 'thruhole_loose', 'selftap_pla', 'selftap_petg', 'taphole_nonfe', 'taphole_fe', 'thruhole_close_drill', 'thruhole_normal_drill', 'thruhole_loose_drill', 'taphole_nonfe_drill', 'taphole_fe_drill',
   'hn_sku', 'hn_af', 'hn_thk',
@@ -20,7 +21,7 @@ export const CsvTitles = [
   'hhcs_wrench', 'hhcs_head_af', 'shcs_head_diam', 'shcslo_head_diam', 'bhcs_head_diam', 'fhcs_head_diam', 'shcs_head_thk', 'shcslo_head_thk', 'hhcs_head_thk', 'bhcs_head_thk', 'fhcs_head_thk', 'fhcs_head_angle', 'shcs_bore_diam', 'shcslo_bore_diam', 'bhcs_bore_diam', 'shcs_bore_dp', 'shcslo_bore_dp', 'boss_wall_thk_min', 'boss_wall_thk', 'engagement_len_min',
 ] as const;
 
-export const Fasteners = {
+export const FastenerProps = {
   '1/4': {
     title: '1/4-20', sizing_pref: 'A',
     diam_major: 0.250,
@@ -54,48 +55,41 @@ export const Fasteners = {
   },
 } satisfies Record<Title, FastenerSizingT>
 
-export interface NutT {
-  diam_af:      MM
-  ht:           MM
-  refsku?:      SKU | undefined
-}
-export interface WasherT {
-  diam_od:      MM
-  diam_id:      MM
-  ht:           MM
-  stdz?:        WasherStandardization | undefined
-  refsku?:      SKU | undefined
-}
-export interface ScrewT<TDK extends FastenerDrive, THF extends HeadForm> {
+export const nut = CK.obj({
+  diam_af: CK.num.gt(0).max(100),
+  ht:      CK.num.gt(0).max(100),
+  refsku:  CK.keyish.optional(),
+})
+export type NutSk = CK.Zsketch<typeof nut>
+export type NutT  = CK.Zcasted<typeof nut>
+
+export const washer = CK.obj({
+  diam_od: CK.num.gt(0).max(100),
+  diam_id: CK.num.gt(0).max(100),
+  ht:      CK.num.gt(0).max(100),
+  stdz:    FE.washer_stdz.optional(),
+  refsku:  CK.keyish.optional(),
+})
+export type WasherSk = CK.Zsketch<typeof washer>
+export type WasherT  = CK.Zcasted<typeof washer>
+
+export interface ScrewT<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> {
   drive_kind:   TDK
   head_form:    THF
-  driver_title: DriverTitle
+  driver_title: FE.DriverTitle
   head_ht:     MM
   refsku?:      SKU | undefined
 }
-export interface ExternalDriveScrewT<TDK extends ExternalDrive = ExternalDrive, THF extends 'bolt' = 'bolt'> extends ScrewT<TDK, THF> {
-  driver_title: WrenchTitle
+export interface ExternalDriveScrewT<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends ScrewT<TDK, THF> {
+  driver_title: FE.WrenchTitle
   head_diam_af: MM
 }
-export interface InternalDriveScrewT<TDK extends InternalDrive = InternalDrive, THF extends HeadForm = 'socket'> extends ScrewT<TDK, THF> {
-  driver_title: KeydriveTitle
+export interface InternalDriveScrewT<TDK extends FE.InternalDrive = FE.InternalDrive, THF extends FE.HeadForm = 'socket'> extends ScrewT<TDK, THF> {
+  driver_title: FE.KeydriveTitle
   head_diam_od: MM
   key_diam_af:  MM
   key_dp?:      MM | undefined
 }
-
-export const MetricWrenchTitleVals = ['Wr3.2mm', 'Wr4mm',    'Wr5mm',     'Wr5.5mm', 'Wr7mm',    'Wr8mm',   'Wr10mm',   'Wr13mm',  'Wr17mm',    'Wr19mm',    'Wr24mm',     'Wr30mm',             'Wr36mm']                                                      as const
-export const USWrenchTitleVals     = ['Wr1/4in', 'Wr5/16in', 'Wr11/32in', 'Wr3/8in', 'Wr7/16in', 'Wr1/2in', 'Wr9/16in', 'Wr3/4in', 'Wr15/16in', 'Wr1-1/8in', 'Wr1-5/16in', 'Wr1-1/2in']                                                                         as const
-export const MetricHexkeyTitleVals = ['H0.9mm',  'H1.25mm',  'H1.5mm',    'H2mm',    'H2.5mm',   'H3mm',    'H4mm',     'H5mm',    'H6mm',      'H8mm',      'H10mm',      'H12mm',              'H14mm',           'H17mm',           'H19mm']                 as const
-export const USHexkeyTitleVals     = ['H0.05in', 'H1/16in',  'H5/64in',   'H3/32in', 'H7/64in',  'H9/64in', 'H5/32in',  'H3/16in', 'H1/4in',    'H5/16in',   'H3/8in',     'H1/2in',             'H5/8in',          'H3/4in']                                   as const
-export const TorxkeyTitleVals      = ['T5',      'T6',       'T7',        'T8',      'T9',       'T10',     'T15',      'T20',     'T25',       'T27',       'T30',        'T40',                'T45',             'T50',             'T55',            'T60'] as const
-export const DriverTitleVals       = [...MetricWrenchTitleVals, ...USWrenchTitleVals, ...MetricHexkeyTitleVals, ...USHexkeyTitleVals, ...TorxkeyTitleVals] as const
-/** Wrench or hexkey driver name */
-export type DriverTitle    = typeof DriverTitleVals[number]
-export type WrenchTitle    = typeof MetricWrenchTitleVals[number] | typeof USWrenchTitleVals[number]
-export type HexkeyTitle    = typeof MetricHexkeyTitleVals[number] | typeof USHexkeyTitleVals[number]
-export type TorxkeyTitle   = typeof TorxkeyTitleVals[number]
-export type KeydriveTitle  = HexkeyTitle | TorxkeyTitle
 
 export interface FastenerSizingT {
   title:        Title
@@ -111,7 +105,7 @@ export interface FastenerSizingT {
   diam_major:   MM
   //
   /** Bore hole size to pass through: close, regular, loose; For metric, follows ISO 273 (metric) or ASME B18.2.8 (US) */
-  thruhole: { close_diam: MM, reg_diam: MM, loose_diam: MM, close_drill?: DrillTitle | undefined, reg_drill?: DrillTitle | undefined, loose_drill?: DrillTitle | undefined }
+  thruhole: { close_diam: MM, reg_diam: MM, loose_diam: MM, close_drill?: FE.DrillTitle | undefined, reg_drill?: FE.DrillTitle | undefined, loose_drill?: FE.DrillTitle | undefined }
   //
   /** Hex nut details. For US sizes, uses the Finished Hex Nut or Machine Nut according to common practice */
   hn:       NutT
@@ -137,7 +131,7 @@ export type FastenerPref       = typeof FastenerPrefVals[number];       const Fa
 
 export interface ThreadingT {
   title:        Title
-  stdz:         ThreadingStandardization
+  stdz:         FE.ThreadingStandardization
   /** How commonly found this thread is: 'a' for UNC / ISOC (and for UNF-only #0); 'b' for UNF and the most common finer-pitch ISO; 'c' for UNEF and any other ISO threadings. */
   thread_pref:  ThreadingPref
   pref:         FastenerPref
@@ -146,14 +140,14 @@ export interface ThreadingT {
   /** Minor diameter of male thread */
   diam_minor:   MM
   /** Bore Hole Diameter for tapping (ferrous/non-ferrous) or self-tapping (pla/petg/etc). Follows ISO 261/965 (metric) or ASME B1.1 (US) */
-  taphole:  { pla_diam: MM,  petg_diam: MM, nonfe_diam: MM, fe_diam: MM, fe_drill?: DrillTitle | undefined, nonfe_drill?: DrillTitle | undefined }
+  taphole:  { pla_diam: MM,  petg_diam: MM, nonfe_diam: MM, fe_diam: MM, fe_drill?: FE.DrillTitle | undefined, nonfe_drill?: FE.DrillTitle | undefined }
 }
 export interface BoltSocketT {
   title:        Title
   pts:          6 | 8 | 12
   diam_af:      MM
   diam_od:      MM
-  drive:        ToolDrive
+  drive:        FE.ToolDrive
 }
 export interface SurfaceT {
   title:        Title
@@ -168,50 +162,6 @@ export interface IntrudedT extends ExtrudedT {
   int_dp:      MM
 }
 
-/** Drive type for square (1/4", 3/8", 1/2") and hex (1/4") drives */
-export type  ToolDrive     = typeof ToolDriveVals[number]
-export const ToolDriveVals = ['isq_1_4', 'isq_3_8', 'isq_1_2', 'hex_1_4'] as const
-
-/** Threading standardization */
-export type  ThreadingStandardization     = typeof ThreadingStandardizationVals[number]
-export const ThreadingStandardizationVals = ['UNC', 'UNF', 'UNEF', 'ISO', 'ISOF', 'ISOEF'] as const
-
-export type WasherStandardization = typeof WasherStandardizationVals[number]
-export const WasherStandardizationVals = ['USS', 'SAE', 'ISO-RW', 'ISO-LW'] as const
-
-/** Fastener head form (bolt (external hex), socket (cylindrical socket), button, etc.) */
-export type HeadForm = typeof HeadFormVals[number]
-export const HeadFormVals = [
-  'bolt', 'socket', /* low-profile socket */ 'losock', 'button', 'flathead', /* undercut flat */ 'underflat',
-  'round', 'oval', 'pan', 'round', 'truss', 'fillister', 'cheese',
-  'setscrew',
-] as const
-
-/** Fastener drive (external hex (exthex), internal hex (allen), etc.) */
-export type FastenerDrive = typeof FastenerDriveVals[number]
-/** External drive (exthex, extstar, etc.) */
-export type ExternalDrive = typeof ExternalDriveVals[number]
-/** Internal drive (allen, torx, etc.) */
-export type InternalDrive = typeof InternalDriveVals[number]
-/** Other drive (knurled, carriage, etc.) */
-export type OtherFastenerDrive = typeof OtherFastenerDriveVals[number]
-export const ExternalDriveVals = [
-  /* 6-sided bolt head i.e. hhcs */               'exthex',
-  /* 6-sided external star (torx), less common */ 'extstar',
-]
-export const InternalDriveVals = [
-  /* 6-sided internal hex i.e. shcs */            'allen',
-  /* 6-sided internal star i.e. torx */           'torx',
-  /* phillips-profile cross drive */              'phillips',
-  /* combo phillips/slotted */                    'phslot',
-  /* "Flat" screwdriver */                        'slot',
-] as const
-export const OtherFastenerDriveVals = [
-  /* Knurled Thumb drive */                       'knurled',
-  /* Deforming Square Keying */                   'carriage',
-]
-export const FastenerDriveVals = [...ExternalDriveVals, ...InternalDriveVals, ...OtherFastenerDriveVals] as const
-
 export interface TapholeT {
   nonfe_diam: MM
   fe_diam:    MM
@@ -223,7 +173,7 @@ export interface ThruholeT {
   close_diam: MM
   reg_diam: MM
   loose_diam: MM
-  close_drill?: DrillTitle | undefined
-  reg_drill?: DrillTitle | undefined
-  loose_drill?: DrillTitle | undefined
+  close_drill?: FE.DrillTitle | undefined
+  reg_drill?: FE.DrillTitle | undefined
+  loose_drill?: FE.DrillTitle | undefined
 }

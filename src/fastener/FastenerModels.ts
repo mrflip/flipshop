@@ -2,18 +2,17 @@ import      _                                   /**/ from 'lodash'
 
 import type {
   FastenerSizingT, Title, ThreadingT, TapholeT, ThruholeT,
-  ThreadingStandardization, ThreadingPref, FastenerPref, MM, Inch, SKU,
+  ThreadingPref, FastenerPref, MM, Inch, SKU,
   ScrewT,  ExternalDriveScrewT, InternalDriveScrewT, NutT,
-  DriverTitle, WrenchTitle, FastenerDrive,  HeadForm, DrillTitle,
-  ExternalDrive, InternalDrive, KeydriveTitle,
 } from './FastenerTypes.ts'
 import { MM2Inch } from './FastenerTypes.ts'
+import * as FE from './FastenerEnums.ts'
 
-class Thing {
+export class Thing {
   constructor(props: object) { Object.assign(this, _.omitBy(props, _.isNil)) }
 }
 
-class FastenerSizing implements FastenerSizingT {
+export class FastenerSizing implements FastenerSizingT {
   declare title:        Title
   declare sizing_pref:  'A' | 'B'
   get main():           Threading { return (this.title === '#0') ? this.fine! : this.coarse }
@@ -35,9 +34,9 @@ class FastenerSizing implements FastenerSizingT {
   declare torx?:        InternalDriveScrew<'torx', 'socket'>
   declare sss?:         InternalDriveScrew<'allen', 'setscrew'>
 }
-class Threading extends Thing implements ThreadingT {
+export class Threading extends Thing implements ThreadingT {
   declare title:        Title
-  declare stdz:         ThreadingStandardization
+  declare stdz:         FE.ThreadingStandardization
   declare thread_pref:  ThreadingPref
   get pref():           FastenerPref { return this.thread_pref + this.sizing.sizing_pref as FastenerPref }
   declare sizing:       FastenerSizing
@@ -50,35 +49,35 @@ class Threading extends Thing implements ThreadingT {
   get diam_major_in():  Inch   { return this.sizing.diam_major_in }
   get tpi():            number { return MM2Inch / this.pitch }
 }
-class Screw<TDK extends FastenerDrive, THF extends HeadForm> extends Thing implements ScrewT<TDK, THF> {
+export class Screw<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> extends Thing implements ScrewT<TDK, THF> {
   declare drive_kind:   TDK
   declare head_form:    THF
-  declare driver_title: DriverTitle
+  declare driver_title: FE.DriverTitle
   declare head_ht:      MM
   declare refsku?:      SKU | undefined
 }
 
-class ExternalDriveScrew<TDK extends ExternalDrive = ExternalDrive, THF extends 'bolt' = 'bolt'> extends Screw<TDK, THF> implements ExternalDriveScrewT<TDK, THF> {
-  declare driver_title: WrenchTitle
+export class ExternalDriveScrew<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends Screw<TDK, THF> implements ExternalDriveScrewT<TDK, THF> {
+  declare driver_title: FE.WrenchTitle
   declare head_diam_af: MM
   declare head_ht: MM
 }
-class InternalDriveScrew<TDK extends InternalDrive, THF extends HeadForm> extends Screw<TDK, THF> implements InternalDriveScrewT<TDK, THF> {
-  declare driver_title: KeydriveTitle
+export class InternalDriveScrew<TDK extends FE.InternalDrive, THF extends FE.HeadForm> extends Screw<TDK, THF> implements InternalDriveScrewT<TDK, THF> {
+  declare driver_title: FE.KeydriveTitle
   declare head_diam_od: MM
   declare key_diam_af:  MM
   declare key_dp?:      MM | undefined
 }
-class Thruhole extends Thing implements ThruholeT {
+export class Thruhole extends Thing implements ThruholeT {
   declare loose_diam: MM
   declare reg_diam: MM
   declare close_diam: MM
-  declare loose_drill?: DrillTitle | undefined
-  declare reg_drill?:   DrillTitle | undefined
-  declare close_drill?: DrillTitle | undefined
+  declare loose_drill?: FE.DrillTitle | undefined
+  declare reg_drill?:   FE.DrillTitle | undefined
+  declare close_drill?: FE.DrillTitle | undefined
 }
 
-class DrillBit  extends Thing {
+export class DrillBit  extends Thing {
   declare title:        Title
   declare diam_od:      MM
   get diam_od_in():     Inch { return this.diam_od / MM2Inch }

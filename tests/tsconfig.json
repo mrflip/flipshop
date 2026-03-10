@@ -4,7 +4,7 @@
   "exclude":  ["node_modules", "built", "**/built/**/*", "built/**/*", "**/.yarn/**/*", "**/aside/**/*"],
   "extends":  "../tsconfig-base.json",
   "references": [
-    { "path":               "../tsconfig.json"               },
+    { "path":               "../tsconfig.json"               }
   ],
   //
   "compilerOptions": {
@@ -18,9 +18,9 @@
     //
     "isolatedModules":                    true,   /* ts-jest wants this */
     //
-    // "paths": {  /* make the tests work with the monorepo, so local package imports work */
-    //   "@flipshop/meta":                 ["../src/index.ts"],
-    // },
+    "paths": {  /* make the tests work with the monorepo, so local package imports work */
+      "@flipshop/flipshop":                 ["../src/index.ts"]
+    },
     /* specify one, you have to specify all; testGlobals makes ts-jest work with jest+chai mix */
     "types":                              ["./testGlobals.d.ts", "jest", "chai", "node", "sinon", "snowball-stemmers"],
     // true to see super-long error messages
