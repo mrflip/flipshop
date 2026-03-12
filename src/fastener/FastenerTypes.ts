@@ -6,7 +6,7 @@ export type MM         = number
 export type Inch       = number
 export type Title      = string
 export type SKU        = string
-export const MM2Inch = 25.4
+export const MM_IN   = 25.4
 export const mm_lte_100 = CK.ustrnum.pipe(CK.num.gt(0).max(100))
 
 export const taphole = CK.obj({

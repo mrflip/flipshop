@@ -25,7 +25,7 @@ export class FastenerSizing extends Thing implements FT.FastenerSizingT {
   declare fine:         Threading | null
   declare xfine:        Threading | null
   declare diam_major:   MM
-  get diam_major_in():  Inch { return this.diam_major / FT.MM2Inch }
+  get diam_major_in():  Inch { return this.diam_major / FT.MM_IN }
 
   declare thruhole:     FT.ThruholeT
 
@@ -58,13 +58,13 @@ export class Threading extends Thing implements FT.ThreadingT {
   get pref():           FE.FastenerPref { return this.thread_pref + this.sizing.size_pref as FE.FastenerPref }
   declare sizing:       FastenerSizing
   declare pitch:        MM
-  declare diam_minor:   MM; get diam_minor_in(): Inch { return this.diam_minor / FT.MM2Inch }
+  declare diam_minor:   MM; get diam_minor_in(): Inch { return this.diam_minor / FT.MM_IN }
 
   declare taphole:      FT.TapholeT
 
   get diam_major():     Inch   { return this.sizing.diam_major }
   get diam_major_in():  Inch   { return this.sizing.diam_major_in }
-  get tpi():            number { return FT.MM2Inch / this.pitch }
+  get tpi():            number { return FT.MM_IN / this.pitch }
 }
 export class Screw<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> extends Thing implements FT.ScrewT<TDK, THF> {
   static get checker() { return FT.screw as CK.Zchecker<FT.ScrewT<FE.FastenerDrive, FE.HeadForm>, any, FT.ScrewSk> }
@@ -123,6 +123,6 @@ export class Thruhole extends Thing implements FT.ThruholeT {
 export class DrillBit  extends Thing {
   declare title:        Title
   declare diam_od:      MM
-  get diam_od_in():     Inch { return this.diam_od / FT.MM2Inch }
+  get diam_od_in():     Inch { return this.diam_od / FT.MM_IN }
   // static get checker() { return drill_bit }
 }
