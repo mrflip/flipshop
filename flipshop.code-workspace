@@ -9,6 +9,7 @@
   ],
   "settings": {
     "typescript.tsdk": "flipshop/.yarn/sdks/typescript/lib",
-    "claudeCode.allowDangerouslySkipPermissions": true
+    "claudeCode.allowDangerouslySkipPermissions": true,
+    "claudeCode.initialPermissionMode": "acceptEdits"
   }
 }

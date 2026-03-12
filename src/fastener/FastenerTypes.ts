@@ -7,141 +7,119 @@ export type Inch       = number
 export type Title      = string
 export type SKU        = string
 export const MM2Inch = 25.4
+export const mm_lte_100 = CK.ustrnum.pipe(CK.num.gt(0).max(100))
 
-export const FastenerMasterDataCols = [
-  'title', 'nom_size', 'common', 'pitch', 'tpi', 'maj_diam', 'maj_diam_in', 'spec',
-  'thruhole_close', 'thruhole_reg', 'thruhole_loose', 'selftap_pla', 'selftap_petg', 'taphole_nonfe', 'taphole_fe', 'thruhole_close_drill', 'thruhole_normal_drill', 'thruhole_loose_drill', 'taphole_nonfe_drill', 'taphole_fe_drill',
-  'hn_sku', 'hn_af', 'hn_thk',
-  'sqn_af', 'sqn_thk',
-  'fw_id_sm', 'fw_od_sm', 'fw_thk_sm', 'fw_std_sm',
-  'fw_id_reg', 'fw_od_reg', 'fw_thk_reg', 'fw_std_reg',
-  'fw_id_lg', 'fw_od_lg', 'fw_thk_lg', 'fw_std_lg',
-  'shcs_key', 'bhcs_key', 'fhcs_key', 'shcslo_key', 'setscrew_key', 'shcs_key_af', 'shcs_key_dp', 'nom_size',
-  'hn_af_nom', 'hn_thk_nom', 'hn_sstd',
-  'hhcs_wrench', 'hhcs_head_af', 'shcs_head_diam', 'shcslo_head_diam', 'bhcs_head_diam', 'fhcs_head_diam', 'shcs_head_thk', 'shcslo_head_thk', 'hhcs_head_thk', 'bhcs_head_thk', 'fhcs_head_thk', 'fhcs_head_angle', 'shcs_bore_diam', 'shcslo_bore_diam', 'bhcs_bore_diam', 'shcs_bore_dp', 'shcslo_bore_dp', 'boss_wall_thk_min', 'boss_wall_thk', 'engagement_len_min',
-] as const;
+export const taphole = CK.obj({
+  nonfe_diam: mm_lte_100,
+  fe_diam:    mm_lte_100,
+  pla_diam:   mm_lte_100,
+  petg_diam:  mm_lte_100,
+  fe_drill:   FE.drill_title.optional(),
+  nonfe_drill: FE.drill_title.optional(),
+})
+export interface TapholeSk extends CK.Zsketch<typeof taphole> {}
+export interface TapholeT extends CK.Zcasted<typeof taphole> {}
 
-export const FastenerProps = {
-  '1/4': {
-    title: '1/4-20', sizing_pref: 'A',
-    diam_major: 0.250,
-    coarse: {
-      title: '1/4-20', stdz: 'UNC', pitch: MM2Inch / 20, diam_minor: 0.1905 * MM2Inch, thread_pref: 'a', pref: 'Aa',
-      taphole:     { nonfe_diam: 11.11, fe_diam: 11.11, pla_diam: 11.11, petg_diam: 11.11,  },
-    },
-    fine: {
-      title: '1/4-28', stdz: 'UNF', pitch: MM2Inch / 28, diam_minor: 0.2074 * MM2Inch, thread_pref: 'b', pref: 'Ab',
-      taphole:     { nonfe_diam: 11.11, fe_diam: 11.11, pla_diam: 11.11, petg_diam: 11.11,  },
-    },
-    xfine: {
-      title: '1/4-32', stdz: 'UNEF', pitch: MM2Inch / 32, diam_minor: 0.2128 * MM2Inch, thread_pref: 'c', pref: 'Ac',
-      taphole:     { nonfe_diam: 11.11, fe_diam: 11.11, pla_diam: 11.11, petg_diam: 11.11,  },
-    },
-    hhcs:     { driver_title: 'Wr7/16in', head_diam_af: 11.11, head_ht: 4.14 },
-    shcs:     { driver_title: 'H3/16in',  head_diam_od: 11.11, head_ht: 4.14, key_diam_af: 11.11, key_dp: 11.11 },
-    hn:       { diam_af: 11.11,      ht: 5.56,      refsku:       'mcmc_91845A029' },
-    sqn:      { diam_af: 11.11,      ht: 4.14,      refsku:       'mcmc_94855A247' },
-    // fw_reg:   {},
-    // fw_lg:    {},
-    // shcs:     {},
-    // bhcs:     {},
-    // fhcs:     {},
-    // shlo:     {},
-    // setscrew: {},
-    // Washer
-    fw_sm:    { diam_od: 11.11, diam_id: 11.11, ht: 11.11, stdz: 'USS' },
-    //
-    thruhole:    { close_diam: 11.11, reg_diam: 11.11, loose_diam: 11.11 },
-  },
-} satisfies Record<Title, FastenerSizingT>
+export const thruhole = CK.obj({
+  close_diam: mm_lte_100,
+  reg_diam: mm_lte_100,
+  loose_diam: mm_lte_100,
+  close_drill: FE.drill_title.optional(),
+  reg_drill:   FE.drill_title.optional(),
+  loose_drill: FE.drill_title.optional(),
+})
+export interface ThruholeSk extends CK.Zsketch<typeof thruhole> {}
+export interface ThruholeT extends CK.Zcasted<typeof thruhole> {}
 
 export const nut = CK.obj({
-  diam_af: CK.num.gt(0).max(100),
-  ht:      CK.num.gt(0).max(100),
-  refsku:  CK.keyish.optional(),
+  driver_title: FE.wrench_title,
+  diam_af:      mm_lte_100,
+  ht:           mm_lte_100,
+  refsku:       CK.keyish.optional(),
 })
 export type NutSk = CK.Zsketch<typeof nut>
 export type NutT  = CK.Zcasted<typeof nut>
 
 export const washer = CK.obj({
-  diam_od: CK.num.gt(0).max(100),
-  diam_id: CK.num.gt(0).max(100),
-  ht:      CK.num.gt(0).max(100),
+  diam_od: mm_lte_100,
+  diam_id: mm_lte_100,
+  ht:      mm_lte_100,
   stdz:    FE.washer_stdz.optional(),
   refsku:  CK.keyish.optional(),
 })
 export type WasherSk = CK.Zsketch<typeof washer>
 export type WasherT  = CK.Zcasted<typeof washer>
 
-export interface ScrewT<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> {
+export const screw = CK.obj({
+  drive_kind:   FE.fastener_drive,
+  head_form:    FE.head_form,
+  driver_title: FE.driver_title,
+  head_ht:      mm_lte_100,
+  refsku:       CK.keyish.optional(),
+})
+export const external_drive_screw = CK.obj({
+  ...screw.shape,
+  drive_kind:   FE.external_drive,
+  head_form:    CK.oneof(['bolt']).default('bolt'),
+  driver_title: FE.wrench_title,
+  head_diam_af: mm_lte_100,
+})
+export const internal_drive_screw = CK.obj({
+  ...screw.shape,
+  drive_kind:   FE.internal_drive,
+  driver_title: FE.keydrive_title,
+  head_diam_od: mm_lte_100,
+  key_diam_af:  mm_lte_100,
+  key_dp:       mm_lte_100.optional(),
+})
+export const hhcs   = CK.obj({ ...external_drive_screw.shape, head_form: CK.literal('bolt').default('bolt'),         drive_kind: CK.literal('exthex').default('exthex') })
+export const shcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('socket').default('socket'),     drive_kind: CK.literal('allen').default('allen') })
+export const bhcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('button').default('button'),     drive_kind: CK.literal('allen').default('allen') })
+export const fhcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('flathead').default('flathead'), drive_kind: CK.literal('allen').default('allen') })
+export const losock = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('losock').default('losock'),     drive_kind: CK.literal('allen').default('allen') })
+export const torx   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('socket').default('socket'),     drive_kind: CK.literal('torx').default('torx') })
+export const sss    = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('setscrew').default('setscrew'), drive_kind: CK.literal('allen').default('allen') })
+
+export interface ScrewSk extends CK.Zsketch<typeof screw> {
+  drive_kind:   FE.FastenerDrive
+  head_form:    FE.HeadForm
+}
+export interface ScrewT<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> extends CK.Zcasted<typeof screw> {
   drive_kind:   TDK
   head_form:    THF
-  driver_title: FE.DriverTitle
-  head_ht:     MM
-  refsku?:      SKU | undefined
 }
-export interface ExternalDriveScrewT<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends ScrewT<TDK, THF> {
+export interface ExternalDriveScrewT<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends ScrewT<TDK, THF>, CK.Zcasted<typeof external_drive_screw> {
+  drive_kind:   TDK
+  head_form:    THF
   driver_title: FE.WrenchTitle
-  head_diam_af: MM
 }
-export interface InternalDriveScrewT<TDK extends FE.InternalDrive = FE.InternalDrive, THF extends FE.HeadForm = 'socket'> extends ScrewT<TDK, THF> {
+
+export interface ExternalDriveScrewSk<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends Optionalize<ScrewSk, 'head_form'>, CK.Zsketch<typeof external_drive_screw> {
+  drive_kind:    TDK
+  head_form?:    THF | undefined
+  driver_title: FE.WrenchTitle
+}
+export interface InternalDriveScrewT<TDK extends FE.InternalDrive = FE.InternalDrive, THF extends FE.HeadForm = 'socket'> extends ScrewT<TDK, THF>, CK.Zcasted<typeof internal_drive_screw> {
+  drive_kind:   TDK
+  head_form:    THF
   driver_title: FE.KeydriveTitle
-  head_diam_od: MM
-  key_diam_af:  MM
-  key_dp?:      MM | undefined
 }
 
-export interface FastenerSizingT {
-  title:        Title
-  /** How commonly found this sizing is. For metric, uses ISO 261; For US, refers to common practice */
-  sizing_pref:  FastenerSizingPref
-  /** Coarse thread details: UNC or the primary ISO thread */
-  coarse:       ThreadingT
-  /** Fine thread details: UNF or the most-common secondary ISO thread */
-  fine:         ThreadingT | null
-  /** Extra fine thread details: UNEF or the next-most-common ISO thread */
-  xfine:        ThreadingT | null
-  /** Major diameter of male thread (outside diameter) */
-  diam_major:   MM
-  //
-  /** Bore hole size to pass through: close, regular, loose; For metric, follows ISO 273 (metric) or ASME B18.2.8 (US) */
-  thruhole: { close_diam: MM, reg_diam: MM, loose_diam: MM, close_drill?: FE.DrillTitle | undefined, reg_drill?: FE.DrillTitle | undefined, loose_drill?: FE.DrillTitle | undefined }
-  //
-  /** Hex nut details. For US sizes, uses the Finished Hex Nut or Machine Nut according to common practice */
-  hn:       NutT
-  /** Square nut details. These are not perfectly standardized */
-  sqn:      NutT
-  /** Hex bolt (Hex-Head Cap Screw) details, according to ASME B18.2.1 (US) and ISO 262 (metric) */
-  hhcs:     Optionalize<ExternalDriveScrewT<'exthex', 'bolt'>,     'drive_kind' | 'head_form'>
-  /** Socket head cap screw (SHCS, aka "Allen Head") details, according to ASME B18.3 / ASTM F835 (US) and ISO 4753 (metric) */
-  shcs:     Optionalize<InternalDriveScrewT<'allen',  'socket'>,   'drive_kind' | 'head_form'>
-  bhcs?:    Optionalize<InternalDriveScrewT<'allen',  'button'>,   'drive_kind' | 'head_form'> | undefined
-  fhcs?:    Optionalize<InternalDriveScrewT<'allen',  'flathead'>, 'drive_kind' | 'head_form'> | undefined
-  losock?:  Optionalize<InternalDriveScrewT<'allen',  'losock'>,   'drive_kind' | 'head_form'> | undefined
-  torx?:    Optionalize<InternalDriveScrewT<'torx',   'socket'>,   'drive_kind' | 'head_form'> | undefined
-  sss?:     Optionalize<InternalDriveScrewT<'allen',  'setscrew'>, 'drive_kind' | 'head_form'> | undefined
-  fw_sm?:   WasherT | undefined
-  fw_reg?:  WasherT | undefined
-  fw_lg?:   WasherT | undefined
-
-}
-export type FastenerSizingPref = typeof FastenerSizingPrefVals[number]; const FastenerSizingPrefVals = ['A', 'B'] as const
-export type ThreadingPref      = typeof ThreadingPrefVals[number];      const ThreadingPrefVals      = ['a', 'b', 'c'] as const
-export type FastenerPref       = typeof FastenerPrefVals[number];       const FastenerPrefVals       = ['Aa', 'Ab', 'Ac', 'Ba', 'Bb', 'Bc'] as const
-
-export interface ThreadingT {
-  title:        Title
-  stdz:         FE.ThreadingStandardization
+export const threading = CK.obj({
+  title:        CK.titleish,
+  stdz:         FE.thread_stdz,
   /** How commonly found this thread is: 'a' for UNC / ISOC (and for UNF-only #0); 'b' for UNF and the most common finer-pitch ISO; 'c' for UNEF and any other ISO threadings. */
-  thread_pref:  ThreadingPref
-  pref:         FastenerPref
+  thread_pref:  FE.thread_pref,
   /** Pitch of thread (spacing between threads)*/
-  pitch:        MM
+  pitch:        mm_lte_100,
   /** Minor diameter of male thread */
-  diam_minor:   MM
+  diam_minor:   mm_lte_100.optional(),
   /** Bore Hole Diameter for tapping (ferrous/non-ferrous) or self-tapping (pla/petg/etc). Follows ISO 261/965 (metric) or ASME B1.1 (US) */
-  taphole:  { pla_diam: MM,  petg_diam: MM, nonfe_diam: MM, fe_diam: MM, fe_drill?: FE.DrillTitle | undefined, nonfe_drill?: FE.DrillTitle | undefined }
-}
+  taphole,
+})
+export interface ThreadingSk extends CK.Zsketch<typeof threading> {}
+export interface ThreadingT extends CK.Zcasted<typeof threading> {}
+
 export interface BoltSocketT {
   title:        Title
   pts:          6 | 8 | 12
@@ -162,18 +140,54 @@ export interface IntrudedT extends ExtrudedT {
   int_dp:      MM
 }
 
-export interface TapholeT {
-  nonfe_diam: MM
-  fe_diam:    MM
-  pla_diam:   MM
-  petg_diam:  MM
+export const   fastener_sizing = CK.obj({
+  title:        CK.titleish,
+  /** How commonly found this sizing is. For metric, uses ISO 261; For US, refers to common practice */
+  size_pref:  FE.fastener_size_pref,
+  /** Coarse thread details: UNC or the primary ISO thread */
+  coarse:       threading,
+  /** Fine thread details: UNF or the most-common secondary ISO thread */
+  fine:         threading.nullable().optional(),
+  /** Extra fine thread details: UNEF or the next-most-common ISO thread */
+  xfine:        threading.nullable().optional(),
+  diam_major:   mm_lte_100,
+  /** Bore hole size to pass through: close, regular, loose; For metric, follows ISO 273 (metric) or ASME B18.2.8 (US) */
+  thruhole,
+  /** Hex nut details. For US sizes, uses the Finished Hex Nut or Machine Nut according to common practice */
+  hexnut:       nut.optional(),
+  /** Square nut details. These are not perfectly standardized */
+  sqnut:        nut.optional(),
+  /** Hex bolt (Hex-Head Cap Screw) details, according to ASME B18.2.1 (US) and ISO 262 (metric) */
+  hhcs:        hhcs.optional(),
+  /** Socket head cap screw (SHCS, aka "Allen Head") details, according to ASME B18.3 / ASTM F835 (US) and ISO 4753 (metric) */
+  shcs:        shcs.optional(),
+  /** Button head cap screw (BHCS, aka "Button Head") details */
+  bhcs:         bhcs.optional(),
+  /** Flat head cap screw (FHCS, aka "Flat Head") details */
+  fhcs:         fhcs.optional(),
+  /** Low-profile socket head cap screw details */
+  losock:       losock.optional(),
+  /** Torx head cap screw details */
+  torx:         torx.optional(),
+  /** Socket-set screw (SSS, aka "Set Screw" or "Grub Screw") details */
+  sss:          sss.partial().optional(),
+  /** Small washer details */
+  fw_sm:        washer.optional(),
+  /** Regular washer details */
+  fw_reg:       washer.optional(),
+  /** Large (aka "Fender") washer details */
+  fw_lg:        washer.optional(),
+})
+
+export interface FastenerSizingSk extends CK.Zsketch<typeof fastener_sizing> {}
+export interface FastenerSizingT extends CK.Zcasted<typeof fastener_sizing> {
+  // hhcs:     Optionalize<ExternalDriveScrewT<'exthex', 'bolt'>,     'drive_kind' | 'head_form'>
+  // shcs:     Optionalize<InternalDriveScrewT<'allen',  'socket'>,   'drive_kind' | 'head_form'>
+  // bhcs?:    Optionalize<InternalDriveScrewT<'allen',  'button'>,   'drive_kind' | 'head_form'> | undefined
+  // fhcs?:    Optionalize<InternalDriveScrewT<'allen',  'flathead'>, 'drive_kind' | 'head_form'> | undefined
+  // losock?:  Optionalize<InternalDriveScrewT<'allen',  'losock'>,   'drive_kind' | 'head_form'> | undefined
+  // torx?:    Optionalize<InternalDriveScrewT<'torx',   'socket'>,   'drive_kind' | 'head_form'> | undefined
+  // sss?:     Optionalize<InternalDriveScrewT<'allen',  'setscrew'>, 'drive_kind' | 'head_form'> | undefined
 }
 
-export interface ThruholeT {
-  close_diam: MM
-  reg_diam: MM
-  loose_diam: MM
-  close_drill?: FE.DrillTitle | undefined
-  reg_drill?: FE.DrillTitle | undefined
-  loose_drill?: FE.DrillTitle | undefined
-}
+export interface FastenerFlatPropsT extends Omit<FastenerSizingSk, 'coarse' | 'fine' | 'xfine'>, ThreadingSk { threading_kind: 'coarse' | 'fine' | 'xfine' }
