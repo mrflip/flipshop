@@ -1,6 +1,6 @@
 import type { Optionalize } from '../utils/TSTools.ts'
-import * as CK from '@freeword/meta/checks.js'
-import * as FE from './FastenerEnums.ts'
+import       { CK }         from '@freeword/meta'
+import       * as FE        from './FastenerEnums.ts'
 
 export type MM         = number
 export type Inch       = number

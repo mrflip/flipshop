@@ -28,7 +28,7 @@
     "_z": "echo ."
   },
   "dependencies": {
-    "@freeword/meta": "link:../freeword/meta",
+    "@freeword/meta": "file:../freeword/meta",
     "esm-seedrandom": "3.0.5-esm.2",
     "lodash": "^4.17.23",
     "luxon": "^3.7.2",
@@ -58,6 +58,8 @@
     "seedrandom": "^3.0.5",
     "sinon": "^21.0.2",
     "sinon-chai": "^4.0.1",
+    "ts-jest": "^29.4.6",
+    "ts-jest-resolver": "^2.0.1",
     "typescript": "^5.9.3"
   },
   "keywords": [

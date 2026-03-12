@@ -1,4 +1,4 @@
-import * as CK from '@freeword/meta/checks.js'
+import { CK } from '@freeword/meta'
 
 export type DrillTitle = string
 export const drill_title = CK.extkeyish

@@ -6,15 +6,15 @@ export const FastenerProps = {
     title: '1/4-20', size_pref: 'A',
     diam_major: 0.250,
     coarse: {
-      title: '1/4-20', stdz: 'UNC', pitch: MM2Inch / 20, diam_minor: 0.1905 * MM2Inch, thread_pref: 'a', pref: 'Aa',
+      title: '1/4-20', stdz: 'UNC', pitch: MM2Inch / 20, diam_minor: 0.1905 * MM2Inch, thread_pref: 'a',
       taphole:     { nonfe_diam: 11.11, fe_diam: 11.11, pla_diam: 11.11, petg_diam: 11.11,  },
     },
     fine: {
-      title: '1/4-28', stdz: 'UNF', pitch: MM2Inch / 28, diam_minor: 0.2074 * MM2Inch, thread_pref: 'b', pref: 'Ab',
+      title: '1/4-28', stdz: 'UNF', pitch: MM2Inch / 28, diam_minor: 0.2074 * MM2Inch, thread_pref: 'b',
       taphole:     { nonfe_diam: 11.11, fe_diam: 11.11, pla_diam: 11.11, petg_diam: 11.11,  },
     },
     xfine: {
-      title: '1/4-32', stdz: 'UNEF', pitch: MM2Inch / 32, diam_minor: 0.2128 * MM2Inch, thread_pref: 'c', pref: 'Ac',
+      title: '1/4-32', stdz: 'UNEF', pitch: MM2Inch / 32, diam_minor: 0.2128 * MM2Inch, thread_pref: 'c',
       taphole:     { nonfe_diam: 11.11, fe_diam: 11.11, pla_diam: 11.11, petg_diam: 11.11,  },
     },
     hhcs:     { driver_title: 'Wr7/16in', head_diam_af: 11.11, head_ht: 4.14 },

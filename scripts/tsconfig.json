@@ -3,7 +3,7 @@
   "display":            "Node 23",
   "extends":            "../tsconfig-base.json",
   "include":            ["**/*.ts", "**/*.js", "**/*.json"],
-  "exclude":            ["node_modules", "built", "**/built/**/*", "built/**/*", "**/.yarn/**/*"],
+  // "exclude":            ["node_modules", "built", "**/built/**/*", "built/**/*", "**/.yarn/**/*"],
   //
   "references":  [
     { "path": "../tsconfig.json" }

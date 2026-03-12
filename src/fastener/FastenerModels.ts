@@ -1,6 +1,6 @@
 import      _                                   /**/ from 'lodash'
-import * as CK from '@freeword/meta/checks.js'
-import type { OmitStatics } from '@freeword/meta'
+import      { CK }                                   from '@freeword/meta'
+import type { OmitStatics }                          from '@freeword/meta'
 
 import type { MM, Inch, SKU, Title } from './FastenerTypes.ts'
 import * as FT from './FastenerTypes.ts'
