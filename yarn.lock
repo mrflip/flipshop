@@ -450,7 +450,7 @@ __metadata:
 
 "@freeword/meta@file:../freeword/meta::locator=%40flipshop%2Fflipshop%40workspace%3A.":
   version: 1.0.22
-  resolution: "@freeword/meta@file:../freeword/meta#../freeword/meta::hash=f7ba34&locator=%40flipshop%2Fflipshop%40workspace%3A."
+  resolution: "@freeword/meta@file:../freeword/meta#../freeword/meta::hash=a21e50&locator=%40flipshop%2Fflipshop%40workspace%3A."
   dependencies:
     esm-seedrandom: "npm:3.0.5-esm.2"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -459,7 +459,7 @@ __metadata:
     snowball-stemmers: "npm:^0.6.0"
     sprintf-js: "npm:^1.1.3"
     zod: "npm:^3.24.3"
-  checksum: 10c0/940dbfdc4da6868e9fdfc1d2537490640fee03233653d4722adf5d675e824b3d2a17ef913257fe18b0e82b94a17446c7bc9f2ce043d43966e0e8354ba1ecd08b
+  checksum: 10c0/b182b0613bf9da7b8cd58a052ce501f66eb5b7fc0ab08f72b07378cf44e5f225c30062e8c31ee582792b8d54cfe2470f91c10771d6d3b7bf8b9016344db11345
   languageName: node
   linkType: hard
 

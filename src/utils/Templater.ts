@@ -7,7 +7,7 @@ import      { UF, Filer, CK }                     from '@freeword/meta'
 import type * as TY                               from './internal.ts'
 //
 import type {
-  AnyBag, Barename, Handleish, ZodTypeAny,  Relpath, Abspath, Fext,
+  AnyBag, Barename, Handleish, ZodTypeAny,  Relpath, Abspath, Dirpath, AnyFext,
 }                                       from './internal.js'
 
 const ROOTPATH                 = Filer.__dirname(import.meta.url, '../../arda/gen')
@@ -58,7 +58,7 @@ export interface BaseTemplaterProps  extends CK.Zsketch<typeof BaseTemplaterCx.b
 export interface BaseTemplaterDNA    extends CK.Zsketch<typeof BaseTemplaterCx.baseTemplaterDNA>   {}
 export interface BaseTemplaterThis<XRP extends AnyBag, BT extends BaseTemplater<XRP>> { name: string, new (dna: BaseTemplaterProps): BT, dnaDefaults: Partial<BaseTemplaterProps> &  AnyBag }
 
-export interface DumpFrame           { ok: boolean, abspath: Relpath, step: string, handle: string, pool: string, content: string, gist?: 'empty' | 'present' | undefined }
+export interface DumpFrame         { ok: boolean, abspath: Relpath, step: string, handle: string, pool: string, content: string, gist?: 'empty' | 'present' | FM.FilerGist | undefined }
 export interface GenParams         extends CK.Zsketch<typeof BaseTemplaterCx.genParams> {}
 
 export interface TemplaterParamsish  extends GenParams { formatter?: TPLFormatterDNA | undefined, stepnum?: number | undefined }
@@ -115,14 +115,14 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
     return this.loadAndFormat(params)
   }
 
-  format(params: RP, template: string, othervals: AnyBag = {}) {
-    const fullParams = this.fullGenvars(params, othervals)
-    // const content = this.formatter(params).format(template, fullParams)
-    const template = Eta.load(templatePath, { Lembas, ...params, ...formatter.extras, params, templater: this })
-    // const content = template
-    if (params.dedent) { return UF.dedent(content, params.dedent) }
-    return content
-  }
+  // format(params: RP, template: string, othervals: AnyBag = {}) {
+  //   const fullParams = this.fullGenvars(params, othervals)
+  //   // const content = this.formatter(params).format(template, fullParams)
+  //   // const template = EtaUtils.load(templatePath, { Lembas, ...params, ...formatter.extras, params, templater: this })
+  //   const content = template
+  //   if (params.dedent) { return UF.dedent(content, params.dedent) }
+  //   return content
+  // }
   fullGenvars(params: RP, othervals: AnyBag = {}): RP & AnyBag {
     return { ...params, ...othervals }
   }
@@ -182,26 +182,25 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
     return loaded
   }
 
-  async renderTemplateFile(params: RP, othervals: AnyBag = {}): Promise<string> {
-    const template = await this.loadTemplateFile(params)
-    return this.format(params, template, othervals)
-  }
+  // async renderTemplateFile(params: RP, othervals: AnyBag = {}): Promise<string> {
+  //   const template = await this.loadTemplateFile(params)
+  //   return this.format(params, template, othervals)
+  // }
   async loadTemplateFile(params: RP): Promise<string> {
     const abspath = this.templateAbspath(params)
-    try {
-      const template = await Filer.load(abspath)
-      return template
-    } catch (err) {
-      this.logger.error(`Issue while loading template: ${err.message}`, { err, params })
-      throw FM.throwable(`Issue while loading template: ${err.message}`, 'loadErr', { err, params })
-    }
-  }
-  async loadAndRender(relpath: Relpath, params: AnyBag = {}, othervals: AnyBag = {}): Promise<string> {
-    const template = await Filer.load(Filer.PathHelper.abspathFor(relpath))
-    return this.format(params as any, template, othervals)
+    const template = await Filer.loadtext(abspath)
+    if (template.ok) { return template.val }
+    const { err } = template
+    this.logger.error(`Issue while loading template: ${err.message}`, { err, params })
+    throw UF.throwable(`Issue while loading template: ${err.message}`, 'loadErr', { err, params })
   }
 
-  async dump(params: RP): Promise<DumpFrame> {
+  // async loadAndRender(relpath: Relpath, params: AnyBag = {}, othervals: AnyBag = {}): Promise<string> {
+  //   const template = await Filer.loadtext(Filer.abspathFor(relpath))
+  //   return this.format(params as any, template.val, othervals)
+  // }
+
+  async dump(params: RP): Promise<DumpFrame | FM.BadFilerWriteResult<FM.CoreWriteGist>> {
     const content = await this.render(params)
     return this.dumptext(content, params)
   }
@@ -212,24 +211,24 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
    *   - abspath {Relpath} - the actual path written
    *   - content {string}  - the rendered content of the file
    * */
-  async dumptext(content: string, params?: { barename: Barename }      | undefined): Promise<DumpFrame>
-  async dumptext(content: string, params?:                          RP | undefined): Promise<DumpFrame>
-  async dumptext(content: string, params?: { barename: Barename } | RP | undefined): Promise<DumpFrame> {
+  async dumptext(content: string, params?: { barename: Barename }      | undefined): Promise<DumpFrame | FM.BadFilerWriteResult<FM.CoreWriteGist>>
+  async dumptext(content: string, params?:                          RP | undefined): Promise<DumpFrame | FM.BadFilerWriteResult<FM.CoreWriteGist>>
+  async dumptext(content: string, params?: { barename: Barename } | RP | undefined): Promise<DumpFrame | FM.BadFilerWriteResult<FM.CoreWriteGist>> {
     try {
       const { step, handle = this.handle, pool = this.pool } = params as any
       const filepath = this.dumpfileAbspath(params as RP)
       const present = (!! content.trim())
       const gist =  present ? 'present' : 'empty'
       if (! present) { this.logger.warn(`empty content dumping ${this.title} step ${(params as any)?.step} to ${filepath}`, { filepath, gist, params }) }
-      const result = await Lembas.Filer.dump(content, filepath)
+      const result = await Filer.dumptext(content, filepath)
       this.logger.debug(`Dumped template: ${this.title}`, { ...result, params })
-      return { gist, ...result, step, handle, pool, content }
+      return { ...result, gist, step, handle, pool, content } as DumpFrame
     } catch (err) { this.logger.error(`Issue while dumping template: ${err.message}`, { err, params }); throw err }
   }
 
   async renderSteps<ST extends XST>(params: RP, steps?: SteppedManifest<ST, RP> | undefined, _also: AnyBag = {}): Promise<SteppedContents<string>> {
     const manifest = this.extractStepManifest(steps)
-    const contents = await Lembas.AwaitBag(_.mapValues(manifest, (overrides, step) => (
+    const contents = await UF.AwaitBag(_.mapValues(manifest, (overrides, step) => (
       this.render({ ...params, step, ...overrides } as RP)
     )))
     return contents
@@ -237,7 +236,7 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
   async dumpSteps<ST extends XST>(params: RP, steps?: SteppedManifest<ST, RP> | undefined, also: AnyBag = {}): Promise<SteppedFrames<ST>> {
     const manifest = this.extractStepManifest(steps)
     const contents = await this.renderSteps(params, steps, also)
-    const results = await Lembas.AwaitBag(_.mapValues(contents, (content, step) => (
+    const results = await UF.AwaitBag(_.mapValues(contents, (content, step) => (
       this.dumptext(content, { ...params, step, ...manifest[step as ST] })
     )))
     return results as SteppedFrames<ST>
@@ -246,21 +245,21 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
     const manifest = this.stepManifestForSingleStep(params, step)
     const theStep = _.first(_.keys(manifest)) as ST
     const contents = await this.renderSteps(params, manifest, also)
-    const results = await Lembas.AwaitBag(_.mapValues(contents, (content) => (
+    const results = await UF.AwaitBag(_.mapValues(contents, (content) => (
       this.dumptext(content, { ...params, step: theStep, ...manifest[theStep] })
     )))
-    return results[theStep]!
+    return results[theStep]! as DumpFrame
   }
   stepManifestForSingleStep<ST extends XST>(params: RP, step: ST | SteppedManifest<ST, RP>): SteppedManifest<ST, RP> {
     if (_.isString(step)) { return this.extractStepManifest({ [step]: {} } as SteppedManifest<ST, RP>) }
-    const isSingleStep = (_.size(step) === 1) && (Lembas.objectish(step))
-    if (! isSingleStep) { throw Lembas.Inconsistent({ want: 'single step', val: step }, params) }
+    const isSingleStep = (_.size(step) === 1) && (UF.objectish(step))
+    if (! isSingleStep) { throw UF.throwable(`Inconsistent step manifest ${step}`, 'inconsistent', { want: 'single step', val: step, params }) }
     return this.extractStepManifest(step)
   }
   extractStepManifest<ST extends XST, MFT extends SteppedManifest<ST, RP>>(steps: MFT): MFT
   extractStepManifest<ST extends XST>(steps?: readonly ST[] | SteppedManifest<ST, RP> | undefined): SteppedManifest<ST, RP>
   extractStepManifest<ST extends XST>(steps?: readonly ST[] | SteppedManifest<ST, RP> | undefined): SteppedManifest<ST, RP> {
-    const dna = (_.isArray(steps) ? Lembas.objectify(steps, () => ({})) : steps ?? this.steps!) as SteppedManifest<ST, RP>
+    const dna = (_.isArray(steps) ? UF.objectify(steps, () => ({})) : steps ?? this.steps!) as SteppedManifest<ST, RP>
     return BaseTemplaterCx.stepManifest.cast(dna) as SteppedManifest<ST, RP>
   }
   stepInfo<VT>(params: Partial<VT> & { step?: RP['step'] | undefined }): TemplaterParamsish & VT {
@@ -269,7 +268,7 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
   }
 
   templatePathjoin(...relpaths: (Relpath | undefined)[]): Abspath {
-    return Lembas.PathHelper.abspathFor(this.templateRoot, ..._.compact(relpaths))
+    return Filer.abspathFor(this.templateRoot, ..._.compact(relpaths))
   }
   // templateDirpath(basename: TY.Barename, params: RP & AnyBag): Abspath {
   //   const { pool = this.pool } = BaseTemplaterCx.genParams.cast(params)
@@ -277,19 +276,19 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
   // }
   templateAbspath(params: RP & AnyBag): Abspath {
     const { pool = this.pool } = BaseTemplaterCx.genParams.cast(params)
-    const basename = Lembas.smush('.', this.barenameFor(params), this.fextFor(params))
+    const basename = UF.smush('.', this.barenameFor(params), this.fextFor(params))
     return this.templatePathjoin(this.ns, pool, basename)
   }
 
   static mearthdir(...pathsegs: (Relpath | undefined)[]): Abspath {
-    return Lembas.__dirname(import.meta.url, '../..', ...pathsegs)
+    return Filer.__dirname(import.meta.url, '../..', ...pathsegs)
   }
   mearthdir(...pathsegs:        (Relpath | undefined)[]): Abspath { return BaseTemplater.mearthdir(...pathsegs) }
   static unmearthPath(abspath: Abspath): Relpath { return abspath.replace(this.mearthdir(), '.') }
   unmearthPath(abspath:        Abspath): Relpath { return BaseTemplater.unmearthPath(abspath) }
 
   dumpfileAbspath(params:  Partial<RP> = {}): Relpath {
-    return Lembas.PathHelper.abspathFor(this.rootpath, this.relpathFor(params))
+    return Filer.abspathFor(this.rootpath, this.relpathFor(params))
   }
 
   /**
@@ -316,7 +315,7 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
     if (params.relpath) { return params.relpath }
     const dirname  =  this.dirnameFor(params as Partial<RP>)
     const barename = this.barenameFor(params as Partial<RP>)
-    return Lembas.PathHelper.joinpath(this.mainpath, dirname, Lembas.smush('.', barename, this.fextFor(params)))
+    return Filer.abspathFor(this.mainpath, dirname, UF.smush('.', barename, this.fextFor(params)))
   }
 
   /**
@@ -339,7 +338,7 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
     if (params.dirname) { return params.dirname }
     const { pool = this.pool, poolnum = this.poolnum, step = this.handle } = params
     if (this.steps?.[step]?.dirname) { return this.steps[step].dirname }
-    return Lembas.smush('-', this.padStepnum(poolnum), pool)
+    return UF.smush('-', this.padStepnum(poolnum), pool)
   }
 
   /**
@@ -361,12 +360,12 @@ export class BaseTemplater<RP extends GenParams, XST extends string = string> im
     if (params.barename) { return params.barename }
     const { pool = this.pool, stepnum = this.stepnum, step = this.handle } = params
     if (this.steps?.[step]?.barename) { return this.steps[step].barename }
-    return Lembas.smush('-', this.padStepnum(stepnum), pool, step)
+    return UF.smush('-', this.padStepnum(stepnum), pool, step)
   }
 
-  fextFor(params: { fext?: Fext | undefined } = {}): Relpath { return params.fext ?? this.fext }
+  fextFor(params: { fext?: AnyFext | undefined } = {}): AnyFext { return params.fext ?? this.fext ?? '' }
 
-  padStepnum(stepnum: string | Lembas.NumberMaybe, padlen = 3): string {
+  padStepnum(stepnum: string | TY.NumberMaybe, padlen = 3): string {
     if (! (_.isNumber(stepnum) || _.isString(stepnum))) { return '' }
     return _.padStart(String(stepnum), padlen, '0')
   }
