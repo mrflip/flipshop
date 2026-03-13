@@ -10,6 +10,11 @@
   "settings": {
     "typescript.tsdk": "flipshop/.yarn/sdks/typescript/lib",
     "claudeCode.allowDangerouslySkipPermissions": true,
-    "claudeCode.initialPermissionMode": "acceptEdits"
+    "claudeCode.initialPermissionMode": "acceptEdits",
+    "search.exclude": {
+      "**/ripd": true,
+      "**/tmp": true
+    },
+    "search.globalFindClipboard": true
   }
 }

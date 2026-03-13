@@ -122,3 +122,5 @@ node_modules/
 rip/**/*.gz
 raw/**/*full*.gz
 .tsbuildinfo*
+ripd/*
+tests/fixtures/socket_wrenches_raw
