@@ -1,11 +1,10 @@
 #! /usr/bin/env yarn node
 import      _                                /**/ from 'lodash'
 import type * as _ZMP                             from './ZodMonkeypunch.ts'
-import      { load as cheerioLoad }               from 'cheerio'
 import      { readdirSync }                       from 'fs'
 import      { join }                              from 'path'
 import type * as TY                               from '@freeword/meta'
-import      { Filer, CK }                         from '@freeword/meta'
+import      { Filer }                             from '@freeword/meta'
 import      * as Flipshop                         from '@flipshop/flipshop'
 
 // == [Main] ==
@@ -31,10 +30,9 @@ for (const ripdDir of dirs) {
     .filter((filename) => (! filename.includes('-set-')))
     .map((filename) => join(ripdDir, filename))
 
-  const products = await Promise.all(files.map(parseProductFile))
-  const valid    = products.filter(Boolean) as Flipshop.Mungers.GearwrenchMungers.GearwrenchSocketT[]
-  SocketWrenchProducts.push(...valid)
-  console.warn(`Parsed ${valid.length} / ${files.length} products from ${ripdDir}.`)
+  const products = _.compact(await Promise.all(files.map(parseProductFile)))
+  SocketWrenchProducts.push(...products)
+  console.warn(`Parsed ${products.length} / ${files.length} products from ${ripdDir}.`)
 }
 // console.warn(UF.prettify(Enumish))
 console.log(JSON.stringify(SocketWrenchProducts, null, 2))
