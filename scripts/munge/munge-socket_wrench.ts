@@ -5,6 +5,7 @@ import      { readdirSync }                       from 'fs'
 import      { join }                              from 'path'
 import type * as TY                               from '@freeword/meta'
 import      { Filer }                             from '@freeword/meta'
+import      { UF }                                from '@freeword/meta'
 import      * as Flipshop                         from '@flipshop/flipshop'
 
 // == [Main] ==
@@ -34,7 +35,8 @@ for (const ripdDir of dirs) {
   SocketWrenchProducts.push(...products)
   console.warn(`Parsed ${products.length} / ${files.length} products from ${ripdDir}.`)
 }
+const sorted = _.orderBy(SocketWrenchProducts, ['socket_kind', 'drive_kind', 'unit_system', 'sqdrive_size', 'socket_variant', 'reach_kind', 'wrench_end_diam', 'ln_overall'])
 // console.warn(UF.prettify(Enumish))
-console.log(JSON.stringify(SocketWrenchProducts, null, 2))
+console.log(JSON.stringify(sorted, null, 2))
 
 // --

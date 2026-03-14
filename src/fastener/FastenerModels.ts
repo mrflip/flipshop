@@ -61,7 +61,7 @@ export class Screw<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> extend
   //
   declare drive_kind:   TDK
   declare head_form:    THF
-  declare driver_title: FE.DriverTitle
+  declare driver_title: FE.DriverSizing
   declare head_ht:      MM
   declare refsku?:      SKU | undefined
 }
@@ -81,7 +81,7 @@ export class Washer extends Thing implements FT.WasherT {
 // (Screw as OmitStatics<typeof Screw<FE.ExternalDrive, 'bolt'>, { checker: any, drive_kind: FE.ExternalDrive, head_form: FE.HeadForm }>)
 export class ExternalDriveScrew<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends Screw<TDK, THF> implements FT.ExternalDriveScrewT<TDK, THF> {
   //
-  declare driver_title:     FE.WrenchTitle
+  declare driver_title:     FE.WrenchSizing
   declare drive_kind:       TDK
   declare head_form:        THF
   declare head_diam_af:     MM
@@ -92,7 +92,7 @@ export class ExternalDriveScrew<TDK extends FE.ExternalDrive = FE.ExternalDrive,
 }
 export class InternalDriveScrew<TDK extends FE.InternalDrive, THF extends FE.HeadForm> extends Screw<TDK, THF> implements FT.InternalDriveScrewT<TDK, THF> {
   //
-  declare driver_title:     FE.KeydriveTitle
+  declare driver_title:     FE.KeydriveSizing
   declare drive_kind:       TDK
   declare head_form:        THF
   declare head_diam_od:     MM

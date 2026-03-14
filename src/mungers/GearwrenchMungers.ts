@@ -32,7 +32,7 @@ export interface GearwrenchSocketSk extends CK.Zsketch<typeof gearwrenchSocket> 
 
 // == [Remaps] ==
 
-export const sqdrive_size_remap: TY.Bag<Fastener.FastenerEnums.ToolDrive> = { "1/4 in": 'isq_1_4', "3/8 in": 'isq_3_8', "1/2 in": 'isq_1_2', '3/4 in': 'isq_3_4', '1 in': 'isq_1_in' } as const
+export const sqdrive_size_remap: TY.Bag<Fastener.FastenerEnums.ToolDrive> = { "1/4 in": 'isq_0250in', "3/8 in": 'isq_0375in', "1/2 in": 'isq_0500in', '3/4 in': 'isq_0750in', '1 in': 'isq_1000in' } as const
 export const drive_kind_remap: TY.Bag<Fastener.FastenerEnums.FastenerDrive> = {
   'Hex': 'inthex', 'Torx®': 'torx', 'Tamper Proof Torx®': 'torxtp', 'External Torx®': 'extstar', 'Ballpoint Hex': 'inthex', 'Triple Square': 'triple_square', 'Slotted': 'slotted', 'Phillips®': 'phillips', 'Pozidriv®': 'pozidriv',
   '6 Point': 'exthex',  '6 Point 6 Point': 'exthex', '12 Point': 'extstar12',
@@ -40,11 +40,18 @@ export const drive_kind_remap: TY.Bag<Fastener.FastenerEnums.FastenerDrive> = {
   'Square Square': 'square', 'Square': 'square',
 } as const
 export const socket_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketKind> = {
-  'Spark Plug Socket Spark Plug Service Tools': "socket_sparkplug", 'Socket': 'socket_exthex', 'Bit Socket': 'socket_bit', 'Flex Socket': 'socket_flex', 'Socket Spark Plug Service Tools': "socket_sparkplug", 'Extension': "socket_extension",
-  "Universal Joint": "socket_ujoint", "Universal Joint Socket": "socket_ujoint", "Socket Extension": 'socket_extension', 'Adapter': 'socket_adapter',
+  'Spark Plug Socket Spark Plug Service Tools': "socket_sparkplug", 'Socket': 'socket_exthex', 'Bit Socket': 'socket_bit', 'Flex Socket': 'socket_exthex', 'Socket Spark Plug Service Tools': "socket_sparkplug", 'Extension': "socket_extension",
+  "Universal Joint": "socket_ujoint", "Universal Joint Socket": "socket_exthex", "Socket Extension": 'socket_extension', 'Adapter': 'socket_adapter',
 } as const
 export const reach_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketReach> = {
-  'Standard': 'standard', 'Mid Length': 'midlen', 'Deep': 'deep', 'Long': 'long', 'Extra Long': 'xlong',
+  'Standard': 'std', 'Mid Length': 'midlen', 'Deep': 'deep', 'Long': 'long', 'Extra Long': 'xlong',
+} as const
+export const unit_system_remap: TY.Bag<Fastener.FastenerEnums.UnitSystem> = {
+  'SAE': 'us',
+  'Metric': 'metric', 'Metric Metric': 'metric',
+  'Phillips®': 'metric', 'Pozidriv®': 'metric',
+  'Torx': 'metric', 'SAE SAE/Metric': 'us', 'Metric SAE/Metric': 'metric', 'Torx®': 'metric', 'Tamper Proof Torx®': 'metric', 'External Torx®': 'metric',
+  'SAE SAE': 'us',
 } as const
 
 export const fieldname_remap = {
@@ -56,6 +63,7 @@ export const fieldname_remap = {
   "Drive Type":         'drive_kind',
   "Bit Type":           'bit_kind',
   "Length Format":      'reach_kind',
+  "SAE/Metric/Torx":    'unit_system',
   //
   "Overall Length":     'ln_overall',
   "Overall Width":      'wx_overall',
@@ -90,7 +98,6 @@ export const fieldname_remap = {
   "Warranty":            null,
   "Size Range (Metric)": null,
   "Size Range (SAE)":    null,
-  "SAE/Metric/Torx":     null,
   "Family Name":         null,
   "ANSI Specification": 'ansi_stdz',
   "ASME Specification": 'asme_stdz',
@@ -101,7 +108,9 @@ export const fieldname_remap = {
 // == [Helpers] ==
 
 /** Tracks enum values for each field */
-const Enumish = { socket_kind: [], sqdrive_size: [], drive_kind: [], bit_kind: [], reach_kind: [], material: [], surf_finish: [], ansi_stdz: [], asme_stdz: [], usfed_stdz: [] }
+export const Enumish = {
+  socket_kind: [], sqdrive_size: [], unit_system: [], drive_kind: [], bit_kind: [], reach_kind: [], socket_variant: [],
+} satisfies TY.PartialBag<keyof Sockets.SocketWrenchT, string[]>
 
 /** Extracts dimensions from the raw compount specification text (`Dim. A : Overall Length : 10 in`) */
 function extract_dim(rawkey: string, raw: string): [TY.Fieldname, number] {
@@ -136,7 +145,6 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   // Title: prefer og:title, fall back to <title>
   const ogTitle  = $('meta[property="og:title"]').attr('content') ?? ''
   const rawTitle    = ogTitle.trim() || $('title').text()
-  const title = rawTitle.replace(/\s*-\s*Gearwrench\s*$/i, '').replace(/^[\dD]+ /, "").trim()
   // URL from canonical or og:url
   const url      = $('link[rel="canonical"]').attr('href')
                 ?? $('meta[property="og:url"]').attr('content')
@@ -160,6 +168,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
       }
     } catch { /* malformed JSON-LD, skip */ }
   })
+  const title = rawTitle.replace(/\s*-\s*Gearwrench\s*$/i, '').replace(sku + ' ', "").trim()
 
   // Specifications from <li id="specifications">
   const specifications: Record<string, string> = {}
@@ -181,6 +190,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     if (/(bit|drive)_kind$/.test(fn))         { result[fn] = drive_kind_remap[raw];   if (! result[fn]) { console.warn(`Unknown drive kind: ${raw}`)   } return }
     if (fn === 'socket_kind')                 { result[fn] = socket_kind_remap[raw];  if (! result[fn]) { console.warn(`Unknown socket kind: ${raw}`)  } return }
     if (fn === 'reach_kind')                  { result[fn] = reach_kind_remap[raw];   if (! result[fn]) { console.warn(`Unknown reach kind: ${raw}`)   } return }
+    if (fn === 'unit_system')                 { result[fn] = unit_system_remap[raw];  if (! result[fn]) { console.warn(`Unknown unit system: ${raw}`) } return }
     if (/(overall|bit_ln_exposed)$/.test(fn)) { result[fn] = extract_dist(raw); return }
     if (fn === 'is_prop65' && /WARNING/.test(raw))    { result[fn] = true;  return }
     if (fn === 'is_prop65' && /No Warning/.test(raw)) { result[fn] = false; return }
@@ -188,6 +198,11 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     if (fn) { result[fn] = raw; return }
     console.warn(`Unknown specification: ${key} = ${raw}`)
   })
+  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(title))          { result.reach_kind = 'uj_' + result.reach_kind }
+  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(title)) { result.reach_kind = 'uj_' + result.reach_kind }
+  result.socket_variant = 'std'
+  if (/impact/i.test(title)) { result.socket_variant = 'impact' }
+  if (/ball/i.test(specifications["Drive Type"] ?? 'xx')) { result.socket_variant = 'ball' }
   delete result.drive_end_hex_af
   if (result.bit_ln_exposed) {
     result.bit_ln_total = _.max([result.bit_ln, result.bit_ln_exposed])
@@ -195,9 +210,20 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     delete result.bit_ln_exposed
   }
   if (result.wrench_end_diam === 1024.89) { result.wrench_end_diam = 102.489 } // assuming this is a typo for 4.035 in (102.489 mm)
-  if (result.drive_kind === 'extstar') { result.socket_kind = 'socket_extstar' }
+  if (result.drive_kind === 'extstar') { result.socket_kind = 'socket_extstar'; result.unit_system = 'metric' }
   if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.reach_kind = 'other'; result.drive_kind = 'intsq' }
-  if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.size_nom = specifications["Male Drive Size"] ?? specifications["Drive Tang Size"] }
+  if (/^(socket_(extension))$/.test(result.socket_kind)) {
+    result.unit_system ??= 'us'
+    result.size_nom ??= specifications["Overall Length"] + ' - ' + (specifications["Male Drive Size"] ?? specifications["Drive Tang Size"] ?? '')
+  }
+  if (/^(socket_(adapter|ujoint))$/.test(result.socket_kind)) {
+    result.unit_system ??= 'us'
+    result.size_nom ??= specifications["Male Drive Size"] ?? specifications["Drive Tang Size"]
+  }
+  if (specifications["Size Range (SAE)"]) { result.unit_system = 'us' } if (specifications["Size Range (Metric)"]) { result.unit_system = 'metric' }
+  result.size_nom = result.size_nom?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in')
+
+  // Track enum values for each field
   _.each(_.pick(result, _.keys(Enumish)), (val, key) => { const seen = Enumish[key]; if (! seen.includes(val)) { seen.push(val) }  })
 
   // if (! (result.ln_overall && result.wy_overall && result.wx_overall)) { console.warn(`No overall length`, UF.prettify(result)); result.ln_overall ??= 1; result.wy_overall ??= 1; result.wx_overall ??= 1; }

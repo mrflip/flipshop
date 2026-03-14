@@ -18,12 +18,16 @@ export const socketWrench = CK.obj({
   socket_kind:          CK.oneof(FE.SocketKindVals),
   /** type of drive: intsq, inthex, extsq, exthex, extstar, other */
   drive_kind:           CK.oneof(FE.FastenerDriveVals),
+  /** unit system: metric, us */
+  unit_system:          CK.oneof(FE.UnitSystemVals),
   /** size of the square drive: for Gearwrench, one of the standard US ratchet drive sizes (1/4 in, 3/8 in, 1/2 in, 3/4 in, 1 in) */
   sqdrive_size:         CK.oneof(FE.ToolDriveVals),
+  /** type of variant: standard, impact, ball */
+  socket_variant:       CK.oneof(FE.SocketVariantVals),
   /** type of reach: standard, midlen, deep, long, xlong, other */
   reach_kind:           CK.oneof(FE.SocketReachVals),
   /** text giving the nominal size of the socket (e.g. "1/4 in", "2 mm", "T10", "E14", "#1", "#00") */
-  size_nom:             CK.str.regex(/^(?:((?:\d+-)?[\/\d]+ in|[\d\.]+ ?mm)|T\d+|E\d+|#[123]|#0+)$/),
+  size_nom:             CK.str.regex(/^(?:((?:\d+\+)?[\/\d]+in|[\d\.]+mm)|T\d+|E\d+|#[123]|#0+|.+in - .+in)$/),
   //
   /** overall length of the socket along the central axis */
   ln_overall:           mm_lte_2000.optional(),

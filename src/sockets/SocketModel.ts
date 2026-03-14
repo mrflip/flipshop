@@ -19,6 +19,8 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   declare socket_kind:          FE.SocketKind
   declare sqdrive_size:         FE.ToolDrive
   declare drive_kind:           FE.FastenerDrive
+  declare unit_system:          FE.UnitSystem
+  declare socket_variant:       FE.SocketVariant
   declare reach_kind:           FE.SocketReach
   declare ln_overall?:          TY.MM                | undefined
   declare wx_overall?:          TY.MM                | undefined

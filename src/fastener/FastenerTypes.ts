@@ -96,18 +96,18 @@ export interface ScrewT<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> e
 export interface ExternalDriveScrewT<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends ScrewT<TDK, THF>, CK.Zcasted<typeof external_drive_screw> {
   drive_kind:   TDK
   head_form:    THF
-  driver_title: FE.WrenchTitle
+  driver_title: FE.WrenchSizing
 }
 
 export interface ExternalDriveScrewSk<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends Optionalize<ScrewSk, 'head_form'>, CK.Zsketch<typeof external_drive_screw> {
   drive_kind:    TDK
   head_form?:    THF | undefined
-  driver_title: FE.WrenchTitle
+  driver_title: FE.WrenchSizing
 }
 export interface InternalDriveScrewT<TDK extends FE.InternalDrive = FE.InternalDrive, THF extends FE.HeadForm = 'socket'> extends ScrewT<TDK, THF>, CK.Zcasted<typeof internal_drive_screw> {
   drive_kind:   TDK
   head_form:    THF
-  driver_title: FE.KeydriveTitle
+  driver_title: FE.KeydriveSizing
 }
 
 export const threading = CK.obj({

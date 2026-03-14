@@ -25,3 +25,12 @@ export function mmize<BT extends TY.AnyBag>(data: BT): BT & TY.AnyBag {
   })
   return { ...data, ...mmized } as BT & TY.AnyBag
 }
+
+export function canhasbucket<BT extends TY.AnyBag>(bag: BT, keys: string[]): BT {
+  let bucket = bag as TY.AnyBag
+  _.each(keys, (key) => {
+    bucket[key] ??= {}
+    bucket = bucket[key] as TY.AnyBag
+  })
+  return bucket as BT
+}
