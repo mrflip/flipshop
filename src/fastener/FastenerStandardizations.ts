@@ -30,7 +30,7 @@ export const FastenerStandardizations = {
     spec: 'B18.3',
     covers: ['geometry'],
     title: 'Socket Cap, Shoulder, Set Screws, and Hex Keys',
-    notes: 'Dimensional specs for Allen-drive style fasteners.'
+    notes: 'Dimensional specs for Internal-hex style fasteners.'
   },
 
   // --- MECHANICAL & MATERIAL PROPERTIES (ASTM) ---

@@ -6,8 +6,13 @@ export type MM         = number
 export type Inch       = number
 export type Title      = string
 export type SKU        = string
-export const MM_IN   = 25.4
+export const MM_IN     = 25.4
+export const KG_LB     = 0.45359237
 export const mm_lte_100 = CK.ustrnum.pipe(CK.num.gt(0).max(100))
+export const mm_lte_360 = CK.ustrnum.pipe(CK.num.gt(0).max(360))
+export const mm_lte_2000 = CK.ustrnum.pipe(CK.num.gt(0).max(2000))
+export const in_lte_14  = CK.ustrnum.pipe(CK.num.gt(0).max(14))
+export const in_lte_4   = CK.ustrnum.pipe(CK.num.gt(0).max(4))
 
 export const taphole = CK.obj({
   nonfe_diam: mm_lte_100,
@@ -73,12 +78,12 @@ export const internal_drive_screw = CK.obj({
   key_dp:       mm_lte_100.optional(),
 })
 export const hhcs   = CK.obj({ ...external_drive_screw.shape, head_form: CK.literal('bolt').default('bolt'),         drive_kind: CK.literal('exthex').default('exthex') })
-export const shcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('socket').default('socket'),     drive_kind: CK.literal('allen').default('allen') })
-export const bhcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('button').default('button'),     drive_kind: CK.literal('allen').default('allen') })
-export const fhcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('flathead').default('flathead'), drive_kind: CK.literal('allen').default('allen') })
-export const losock = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('losock').default('losock'),     drive_kind: CK.literal('allen').default('allen') })
+export const shcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('socket').default('socket'),     drive_kind: CK.literal('inthex').default('inthex') })
+export const bhcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('button').default('button'),     drive_kind: CK.literal('inthex').default('inthex') })
+export const fhcs   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('flathead').default('flathead'), drive_kind: CK.literal('inthex').default('inthex') })
+export const losock = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('losock').default('losock'),     drive_kind: CK.literal('inthex').default('inthex') })
 export const torx   = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('socket').default('socket'),     drive_kind: CK.literal('torx').default('torx') })
-export const sss    = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('setscrew').default('setscrew'), drive_kind: CK.literal('allen').default('allen') })
+export const sss    = CK.obj({ ...internal_drive_screw.shape, head_form: CK.literal('setscrew').default('setscrew'), drive_kind: CK.literal('inthex').default('inthex') })
 
 export interface ScrewSk extends CK.Zsketch<typeof screw> {
   drive_kind:   FE.FastenerDrive
@@ -159,7 +164,7 @@ export const   fastener_sizing = CK.obj({
   sqnut:        nut.optional(),
   /** Hex bolt (Hex-Head Cap Screw) details, according to ASME B18.2.1 (US) and ISO 262 (metric) */
   hhcs:        hhcs.optional(),
-  /** Socket head cap screw (SHCS, aka "Allen Head") details, according to ASME B18.3 / ASTM F835 (US) and ISO 4753 (metric) */
+  /** Socket head cap screw (SHCS, aka "inthex Head") details, according to ASME B18.3 / ASTM F835 (US) and ISO 4753 (metric) */
   shcs:        shcs.optional(),
   /** Button head cap screw (BHCS, aka "Button Head") details */
   bhcs:         bhcs.optional(),
@@ -182,12 +187,12 @@ export const   fastener_sizing = CK.obj({
 export interface FastenerSizingSk extends CK.Zsketch<typeof fastener_sizing> {}
 export interface FastenerSizingT extends CK.Zcasted<typeof fastener_sizing> {
   // hhcs:     Optionalize<ExternalDriveScrewT<'exthex', 'bolt'>,     'drive_kind' | 'head_form'>
-  // shcs:     Optionalize<InternalDriveScrewT<'allen',  'socket'>,   'drive_kind' | 'head_form'>
-  // bhcs?:    Optionalize<InternalDriveScrewT<'allen',  'button'>,   'drive_kind' | 'head_form'> | undefined
-  // fhcs?:    Optionalize<InternalDriveScrewT<'allen',  'flathead'>, 'drive_kind' | 'head_form'> | undefined
-  // losock?:  Optionalize<InternalDriveScrewT<'allen',  'losock'>,   'drive_kind' | 'head_form'> | undefined
+  // shcs:     Optionalize<InternalDriveScrewT<'inthex',  'socket'>,   'drive_kind' | 'head_form'>
+  // bhcs?:    Optionalize<InternalDriveScrewT<'inthex',  'button'>,   'drive_kind' | 'head_form'> | undefined
+  // fhcs?:    Optionalize<InternalDriveScrewT<'inthex',  'flathead'>, 'drive_kind' | 'head_form'> | undefined
+  // losock?:  Optionalize<InternalDriveScrewT<'inthex',  'losock'>,   'drive_kind' | 'head_form'> | undefined
   // torx?:    Optionalize<InternalDriveScrewT<'torx',   'socket'>,   'drive_kind' | 'head_form'> | undefined
-  // sss?:     Optionalize<InternalDriveScrewT<'allen',  'setscrew'>, 'drive_kind' | 'head_form'> | undefined
+  // sss?:     Optionalize<InternalDriveScrewT<'inthex',  'setscrew'>, 'drive_kind' | 'head_form'> | undefined
 }
 
 export interface FastenerFlatPropsT extends Omit<FastenerSizingSk, 'coarse' | 'fine' | 'xfine'>, ThreadingSk { threading_kind: 'coarse' | 'fine' | 'xfine' }

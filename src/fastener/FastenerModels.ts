@@ -1,21 +1,10 @@
 import      _                                   /**/ from 'lodash'
-import      { CK }                                   from '@freeword/meta'
-import type { OmitStatics }                          from '@freeword/meta'
-
-import type { MM, Inch, SKU, Title } from './FastenerTypes.ts'
-import * as FT from './FastenerTypes.ts'
-import * as FE from './FastenerEnums.ts'
-
-export class Thing {
-  constructor(raw: object) {
-    const props = this.Factory.checker.cast(raw)
-    Object.assign(this, _.omitBy(props, _.isNil))
-  }
-  get Factory(): typeof Thing { return this.constructor as typeof Thing }
-  static get checker(): { cast: (raw: any) => any } { return CK.obj({ }) }
-  static fill(raw: object) { return this.checker.cast(raw) }
-  static live(raw: object) { return new this(this.fill(raw)) }
-}
+//
+import type { MM, Inch, SKU, Title }                 from './FastenerTypes.ts'
+//
+import      { Thing }                                from '../utils/Thing.ts'
+import       * as FT                                 from './FastenerTypes.ts'
+import       * as FE                                 from './FastenerEnums.ts'
 
 export class FastenerSizing extends Thing implements FT.FastenerSizingT {
   declare title:        Title
@@ -32,12 +21,12 @@ export class FastenerSizing extends Thing implements FT.FastenerSizingT {
   declare hexnut:       FT.NutT
   declare sqnut:        FT.NutT
   declare hhcs?:        ExternalDriveScrew<'exthex', 'bolt'>
-  declare shcs?:        InternalDriveScrew<'allen', 'socket'>
-  declare bhcs?:        InternalDriveScrew<'allen', 'button'>
-  declare fhcs?:        InternalDriveScrew<'allen', 'flathead'>
-  declare losock?:      InternalDriveScrew<'allen', 'losock'>
+  declare shcs?:        InternalDriveScrew<'inthex', 'socket'>
+  declare bhcs?:        InternalDriveScrew<'inthex', 'button'>
+  declare fhcs?:        InternalDriveScrew<'inthex', 'flathead'>
+  declare losock?:      InternalDriveScrew<'inthex', 'losock'>
   declare torx?:        InternalDriveScrew<'torx', 'socket'>
-  declare sss?:         InternalDriveScrew<'allen', 'setscrew'>
+  declare sss?:         InternalDriveScrew<'inthex', 'setscrew'>
 
   declare fw_sm:        Washer
   declare fw_reg:       Washer | undefined
@@ -49,7 +38,6 @@ export class FastenerSizing extends Thing implements FT.FastenerSizingT {
   static live(raw: FT.FastenerSizingSk): FastenerSizing     { return super.live(raw) as FastenerSizing }
 }
 export class Threading extends Thing implements FT.ThreadingT {
-  static get checker() { return FT.threading }
   //
   declare title:        Title
   declare stdz:         FE.ThreadingStandardization
@@ -65,9 +53,11 @@ export class Threading extends Thing implements FT.ThreadingT {
   get diam_major():     Inch   { return this.sizing.diam_major }
   get diam_major_in():  Inch   { return this.sizing.diam_major_in }
   get tpi():            number { return FT.MM_IN / this.pitch }
+  //
+  static get checker() { return FT.threading }
+  get Factory(): typeof Threading { return this.constructor as typeof Threading }
 }
 export class Screw<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> extends Thing implements FT.ScrewT<TDK, THF> {
-  static get checker() { return FT.screw as CK.Zchecker<FT.ScrewT<FE.FastenerDrive, FE.HeadForm>, any, FT.ScrewSk> }
   //
   declare drive_kind:   TDK
   declare head_form:    THF
@@ -77,30 +67,30 @@ export class Screw<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> extend
 }
 
 export class Washer extends Thing implements FT.WasherT {
-  static get checker() { return FT.washer }
   //
   declare diam_od:      MM
   declare diam_id:      MM
   declare ht:           MM
   declare stdz?:        FE.WasherStandardization | undefined
   declare refsku?:      SKU | undefined
+  //
+  static get checker() { return FT.washer }
+  get Factory(): typeof Washer { return this.constructor as typeof Washer }
 }
 
-// type ScrewTX = OmitStatics<Screw<FE.FastenerDrive, FE.HeadForm>, 'checker'>
-export class ExternalDriveScrew<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends
-  (Screw as OmitStatics<typeof Screw<FE.ExternalDrive, 'bolt'>, { checker: CK.Zchecker, drive_kind: FE.ExternalDrive, head_form: FE.HeadForm }>)
-  implements FT.ExternalDriveScrewT<TDK, THF>
-  {
-  static get checker() { return FT.external_drive_screw }
+// (Screw as OmitStatics<typeof Screw<FE.ExternalDrive, 'bolt'>, { checker: any, drive_kind: FE.ExternalDrive, head_form: FE.HeadForm }>)
+export class ExternalDriveScrew<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends Screw<TDK, THF> implements FT.ExternalDriveScrewT<TDK, THF> {
   //
   declare driver_title:     FE.WrenchTitle
   declare drive_kind:       TDK
   declare head_form:        THF
   declare head_diam_af:     MM
   declare head_ht:          MM
+  //
+  static get checker(): typeof FT.external_drive_screw { return FT.external_drive_screw }
+  get Factory(): typeof ExternalDriveScrew { return this.constructor as typeof ExternalDriveScrew }
 }
 export class InternalDriveScrew<TDK extends FE.InternalDrive, THF extends FE.HeadForm> extends Screw<TDK, THF> implements FT.InternalDriveScrewT<TDK, THF> {
-  static get checker() { return FT.internal_drive_screw }
   //
   declare driver_title:     FE.KeydriveTitle
   declare drive_kind:       TDK
@@ -108,9 +98,11 @@ export class InternalDriveScrew<TDK extends FE.InternalDrive, THF extends FE.Hea
   declare head_diam_od:     MM
   declare key_diam_af:      MM
   declare key_dp?:          MM | undefined
+  //
+  static get checker(): typeof FT.internal_drive_screw { return FT.internal_drive_screw }
+  get Factory(): typeof InternalDriveScrew { return this.constructor as typeof InternalDriveScrew }
 }
 export class Thruhole extends Thing implements FT.ThruholeT {
-  static get checker() { return FT.thruhole }
   //
   declare loose_diam:      MM
   declare reg_diam:        MM
@@ -118,11 +110,13 @@ export class Thruhole extends Thing implements FT.ThruholeT {
   declare loose_drill?:    FE.DrillTitle | undefined
   declare reg_drill?:      FE.DrillTitle | undefined
   declare close_drill?:    FE.DrillTitle | undefined
+  //
+  static get checker() { return FT.thruhole }
+  get Factory(): typeof Thruhole { return this.constructor as typeof Thruhole }
 }
 
 export class DrillBit  extends Thing {
   declare title:        Title
   declare diam_od:      MM
   get diam_od_in():     Inch { return this.diam_od / FT.MM_IN }
-  // static get checker() { return drill_bit }
 }

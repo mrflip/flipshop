@@ -10,7 +10,7 @@ describe('@flipshop/flipshop package structure', () => {
   })
 
   it('should have expected top-level exports', () => {
-    const MainPackageKeys = ['Fastener']
+    const MainPackageKeys = ['Fastener', 'Sockets', 'Utils']
     expect(Flipshop).to.have.keys(...MainPackageKeys)
   })
   const PackageFastenerKeys = [

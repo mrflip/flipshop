@@ -1,12 +1,20 @@
-import { CK } from '@freeword/meta'
+import      _                                   /**/ from 'lodash'
+import      { CK }                                   from '@freeword/meta'
 
 export type DrillTitle = string
 export const drill_title = CK.extkeyish
 
 /** Drive type for square (1/4", 3/8", 1/2") and hex (1/4") drives */
-export type  ToolDrive     = typeof ToolDriveVals[number]
-export const ToolDriveVals = ['isq_1_4', 'isq_3_8', 'isq_1_2', 'hex_1_4'] as const
-export const tool_drive = CK.oneof(ToolDriveVals)
+
+export const ToolDriveVals   = ['isq_1_4', 'isq_3_8', 'isq_1_2', 'hex_1_4', 'isq_3_4', 'isq_1_in'] as const
+export const SocketKindVals  = ['socket_sparkplug', 'socket_exthex', 'socket_extstar', 'socket_bit', 'socket_flex', 'socket_extension', 'socket_ujoint', 'socket_adapter'] as const
+export const SocketReachVals = ['standard', 'midlen', 'deep', 'long', 'xlong'] as const
+export const tool_drive      = CK.oneof(ToolDriveVals)
+export const socket_kind     = CK.oneof(SocketKindVals)
+export const socket_reach    = CK.oneof(SocketReachVals)
+export type  ToolDrive       = typeof ToolDriveVals[number]
+export type SocketKind       = typeof SocketKindVals[number]
+export type SocketReach      = typeof SocketReachVals[number]
 
 /** Threading standardization */
 export type  ThreadingStandardization     = typeof ThreadingStandardizationVals[number]
@@ -26,22 +34,29 @@ export const HeadFormVals = [
 ] as const
 export const head_form = CK.oneof(HeadFormVals)
 
-/** Fastener drive (external hex (exthex), internal hex (allen), etc.) */
+/** Fastener drive (external hex (exthex), internal hex (inthex), etc.) */
 export type FastenerDrive = typeof FastenerDriveVals[number]
 /** External drive (exthex, extstar, etc.) */
 export type ExternalDrive = typeof ExternalDriveVals[number]
-/** Internal drive (allen, torx, etc.) */
+/** Internal drive (inthex, torx, etc.) */
 export type InternalDrive = typeof InternalDriveVals[number]
 /** Other drive (knurled, carriage, etc.) */
 export type OtherFastenerDrive = typeof OtherFastenerDriveVals[number]
+
 export const ExternalDriveVals = [
   /* 6-sided bolt head i.e. hhcs */               'exthex',
   /* 6-sided external star (torx), less common */ 'extstar',
 ] as const
 export const external_drive = CK.oneof(ExternalDriveVals)
 export const InternalDriveVals = [
-  /* 6-sided internal hex i.e. shcs */            'allen',
+  /* 6-sided internal hex i.e. shcs */            'inthex',
   /* 6-sided internal star i.e. torx */           'torx',
+  /* tamper proof torx */                         'torxtp',
+  /* triple square */                             'triple_square',
+  /* slotted */                                   'slotted',
+  /* square */                                    'square',
+  /* phillips */                                  'phillips',
+  /* pozidriv */                                  'pozidriv',
   /* phillips-profile cross drive */              'phillips',
   /* combo phillips/slotted */                    'phslot',
   /* "Flat" screwdriver */                        'slot',

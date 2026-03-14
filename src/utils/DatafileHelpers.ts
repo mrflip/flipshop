@@ -20,7 +20,7 @@ export function mmize<BT extends TY.AnyBag>(data: BT): BT & TY.AnyBag {
   const mmized = {} as TY.AnyBag
   _.each(data, (val, key) => {
     if (/_in$/i.test(key) && UF.isBlank(val)) {
-      mmized[key.replace(/_in$/i, '')] = val * MM_IN
+      mmized[key.replace(/_in$/i, '')] = _.round(val * MM_IN, 4)
     }
   })
   return { ...data, ...mmized } as BT & TY.AnyBag
