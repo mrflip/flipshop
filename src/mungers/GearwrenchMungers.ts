@@ -1,19 +1,18 @@
 #! /usr/bin/env yarn node
 import      _                                /**/ from 'lodash'
-import type * as _ZMP                             from './ZodMonkeypunch.ts'
 import      { load as cheerioLoad }               from 'cheerio'
-import      { readdirSync }                       from 'fs'
-import      { join }                              from 'path'
+//
 import type * as TY                               from '@freeword/meta'
-import      { Filer, CK }                         from '@freeword/meta'
-import      * as Flipshop                         from '@flipshop/flipshop'
+import      { CK }                                from '@freeword/meta'
+import      * as Fastener                         from '../fastener/index.ts'
+import      * as Sockets                         from '../sockets/index.ts'
 
-const { MM_IN, KG_LB } = Flipshop.Fastener
+const { MM_IN, KG_LB } = Fastener
 
 // == [Types] ==
 
-const socketWrenchProduct = CK.obj({
-  ...Flipshop.Sockets.socketWrench.shape,
+export const gearwrenchSocket = CK.obj({
+  ...Sockets.socketWrench.shape,
   is_knurled:           CK.bool,
   is_magnetic:          CK.bool,
   is_wobble:            CK.bool,
@@ -27,30 +26,27 @@ const socketWrenchProduct = CK.obj({
   asme_stdz:            CK.oneof([ 'B107.1', 'B107.5M', 'Meets or Exceeds', 'B107.34', 'B107.1 B107.5M', 'B107.2', 'B107.33M', 'B107.110-2012', 'B107.33']),
   usfed_stdz:           CK.oneof([ 'GGG-W-641E' ]),
 }).partial().required({ title: true, sku: true, url: true, img_url: true }).strict()
-interface SocketWrenchProductT  extends CK.Zcasted<typeof socketWrenchProduct> {}
-interface SocketWrenchProductSk extends CK.Zsketch<typeof socketWrenchProduct> {}
-
-/** Tracks enum values for each field */
-const Enumish = { socket_kind: [], sqdrive_size: [], drive_kind: [], bit_kind: [], reach_kind: [], material: [], surf_finish: [], ansi_stdz: [], asme_stdz: [], usfed_stdz: [] }
+export interface GearwrenchSocketT  extends CK.Zcasted<typeof gearwrenchSocket> {}
+export interface GearwrenchSocketSk extends CK.Zsketch<typeof gearwrenchSocket> {}
 // --
 
 // == [Remaps] ==
 
-const sqdrive_size_remap: TY.Bag<Flipshop.Fastener.FastenerEnums.ToolDrive> = { "1/4 in": 'isq_1_4', "3/8 in": 'isq_3_8', "1/2 in": 'isq_1_2', '3/4 in': 'isq_3_4', '1 in': 'isq_1_in' } as const
-const drive_kind_remap: TY.Bag<Flipshop.Fastener.FastenerEnums.FastenerDrive> = {
+export const sqdrive_size_remap: TY.Bag<Fastener.FastenerEnums.ToolDrive> = { "1/4 in": 'isq_1_4', "3/8 in": 'isq_3_8', "1/2 in": 'isq_1_2', '3/4 in': 'isq_3_4', '1 in': 'isq_1_in' } as const
+export const drive_kind_remap: TY.Bag<Fastener.FastenerEnums.FastenerDrive> = {
   'Hex': 'inthex', 'Torx®': 'torx', 'Tamper Proof Torx®': 'torxtp', 'External Torx®': 'extstar', 'Ballpoint Hex': 'inthex', 'Triple Square': 'triple_square', 'Slotted': 'slotted', 'Phillips®': 'phillips', 'Pozidriv®': 'pozidriv',
   '6 Point': 'exthex',  '6 Point 6 Point': 'exthex', 'Ball Hex': 'inthex', 'Slotted Phillips®/Slotted/Pozidriv®': 'phillips', 'Phillips® Phillips®/Slotted/Pozidriv®': 'phillips', 'Pozidriv® Phillips®/Slotted/Pozidriv®': 'pozidriv',
   'Square Square': 'square', 'Square': 'square',
 } as const
-const socket_kind_remap: TY.Bag<Flipshop.Fastener.FastenerEnums.SocketKind> = {
+export const socket_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketKind> = {
   'Spark Plug Socket Spark Plug Service Tools': "socket_sparkplug", 'Socket': 'socket_exthex', 'Bit Socket': 'socket_bit', 'Flex Socket': 'socket_flex', 'Socket Spark Plug Service Tools': "socket_sparkplug", 'Extension': "socket_extension",
   "Universal Joint": "socket_ujoint", "Universal Joint Socket": "socket_ujoint", "Socket Extension": 'socket_extension', 'Adapter': 'socket_adapter',
 } as const
-const reach_kind_remap: TY.Bag<Flipshop.Fastener.FastenerEnums.SocketReach> = {
+export const reach_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketReach> = {
   'Standard': 'standard', 'Mid Length': 'midlen', 'Deep': 'deep', 'Long': 'long', 'Extra Long': 'xlong',
 } as const
 
-const fieldname_remap = {
+export const fieldname_remap = {
   "Size":               'size_nom',
   "UPC":                'upc',
   //
@@ -103,6 +99,9 @@ const fieldname_remap = {
 
 // == [Helpers] ==
 
+/** Tracks enum values for each field */
+const Enumish = { socket_kind: [], sqdrive_size: [], drive_kind: [], bit_kind: [], reach_kind: [], material: [], surf_finish: [], ansi_stdz: [], asme_stdz: [], usfed_stdz: [] }
+
 /** Extracts dimensions from the raw compount specification text (`Dim. A : Overall Length : 10 in`) */
 function extract_dim(rawkey: string, raw: string): [TY.Fieldname, number] {
   // the weird two-specs-in-one are only for spark plug sockets, discarding the second one
@@ -131,13 +130,8 @@ function extract_dist(raw: string): number {
 // == [Parsing] ==
 
 /** Parses a gearwrench socket product page and returns a SocketWrenchProductT */
-async function parseProductPage(filepath: string): Promise<SocketWrenchProductT | null> {
-  const loadedText = await Filer.loadtext(filepath)
-  if (! loadedText.ok) {
-    console.error(`Failed to load ${filepath}: ${loadedText.gist}`)
-    return null
-  }
-  const $ = cheerioLoad(loadedText.val)
+export function parseProductPage(filepath: TY.Anypath, textblob: string): GearwrenchSocketT {
+  const $ = cheerioLoad(textblob)
   // Title: prefer og:title, fall back to <title>
   const ogTitle  = $('meta[property="og:title"]').attr('content') ?? ''
   const rawTitle    = ogTitle.trim() || $('title').text()
@@ -195,32 +189,6 @@ async function parseProductPage(filepath: string): Promise<SocketWrenchProductT 
   })
   if (result.drive_kind === 'extstar') { result.socket_kind = 'socket_extstar' }
   _.each(_.pick(result, _.keys(Enumish)), (val, key) => { const seen = Enumish[key]; if (! seen.includes(val)) { seen.push(val) }  })
-  return socketWrenchProduct.cast(result as SocketWrenchProductSk, { filepath, specifications })
+  return gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
 }
-// --
-
-// == [Main] ==
-
-const freals = true
-const dirs = freals ? [
-  Filer.__relname(import.meta.url, '..', '..', 'ripd', 'ratchets-sockets', 'chrome-sockets'),
-  Filer.__relname(import.meta.url, '..', '..', 'ripd', 'ratchets-sockets', 'impact-products'),
-] : [
-  Filer.__relname(import.meta.url, '..', '..', 'tests', 'fixtures', 'socket_wrenches_raw'),
-]
-
-const SocketWrenchProducts: SocketWrenchProductT[] = []
-for (const ripdDir of dirs) {
-  const files = readdirSync(ripdDir)
-    .filter(f => f.endsWith('.html'))
-    .map(f => join(ripdDir, f))
-
-  const products = await Promise.all(files.map(parseProductPage))
-  const valid    = products.filter(Boolean) as SocketWrenchProductT[]
-  SocketWrenchProducts.push(...valid)
-  console.warn(`Parsed ${valid.length} / ${files.length} products from ${ripdDir}.`)
-}
-// console.warn(UF.prettify(Enumish))
-console.log(JSON.stringify(SocketWrenchProducts, null, 2))
-
 // --
