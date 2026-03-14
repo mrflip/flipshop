@@ -8,7 +8,7 @@ export const drill_title = CK.extkeyish
 
 export const ToolDriveVals   = ['isq_1_4', 'isq_3_8', 'isq_1_2', 'hex_1_4', 'isq_3_4', 'isq_1_in'] as const
 export const SocketKindVals  = ['socket_sparkplug', 'socket_exthex', 'socket_extstar', 'socket_bit', 'socket_flex', 'socket_extension', 'socket_ujoint', 'socket_adapter'] as const
-export const SocketReachVals = ['standard', 'midlen', 'deep', 'long', 'xlong'] as const
+export const SocketReachVals = ['standard', 'midlen', 'deep', 'long', 'xlong', 'other'] as const
 export const tool_drive      = CK.oneof(ToolDriveVals)
 export const socket_kind     = CK.oneof(SocketKindVals)
 export const socket_reach    = CK.oneof(SocketReachVals)
@@ -44,12 +44,14 @@ export type InternalDrive = typeof InternalDriveVals[number]
 export type OtherFastenerDrive = typeof OtherFastenerDriveVals[number]
 
 export const ExternalDriveVals = [
-  /* 6-sided bolt head i.e. hhcs */               'exthex',
-  /* 6-sided external star (torx), less common */ 'extstar',
+  /* 6-sided bolt head i.e. hhcs */                        'exthex',
+  /* 6-sided external star (torx), less common */          'extstar',
+  /* 12-sided external drive (combination wrench style) */ 'extstar12',
 ] as const
 export const external_drive = CK.oneof(ExternalDriveVals)
 export const InternalDriveVals = [
   /* 6-sided internal hex i.e. shcs */            'inthex',
+  /* 4-sided internal square eg ratchets */       'intsq',
   /* 6-sided internal star i.e. torx */           'torx',
   /* tamper proof torx */                         'torxtp',
   /* triple square */                             'triple_square',

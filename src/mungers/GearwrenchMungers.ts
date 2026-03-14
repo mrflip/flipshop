@@ -3,7 +3,7 @@ import      _                                /**/ from 'lodash'
 import      { load as cheerioLoad }               from 'cheerio'
 //
 import type * as TY                               from '@freeword/meta'
-import      { CK }                                from '@freeword/meta'
+import      { CK, UF }                                from '@freeword/meta'
 import      * as Fastener                         from '../fastener/index.ts'
 import      * as Sockets                         from '../sockets/index.ts'
 
@@ -13,19 +13,19 @@ const { MM_IN, KG_LB } = Fastener
 
 export const gearwrenchSocket = CK.obj({
   ...Sockets.socketWrench.shape,
-  is_knurled:           CK.bool,
-  is_magnetic:          CK.bool,
-  is_wobble:            CK.bool,
-  is_locking:           CK.bool,
-  is_quickrel:          CK.bool,
-  is_prop65:            CK.bool,
-  is_hiviz:             CK.bool,
+  is_knurled:           CK.bool.optional(),
+  is_magnetic:          CK.bool.optional(),
+  is_wobble:            CK.bool.optional(),
+  is_locking:           CK.bool.optional(),
+  is_quickrel:          CK.bool.optional(),
+  is_prop65:            CK.bool.optional(),
+  is_hiviz:             CK.bool.optional(),
   material:             CK.oneof([ 'Alloy Steel', 'Alloy Steel with S2 Steel Bit', 'Chrome-Molybdenum (Cr-Mo)']),
   surf_finish:          CK.oneof([ 'Full Polish Chrome', 'Full Polish Chrome Holder with Black Oxide Bit', 'Black Oxide', 'Manganese Phosphate', 'Industrial Black Finish']),
-  ansi_stdz:            CK.oneof([ 'Meets or Exceeds' ]),
-  asme_stdz:            CK.oneof([ 'B107.1', 'B107.5M', 'Meets or Exceeds', 'B107.34', 'B107.1 B107.5M', 'B107.2', 'B107.33M', 'B107.110-2012', 'B107.33']),
-  usfed_stdz:           CK.oneof([ 'GGG-W-641E' ]),
-}).partial().required({ title: true, sku: true, url: true, img_url: true }).strict()
+  ansi_stdz:            CK.oneof([ 'Meets or Exceeds' ]).optional(),
+  asme_stdz:            CK.oneof([ 'B107.1', 'B107.5M', 'Meets or Exceeds', 'B107.34', 'B107.1 B107.5M', 'B107.2', 'B107.33M', 'B107.110-2012', 'B107.33']).optional(),
+  usfed_stdz:           CK.oneof([ 'GGG-W-641E' ]).optional(),
+}).strict()
 export interface GearwrenchSocketT  extends CK.Zcasted<typeof gearwrenchSocket> {}
 export interface GearwrenchSocketSk extends CK.Zsketch<typeof gearwrenchSocket> {}
 // --
@@ -35,7 +35,8 @@ export interface GearwrenchSocketSk extends CK.Zsketch<typeof gearwrenchSocket> 
 export const sqdrive_size_remap: TY.Bag<Fastener.FastenerEnums.ToolDrive> = { "1/4 in": 'isq_1_4', "3/8 in": 'isq_3_8', "1/2 in": 'isq_1_2', '3/4 in': 'isq_3_4', '1 in': 'isq_1_in' } as const
 export const drive_kind_remap: TY.Bag<Fastener.FastenerEnums.FastenerDrive> = {
   'Hex': 'inthex', 'Torx®': 'torx', 'Tamper Proof Torx®': 'torxtp', 'External Torx®': 'extstar', 'Ballpoint Hex': 'inthex', 'Triple Square': 'triple_square', 'Slotted': 'slotted', 'Phillips®': 'phillips', 'Pozidriv®': 'pozidriv',
-  '6 Point': 'exthex',  '6 Point 6 Point': 'exthex', 'Ball Hex': 'inthex', 'Slotted Phillips®/Slotted/Pozidriv®': 'phillips', 'Phillips® Phillips®/Slotted/Pozidriv®': 'phillips', 'Pozidriv® Phillips®/Slotted/Pozidriv®': 'pozidriv',
+  '6 Point': 'exthex',  '6 Point 6 Point': 'exthex', '12 Point': 'extstar12',
+  'Ball Hex': 'inthex', 'Slotted Phillips®/Slotted/Pozidriv®': 'phillips', 'Phillips® Phillips®/Slotted/Pozidriv®': 'phillips', 'Pozidriv® Phillips®/Slotted/Pozidriv®': 'pozidriv',
   'Square Square': 'square', 'Square': 'square',
 } as const
 export const socket_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketKind> = {
@@ -57,19 +58,19 @@ export const fieldname_remap = {
   "Length Format":      'reach_kind',
   //
   "Overall Length":     'ln_overall',
-  "Overall Width":      'wd_overall',
-  "Overall Height":     'ht_overall',
-  "Exposed Bit Length": 'bit_ln_exposed',
+  "Overall Width":      'wx_overall',
+  "Overall Height":     'wy_overall',
   //
-  "Bit Length":         'bit_ln',
-  "Nose Diameter":      'nose_diam',
-  "Drive End":          'drive_end_ln',
-  "Bolt Clearance":     'bolt_clr',
-  "Bolt Depth":         'bolt_depth',
-  "Length to Shoulder": 'shoulder_ln',
   "Wrench Depth":       'wrench_dp',
-  "Wrench End":         'wrench_end_ln',
-  "Drive End Hex Across Flats": 'drive_end_hex_af',
+  "Bolt Depth":         'wrench_dp',
+  "Bit Length":         'bit_ln',
+  "Exposed Bit Length": 'bit_ln_exposed',
+  "Nose Diameter":      'nose_diam',
+  "Drive End":          'drive_end_diam',
+  "Bolt Clearance":     'bolt_clr_diam',
+  "Length to Shoulder": 'shoulder_ln',
+  "Wrench End":         'wrench_end_diam',
+  "Drive End Hex Across Flats": 'drive_end_hex_af', // data is inconsistent
   //
   "Male Drive Size":    'male_drive_size',
   "Female Drive Size":  'female_drive_size',
@@ -187,8 +188,24 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     if (fn) { result[fn] = raw; return }
     console.warn(`Unknown specification: ${key} = ${raw}`)
   })
+  delete result.drive_end_hex_af
+  if (result.bit_ln_exposed) {
+    result.bit_ln_total = _.max([result.bit_ln, result.bit_ln_exposed])
+    result.bit_ln       = _.min([result.bit_ln, result.bit_ln_exposed])
+    delete result.bit_ln_exposed
+  }
+  if (result.wrench_end_diam === 1024.89) { result.wrench_end_diam = 102.489 } // assuming this is a typo for 4.035 in (102.489 mm)
   if (result.drive_kind === 'extstar') { result.socket_kind = 'socket_extstar' }
+  if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.reach_kind = 'other'; result.drive_kind = 'intsq' }
+  if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.size_nom = specifications["Male Drive Size"] ?? specifications["Drive Tang Size"] }
   _.each(_.pick(result, _.keys(Enumish)), (val, key) => { const seen = Enumish[key]; if (! seen.includes(val)) { seen.push(val) }  })
+
+  // if (! (result.ln_overall && result.wy_overall && result.wx_overall)) { console.warn(`No overall length`, UF.prettify(result)); result.ln_overall ??= 1; result.wy_overall ??= 1; result.wx_overall ??= 1; }
+  const overall_wx = result.wx_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
+  const overall_wy = result.wy_overall ?? _.max([result.wrench_dp, result.bolt_clr_dp])
+  if (overall_wx) { result.wx_overall = overall_wx } if (overall_wy) { result.wy_overall = overall_wy }
+  // if (specifications["Overall Height"]) { console.warn('\nHas Overall Height\n', specifications, result) }
+
   return gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
 }
 // --

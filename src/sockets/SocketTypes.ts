@@ -9,32 +9,43 @@ export const socketWrench = CK.obj({
   upc:                  CK.unumstr,
   url:                  CK.urlstr,
   img_url:              CK.urlstr,
-  size_nom:             CK.str.regex(/^(?:((?:\d+-)?[\/\d]+ in|[\d\.]+ ?mm)|T\d+|E\d+|#[123]|#0+)$/),
   //
   socket_kind:          CK.oneof(FE.SocketKindVals),
-  sqdrive_size:         CK.oneof(FE.ToolDriveVals),
   drive_kind:           CK.oneof(FE.FastenerDriveVals),
-  bit_kind:             CK.oneof(FE.InternalDriveVals),
+  sqdrive_size:         CK.oneof(FE.ToolDriveVals),
   reach_kind:           CK.oneof(FE.SocketReachVals),
+  size_nom:             CK.str.regex(/^(?:((?:\d+-)?[\/\d]+ in|[\d\.]+ ?mm)|T\d+|E\d+|#[123]|#0+)$/),
   //
-  male_drive_size:      CK.oneof(FE.ToolDriveVals),
-  female_drive_size:    CK.oneof(FE.ToolDriveVals),
+  bit_kind:             CK.oneof(FE.InternalDriveVals).optional(),
+  male_drive_size:      CK.oneof(FE.ToolDriveVals).optional(),
+  female_drive_size:    CK.oneof(FE.ToolDriveVals).optional(),
   //
-  ln_overall:           mm_lte_2000,
-  wd_overall:           mm_lte_100,
-  ht_overall:           mm_lte_100,
-  bit_ln:               mm_lte_360,
-  bit_ln_exposed:       mm_lte_360,
-  nose_diam:            mm_lte_100,
-  drive_end_ln:         mm_lte_100,
-  wt:                   mm_lte_100,
-  wt_lb:                mm_lte_100,
-  shoulder_ln:          mm_lte_360,
-  wrench_end_ln:        mm_lte_2000,
-  wrench_dp:            mm_lte_100,
-  drive_end_hex_af:     mm_lte_100,
-  bolt_clr:             mm_lte_360,
-  bolt_depth:           mm_lte_100,
-}).partial().required({ title: true, sku: true, url: true, img_url: true, size_nom: true }).strict()
+  ln_overall:           mm_lte_2000.optional(),
+  wx_overall:           mm_lte_360.optional(),
+  wy_overall:           mm_lte_360.optional(),
+  wt:                   mm_lte_100.optional(),
+  wt_lb:                mm_lte_100.optional(),
+  bit_ln:               mm_lte_360.optional(),
+  bit_ln_total:         mm_lte_360.optional(),
+  /** diameter at the base (wrench end) */
+  wrench_end_diam:      mm_lte_2000.optional(),
+  /** diameter at the tip (drive end) */
+  drive_end_diam:       mm_lte_100.optional(),
+  /** length from drive tip to shoulder */
+  shoulder_ln:          mm_lte_360.optional(),
+  /** diameter at the nose for bit sockets (where the bit is inserted) */
+  nose_diam:            mm_lte_100.optional(),
+  /** depth of fastener (nut/head) accomodated (for external drive sockets) */
+  wrench_dp:            mm_lte_100.optional(),
+  /** diameter of bore to clear bolt protruding past nut (for external drive sockets) */
+  bolt_clr_diam:        mm_lte_360.optional(),
+  bolt_clr_dp:           mm_lte_100.optional(),
+})
 export interface SocketWrenchT   extends CK.Zcasted<typeof socketWrench> {}
 export interface SocketWrenchSk  extends CK.Zsketch<typeof socketWrench> {}
+
+export const bitSocket = CK.obj({
+  ...socketWrench.shape,
+  socket_kind:          CK.oneof(['socket_bit']),
+  bit_ln_exposed:       mm_lte_360.optional(),
+})

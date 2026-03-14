@@ -11,8 +11,8 @@ import      * as Flipshop                         from '@flipshop/flipshop'
 
 const freals = true
 const dirs = freals ? [
-  Filer.__relname(import.meta.url, '..', '..', 'ripd', 'ratchets-sockets', 'chrome-sockets'),
-  Filer.__relname(import.meta.url, '..', '..', 'ripd', 'ratchets-sockets', 'impact-products'),
+  Filer.__relname(import.meta.url, '..', '..', 'tmp', 'www.gearwrench.com', 'all-tools', 'ratchets-sockets', 'chrome-sockets'),
+  Filer.__relname(import.meta.url, '..', '..', 'tmp', 'www.gearwrench.com', 'all-tools', 'ratchets-sockets', 'impact-products'),
 ] : [
   Filer.__relname(import.meta.url, '..', '..', 'tests', 'fixtures', 'socket_wrenches_raw'),
 ]
@@ -27,7 +27,7 @@ const SocketWrenchProducts: Flipshop.Mungers.GearwrenchMungers.GearwrenchSocketT
 for (const ripdDir of dirs) {
   const files = readdirSync(ripdDir)
     .filter((filename) => filename.endsWith('.html'))
-    .filter((filename) => (! filename.includes('-set-')))
+    .filter((filename) => (! /(-set-|-set\.|^80148s-06-14)/.test(filename)))
     .map((filename) => join(ripdDir, filename))
 
   const products = _.compact(await Promise.all(files.map(parseProductFile)))
