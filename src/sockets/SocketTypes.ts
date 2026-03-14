@@ -4,28 +4,42 @@ import      * as FE                                  from '../fastener/FastenerE
 import      { mm_lte_100, mm_lte_2000, mm_lte_360 }  from '../fastener/FastenerTypes.ts'
 
 export const socketWrench = CK.obj({
+  /** Name of the socket (e.g. `1/4" Drive 6 Point Standard SAE Socket 5/16"`) */
   title:                CK.titleish,
+  /** alphanumeric SKU of an exemplar socket */
   sku:                  CK.extkeyish,
+  /** alphanumeric UPC of an exemplar socket */
   upc:                  CK.unumstr,
+  /** URL of an exemplar product page */
   url:                  CK.urlstr,
+  /** URL of an exemplar image */
   img_url:              CK.urlstr,
-  //
+  /** type of socket: socket_exthex, socket_bit, socket_flex, socket_extension, socket_ujoint, socket_adapter, socket_sparkplug, socket_extstar, other */
   socket_kind:          CK.oneof(FE.SocketKindVals),
+  /** type of drive: intsq, inthex, extsq, exthex, extstar, other */
   drive_kind:           CK.oneof(FE.FastenerDriveVals),
+  /** size of the square drive: for Gearwrench, one of the standard US ratchet drive sizes (1/4 in, 3/8 in, 1/2 in, 3/4 in, 1 in) */
   sqdrive_size:         CK.oneof(FE.ToolDriveVals),
+  /** type of reach: standard, midlen, deep, long, xlong, other */
   reach_kind:           CK.oneof(FE.SocketReachVals),
+  /** text giving the nominal size of the socket (e.g. "1/4 in", "2 mm", "T10", "E14", "#1", "#00") */
   size_nom:             CK.str.regex(/^(?:((?:\d+-)?[\/\d]+ in|[\d\.]+ ?mm)|T\d+|E\d+|#[123]|#0+)$/),
   //
-  bit_kind:             CK.oneof(FE.InternalDriveVals).optional(),
-  male_drive_size:      CK.oneof(FE.ToolDriveVals).optional(),
-  female_drive_size:    CK.oneof(FE.ToolDriveVals).optional(),
-  //
+  /** overall length of the socket along the central axis */
   ln_overall:           mm_lte_2000.optional(),
+  /** overall size of the socket in the X direction; equals the larger of the wrench end diameter and the drive end diameter */
   wx_overall:           mm_lte_360.optional(),
+  /** overall size of the socket in the Y direction; equals the larger of the wrench end diameter and the drive end diameter */
   wy_overall:           mm_lte_360.optional(),
+  /** weight of the socket in kilograms */
   wt:                   mm_lte_100.optional(),
+  /** weight of the socket in pounds */
   wt_lb:                mm_lte_100.optional(),
+  /** length of bit (internal drive sockets) between the tip and the nose. Note: the specs sometimes list only bit length, and it's not clear which is the total length. */
   bit_ln:               mm_lte_360.optional(),
+  /** type of bit (internal drive sockets); should equal drive_kind */
+  bit_kind:             CK.oneof(FE.InternalDriveVals).optional(),
+  /** length of bit (internal drive sockets) between the tip and where it ends inside the socket, assumedly. Note: the specs sometimes list only bit length, and it's not clear which is the total length. */
   bit_ln_total:         mm_lte_360.optional(),
   /** diameter at the base (wrench end) */
   wrench_end_diam:      mm_lte_2000.optional(),
@@ -39,7 +53,10 @@ export const socketWrench = CK.obj({
   wrench_dp:            mm_lte_100.optional(),
   /** diameter of bore to clear bolt protruding past nut (for external drive sockets) */
   bolt_clr_diam:        mm_lte_360.optional(),
-  bolt_clr_dp:           mm_lte_100.optional(),
+  /** for adapters, extensions and universal joints, the size of the male (driver) end */
+  male_drive_size:      CK.oneof(FE.ToolDriveVals).optional(),
+  /** for adapters, extensions and universal joints, the size of the female (wrench) end */
+  female_drive_size:    CK.oneof(FE.ToolDriveVals).optional(),
 })
 export interface SocketWrenchT   extends CK.Zcasted<typeof socketWrench> {}
 export interface SocketWrenchSk  extends CK.Zsketch<typeof socketWrench> {}

@@ -136,7 +136,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   // Title: prefer og:title, fall back to <title>
   const ogTitle  = $('meta[property="og:title"]').attr('content') ?? ''
   const rawTitle    = ogTitle.trim() || $('title').text()
-  const title = rawTitle.replace(/\s*-\s*Gearwrench\s*$/i, '').replace(/^\d+ /, "").trim()
+  const title = rawTitle.replace(/\s*-\s*Gearwrench\s*$/i, '').replace(/^[\dD]+ /, "").trim()
   // URL from canonical or og:url
   const url      = $('link[rel="canonical"]').attr('href')
                 ?? $('meta[property="og:url"]').attr('content')
@@ -202,7 +202,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
 
   // if (! (result.ln_overall && result.wy_overall && result.wx_overall)) { console.warn(`No overall length`, UF.prettify(result)); result.ln_overall ??= 1; result.wy_overall ??= 1; result.wx_overall ??= 1; }
   const overall_wx = result.wx_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
-  const overall_wy = result.wy_overall ?? _.max([result.wrench_dp, result.bolt_clr_dp])
+  const overall_wy = result.wy_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
   if (overall_wx) { result.wx_overall = overall_wx } if (overall_wy) { result.wy_overall = overall_wy }
   // if (specifications["Overall Height"]) { console.warn('\nHas Overall Height\n', specifications, result) }
 
