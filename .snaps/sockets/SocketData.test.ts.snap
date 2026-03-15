@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`@flipshop/flipshop Sockets has expected contents 1`] = `
+SocketWrench {
+  "bit_kind": "inthex",
+  "bit_ln": 125.0188,
+  "bit_ln_total": 133.985,
+  "drive_end_diam": 19.05,
+  "drive_kind": "inthex",
+  "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80436_FRNT_MAIN.jpg?itok=qBrQbwx5",
+  "ln_overall": 151.9936,
+  "nose_diam": 19.05,
+  "reach_kind": "long",
+  "sizing": "10mm",
+  "sizing_in": 0.3937007874015748,
+  "sizing_mm": 10,
+  "sku": "80448",
+  "socket_kind": "socket_bit",
+  "socket_variant": "ball",
+  "sqdrive_size": "isq_0375in",
+  "title": "3/8" Drive Long Ball End Hex Bit Metric Socket 10mm",
+  "unit_system": "metric",
+  "upc": "099575804489",
+  "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80448-38-drive-long-ball-end-hex-bit-metric-socket-10mm",
+  "wt": 0.082,
+  "wt_lb": 0.18,
+  "wx_overall": 19.05,
+  "wy_overall": 19.05,
+}
+`;
