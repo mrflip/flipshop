@@ -65,9 +65,9 @@ precondition {
   const sketchPlane = evPlane(context, { "face":  definition.referencePlane });
 
   // Bounding Box Sketch
-  const boundsSketch = draw_bounding_boxes(context, ids.boundingBoxSk, sketchPlane, params);
+  const boundsSketch = drawBoundingAndPaddingBoxes(context, ids.boundingBoxSk, sketchPlane, params);
   // Create items sketch
-  draw_patterned_shapes(context, ids.shapesSk, sketchPlane, params);
+  drawPatternedShapes(context, ids.shapesSk, sketchPlane, params);
 
   // Extrude items forward
   const shapesQuery = qCreatedBy(ids.shapesSk, EntityType.FACE);
@@ -102,10 +102,9 @@ precondition {
     "propertyType":  PropertyType.NAME,
     "value":  "Patterned Shapes"
   });
-
 });
 
-function box_for_bounds(minH is ValueWithUnits, maxH is ValueWithUnits,
+function boxForBounds(minH is ValueWithUnits, maxH is ValueWithUnits,
   minV is ValueWithUnits, maxV is ValueWithUnits,
   minD is ValueWithUnits, maxD is ValueWithUnits) returns map {
     return {
@@ -120,16 +119,16 @@ function box_for_bounds(minH is ValueWithUnits, maxH is ValueWithUnits,
       "minD":     minD,
       "ctrD":     (minD + maxD) / 2,
       "maxD":     maxD,
-      "sizeD":    maxD - minD
+      "sizeD":    maxD - minD,
     };
   }
 
-function box_for_center_and_size(ctrH is ValueWithUnits, ctrV is ValueWithUnits,
+function boxForCenterSize(ctrH is ValueWithUnits, ctrV is ValueWithUnits,
   sizeH is ValueWithUnits, sizeV is ValueWithUnits,
   minD is ValueWithUnits, maxD is ValueWithUnits) returns map {
     const halfH = sizeH / 2;
     const halfV = sizeV / 2;
-    return box_for_bounds(ctrH - halfH, ctrH + halfH, ctrV - halfV, ctrV + halfV, minD, maxD
+    return boxForBounds(ctrH - halfH, ctrH + halfH, ctrV - halfV, ctrV + halfV, minD, maxD
     );
   }
 
@@ -154,7 +153,7 @@ function patternedShapesParams(definition is map) returns map {
   const item0_ctrH = definition.item_x_size / 2;
   const item0_ctrV = definition.item_y_size / 2;
   // Create item0 box
-  const item0 = box_for_center_and_size(
+  const item0 = boxForCenterSize(
     item0_ctrH, item0_ctrV,
     definition.item_x_size, definition.item_y_size,
     0 * meter, definition.thickness
@@ -164,7 +163,7 @@ function patternedShapesParams(definition is map) returns map {
   (definition.n_x_items - 1) * definition.x_gutter;
   const items_height = definition.n_y_items * definition.item_y_size +
   (definition.n_y_items - 1) * definition.y_gutter;
-  const items_bounds = box_for_bounds(
+  const items_bounds = boxForBounds(
     0 * meter, items_width,
     0 * meter, items_height,
     0 * meter, definition.thickness
@@ -175,11 +174,11 @@ function patternedShapesParams(definition is map) returns map {
     "minH":  definition.x_margin_left,
     "maxH":  definition.x_margin_left,  // Same as left
     "minV":  definition.y_margin_front,
-    "maxV":  definition.y_margin_front  // Same as front
+    "maxV":  definition.y_margin_front, // Same as front
   };
 
   // Calculate padded bounds (with margins)
-  const padded_bounds = box_for_bounds(
+  const padded_bounds = boxForBounds(
     -margin.minH, items_width + margin.maxH,
     -margin.minV, items_height + margin.maxV,
     0 * meter, definition.thickness
@@ -187,10 +186,10 @@ function patternedShapesParams(definition is map) returns map {
 
   // Calculate body bounds (includes base plate)
   const base_plate_thickness = 0.05 * millimeter;
-  const body_bounds = box_for_bounds(
-    items_bounds.minH, items_bounds.maxH,
-    items_bounds.minV, items_bounds.maxV,
-    -base_plate_thickness, definition.thickness
+  const body_bounds = boxForBounds(
+    items_bounds.minH,        items_bounds.maxH,
+    items_bounds.minV,        items_bounds.maxV,
+    (- base_plate_thickness), definition.thickness
   );
 
   return {
@@ -200,29 +199,29 @@ function patternedShapesParams(definition is map) returns map {
     "corner_radius":  cornerRadius,
     "x_stride":  x_stride,
     "y_stride":  y_stride,
-    "item0":  item0,
-    "items_bounds":  items_bounds,
+    "item0":     item0,
+    "items_bounds":   items_bounds,
     "padded_bounds":  padded_bounds,
-    "body_bounds":  body_bounds,
-    "margin":  margin,
+    "body_bounds":    body_bounds,
+    "margin":         margin,
     "polygon_sides":  4,
-    "do_fillet_polygons":  definition.shape_type == ShapeType.ROUNDRECT && definition.corner_radius > 0 * meter
+    "do_fillet_polygons":  definition.shape_type == ShapeType.ROUNDRECT && definition.corner_radius > 0 * meter,
   };
 }
 
-function draw_bounding_boxes(context is Context, id is Id, sketchPlane is Plane, params is map) returns builtin {
+function drawBoundingAndPaddingBoxes(context is Context, id is Id, sketchPlane is Plane, params is map) returns builtin {
   const sketch = newSketchOnPlane(context, id, { "sketchPlane":  sketchPlane });
   // Draw items bounding box (solid)
   skRectangle(sketch, "itemsBounds", {
     "firstCorner":   vector(params.items_bounds.minH, params.items_bounds.minV),
     "secondCorner":  vector(params.items_bounds.maxH, params.items_bounds.maxV),
-    "construction":  true
+    "construction":  true,
   });
   // Draw items bounding box (solid)
   skRectangle(sketch, "paddedBounds", {
     "firstCorner":  vector(params.padded_bounds.minH, params.padded_bounds.minV),
     "secondCorner":  vector(params.padded_bounds.maxH, params.padded_bounds.maxV),
-    "construction":  false
+    "construction":  false,
   });
   // Add dots at midpoint of top and right lines
   skPoint(sketch, "itemsBoundsTopMidDot",    { "position":  vector(params.items_bounds.ctrH,  params.items_bounds.maxV)  });
@@ -234,7 +233,7 @@ function draw_bounding_boxes(context is Context, id is Id, sketchPlane is Plane,
   return sketch;
 }
 
-function draw_patterned_shapes(context is Context, id is Id, sketchPlane is Plane, params is map) {
+function drawPatternedShapes(context is Context, id is Id, sketchPlane is Plane, params is map) {
   const sketch = newSketchOnPlane(context, id, { "sketchPlane":  sketchPlane });
   var itemIndex = 0;
   for (var iy = 0; iy < params.n_y_items; iy += 1) {
@@ -242,16 +241,16 @@ function draw_patterned_shapes(context is Context, id is Id, sketchPlane is Plan
       const centerH = params.item0.ctrH + ix * params.x_stride;
       const centerV = params.item0.ctrV + iy * params.y_stride;
       const center = vector(centerH, centerV);
-      add_simple_shape(sketch, "item_" ~ itemIndex, center, params, params.item0);
+      addSimpleShape(sketch, "item_" ~ itemIndex, center, params, params.item0);
       itemIndex += 1;
     }
   }
   // Add decoration for first item
-  decorate_item0(sketch, id, params);
+  decorateItem0(sketch, id, params);
   skSolve(sketch);
 }
 
-function decorate_item0(sketch is Sketch, sketchId is Id, params is map) {
+function decorateItem0(sketch is Sketch, sketchId is Id, params is map) {
   const center = vector(params.item0.ctrH, params.item0.ctrV);
   // Horizontal line from center to left perimeter
   skLineSegment(sketch, "guideLine_h", {
@@ -271,15 +270,15 @@ function decorate_item0(sketch is Sketch, sketchId is Id, params is map) {
   });
 }
 
-function add_simple_shape(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
+function addSimpleShape(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
   if (params.shape_type == ShapeType.CIRCLE) {
     skCircle(sketch, idStr, { "center":  center, "radius":  itemBox.sizeH / 2 });
   } else if (params.do_fillet_polygons) {
-    add_rounded_polygon(sketch, idStr, center, params, itemBox);
+    addRoundedPolygon(sketch, idStr, center, params, itemBox);
   } else {
     skRectangle(sketch, idStr, {
       "firstCorner":  vector(center[0] - itemBox.sizeH / 2, center[1] - itemBox.sizeV / 2),
-      "secondCorner": vector(center[0] + itemBox.sizeH / 2, center[1] + itemBox.sizeV / 2)
+      "secondCorner": vector(center[0] + itemBox.sizeH / 2, center[1] + itemBox.sizeV / 2),
     });
   }
 }
@@ -336,11 +335,11 @@ function verticesFromBox(center is Vector, itemBox is map) returns array {
     vector(cx - halfW, cy - halfH),  // bottom-left
     vector(cx + halfW, cy - halfH),  // bottom-right
     vector(cx + halfW, cy + halfH),  // top-right
-    vector(cx - halfW, cy + halfH)   // top-left
+    vector(cx - halfW, cy + halfH),  // top-left
   ];
 }
 
-function add_rounded_polygon(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
+function addRoundedPolygon(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
   const vertices = verticesFromBox(center, itemBox);
   const ears = cornerEars({
     "vertices":  vertices,
@@ -353,6 +352,6 @@ function add_rounded_polygon(sketch is Sketch, idStr is string, center is Vector
     // Draw arc for this corner
     skCenteredArc(sketch, idStr ~ "_arc_"  ~ i, { "start":  ear.start, "center":  ear.focus, "end":  ear.end });
     // Draw line segment to next corner
-    skLineSegment(sketch, idStr ~ "_edge_" ~ i, { "start":  ear.end,                        "end":  nextEar.start});
+    skLineSegment(sketch, idStr ~ "_edge_" ~ i, { "start":  ear.end,                         "end":  nextEar.start});
   }
 }
