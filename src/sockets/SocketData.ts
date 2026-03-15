@@ -15,8 +15,8 @@ export async function loadSocketWrenches(): Promise<SocketWrench[]> {
     const socket = SocketWrench.live(raw)
     SocketWrenchList.push(socket)
     const bucket = canhasbucket(SocketWrenches, [socket.socket_kind, socket.drive_kind, socket.unit_system, socket.sqdrive_size, socket.socket_variant, socket.reach_kind])
-    if (bucket[socket.size_nom] && (! /^(socket_(sparkplug|ujoint))$/.test(socket.socket_kind))) { console.warn('Duplicate size_nom:', socket.size_nom, bucket[socket.size_nom], socket) }
-    bucket[socket.size_nom] = socket
+    if (bucket[socket.sizing] && (! /^(socket_(sparkplug|ujoint|extension))$/.test(socket.socket_kind))) { console.warn('Duplicate sizing:', socket.sizing, bucket[socket.sizing], socket) }
+    bucket[socket.sizing] = socket
   })
   // console.log(UF.inspectify(SocketWrenches))
   return SocketWrenchList

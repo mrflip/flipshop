@@ -8,11 +8,16 @@ export type Title      = string
 export type SKU        = string
 export const MM_IN     = 25.4
 export const KG_LB     = 0.45359237
-export const mm_lte_100 = CK.ustrnum.pipe(CK.num.gt(0).max(100))
-export const mm_lte_360 = CK.ustrnum.pipe(CK.num.gt(0).max(360))
-export const mm_lte_2000 = CK.ustrnum.pipe(CK.num.gt(0).max(2000))
-export const in_lte_14  = CK.ustrnum.pipe(CK.num.gt(0).max(14))
-export const in_lte_4   = CK.ustrnum.pipe(CK.num.gt(0).max(4))
+export const mm_lte_100 = CK.ustrnum.pipe(CK.num.gt(0).max(100))    // 3.94 in
+export const mm_lte_360 = CK.ustrnum.pipe(CK.num.gt(0).max(360))    // 14.17 in
+export const mm_lte_1000 = CK.ustrnum.pipe(CK.num.gt(0).max(1000))  // 39.37 in
+export const mm_lte_1200 = CK.ustrnum.pipe(CK.num.gt(0).max(1200))  // 47.24 in
+export const mm_lte_2000 = CK.ustrnum.pipe(CK.num.gt(0).max(2000))  // 78.74 in
+export const in_lte_4   = CK.ustrnum.pipe(CK.num.gt(0).max(4))      // 102 mm
+export const in_lte_14  = CK.ustrnum.pipe(CK.num.gt(0).max(14))     // 356 mm
+export const in_lte_36  = CK.ustrnum.pipe(CK.num.gt(0).max(36))     // 914 mm
+export const in_lte_48  = CK.ustrnum.pipe(CK.num.gt(0).max(48))     // 1219 mm
+export const in_lte_80  = CK.ustrnum.pipe(CK.num.gt(0).max(80))     // 2032 mm
 
 export const taphole = CK.obj({
   nonfe_diam: mm_lte_100,

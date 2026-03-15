@@ -3,9 +3,10 @@ import      _                                /**/ from 'lodash'
 import      { load as cheerioLoad }               from 'cheerio'
 //
 import type * as TY                               from '@freeword/meta'
-import      { CK, UF }                                from '@freeword/meta'
+import      { CK, UF }                            from '@freeword/meta'
 import      * as Fastener                         from '../fastener/index.ts'
-import      * as Sockets                         from '../sockets/index.ts'
+import      * as Sockets                          from '../sockets/index.ts'
+import       { DistanceLookup }                   from './DistanceLookup.ts'
 
 const { MM_IN, KG_LB } = Fastener
 
@@ -55,7 +56,7 @@ export const unit_system_remap: TY.Bag<Fastener.FastenerEnums.UnitSystem> = {
 } as const
 
 export const fieldname_remap = {
-  "Size":               'size_nom',
+  "Size":               'sizing',
   "UPC":                'upc',
   //
   "Type":               'socket_kind',
@@ -214,14 +215,16 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.reach_kind = 'other'; result.drive_kind = 'intsq' }
   if (/^(socket_(extension))$/.test(result.socket_kind)) {
     result.unit_system ??= 'us'
-    result.size_nom ??= specifications["Overall Length"] + ' - ' + (specifications["Male Drive Size"] ?? specifications["Drive Tang Size"] ?? '')
+    result.sizing ??= specifications["Overall Length"] + ' - ' + (specifications["Male Drive Size"] ?? specifications["Drive Tang Size"] ?? '')
   }
   if (/^(socket_(adapter|ujoint))$/.test(result.socket_kind)) {
     result.unit_system ??= 'us'
-    result.size_nom ??= specifications["Male Drive Size"] ?? specifications["Drive Tang Size"]
+    result.sizing ??= specifications["Male Drive Size"] ?? specifications["Drive Tang Size"]
   }
   if (specifications["Size Range (SAE)"]) { result.unit_system = 'us' } if (specifications["Size Range (Metric)"]) { result.unit_system = 'metric' }
-  result.size_nom = result.size_nom?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in')
+  result.sizing = result.sizing?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in').replaceAll(/\.0+in/g, 'in')
+  result.sizing_mm = DistanceLookup[result.sizing]
+  result.sizing_in = result.sizing_mm / MM_IN
 
   // Track enum values for each field
   _.each(_.pick(result, _.keys(Enumish)), (val, key) => { const seen = Enumish[key]; if (! seen.includes(val)) { seen.push(val) }  })
