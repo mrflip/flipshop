@@ -4,16 +4,19 @@ import type * as TY                               from '@freeword/meta'
 import      * as Flipshop                         from '@flipshop/flipshop'
 import      { Sockets }                           from '@flipshop/flipshop'
 import      * as TH                               from '../TestHelpers.ts'
+import { SocketWrenches, socketWrenchesToFeaturescript } from '../../src/sockets/SocketData.ts'
 
 const ExemplarKeys = {
   hex_socket_10mm: `3/8\" Drive Long Ball End Hex Bit Metric Socket 10mm`,
 } as const satisfies Record<string, string>
 const Exemplars = { hex_socket_10mm: undefined! } as Record<keyof typeof ExemplarKeys, Flipshop.Sockets.SocketWrench>
+const SomeSocketWrenches = {} as typeof SocketWrenches
 
 describe('@flipshop/flipshop Sockets', () => {
   beforeAll(async () => {
     await Sockets.loadSocketWrenches()
     _.each(ExemplarKeys, (socketTitle, handle) => { Exemplars[handle] = Sockets.SocketWrenchByTitle[socketTitle] })
+    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.std.std', 'socket_exthex.exthex.metric.isq_0375in.impact.deep']))
   })
 
   it('has expected contents', () => {
@@ -22,45 +25,68 @@ describe('@flipshop/flipshop Sockets', () => {
   })
 
   describe('Exporting to Featurescript', () => {
-    it('a SocketWrench model can emit a Featurescript string', () => {
-      const { hex_socket_10mm } = Exemplars
-      const fs = hex_socket_10mm.toFeaturescript()
-      expect(fs).to.be.a('string')
-      expect(fs).to.match(/^\{.*\}$/)
+    describe('a SocketWrench model can emit a Featurescript string', () => {
+      it('without failing', () => {
+        const { hex_socket_10mm } = Exemplars
+        const fs = hex_socket_10mm.toFeaturescript()
+        expect(fs).to.be.a('string')
+        expect(fs).to.match(/^\{.*\}$/)
+      })
+      it('formats the title as a quoted string', () => {
+        const fs = Exemplars.hex_socket_10mm.toFeaturescript()
+        expect(fs).to.include(`"title": "3/8\\" Drive Long Ball End Hex Bit Metric Socket 10mm"`)
+      })
+      it('formats mm fields with * mm', () => {
+        const fs = Exemplars.hex_socket_10mm.toFeaturescript()
+        expect(fs).to.include(`"sizing_mm": 10 * mm`)
+      })
+      it('formats inch fields with * inch', () => {
+        const { hex_socket_10mm } = Exemplars
+        const fs = hex_socket_10mm.toFeaturescript()
+        const expectedIn = `"sizing_in": ${hex_socket_10mm.sizing_in} * inch`
+        expect(fs).to.include(expectedIn)
+      })
+      it('formats enum fields as quoted strings', () => {
+        const fs = Exemplars.hex_socket_10mm.toFeaturescript()
+        expect(fs).to.include(`"socket_kind": "socket_bit"`)
+        expect(fs).to.include(`"drive_kind": "inthex"`)
+        expect(fs).to.include(`"unit_system": "metric"`)
+        expect(fs).to.include(`"sqdrive_size": "isq_0375in"`)
+      })
+      it('omits undefined optional fields', () => {
+        const fs = Exemplars.hex_socket_10mm.toFeaturescript()
+        // wt is not always present; if absent it should not appear
+        if (Exemplars.hex_socket_10mm.wt === undefined) {
+          expect(fs).to.not.include('"wt":')
+        }
+      })
+      it('only includes SocketWrenchT fields, not Gearwrench-specific fields', () => {
+        const fs = Exemplars.hex_socket_10mm.toFeaturescript()
+        expect(fs).to.not.include('"material":')
+        expect(fs).to.not.include('"surf_finish":')
+        expect(fs).to.not.include('"is_knurled":')
+      })
     })
-    it('formats the title as a quoted string', () => {
-      const fs = Exemplars.hex_socket_10mm.toFeaturescript()
-      expect(fs).to.include(`"title": "3/8\\" Drive Long Ball End Hex Bit Metric Socket 10mm"`)
-    })
-    it('formats mm fields with * mm', () => {
-      const fs = Exemplars.hex_socket_10mm.toFeaturescript()
-      expect(fs).to.include(`"sizing_mm": 10 * mm`)
-    })
-    it('formats inch fields with * inch', () => {
-      const { hex_socket_10mm } = Exemplars
-      const fs = hex_socket_10mm.toFeaturescript()
-      const expectedIn = `"sizing_in": ${hex_socket_10mm.sizing_in} * inch`
-      expect(fs).to.include(expectedIn)
-    })
-    it('formats enum fields as quoted strings', () => {
-      const fs = Exemplars.hex_socket_10mm.toFeaturescript()
-      expect(fs).to.include(`"socket_kind": "socket_bit"`)
-      expect(fs).to.include(`"drive_kind": "inthex"`)
-      expect(fs).to.include(`"unit_system": "metric"`)
-      expect(fs).to.include(`"sqdrive_size": "isq_0375in"`)
-    })
-    it('omits undefined optional fields', () => {
-      const fs = Exemplars.hex_socket_10mm.toFeaturescript()
-      // wt is not always present; if absent it should not appear
-      if (Exemplars.hex_socket_10mm.wt === undefined) {
-        expect(fs).to.not.include('"wt":')
-      }
-    })
-    it('only includes SocketWrenchT fields, not Gearwrench-specific fields', () => {
-      const fs = Exemplars.hex_socket_10mm.toFeaturescript()
-      expect(fs).to.not.include('"material":')
-      expect(fs).to.not.include('"surf_finish":')
-      expect(fs).to.not.include('"is_knurled":')
+    describe('we can dump the SocketWrench data as a Featurescript text blob', () => {
+      it('for subsampled SocketWrench data', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        expect(TH.checkSnapshot(blob)).to.be.true
+      })
+      it('starts with the const declaration', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        expect(blob).to.match(/^const SocketWrenches =/)
+      })
+      it('nests enum keys as quoted strings', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        expect(blob).to.include('"socket_exthex"')
+        expect(blob).to.include('"exthex"')
+        expect(blob).to.include('"isq_0250in"')
+      })
+      it('leaf sockets render as inline featurescript maps', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        expect(blob).to.include('"sizing_mm":')
+        expect(blob).to.include('* mm')
+      })
     })
   })
 })

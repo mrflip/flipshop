@@ -4,7 +4,7 @@ import      { UF }                                from '@freeword/meta'
 import      { SocketWrench }                      from './SocketModel.ts'
 import type { SocketWrenchT }                     from './SocketTypes.ts'
 import type { FastenerDrive, SocketKind, SocketReach, ToolDrive } from '../fastener/FastenerEnums.ts'
-import { canhasbucket } from '../utils/DatafileHelpers.ts'
+import      { canhasbucket }                      from '../utils/DatafileHelpers.ts'
 
 // export const SocketWrenchList: SocketWrench[] = []
 export const SocketWrenchByTitle: Record<string, SocketWrench> = {}
@@ -21,4 +21,16 @@ export async function loadSocketWrenches(): Promise<TY.Bag<SocketWrench>> {
   })
   // console.log(UF.inspectify(SocketWrenches))
   return SocketWrenchByTitle
+}
+
+export function socketWrenchesToFeaturescript(tree: typeof SocketWrenches): string {
+  function renderNode(node: unknown, depth: number): string {
+    if (node instanceof SocketWrench) { return node.toFeaturescript() }
+    const pad      = '  '.repeat(depth)
+    const innerPad = '  '.repeat(depth + 1)
+    const lines    = Object.entries(node as Record<string, unknown>)
+      .map(([kk, vv]) => `${innerPad}${JSON.stringify(kk)}: ${renderNode(vv, depth + 1)}`)
+    return `{\n${lines.join(',\n')}\n${pad}}`
+  }
+  return `const SocketWrenches = ${renderNode(tree, 0)};`
 }
