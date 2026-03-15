@@ -5,6 +5,7 @@ import      { CK }                                   from '@freeword/meta'
 import type * as TY                                  from './internal.ts'
 //
 import      { Thing }                                from '../utils/Thing.ts'
+import      { fsStringField, fsBoolField, fsMmField, fsInchField, fsNumField } from '../utils/FeaturescriptHelpers.ts'
 import       * as FE                                 from '../fastener/FastenerEnums.ts'
 import       { socketWrench, type SocketWrenchT }    from './SocketTypes.ts'
 
@@ -48,4 +49,24 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   get Factory():            typeof SocketWrench  { return this.constructor as typeof SocketWrench }
   static fill(raw: SocketWrenchT): SocketWrenchT { return super.fill(raw)  as        SocketWrenchT }
   static live(raw: SocketWrenchT): SocketWrench  { return super.live(raw)  as        SocketWrench  }
+
+  private static readonly INCH_FIELDS  = new Set<string>(['sizing_in'])
+  private static readonly PLAIN_FIELDS = new Set<string>(['wt', 'wt_lb'])
+
+  toFeaturescript(): string {
+    const data = this.flatten() as Record<string, unknown>
+    const parts = Object.entries(data)
+      .filter(([_k, vv]) => vv !== undefined && vv !== null)
+      .map(([kk, vv]) => {
+        if (typeof vv === 'string')  { return fsStringField(kk, vv) }
+        if (typeof vv === 'boolean') { return fsBoolField(kk, vv) }
+        if (typeof vv === 'number') {
+          if (SocketWrench.INCH_FIELDS.has(kk))  { return fsInchField(kk, vv) }
+          if (SocketWrench.PLAIN_FIELDS.has(kk)) { return fsNumField(kk, vv) }
+          return fsMmField(kk, vv)
+        }
+        return fsStringField(kk, JSON.stringify(vv))
+      })
+    return `{ ${parts.join(', ')} }`
+  }
 }
