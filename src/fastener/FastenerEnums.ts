@@ -6,21 +6,33 @@ export const drill_title = CK.extkeyish
 
 /** Drive type for square (1/4", 3/8", 1/2") and hex (1/4") drives */
 export const ToolDriveVals   = ['isq_0250in', 'isq_0375in', 'isq_0500in', 'hex_0250in', 'isq_0750in', 'isq_1000in'] as const
-/** Socket kind (socket_sparkplug, socket_exthex, socket_extstar, socket_bit, socket_flex, socket_extension, socket_ujoint, socket_adapter) */
+/** Socket kind (socket_sparkplug, socket_exthex, socket_extstar, socket_bit, socket_extension, socket_ujoint, socket_adapter) */
 export const SocketKindVals  = [
-  'socket_sparkplug', 'socket_exthex', 'socket_extstar', 'socket_bit', 'socket_flex',
+  'socket_sparkplug', 'socket_exthex', 'socket_extstar', 'socket_bit',
   'socket_extension', 'socket_ujoint', 'socket_adapter',
 ] as const
 /** Socket variant (standard, impact, ball) */
 export const SocketVariantVals = ['std', 'impact', 'ball'] as const
 /** Socket reach (standard, midlen, deep, long, xlong, other) */
-export const SocketReachVals = ['std', 'midlen', 'deep', 'long', 'xlong', 'other', 'uj_std', 'uj_deep', 'uj_ext'] as const
+export const SocketReachVals = ['reg', 'midlen', 'deep', 'long', 'xlong', 'other', 'uj_reg', 'uj_deep', 'uj_ext'] as const
 /** Unit system (metric, us) */
 export const UnitSystemVals = ['metric', 'us'] as const
+export const SocketKindTitles = {
+  'socket_sparkplug': 'Spark Plug Socket',
+  'socket_exthex':    'Bolt Socket',
+  'socket_extstar':   'Star Socket',
+  'socket_bit':       'Bit Socket',
+  'socket_extension': 'Socket Extension',
+  'socket_ujoint':    'Socket U-Joint',
+  'socket_adapter':   'Socket Adapter',
+} as const
+export const SocketReachTitles = {
+  'reg': 'Regular', 'midlen': 'Medium', 'deep': 'Deep', 'long': 'Long', 'xlong': 'X-Long', 'other': '', 'uj_reg': 'U-Joint Regular', 'uj_deep': 'U-Joint Deep', 'uj_ext': 'U-Joint Extended',
+} as const
 
 /** Tool drive (isq_0250in, isq_0375in, isq_0500in, hex_0250in, isq_0750in, isq_1000in) */
 export const tool_drive      = CK.oneof(ToolDriveVals)
-/** Socket kind (socket_sparkplug, socket_exthex, socket_extstar, socket_bit, socket_flex, socket_extension, socket_ujoint, socket_adapter) */
+/** Socket kind (socket_sparkplug, socket_exthex, socket_extstar, socket_bit, socket_extension, socket_ujoint, socket_adapter) */
 export const socket_kind     = CK.oneof(SocketKindVals)
 /** Socket reach (standard, midlen, deep, long, xlong, other) */
 export const socket_reach    = CK.oneof(SocketReachVals)

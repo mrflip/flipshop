@@ -46,7 +46,7 @@ export const socket_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketKind> = {
   // 'Extension Socket': 'socket_exthex',
 } as const
 export const reach_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketReach> = {
-  'Standard': 'std', 'Mid Length': 'midlen', 'Deep': 'deep', 'Long': 'long', 'Extra Long': 'xlong',
+  'Standard': 'reg', 'Mid Length': 'midlen', 'Deep': 'deep', 'Long': 'long', 'Extra Long': 'xlong',
 } as const
 export const unit_system_remap: TY.Bag<Fastener.FastenerEnums.UnitSystem> = {
   'SAE': 'us',

@@ -57,7 +57,7 @@ precondition {
   // Normalize and validate parameters
   const params = patternedShapesParams(definition);
   const ids = {
-    "boundingBoxSk":     id + "boundingBoxSk", "shapesSk": id + "shapesSk", "extrudedShapes": id + "extrudedShapes",
+    "boundingBoxSk":     id + "boundingBoxSk",   "shapesSk": id + "shapesSk", "extrudedShapes": id + "extrudedShapes",
     "patternedShapes":   id + "patternedShapes",
   };
 
@@ -92,16 +92,8 @@ precondition {
     "booleanScope":      extrudedBodies,
   });
 
-  debug(context, [
-    qCreatedBy(ids.boundingBoxSk, EntityType.BODY), qCreatedBy(ids.patternedShapes, EntityType.BODY)
-  ]);
-
-
-  setProperty(context, {
-    "entities":  extrudedBodies,
-    "propertyType":  PropertyType.NAME,
-    "value":  "Patterned Shapes"
-  });
+  // debug(context, [qCreatedBy(ids.boundingBoxSk, EntityType.BODY), qCreatedBy(ids.patternedShapes, EntityType.BODY)]);
+  setProperty(context, { "entities": extrudedBodies, "propertyType":  PropertyType.NAME, "value": "Patterned Shapes"  });
 });
 
 function boxForBounds(minH is ValueWithUnits, maxH is ValueWithUnits,

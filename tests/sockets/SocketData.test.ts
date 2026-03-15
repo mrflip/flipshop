@@ -16,7 +16,7 @@ describe('@flipshop/flipshop Sockets', () => {
   beforeAll(async () => {
     await Sockets.loadSocketWrenches()
     _.each(ExemplarKeys, (socketTitle, handle) => { Exemplars[handle] = Sockets.SocketWrenchByTitle[socketTitle] })
-    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.std.std', 'socket_exthex.exthex.metric.isq_0375in.impact.deep']))
+    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.std.reg', 'socket_exthex.exthex.metric.isq_0375in.impact.deep']))
   })
 
   it('has expected contents', () => {
@@ -71,6 +71,7 @@ describe('@flipshop/flipshop Sockets', () => {
       it('for subsampled SocketWrench data', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         expect(TH.checkSnapshot(blob)).to.be.true
+        expect(blob.length).to.be.greaterThan(18_000)
       })
       it('starts with the const declaration', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
