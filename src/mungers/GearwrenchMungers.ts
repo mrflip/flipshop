@@ -33,7 +33,7 @@ export interface GearwrenchSocketSk extends CK.Zsketch<typeof gearwrenchSocket> 
 
 // == [Remaps] ==
 
-export const sqdrive_size_remap: TY.Bag<Fastener.FastenerEnums.ToolDrive> = { "1/4 in": 'isq_0250in', "3/8 in": 'isq_0375in', "1/2 in": 'isq_0500in', '3/4 in': 'isq_0750in', '1 in': 'isq_1000in' } as const
+export const sqdrive_size_remap: TY.Bag<Fastener.FastenerEnums.ToolDrive> = { '1/4 in': 'isq_0250in', '3/8 in': 'isq_0375in', '1/2 in': 'isq_0500in', '3/4 in': 'isq_0750in', '1 in': 'isq_1000in' } as const
 export const drive_kind_remap: TY.Bag<Fastener.FastenerEnums.FastenerDrive> = {
   'Hex': 'inthex', 'Torx®': 'torx', 'Tamper Proof Torx®': 'torxtp', 'External Torx®': 'extstar', 'Ballpoint Hex': 'inthex', 'Triple Square': 'triple_square', 'Slotted': 'slotted', 'Phillips®': 'phillips', 'Pozidriv®': 'pozidriv',
   '6 Point': 'exthex',  '6 Point 6 Point': 'exthex', '12 Point': 'extstar12',
@@ -41,8 +41,9 @@ export const drive_kind_remap: TY.Bag<Fastener.FastenerEnums.FastenerDrive> = {
   'Square Square': 'square', 'Square': 'square',
 } as const
 export const socket_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketKind> = {
-  'Spark Plug Socket Spark Plug Service Tools': "socket_sparkplug", 'Socket': 'socket_exthex', 'Bit Socket': 'socket_bit', 'Flex Socket': 'socket_exthex', 'Socket Spark Plug Service Tools': "socket_sparkplug", 'Extension': "socket_extension",
-  "Universal Joint": "socket_ujoint", "Universal Joint Socket": "socket_exthex", "Socket Extension": 'socket_extension', 'Adapter': 'socket_adapter',
+  'Spark Plug Socket Spark Plug Service Tools': 'socket_sparkplug', 'Socket': 'socket_exthex', 'Bit Socket': 'socket_bit', 'Flex Socket': 'socket_exthex', 'Socket Spark Plug Service Tools': 'socket_sparkplug', 'Extension': 'socket_extension',
+  'Universal Joint': 'socket_ujoint', 'Universal Joint Socket': 'socket_exthex', 'Socket Extension': 'socket_exthex', 'Adapter': 'socket_adapter',
+  // 'Extension Socket': 'socket_exthex',
 } as const
 export const reach_kind_remap: TY.Bag<Fastener.FastenerEnums.SocketReach> = {
   'Standard': 'std', 'Mid Length': 'midlen', 'Deep': 'deep', 'Long': 'long', 'Extra Long': 'xlong',
@@ -169,7 +170,12 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
       }
     } catch { /* malformed JSON-LD, skip */ }
   })
-  const title = rawTitle.replace(/\s*-\s*Gearwrench\s*$/i, '').replace(sku + ' ', "").trim()
+  const title = rawTitle
+    .replace(/\s*-\s*Gearwrench\s*$/i, '')
+    .replace(sku + ' ', '')
+    .replaceAll(/(\d) *"/g, '$1in')
+    .replaceAll(/(\d) +(mm|in)\b/g, '$1$2')
+    .trim()
 
   // Specifications from <li id="specifications">
   const specifications: Record<string, string> = {}
@@ -199,11 +205,12 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     if (fn) { result[fn] = raw; return }
     console.warn(`Unknown specification: ${key} = ${raw}`)
   })
-  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(title))          { result.reach_kind = 'uj_' + result.reach_kind }
-  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(title)) { result.reach_kind = 'uj_' + result.reach_kind }
+  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(title)) { result.reach_kind = 'uj_' + result.reach_kind }
+  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(title))   { result.reach_kind = 'uj_' + result.reach_kind }
+  if (specifications['Type'] === 'Socket Extension') { result.reach_kind = 'uj_ext' }
   result.socket_variant = 'std'
-  if (/impact/i.test(title)) { result.socket_variant = 'impact' }
-  if (/ball/i.test(specifications["Drive Type"] ?? 'xx')) { result.socket_variant = 'ball' }
+  if (/impact/i.test(title))                              { result.socket_variant = 'impact' }
+  if (/ball/i.test(specifications['Drive Type'] ?? 'xx')) { result.socket_variant = 'ball' }
   delete result.drive_end_hex_af
   if (result.bit_ln_exposed) {
     result.bit_ln_total = _.max([result.bit_ln, result.bit_ln_exposed])
@@ -215,13 +222,13 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.reach_kind = 'other'; result.drive_kind = 'intsq' }
   if (/^(socket_(extension))$/.test(result.socket_kind)) {
     result.unit_system ??= 'us'
-    result.sizing ??= specifications["Overall Length"] + ' - ' + (specifications["Male Drive Size"] ?? specifications["Drive Tang Size"] ?? '')
+    result.sizing ??= specifications['Overall Length'] + ' - ' + (specifications['Male Drive Size'] ?? specifications['Drive Tang Size'] ?? '')
   }
   if (/^(socket_(adapter|ujoint))$/.test(result.socket_kind)) {
     result.unit_system ??= 'us'
-    result.sizing ??= specifications["Male Drive Size"] ?? specifications["Drive Tang Size"]
+    result.sizing ??= specifications['Male Drive Size'] ?? specifications['Drive Tang Size']
   }
-  if (specifications["Size Range (SAE)"]) { result.unit_system = 'us' } if (specifications["Size Range (Metric)"]) { result.unit_system = 'metric' }
+  if (specifications['Size Range (SAE)']) { result.unit_system = 'us' } if (specifications['Size Range (Metric)']) { result.unit_system = 'metric' }
   result.sizing = result.sizing?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in').replaceAll(/\.0+in/g, 'in')
   result.sizing_mm = DistanceLookup[result.sizing]
   result.sizing_in = result.sizing_mm / MM_IN
@@ -234,7 +241,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   const overall_wx = result.wx_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
   const overall_wy = result.wy_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
   if (overall_wx) { result.wx_overall = overall_wx } if (overall_wy) { result.wy_overall = overall_wy }
-  // if (specifications["Overall Height"]) { console.warn('\nHas Overall Height\n', specifications, result) }
+  // if (specifications['Type'] === 'Socket Extension') { console.warn('\nSocket Extension\n', title, specifications, result) }
 
   return gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
 }

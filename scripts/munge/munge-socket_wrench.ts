@@ -7,8 +7,7 @@ import type * as TY                               from '@freeword/meta'
 import      { Filer }                             from '@freeword/meta'
 import      * as Flipshop                         from '@flipshop/flipshop'
 
-// mkdir -p tmp/data/sockets
-// /scripts/munge/munge-socket_wrench.ts > tmp/data/sockets/sockets.json  && cp tmp/data/sockets/sockets.json data/sockets/sockets.json
+// mkdir -p tmp/data/sockets; ./scripts/munge/munge-socket_wrench.ts > tmp/data/sockets/sockets.json  && cp tmp/data/sockets/sockets.json data/sockets/sockets.json
 
 // == [Main] ==
 

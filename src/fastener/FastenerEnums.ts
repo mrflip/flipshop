@@ -14,7 +14,7 @@ export const SocketKindVals  = [
 /** Socket variant (standard, impact, ball) */
 export const SocketVariantVals = ['std', 'impact', 'ball'] as const
 /** Socket reach (standard, midlen, deep, long, xlong, other) */
-export const SocketReachVals = ['std', 'midlen', 'deep', 'long', 'xlong', 'other', 'uj_std', 'uj_deep'] as const
+export const SocketReachVals = ['std', 'midlen', 'deep', 'long', 'xlong', 'other', 'uj_std', 'uj_deep', 'uj_ext'] as const
 /** Unit system (metric, us) */
 export const UnitSystemVals = ['metric', 'us'] as const
 
