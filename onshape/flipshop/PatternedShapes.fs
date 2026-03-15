@@ -5,6 +5,15 @@ import(path : "onshape/std/geometry.fs", version : "2909.0");
 const hugeSizeVal = 1000000;
 const tinySizeVal = 0.001;
 
+export enum ShapeType {
+  annotation { "Name": "Circle" }
+  CIRCLE,
+  annotation { "Name": "Round Rectangle" }
+  ROUNDRECT,
+  annotation { "Name": "Rectangle" }
+  RECTANGLE
+}
+
 annotation { "Feature Type Name":  "Patterned Shapes" }
 export const patternedShapes = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
@@ -17,8 +26,8 @@ precondition {
   annotation { "Name":  "Item Y size" }
   isLength(definition.item_y_size, {(millimeter) : [tinySizeVal, 10, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name":  "Is circle" }
-  definition.is_circle is boolean;
+  annotation { "Name":  "Shape type" }
+  definition.shape_type is ShapeType;
 
   annotation { "Name":  "Number of items (X)" }
   isInteger(definition.n_x_items, {(unitless) : [1, 3, 100]} as IntegerBoundSpec);
@@ -130,8 +139,8 @@ function patternedShapesParams(definition is map) returns map {
   if (definition.y_gutter <= - definition.item_y_size) { throw regenError("Y gutter must be smaller than item Y size"); }
 
   var cornerRadius = definition.corner_radius;
-  // Validate corner radius
-  if (!definition.is_circle && definition.corner_radius > 0 * millimeter) {
+  // Validate corner radius (only relevant for Roundrect)
+  if (definition.shape_type == ShapeType.ROUNDRECT && definition.corner_radius > 0 * millimeter) {
     const maxRadius = min(definition.item_x_size, definition.item_y_size) / 2;
     if (definition.corner_radius > maxRadius) {
       // throw regenError("Corner radius cannot exceed half of the smaller item dimension");
@@ -185,7 +194,7 @@ function patternedShapesParams(definition is map) returns map {
   );
 
   return {
-    "is_circle":  definition.is_circle,
+    "shape_type":  definition.shape_type,
     "n_x_items":  definition.n_x_items,
     "n_y_items":  definition.n_y_items,
     "corner_radius":  cornerRadius,
@@ -197,7 +206,7 @@ function patternedShapesParams(definition is map) returns map {
     "body_bounds":  body_bounds,
     "margin":  margin,
     "polygon_sides":  4,
-    "do_fillet_polygons":  definition.corner_radius > 0 * meter
+    "do_fillet_polygons":  definition.shape_type == ShapeType.ROUNDRECT && definition.corner_radius > 0 * meter
   };
 }
 
@@ -263,17 +272,15 @@ function decorate_item0(sketch is Sketch, sketchId is Id, params is map) {
 }
 
 function add_simple_shape(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
-  if (params.is_circle) {
+  if (params.shape_type == ShapeType.CIRCLE) {
     skCircle(sketch, idStr, { "center":  center, "radius":  itemBox.sizeH / 2 });
+  } else if (params.do_fillet_polygons) {
+    add_rounded_polygon(sketch, idStr, center, params, itemBox);
   } else {
-    if (params.do_fillet_polygons) {
-      add_rounded_polygon(sketch, idStr, center, params, itemBox);
-    } else {
-      skRectangle(sketch, idStr, {
-        "firstCorner":  vector(center[0] - itemBox.sizeH / 2, center[1] - itemBox.sizeV / 2),
-        "secondCorner": vector(center[0] + itemBox.sizeH / 2, center[1] + itemBox.sizeV / 2)
-      });
-    }
+    skRectangle(sketch, idStr, {
+      "firstCorner":  vector(center[0] - itemBox.sizeH / 2, center[1] - itemBox.sizeV / 2),
+      "secondCorner": vector(center[0] + itemBox.sizeH / 2, center[1] + itemBox.sizeV / 2)
+    });
   }
 }
 
