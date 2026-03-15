@@ -225,6 +225,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   result.sizing = result.sizing?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in').replaceAll(/\.0+in/g, 'in')
   result.sizing_mm = DistanceLookup[result.sizing]
   result.sizing_in = result.sizing_mm / MM_IN
+  result.img_url = img_url.replace(/\?itok=.*$/, '')
 
   // Track enum values for each field
   _.each(_.pick(result, _.keys(Enumish)), (val, key) => { const seen = Enumish[key]; if (! seen.includes(val)) { seen.push(val) }  })
