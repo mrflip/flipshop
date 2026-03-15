@@ -29,6 +29,28 @@ export const SocketKindTitles = {
 export const SocketReachTitles = {
   'reg': 'Regular', 'midlen': 'Medium', 'deep': 'Deep', 'long': 'Long', 'xlong': 'X-Long', 'other': '', 'uj_reg': 'U-Joint Regular', 'uj_deep': 'U-Joint Deep', 'uj_ext': 'U-Joint Extended',
 } as const
+export const SocketVariantTitles = {
+  'std': '', 'impact': 'Impact', 'ball': 'Ball End',
+} as const
+export const ToolDriveTitles = {
+  'isq_0250in': '1/4 Sq.Dr', 'isq_0375in': '3/8 Sq.Dr', 'isq_0500in': '1/2 Sq.Dr',
+  'hex_0250in': '1/4 Hex.Dr', 'isq_0750in': '3/4 Sq.Dr', 'isq_1000in': '1 Sq.Dr',
+} as const
+export const FastenerDriveTitles: Record<FastenerDrive, string> = {
+  'exthex':        'Hex Bolt',    'extstar':  'Ext Torx',      'extstar12':    '12-Point',
+  'inthex':        'Int Hex',     'intsq':    'Square Drive',
+  'torx':          'Torx',        'torxtp':   'Security Torx', 'triple_square': 'Triple Sq.',
+  'slotted':       'Slotted',     'square':   'Square',        'phillips':      'Phillips',
+  'pozidriv':      'Pozidriv',    'phslot':   'Ph/Slot',       'slot':          'Slot',
+  'knurled':       'Knurled',     'carriage': 'Carriage',
+}
+export const SocketDriveTitles: Record<FastenerDrive, string> = {
+  ...FastenerDriveTitles,
+  'exthex':        '6-Point',
+}
+export const UnitSystemTitles = {
+  'metric': 'Metric', 'us': 'US',
+} as const
 
 /** Tool drive (isq_0250in, isq_0375in, isq_0500in, hex_0250in, isq_0750in, isq_1000in) */
 export const tool_drive      = CK.oneof(ToolDriveVals)

@@ -5,12 +5,51 @@ import      * as Flipshop                         from '@flipshop/flipshop'
 import      { Sockets }                           from '@flipshop/flipshop'
 import      * as TH                               from '../TestHelpers.ts'
 import { SocketWrenches, socketWrenchesToFeaturescript } from '../../src/sockets/SocketData.ts'
+import      { SocketWrench }                      from '../../src/sockets/SocketModel.ts'
+import type { SocketWrenchT }                     from '../../src/sockets/SocketTypes.ts'
 
 const ExemplarKeys = {
   hex_socket_10mm: `3/8in Drive Long Ball End Hex Bit Metric Socket 10mm`,
 } as const satisfies Record<string, string>
 const Exemplars = { hex_socket_10mm: undefined! } as Record<keyof typeof ExemplarKeys, Flipshop.Sockets.SocketWrench>
 const SomeSocketWrenches = {} as typeof SocketWrenches
+
+function makeSocket(partial: Partial<SocketWrenchT>): SocketWrench {
+  return SocketWrench.live({
+    title: 'Test Socket', sizing: '10mm', sizing_mm: 10, sizing_in: 0.394,
+    sku: 'TEST123', upc: '000000000000', url: 'https://example.com', img_url: 'https://example.com/img.jpg',
+    socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric',
+    sqdrive_size: 'isq_0375in', socket_variant: 'std', reach_kind: 'reg',
+    ...partial,
+  })
+}
+
+describe('SocketWrench.groupingTitleRoot', () => {
+  it('bit socket: includes unit system when drive is inthex', () => {
+    const s = makeSocket({ socket_kind: 'socket_bit', drive_kind: 'inthex', unit_system: 'us', sqdrive_size: 'isq_0375in', socket_variant: 'ball', reach_kind: 'long' })
+    expect(s.groupingTitleRoot()).to.equal('Bit Socket, Int Hex, US, 3/8 Sq.Dr, Ball End, Long')
+  })
+  it('bolt socket: includes Metric, omits Standard variant', () => {
+    const s = makeSocket({ socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric', sqdrive_size: 'isq_0750in', socket_variant: 'std', reach_kind: 'reg' })
+    expect(s.groupingTitleRoot()).to.equal('Bolt Socket, 6-Point, Metric, 3/4 Sq.Dr, Regular')
+  })
+  it('bolt socket: includes Impact variant', () => {
+    const s = makeSocket({ socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric', sqdrive_size: 'isq_0750in', socket_variant: 'impact', reach_kind: 'reg' })
+    expect(s.groupingTitleRoot()).to.equal('Bolt Socket, 6-Point, Metric, 3/4 Sq.Dr, Impact, Regular')
+  })
+  it('star socket: omits Metric for extstar drive', () => {
+    const s = makeSocket({ socket_kind: 'socket_extstar', drive_kind: 'extstar', unit_system: 'metric', sqdrive_size: 'isq_0375in', socket_variant: 'std', reach_kind: 'reg' })
+    expect(s.groupingTitleRoot()).to.equal('Star Socket, Ext Torx, 3/8 Sq.Dr, Regular')
+  })
+  it('omits Metric for torx drive', () => {
+    const s = makeSocket({ drive_kind: 'torx', unit_system: 'metric', socket_variant: 'std', reach_kind: 'reg' })
+    expect(s.groupingTitleRoot()).to.not.include('Metric')
+  })
+  it('still shows US for torx when unit system is us', () => {
+    const s = makeSocket({ drive_kind: 'torx', unit_system: 'us', socket_variant: 'std', reach_kind: 'reg' })
+    expect(s.groupingTitleRoot()).to.include('US')
+  })
+})
 
 describe('@flipshop/flipshop Sockets', () => {
   beforeAll(async () => {
