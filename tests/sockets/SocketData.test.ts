@@ -1,10 +1,10 @@
 import      _                                /**/ from 'lodash'
 import      { expect }                            from 'chai'
-import type * as TY                               from '@freeword/meta'
+// import type * as TY                            from '@freeword/meta'
 import      * as Flipshop                         from '@flipshop/flipshop'
 import      { Sockets }                           from '@flipshop/flipshop'
 import      * as TH                               from '../TestHelpers.ts'
-import { SocketWrenches, socketWrenchesToFeaturescript } from '../../src/sockets/SocketData.ts'
+import { SocketWrenches, SocketWrenchesByFamily, socketWrenchesToFeaturescript } from '../../src/sockets/SocketData.ts'
 import      { SocketWrench }                      from '../../src/sockets/SocketModel.ts'
 import type { SocketWrenchT }                     from '../../src/sockets/SocketTypes.ts'
 
@@ -24,30 +24,30 @@ function makeSocket(partial: Partial<SocketWrenchT>): SocketWrench {
   })
 }
 
-describe('SocketWrench.groupingTitleRoot', () => {
+describe('SocketWrench.familyTitle', () => {
   it('bit socket: includes unit system when drive is inthex', () => {
     const s = makeSocket({ socket_kind: 'socket_bit', drive_kind: 'inthex', unit_system: 'us', sqdrive_size: 'isq_0375in', socket_variant: 'ball', reach_kind: 'long' })
-    expect(s.groupingTitleRoot()).to.equal('Bit Socket, Int Hex, US, 3/8 Sq.Dr, Ball End, Long')
+    expect(s.familyTitle).to.equal('Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Long')
   })
   it('bolt socket: includes Metric, omits Standard variant', () => {
     const s = makeSocket({ socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric', sqdrive_size: 'isq_0750in', socket_variant: 'std', reach_kind: 'reg' })
-    expect(s.groupingTitleRoot()).to.equal('Bolt Socket, 6-Point, Metric, 3/4 Sq.Dr, Regular')
+    expect(s.familyTitle).to.equal('Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Regular')
   })
   it('bolt socket: includes Impact variant', () => {
     const s = makeSocket({ socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric', sqdrive_size: 'isq_0750in', socket_variant: 'impact', reach_kind: 'reg' })
-    expect(s.groupingTitleRoot()).to.equal('Bolt Socket, 6-Point, Metric, 3/4 Sq.Dr, Impact, Regular')
+    expect(s.familyTitle).to.equal('Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Regular')
   })
   it('star socket: omits Metric for extstar drive', () => {
     const s = makeSocket({ socket_kind: 'socket_extstar', drive_kind: 'extstar', unit_system: 'metric', sqdrive_size: 'isq_0375in', socket_variant: 'std', reach_kind: 'reg' })
-    expect(s.groupingTitleRoot()).to.equal('Star Socket, Ext Torx, 3/8 Sq.Dr, Regular')
+    expect(s.familyTitle).to.equal('Star Socket, Ext Torx, 3/8 Sq.Dr, Regular')
   })
   it('omits Metric for torx drive', () => {
     const s = makeSocket({ drive_kind: 'torx', unit_system: 'metric', socket_variant: 'std', reach_kind: 'reg' })
-    expect(s.groupingTitleRoot()).to.not.include('Metric')
+    expect(s.familyTitle).to.not.include('Metric')
   })
   it('still shows US for torx when unit system is us', () => {
     const s = makeSocket({ drive_kind: 'torx', unit_system: 'us', socket_variant: 'std', reach_kind: 'reg' })
-    expect(s.groupingTitleRoot()).to.include('US')
+    expect(s.familyTitle).to.include('US')
   })
 })
 
@@ -61,6 +61,11 @@ describe('@flipshop/flipshop Sockets', () => {
   it('has expected contents', () => {
     // console.log(UF.inspectify(Sockets.socketwrenches.socket_bit?.inthex))
     expect(TH.checkSnapshot(Exemplars.hex_socket_10mm)).to.be.true
+  })
+
+  it('SocketWrenchesByFamily has expected sorted family keys', () => {
+    console.log(_.keys(SocketWrenchesByFamily))
+    expect(TH.checkSnapshot(Object.keys(SocketWrenchesByFamily).sort())).to.be.true
   })
 
   describe('Exporting to Featurescript', () => {
@@ -126,6 +131,17 @@ describe('@flipshop/flipshop Sockets', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         expect(blob).to.include('"sizing_mm":')
         expect(blob).to.include('* mm')
+      })
+      it('appends a SocketWrenchesByFamily const with dotted path references', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        expect(blob).to.include('const SocketWrenchesByFamily =')
+        expect(blob).to.match(/"[^"]+": +SocketWrenches\.\w+\.\w+\.\w+\.\w+\.\w+\.\w+/)
+      })
+      it('family keys are sorted', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        const section = blob.slice(blob.indexOf('const SocketWrenchesByFamily ='))
+        const keys = [...section.matchAll(/"([^"]+)": SocketWrenches/g)].map(m => m[1]!)
+        expect(keys).to.deep.equal([...keys].sort())
       })
     })
   })

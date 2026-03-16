@@ -1,6 +1,5 @@
 import      _                                   /**/ from 'lodash'
-import      { CK }                                   from '@freeword/meta'
-// import type { OmitStatics }                          from '@freeword/meta'
+import      { UF }                                   from '@freeword/meta'
 //
 import type * as TY                                  from './internal.ts'
 //
@@ -55,19 +54,20 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   /** Drive types where unit system is implied (always metric) — suppress "Metric" in titles */
   private static readonly UNIT_IMPLICIT_DRIVES = new Set<FE.FastenerDrive>(['torx', 'torxtp', 'phillips', 'pozidriv', 'extstar', 'extstar12'])
 
-  /** Returns a human-readable grouping title built from the standard nested key order:
+  /** Human-readable family title built from the standard nested key order:
    *  socket kind, drive kind, unit system, sq-drive size, socket variant, reach kind.
    *  "Standard" variant and implied-metric drive types are omitted. */
-  groupingTitleRoot(): string {
-    const kindTitle    = FE.SocketKindTitles[this.socket_kind]
-    const driveTitle   = FE.SocketDriveTitles[this.drive_kind]
-    const sqDriveTitle = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
+  get familyTitle(): string {
+    const kindTitle          = FE.SocketKindTitles[this.socket_kind]
+    let   driveTitle: string = FE.SocketDriveTitles[this.drive_kind]
+    const sqDriveTitle        = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
+    if (/^socket_(extension|adapter|ujoint)$/.test(this.socket_kind)) { driveTitle = '' } // no sqdrive for extensions or adapters
     const variantTitle = FE.SocketVariantTitles[this.socket_variant]
     const reachTitle   = FE.SocketReachTitles[this.reach_kind]
     const unitTitle    = (this.unit_system === 'metric' && SocketWrench.UNIT_IMPLICIT_DRIVES.has(this.drive_kind))
       ? ''
       : FE.UnitSystemTitles[this.unit_system]
-    return [kindTitle, driveTitle, unitTitle, sqDriveTitle, variantTitle, reachTitle]
+    return [kindTitle, UF.smush(' ', driveTitle, unitTitle), sqDriveTitle, variantTitle, reachTitle]
       .filter(Boolean)
       .join(', ')
   }
