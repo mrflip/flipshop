@@ -1,7 +1,12 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`@flipshop/flipshop Sockets Exporting to Featurescript we can dump the SocketWrench data as a Featurescript text blob for subsampled SocketWrench data 1`] = `
-"const SocketWrenches = {
+"FeatureScript 2909;
+import(path : "onshape/std/common.fs", version : "2909.0");
+
+const mm = millimeter;
+
+const SocketWrenches = {
   "socket_exthex": {
     "exthex": {
       "us": {
@@ -52,7 +57,14 @@ exports[`@flipshop/flipshop Sockets Exporting to Featurescript we can dump the S
 const SocketWrenchesByFamily = {
   "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Deep":           SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.deep,
   "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Regular":                    SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.reg
-};"
+};
+
+export enum SocketFamilyEnum {
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_REGULAR
+}"
 `;
 
 exports[`@flipshop/flipshop Sockets SocketWrenchesByFamily has expected sorted family keys 1`] = `

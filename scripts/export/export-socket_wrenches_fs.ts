@@ -1,11 +1,11 @@
 #! /usr/bin/env yarn node
 import { Filer }                             from '@freeword/meta'
 import { Sockets }                           from '@flipshop/flipshop'
-import { socketWrenchesToFeaturescript }     from '../../src/sockets/SocketData.ts'
+// import { socketWrenchesToFeaturescript }     from '../../src/sockets/SocketData.ts'
 
 await Sockets.loadSocketWrenches()
 
-const blob    = socketWrenchesToFeaturescript(Sockets.SocketWrenches)
+const blob    = Sockets.socketWrenchesToFeaturescript(Sockets.SocketWrenches)
 const outpath = Filer.__relname(import.meta.url, '..', '..', 'onshape', 'flipshop', 'SocketWrenches.fs')
 const result  = await Filer.dumptext(outpath, [blob])
 

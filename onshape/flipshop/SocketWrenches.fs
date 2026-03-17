@@ -1,3 +1,8 @@
+FeatureScript 2909;
+import(path : "onshape/std/common.fs", version : "2909.0");
+
+const mm = millimeter;
+
 const SocketWrenches = {
   "socket_adapter": {
     "intsq": {

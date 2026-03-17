@@ -4,7 +4,7 @@ import      { expect }                            from 'chai'
 import      * as Flipshop                         from '@flipshop/flipshop'
 import      { Sockets }                           from '@flipshop/flipshop'
 import      * as TH                               from '../TestHelpers.ts'
-import { SocketWrenches, SocketWrenchesByFamily, socketWrenchesToFeaturescript } from '../../src/sockets/SocketData.ts'
+import { SocketWrenches, SocketWrenchesByFamily, socketWrenchesToFeaturescript, familyTitleToEnumKey } from '../../src/sockets/SocketData.ts'
 import      { SocketWrench }                      from '../../src/sockets/SocketModel.ts'
 import type { SocketWrenchT }                     from '../../src/sockets/SocketTypes.ts'
 
@@ -119,7 +119,9 @@ describe('@flipshop/flipshop Sockets', () => {
       })
       it('starts with the const declaration', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
-        expect(blob).to.match(/^const SocketWrenches =/)
+        expect(blob).to.include('FeatureScript 2909;')
+        expect(blob).to.include('import(path : "onshape/std/common.fs", version : "2909.0");')
+        expect(blob).to.match(/\nconst SocketWrenches =/)
       })
       it('nests enum keys as quoted strings', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
@@ -142,6 +144,18 @@ describe('@flipshop/flipshop Sockets', () => {
         const section = blob.slice(blob.indexOf('const SocketWrenchesByFamily ='))
         const keys = [...section.matchAll(/"([^"]+)": SocketWrenches/g)].map(m => m[1]!)
         expect(keys).to.deep.equal([...keys].sort())
+      })
+      it('appends a SocketFamilyEnum export with one value per family', () => {
+        const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
+        expect(blob).to.include('export enum SocketFamilyEnum')
+        const enumSection = blob.slice(blob.indexOf('export enum SocketFamilyEnum'))
+        const enumValues  = [...enumSection.matchAll(/^\s{2}([A-Z][A-Z0-9_]+)/gm)].map(m => m[1]!)
+        const pathCount   = [...blob.matchAll(/SocketWrenches\.\w+\.\w+\.\w+\.\w+\.\w+\.\w+/g)].length
+        expect(enumValues.length).to.equal(pathCount)
+      })
+      it('familyTitleToEnumKey produces valid UPPER_SNAKE_CASE identifiers', () => {
+        expect(familyTitleToEnumKey('Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Regular')).to.equal('BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_REGULAR')
+        expect(familyTitleToEnumKey('Star Socket, Ext Torx, 3/8 Sq.Dr, Regular')).to.equal('STAR_SOCKET_EXT_TORX_3_8_SQ_DR_REGULAR')
       })
     })
   })
