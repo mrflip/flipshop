@@ -31,9 +31,10 @@ const Helpers = {
 }
 
 export function load<ParamsT, ExtrasT = AnyBag>(pathname: string, extras: ExtrasT = {} as ExtrasT) {
-  const   { dirpath, basename } = Filer.pathinfoFor(pathname) as FM.PathinfoT
-  const   eta = new Eta({ ...BaseConfig, views: dirpath })
-  return  (async (params: ParamsT) => eta.render(basename, {
+  const   pathinfo = Filer.pathinfoFor(pathname)
+  if (! pathinfo.ok) { throw pathinfo.err }
+  const   eta = new Eta({ ...BaseConfig, views: pathinfo.dirpath })
+  return  (async (params: ParamsT) => eta.render(pathinfo.basename, {
     ...Helpers,
     ...extras,
     ...params,

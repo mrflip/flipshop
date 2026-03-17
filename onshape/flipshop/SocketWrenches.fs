@@ -1748,121 +1748,358 @@ const SocketWrenches = {
 };
 
 const SocketWrenchesByFamily = {
-  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Impact, Regular": SocketWrenches.socket_bit.inthex.metric.isq_0500in.impact.reg,
-  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Long"          : SocketWrenches.socket_bit.inthex.metric.isq_0500in.std.long,
-  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Medium"        : SocketWrenches.socket_bit.inthex.metric.isq_0500in.std.midlen,
-  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Regular"       : SocketWrenches.socket_bit.inthex.metric.isq_0500in.std.reg,
-  "Bit Socket, Int Hex Metric, 1/4 Sq.Dr, Regular"       : SocketWrenches.socket_bit.inthex.metric.isq_0250in.std.reg,
-  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Ball End, Long": SocketWrenches.socket_bit.inthex.metric.isq_0375in.ball.long,
-  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Ball End, Regular": SocketWrenches.socket_bit.inthex.metric.isq_0375in.ball.reg,
-  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Impact, Regular": SocketWrenches.socket_bit.inthex.metric.isq_0375in.impact.reg,
-  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Long"          : SocketWrenches.socket_bit.inthex.metric.isq_0375in.std.long,
-  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Medium"        : SocketWrenches.socket_bit.inthex.metric.isq_0375in.std.midlen,
-  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Regular"       : SocketWrenches.socket_bit.inthex.metric.isq_0375in.std.reg,
-  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Impact, Regular"   : SocketWrenches.socket_bit.inthex.us.isq_0500in.impact.reg,
-  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Long"              : SocketWrenches.socket_bit.inthex.us.isq_0500in.std.long,
-  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Medium"            : SocketWrenches.socket_bit.inthex.us.isq_0500in.std.midlen,
-  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Regular"           : SocketWrenches.socket_bit.inthex.us.isq_0500in.std.reg,
-  "Bit Socket, Int Hex US, 1/4 Sq.Dr, Regular"           : SocketWrenches.socket_bit.inthex.us.isq_0250in.std.reg,
-  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Long"    : SocketWrenches.socket_bit.inthex.us.isq_0375in.ball.long,
-  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Regular" : SocketWrenches.socket_bit.inthex.us.isq_0375in.ball.reg,
-  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Impact, Regular"   : SocketWrenches.socket_bit.inthex.us.isq_0375in.impact.reg,
-  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Long"              : SocketWrenches.socket_bit.inthex.us.isq_0375in.std.long,
-  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Medium"            : SocketWrenches.socket_bit.inthex.us.isq_0375in.std.midlen,
-  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Regular"           : SocketWrenches.socket_bit.inthex.us.isq_0375in.std.reg,
-  "Bit Socket, Phillips, 3/8 Sq.Dr, Regular"             : SocketWrenches.socket_bit.phillips.metric.isq_0375in.std.reg,
-  "Bit Socket, Pozidriv, 3/8 Sq.Dr, Regular"             : SocketWrenches.socket_bit.pozidriv.metric.isq_0375in.std.reg,
-  "Bit Socket, Security Torx, 1/2 Sq.Dr, Regular"        : SocketWrenches.socket_bit.torxtp.metric.isq_0500in.std.reg,
-  "Bit Socket, Security Torx, 1/4 Sq.Dr, Regular"        : SocketWrenches.socket_bit.torxtp.metric.isq_0250in.std.reg,
-  "Bit Socket, Security Torx, 3/8 Sq.Dr, Regular"        : SocketWrenches.socket_bit.torxtp.metric.isq_0375in.std.reg,
-  "Bit Socket, Torx, 1/2 Sq.Dr, Regular"                 : SocketWrenches.socket_bit.torx.metric.isq_0500in.std.reg,
-  "Bit Socket, Torx, 1/4 Sq.Dr, Long"                    : SocketWrenches.socket_bit.torx.metric.isq_0250in.std.long,
-  "Bit Socket, Torx, 1/4 Sq.Dr, Regular"                 : SocketWrenches.socket_bit.torx.metric.isq_0250in.std.reg,
-  "Bit Socket, Torx, 3/8 Sq.Dr, Long"                    : SocketWrenches.socket_bit.torx.metric.isq_0375in.std.long,
-  "Bit Socket, Torx, 3/8 Sq.Dr, Regular"                 : SocketWrenches.socket_bit.torx.metric.isq_0375in.std.reg,
-  "Bit Socket, Triple Sq. Metric, 1/2 Sq.Dr, X-Long"     : SocketWrenches.socket_bit.triple_square.metric.isq_0500in.std.xlong,
-  "Bit Socket, Triple Sq. Metric, 3/8 Sq.Dr, Long"       : SocketWrenches.socket_bit.triple_square.metric.isq_0375in.std.long,
-  "Bit Socket, Triple Sq. Metric, 3/8 Sq.Dr, X-Long"     : SocketWrenches.socket_bit.triple_square.metric.isq_0375in.std.xlong,
-  "Bolt Socket, 12-Point US, 1 Sq.Dr, Regular"           : SocketWrenches.socket_exthex.extstar12.us.isq_1000in.std.reg,
-  "Bolt Socket, 12-Point US, 1/2 Sq.Dr, Deep"            : SocketWrenches.socket_exthex.extstar12.us.isq_0500in.std.deep,
-  "Bolt Socket, 12-Point US, 1/2 Sq.Dr, Regular"         : SocketWrenches.socket_exthex.extstar12.us.isq_0500in.std.reg,
-  "Bolt Socket, 12-Point US, 1/4 Sq.Dr, Deep"            : SocketWrenches.socket_exthex.extstar12.us.isq_0250in.std.deep,
-  "Bolt Socket, 12-Point US, 1/4 Sq.Dr, Regular"         : SocketWrenches.socket_exthex.extstar12.us.isq_0250in.std.reg,
-  "Bolt Socket, 12-Point US, 3/4 Sq.Dr, Regular"         : SocketWrenches.socket_exthex.extstar12.us.isq_0750in.std.reg,
-  "Bolt Socket, 12-Point US, 3/8 Sq.Dr, Deep"            : SocketWrenches.socket_exthex.extstar12.us.isq_0375in.std.deep,
-  "Bolt Socket, 12-Point US, 3/8 Sq.Dr, Regular"         : SocketWrenches.socket_exthex.extstar12.us.isq_0375in.std.reg,
-  "Bolt Socket, 12-Point, 1/2 Sq.Dr, Deep"               : SocketWrenches.socket_exthex.extstar12.metric.isq_0500in.std.deep,
-  "Bolt Socket, 12-Point, 1/2 Sq.Dr, Regular"            : SocketWrenches.socket_exthex.extstar12.metric.isq_0500in.std.reg,
-  "Bolt Socket, 12-Point, 1/4 Sq.Dr, Deep"               : SocketWrenches.socket_exthex.extstar12.metric.isq_0250in.std.deep,
-  "Bolt Socket, 12-Point, 1/4 Sq.Dr, Regular"            : SocketWrenches.socket_exthex.extstar12.metric.isq_0250in.std.reg,
-  "Bolt Socket, 12-Point, 3/4 Sq.Dr, Regular"            : SocketWrenches.socket_exthex.extstar12.metric.isq_0750in.std.reg,
-  "Bolt Socket, 12-Point, 3/8 Sq.Dr, Deep"               : SocketWrenches.socket_exthex.extstar12.metric.isq_0375in.std.deep,
-  "Bolt Socket, 12-Point, 3/8 Sq.Dr, Regular"            : SocketWrenches.socket_exthex.extstar12.metric.isq_0375in.std.reg,
-  "Bolt Socket, 6-Point Metric, 1 Sq.Dr, Impact, Regular": SocketWrenches.socket_exthex.exthex.metric.isq_1000in.impact.reg,
-  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Deep"         : SocketWrenches.socket_exthex.exthex.metric.isq_0500in.std.deep,
-  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, Deep" : SocketWrenches.socket_exthex.exthex.metric.isq_0500in.impact.deep,
-  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.impact.reg,
+  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Impact, Regular":         SocketWrenches.socket_bit.inthex.metric.isq_0500in.impact.reg,
+  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Long":                    SocketWrenches.socket_bit.inthex.metric.isq_0500in.std.long,
+  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Medium":                  SocketWrenches.socket_bit.inthex.metric.isq_0500in.std.midlen,
+  "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Regular":                 SocketWrenches.socket_bit.inthex.metric.isq_0500in.std.reg,
+  "Bit Socket, Int Hex Metric, 1/4 Sq.Dr, Regular":                 SocketWrenches.socket_bit.inthex.metric.isq_0250in.std.reg,
+  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Ball End, Long":          SocketWrenches.socket_bit.inthex.metric.isq_0375in.ball.long,
+  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Ball End, Regular":       SocketWrenches.socket_bit.inthex.metric.isq_0375in.ball.reg,
+  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Impact, Regular":         SocketWrenches.socket_bit.inthex.metric.isq_0375in.impact.reg,
+  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Long":                    SocketWrenches.socket_bit.inthex.metric.isq_0375in.std.long,
+  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Medium":                  SocketWrenches.socket_bit.inthex.metric.isq_0375in.std.midlen,
+  "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Regular":                 SocketWrenches.socket_bit.inthex.metric.isq_0375in.std.reg,
+  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Impact, Regular":             SocketWrenches.socket_bit.inthex.us.isq_0500in.impact.reg,
+  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Long":                        SocketWrenches.socket_bit.inthex.us.isq_0500in.std.long,
+  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Medium":                      SocketWrenches.socket_bit.inthex.us.isq_0500in.std.midlen,
+  "Bit Socket, Int Hex US, 1/2 Sq.Dr, Regular":                     SocketWrenches.socket_bit.inthex.us.isq_0500in.std.reg,
+  "Bit Socket, Int Hex US, 1/4 Sq.Dr, Regular":                     SocketWrenches.socket_bit.inthex.us.isq_0250in.std.reg,
+  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Long":              SocketWrenches.socket_bit.inthex.us.isq_0375in.ball.long,
+  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Regular":           SocketWrenches.socket_bit.inthex.us.isq_0375in.ball.reg,
+  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Impact, Regular":             SocketWrenches.socket_bit.inthex.us.isq_0375in.impact.reg,
+  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Long":                        SocketWrenches.socket_bit.inthex.us.isq_0375in.std.long,
+  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Medium":                      SocketWrenches.socket_bit.inthex.us.isq_0375in.std.midlen,
+  "Bit Socket, Int Hex US, 3/8 Sq.Dr, Regular":                     SocketWrenches.socket_bit.inthex.us.isq_0375in.std.reg,
+  "Bit Socket, Phillips, 3/8 Sq.Dr, Regular":                       SocketWrenches.socket_bit.phillips.metric.isq_0375in.std.reg,
+  "Bit Socket, Pozidriv, 3/8 Sq.Dr, Regular":                       SocketWrenches.socket_bit.pozidriv.metric.isq_0375in.std.reg,
+  "Bit Socket, Security Torx, 1/2 Sq.Dr, Regular":                  SocketWrenches.socket_bit.torxtp.metric.isq_0500in.std.reg,
+  "Bit Socket, Security Torx, 1/4 Sq.Dr, Regular":                  SocketWrenches.socket_bit.torxtp.metric.isq_0250in.std.reg,
+  "Bit Socket, Security Torx, 3/8 Sq.Dr, Regular":                  SocketWrenches.socket_bit.torxtp.metric.isq_0375in.std.reg,
+  "Bit Socket, Torx, 1/2 Sq.Dr, Regular":                           SocketWrenches.socket_bit.torx.metric.isq_0500in.std.reg,
+  "Bit Socket, Torx, 1/4 Sq.Dr, Long":                              SocketWrenches.socket_bit.torx.metric.isq_0250in.std.long,
+  "Bit Socket, Torx, 1/4 Sq.Dr, Regular":                           SocketWrenches.socket_bit.torx.metric.isq_0250in.std.reg,
+  "Bit Socket, Torx, 3/8 Sq.Dr, Long":                              SocketWrenches.socket_bit.torx.metric.isq_0375in.std.long,
+  "Bit Socket, Torx, 3/8 Sq.Dr, Regular":                           SocketWrenches.socket_bit.torx.metric.isq_0375in.std.reg,
+  "Bit Socket, Triple Sq. Metric, 1/2 Sq.Dr, X-Long":               SocketWrenches.socket_bit.triple_square.metric.isq_0500in.std.xlong,
+  "Bit Socket, Triple Sq. Metric, 3/8 Sq.Dr, Long":                 SocketWrenches.socket_bit.triple_square.metric.isq_0375in.std.long,
+  "Bit Socket, Triple Sq. Metric, 3/8 Sq.Dr, X-Long":               SocketWrenches.socket_bit.triple_square.metric.isq_0375in.std.xlong,
+  "Bolt Socket, 12-Point US, 1 Sq.Dr, Regular":                     SocketWrenches.socket_exthex.extstar12.us.isq_1000in.std.reg,
+  "Bolt Socket, 12-Point US, 1/2 Sq.Dr, Deep":                      SocketWrenches.socket_exthex.extstar12.us.isq_0500in.std.deep,
+  "Bolt Socket, 12-Point US, 1/2 Sq.Dr, Regular":                   SocketWrenches.socket_exthex.extstar12.us.isq_0500in.std.reg,
+  "Bolt Socket, 12-Point US, 1/4 Sq.Dr, Deep":                      SocketWrenches.socket_exthex.extstar12.us.isq_0250in.std.deep,
+  "Bolt Socket, 12-Point US, 1/4 Sq.Dr, Regular":                   SocketWrenches.socket_exthex.extstar12.us.isq_0250in.std.reg,
+  "Bolt Socket, 12-Point US, 3/4 Sq.Dr, Regular":                   SocketWrenches.socket_exthex.extstar12.us.isq_0750in.std.reg,
+  "Bolt Socket, 12-Point US, 3/8 Sq.Dr, Deep":                      SocketWrenches.socket_exthex.extstar12.us.isq_0375in.std.deep,
+  "Bolt Socket, 12-Point US, 3/8 Sq.Dr, Regular":                   SocketWrenches.socket_exthex.extstar12.us.isq_0375in.std.reg,
+  "Bolt Socket, 12-Point, 1/2 Sq.Dr, Deep":                         SocketWrenches.socket_exthex.extstar12.metric.isq_0500in.std.deep,
+  "Bolt Socket, 12-Point, 1/2 Sq.Dr, Regular":                      SocketWrenches.socket_exthex.extstar12.metric.isq_0500in.std.reg,
+  "Bolt Socket, 12-Point, 1/4 Sq.Dr, Deep":                         SocketWrenches.socket_exthex.extstar12.metric.isq_0250in.std.deep,
+  "Bolt Socket, 12-Point, 1/4 Sq.Dr, Regular":                      SocketWrenches.socket_exthex.extstar12.metric.isq_0250in.std.reg,
+  "Bolt Socket, 12-Point, 3/4 Sq.Dr, Regular":                      SocketWrenches.socket_exthex.extstar12.metric.isq_0750in.std.reg,
+  "Bolt Socket, 12-Point, 3/8 Sq.Dr, Deep":                         SocketWrenches.socket_exthex.extstar12.metric.isq_0375in.std.deep,
+  "Bolt Socket, 12-Point, 3/8 Sq.Dr, Regular":                      SocketWrenches.socket_exthex.extstar12.metric.isq_0375in.std.reg,
+  "Bolt Socket, 6-Point Metric, 1 Sq.Dr, Impact, Regular":          SocketWrenches.socket_exthex.exthex.metric.isq_1000in.impact.reg,
+  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Deep":                   SocketWrenches.socket_exthex.exthex.metric.isq_0500in.std.deep,
+  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, Deep":           SocketWrenches.socket_exthex.exthex.metric.isq_0500in.impact.deep,
+  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, Regular":        SocketWrenches.socket_exthex.exthex.metric.isq_0500in.impact.reg,
   "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, U-Joint Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.impact.uj_reg,
-  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Regular"      : SocketWrenches.socket_exthex.exthex.metric.isq_0500in.std.reg,
-  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Deep"         : SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.deep,
-  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Impact, Deep" : SocketWrenches.socket_exthex.exthex.metric.isq_0250in.impact.deep,
-  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Impact, Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.impact.reg,
-  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Medium"       : SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.midlen,
-  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Regular"      : SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.reg,
-  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, U-Joint Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.uj_reg,
-  "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Deep"         : SocketWrenches.socket_exthex.exthex.metric.isq_0750in.std.deep,
-  "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Deep" : SocketWrenches.socket_exthex.exthex.metric.isq_0750in.impact.deep,
-  "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0750in.impact.reg,
-  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Deep"         : SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.deep,
-  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Deep" : SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.deep,
-  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.reg,
+  "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Regular":                SocketWrenches.socket_exthex.exthex.metric.isq_0500in.std.reg,
+  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Deep":                   SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.deep,
+  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Impact, Deep":           SocketWrenches.socket_exthex.exthex.metric.isq_0250in.impact.deep,
+  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Impact, Regular":        SocketWrenches.socket_exthex.exthex.metric.isq_0250in.impact.reg,
+  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Medium":                 SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.midlen,
+  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Regular":                SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.reg,
+  "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, U-Joint Regular":        SocketWrenches.socket_exthex.exthex.metric.isq_0250in.std.uj_reg,
+  "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Deep":                   SocketWrenches.socket_exthex.exthex.metric.isq_0750in.std.deep,
+  "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Deep":           SocketWrenches.socket_exthex.exthex.metric.isq_0750in.impact.deep,
+  "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Regular":        SocketWrenches.socket_exthex.exthex.metric.isq_0750in.impact.reg,
+  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Deep":                   SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.deep,
+  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Deep":           SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.deep,
+  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Regular":        SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.reg,
   "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, U-Joint Extended": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.uj_ext,
   "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, U-Joint Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.impact.uj_reg,
-  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Medium"       : SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.midlen,
-  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Regular"      : SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.reg,
-  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, U-Joint Regular": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.uj_reg,
-  "Bolt Socket, 6-Point US, 1 Sq.Dr, Impact, Deep"       : SocketWrenches.socket_exthex.exthex.us.isq_1000in.impact.deep,
-  "Bolt Socket, 6-Point US, 1 Sq.Dr, Impact, Regular"    : SocketWrenches.socket_exthex.exthex.us.isq_1000in.impact.reg,
-  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Deep"             : SocketWrenches.socket_exthex.exthex.us.isq_0500in.std.deep,
-  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, Deep"     : SocketWrenches.socket_exthex.exthex.us.isq_0500in.impact.deep,
-  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, Regular"  : SocketWrenches.socket_exthex.exthex.us.isq_0500in.impact.reg,
-  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, U-Joint Regular": SocketWrenches.socket_exthex.exthex.us.isq_0500in.impact.uj_reg,
-  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Regular"          : SocketWrenches.socket_exthex.exthex.us.isq_0500in.std.reg,
-  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Deep"             : SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.deep,
-  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Impact, Deep"     : SocketWrenches.socket_exthex.exthex.us.isq_0250in.impact.deep,
-  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Impact, Regular"  : SocketWrenches.socket_exthex.exthex.us.isq_0250in.impact.reg,
-  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Medium"           : SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.midlen,
-  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Regular"          : SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.reg,
-  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, U-Joint Regular"  : SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.uj_reg,
-  "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Deep"             : SocketWrenches.socket_exthex.exthex.us.isq_0750in.std.deep,
-  "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Impact, Deep"     : SocketWrenches.socket_exthex.exthex.us.isq_0750in.impact.deep,
-  "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Impact, Regular"  : SocketWrenches.socket_exthex.exthex.us.isq_0750in.impact.reg,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Deep"             : SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.deep,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, Deep"     : SocketWrenches.socket_exthex.exthex.us.isq_0375in.impact.deep,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, Regular"  : SocketWrenches.socket_exthex.exthex.us.isq_0375in.impact.reg,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, U-Joint Regular": SocketWrenches.socket_exthex.exthex.us.isq_0375in.impact.uj_reg,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Medium"           : SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.midlen,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Regular"          : SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.reg,
-  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, U-Joint Regular"  : SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.uj_reg,
-  "Socket Adapter, US, 1 Sq.Dr, Impact"                  : SocketWrenches.socket_adapter.intsq.us.isq_1000in.impact.other,
-  "Socket Adapter, US, 1/2 Sq.Dr, Impact"                : SocketWrenches.socket_adapter.intsq.us.isq_0500in.impact.other,
-  "Socket Adapter, US, 1/4 Sq.Dr, Impact"                : SocketWrenches.socket_adapter.intsq.us.isq_0250in.impact.other,
-  "Socket Adapter, US, 3/4 Sq.Dr, Impact"                : SocketWrenches.socket_adapter.intsq.us.isq_0750in.impact.other,
-  "Socket Adapter, US, 3/8 Sq.Dr, Impact"                : SocketWrenches.socket_adapter.intsq.us.isq_0375in.impact.other,
-  "Socket Extension, US, 1 Sq.Dr, Impact"                : SocketWrenches.socket_extension.intsq.us.isq_1000in.impact.other,
-  "Socket Extension, US, 1/2 Sq.Dr"                      : SocketWrenches.socket_extension.intsq.us.isq_0500in.std.other,
-  "Socket Extension, US, 1/2 Sq.Dr, Impact"              : SocketWrenches.socket_extension.intsq.us.isq_0500in.impact.other,
-  "Socket Extension, US, 1/4 Sq.Dr, Impact"              : SocketWrenches.socket_extension.intsq.us.isq_0250in.impact.other,
-  "Socket Extension, US, 3/4 Sq.Dr, Impact"              : SocketWrenches.socket_extension.intsq.us.isq_0750in.impact.other,
-  "Socket Extension, US, 3/8 Sq.Dr, Impact"              : SocketWrenches.socket_extension.intsq.us.isq_0375in.impact.other,
-  "Socket U-Joint, US, 1 Sq.Dr, Impact"                  : SocketWrenches.socket_ujoint.intsq.us.isq_1000in.impact.other,
-  "Socket U-Joint, US, 1/2 Sq.Dr, Impact"                : SocketWrenches.socket_ujoint.intsq.us.isq_0500in.impact.other,
-  "Socket U-Joint, US, 1/4 Sq.Dr, Impact"                : SocketWrenches.socket_ujoint.intsq.us.isq_0250in.impact.other,
-  "Socket U-Joint, US, 3/4 Sq.Dr, Impact"                : SocketWrenches.socket_ujoint.intsq.us.isq_0750in.impact.other,
-  "Socket U-Joint, US, 3/8 Sq.Dr, Impact"                : SocketWrenches.socket_ujoint.intsq.us.isq_0375in.impact.other,
-  "Spark Plug Socket, 6-Point US, 3/8 Sq.Dr, Regular"    : SocketWrenches.socket_sparkplug.exthex.us.isq_0375in.std.reg,
-  "Star Socket, Ext Torx, 1/2 Sq.Dr, Regular"            : SocketWrenches.socket_extstar.extstar.metric.isq_0500in.std.reg,
-  "Star Socket, Ext Torx, 1/4 Sq.Dr, Deep"               : SocketWrenches.socket_extstar.extstar.metric.isq_0250in.std.deep,
-  "Star Socket, Ext Torx, 1/4 Sq.Dr, Regular"            : SocketWrenches.socket_extstar.extstar.metric.isq_0250in.std.reg,
-  "Star Socket, Ext Torx, 3/8 Sq.Dr, Regular"            : SocketWrenches.socket_extstar.extstar.metric.isq_0375in.std.reg
+  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Medium":                 SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.midlen,
+  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Regular":                SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.reg,
+  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, U-Joint Regular":        SocketWrenches.socket_exthex.exthex.metric.isq_0375in.std.uj_reg,
+  "Bolt Socket, 6-Point US, 1 Sq.Dr, Impact, Deep":                 SocketWrenches.socket_exthex.exthex.us.isq_1000in.impact.deep,
+  "Bolt Socket, 6-Point US, 1 Sq.Dr, Impact, Regular":              SocketWrenches.socket_exthex.exthex.us.isq_1000in.impact.reg,
+  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Deep":                       SocketWrenches.socket_exthex.exthex.us.isq_0500in.std.deep,
+  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, Deep":               SocketWrenches.socket_exthex.exthex.us.isq_0500in.impact.deep,
+  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, Regular":            SocketWrenches.socket_exthex.exthex.us.isq_0500in.impact.reg,
+  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, U-Joint Regular":    SocketWrenches.socket_exthex.exthex.us.isq_0500in.impact.uj_reg,
+  "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Regular":                    SocketWrenches.socket_exthex.exthex.us.isq_0500in.std.reg,
+  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Deep":                       SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.deep,
+  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Impact, Deep":               SocketWrenches.socket_exthex.exthex.us.isq_0250in.impact.deep,
+  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Impact, Regular":            SocketWrenches.socket_exthex.exthex.us.isq_0250in.impact.reg,
+  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Medium":                     SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.midlen,
+  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Regular":                    SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.reg,
+  "Bolt Socket, 6-Point US, 1/4 Sq.Dr, U-Joint Regular":            SocketWrenches.socket_exthex.exthex.us.isq_0250in.std.uj_reg,
+  "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Deep":                       SocketWrenches.socket_exthex.exthex.us.isq_0750in.std.deep,
+  "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Impact, Deep":               SocketWrenches.socket_exthex.exthex.us.isq_0750in.impact.deep,
+  "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Impact, Regular":            SocketWrenches.socket_exthex.exthex.us.isq_0750in.impact.reg,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Deep":                       SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.deep,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, Deep":               SocketWrenches.socket_exthex.exthex.us.isq_0375in.impact.deep,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, Regular":            SocketWrenches.socket_exthex.exthex.us.isq_0375in.impact.reg,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, U-Joint Regular":    SocketWrenches.socket_exthex.exthex.us.isq_0375in.impact.uj_reg,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Medium":                     SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.midlen,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Regular":                    SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.reg,
+  "Bolt Socket, 6-Point US, 3/8 Sq.Dr, U-Joint Regular":            SocketWrenches.socket_exthex.exthex.us.isq_0375in.std.uj_reg,
+  "Socket Adapter, US, 1 Sq.Dr, Impact":                            SocketWrenches.socket_adapter.intsq.us.isq_1000in.impact.other,
+  "Socket Adapter, US, 1/2 Sq.Dr, Impact":                          SocketWrenches.socket_adapter.intsq.us.isq_0500in.impact.other,
+  "Socket Adapter, US, 1/4 Sq.Dr, Impact":                          SocketWrenches.socket_adapter.intsq.us.isq_0250in.impact.other,
+  "Socket Adapter, US, 3/4 Sq.Dr, Impact":                          SocketWrenches.socket_adapter.intsq.us.isq_0750in.impact.other,
+  "Socket Adapter, US, 3/8 Sq.Dr, Impact":                          SocketWrenches.socket_adapter.intsq.us.isq_0375in.impact.other,
+  "Socket Extension, US, 1 Sq.Dr, Impact":                          SocketWrenches.socket_extension.intsq.us.isq_1000in.impact.other,
+  "Socket Extension, US, 1/2 Sq.Dr":                                SocketWrenches.socket_extension.intsq.us.isq_0500in.std.other,
+  "Socket Extension, US, 1/2 Sq.Dr, Impact":                        SocketWrenches.socket_extension.intsq.us.isq_0500in.impact.other,
+  "Socket Extension, US, 1/4 Sq.Dr, Impact":                        SocketWrenches.socket_extension.intsq.us.isq_0250in.impact.other,
+  "Socket Extension, US, 3/4 Sq.Dr, Impact":                        SocketWrenches.socket_extension.intsq.us.isq_0750in.impact.other,
+  "Socket Extension, US, 3/8 Sq.Dr, Impact":                        SocketWrenches.socket_extension.intsq.us.isq_0375in.impact.other,
+  "Socket U-Joint, US, 1 Sq.Dr, Impact":                            SocketWrenches.socket_ujoint.intsq.us.isq_1000in.impact.other,
+  "Socket U-Joint, US, 1/2 Sq.Dr, Impact":                          SocketWrenches.socket_ujoint.intsq.us.isq_0500in.impact.other,
+  "Socket U-Joint, US, 1/4 Sq.Dr, Impact":                          SocketWrenches.socket_ujoint.intsq.us.isq_0250in.impact.other,
+  "Socket U-Joint, US, 3/4 Sq.Dr, Impact":                          SocketWrenches.socket_ujoint.intsq.us.isq_0750in.impact.other,
+  "Socket U-Joint, US, 3/8 Sq.Dr, Impact":                          SocketWrenches.socket_ujoint.intsq.us.isq_0375in.impact.other,
+  "Spark Plug Socket, 6-Point US, 3/8 Sq.Dr, Regular":              SocketWrenches.socket_sparkplug.exthex.us.isq_0375in.std.reg,
+  "Star Socket, Ext Torx, 1/2 Sq.Dr, Regular":                      SocketWrenches.socket_extstar.extstar.metric.isq_0500in.std.reg,
+  "Star Socket, Ext Torx, 1/4 Sq.Dr, Deep":                         SocketWrenches.socket_extstar.extstar.metric.isq_0250in.std.deep,
+  "Star Socket, Ext Torx, 1/4 Sq.Dr, Regular":                      SocketWrenches.socket_extstar.extstar.metric.isq_0250in.std.reg,
+  "Star Socket, Ext Torx, 3/8 Sq.Dr, Regular":                      SocketWrenches.socket_extstar.extstar.metric.isq_0375in.std.reg
 };
+
+export enum SocketFamilyEnum {
+  annotation { "Name": "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Impact, Regular" }
+  BIT_SOCKET_INT_HEX_METRIC_1_2_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Long" }
+  BIT_SOCKET_INT_HEX_METRIC_1_2_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Medium" }
+  BIT_SOCKET_INT_HEX_METRIC_1_2_SQ_DR_MEDIUM,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 1/2 Sq.Dr, Regular" }
+  BIT_SOCKET_INT_HEX_METRIC_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 1/4 Sq.Dr, Regular" }
+  BIT_SOCKET_INT_HEX_METRIC_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Ball End, Long" }
+  BIT_SOCKET_INT_HEX_METRIC_3_8_SQ_DR_BALL_END_LONG,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Ball End, Regular" }
+  BIT_SOCKET_INT_HEX_METRIC_3_8_SQ_DR_BALL_END_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Impact, Regular" }
+  BIT_SOCKET_INT_HEX_METRIC_3_8_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Long" }
+  BIT_SOCKET_INT_HEX_METRIC_3_8_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Medium" }
+  BIT_SOCKET_INT_HEX_METRIC_3_8_SQ_DR_MEDIUM,
+  annotation { "Name": "Bit Socket, Int Hex Metric, 3/8 Sq.Dr, Regular" }
+  BIT_SOCKET_INT_HEX_METRIC_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex US, 1/2 Sq.Dr, Impact, Regular" }
+  BIT_SOCKET_INT_HEX_US_1_2_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex US, 1/2 Sq.Dr, Long" }
+  BIT_SOCKET_INT_HEX_US_1_2_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Int Hex US, 1/2 Sq.Dr, Medium" }
+  BIT_SOCKET_INT_HEX_US_1_2_SQ_DR_MEDIUM,
+  annotation { "Name": "Bit Socket, Int Hex US, 1/2 Sq.Dr, Regular" }
+  BIT_SOCKET_INT_HEX_US_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex US, 1/4 Sq.Dr, Regular" }
+  BIT_SOCKET_INT_HEX_US_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Long" }
+  BIT_SOCKET_INT_HEX_US_3_8_SQ_DR_BALL_END_LONG,
+  annotation { "Name": "Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Regular" }
+  BIT_SOCKET_INT_HEX_US_3_8_SQ_DR_BALL_END_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex US, 3/8 Sq.Dr, Impact, Regular" }
+  BIT_SOCKET_INT_HEX_US_3_8_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bit Socket, Int Hex US, 3/8 Sq.Dr, Long" }
+  BIT_SOCKET_INT_HEX_US_3_8_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Int Hex US, 3/8 Sq.Dr, Medium" }
+  BIT_SOCKET_INT_HEX_US_3_8_SQ_DR_MEDIUM,
+  annotation { "Name": "Bit Socket, Int Hex US, 3/8 Sq.Dr, Regular" }
+  BIT_SOCKET_INT_HEX_US_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Phillips, 3/8 Sq.Dr, Regular" }
+  BIT_SOCKET_PHILLIPS_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Pozidriv, 3/8 Sq.Dr, Regular" }
+  BIT_SOCKET_POZIDRIV_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Security Torx, 1/2 Sq.Dr, Regular" }
+  BIT_SOCKET_SECURITY_TORX_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Security Torx, 1/4 Sq.Dr, Regular" }
+  BIT_SOCKET_SECURITY_TORX_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Security Torx, 3/8 Sq.Dr, Regular" }
+  BIT_SOCKET_SECURITY_TORX_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Torx, 1/2 Sq.Dr, Regular" }
+  BIT_SOCKET_TORX_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Torx, 1/4 Sq.Dr, Long" }
+  BIT_SOCKET_TORX_1_4_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Torx, 1/4 Sq.Dr, Regular" }
+  BIT_SOCKET_TORX_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Torx, 3/8 Sq.Dr, Long" }
+  BIT_SOCKET_TORX_3_8_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Torx, 3/8 Sq.Dr, Regular" }
+  BIT_SOCKET_TORX_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bit Socket, Triple Sq. Metric, 1/2 Sq.Dr, X-Long" }
+  BIT_SOCKET_TRIPLE_SQ_METRIC_1_2_SQ_DR_X_LONG,
+  annotation { "Name": "Bit Socket, Triple Sq. Metric, 3/8 Sq.Dr, Long" }
+  BIT_SOCKET_TRIPLE_SQ_METRIC_3_8_SQ_DR_LONG,
+  annotation { "Name": "Bit Socket, Triple Sq. Metric, 3/8 Sq.Dr, X-Long" }
+  BIT_SOCKET_TRIPLE_SQ_METRIC_3_8_SQ_DR_X_LONG,
+  annotation { "Name": "Bolt Socket, 12-Point US, 1 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_US_1_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point US, 1/2 Sq.Dr, Deep" }
+  BOLT_SOCKET_12_POINT_US_1_2_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 12-Point US, 1/2 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_US_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point US, 1/4 Sq.Dr, Deep" }
+  BOLT_SOCKET_12_POINT_US_1_4_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 12-Point US, 1/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_US_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point US, 3/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_US_3_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point US, 3/8 Sq.Dr, Deep" }
+  BOLT_SOCKET_12_POINT_US_3_8_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 12-Point US, 3/8 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_US_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point, 1/2 Sq.Dr, Deep" }
+  BOLT_SOCKET_12_POINT_1_2_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 12-Point, 1/2 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point, 1/4 Sq.Dr, Deep" }
+  BOLT_SOCKET_12_POINT_1_4_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 12-Point, 1/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point, 3/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_3_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 12-Point, 3/8 Sq.Dr, Deep" }
+  BOLT_SOCKET_12_POINT_3_8_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 12-Point, 3/8 Sq.Dr, Regular" }
+  BOLT_SOCKET_12_POINT_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_1_2_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_1_2_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_2_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Impact, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_2_SQ_DR_IMPACT_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/2 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_1_4_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_1_4_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_4_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Medium" }
+  BOLT_SOCKET_6_POINT_METRIC_1_4_SQ_DR_MEDIUM,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 1/4 Sq.Dr, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_1_4_SQ_DR_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_3_4_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_3_4_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_3_4_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, U-Joint Extended" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_IMPACT_U_JOINT_EXTENDED,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Impact, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_IMPACT_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Medium" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_MEDIUM,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_US_1_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_US_1_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_US_1_2_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_US_1_2_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_US_1_2_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Impact, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_US_1_2_SQ_DR_IMPACT_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/2 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_US_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Medium" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_MEDIUM,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 1/4 Sq.Dr, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_US_1_4_SQ_DR_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_US_3_4_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_US_3_4_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/4 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_US_3_4_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Deep" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, Deep" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_IMPACT_DEEP,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, Regular" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_IMPACT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Impact, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_IMPACT_U_JOINT_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Medium" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_MEDIUM,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, Regular" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Bolt Socket, 6-Point US, 3/8 Sq.Dr, U-Joint Regular" }
+  BOLT_SOCKET_6_POINT_US_3_8_SQ_DR_U_JOINT_REGULAR,
+  annotation { "Name": "Socket Adapter, US, 1 Sq.Dr, Impact" }
+  SOCKET_ADAPTER_US_1_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Adapter, US, 1/2 Sq.Dr, Impact" }
+  SOCKET_ADAPTER_US_1_2_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Adapter, US, 1/4 Sq.Dr, Impact" }
+  SOCKET_ADAPTER_US_1_4_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Adapter, US, 3/4 Sq.Dr, Impact" }
+  SOCKET_ADAPTER_US_3_4_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Adapter, US, 3/8 Sq.Dr, Impact" }
+  SOCKET_ADAPTER_US_3_8_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Extension, US, 1 Sq.Dr, Impact" }
+  SOCKET_EXTENSION_US_1_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Extension, US, 1/2 Sq.Dr" }
+  SOCKET_EXTENSION_US_1_2_SQ_DR,
+  annotation { "Name": "Socket Extension, US, 1/2 Sq.Dr, Impact" }
+  SOCKET_EXTENSION_US_1_2_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Extension, US, 1/4 Sq.Dr, Impact" }
+  SOCKET_EXTENSION_US_1_4_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Extension, US, 3/4 Sq.Dr, Impact" }
+  SOCKET_EXTENSION_US_3_4_SQ_DR_IMPACT,
+  annotation { "Name": "Socket Extension, US, 3/8 Sq.Dr, Impact" }
+  SOCKET_EXTENSION_US_3_8_SQ_DR_IMPACT,
+  annotation { "Name": "Socket U-Joint, US, 1 Sq.Dr, Impact" }
+  SOCKET_U_JOINT_US_1_SQ_DR_IMPACT,
+  annotation { "Name": "Socket U-Joint, US, 1/2 Sq.Dr, Impact" }
+  SOCKET_U_JOINT_US_1_2_SQ_DR_IMPACT,
+  annotation { "Name": "Socket U-Joint, US, 1/4 Sq.Dr, Impact" }
+  SOCKET_U_JOINT_US_1_4_SQ_DR_IMPACT,
+  annotation { "Name": "Socket U-Joint, US, 3/4 Sq.Dr, Impact" }
+  SOCKET_U_JOINT_US_3_4_SQ_DR_IMPACT,
+  annotation { "Name": "Socket U-Joint, US, 3/8 Sq.Dr, Impact" }
+  SOCKET_U_JOINT_US_3_8_SQ_DR_IMPACT,
+  annotation { "Name": "Spark Plug Socket, 6-Point US, 3/8 Sq.Dr, Regular" }
+  SPARK_PLUG_SOCKET_6_POINT_US_3_8_SQ_DR_REGULAR,
+  annotation { "Name": "Star Socket, Ext Torx, 1/2 Sq.Dr, Regular" }
+  STAR_SOCKET_EXT_TORX_1_2_SQ_DR_REGULAR,
+  annotation { "Name": "Star Socket, Ext Torx, 1/4 Sq.Dr, Deep" }
+  STAR_SOCKET_EXT_TORX_1_4_SQ_DR_DEEP,
+  annotation { "Name": "Star Socket, Ext Torx, 1/4 Sq.Dr, Regular" }
+  STAR_SOCKET_EXT_TORX_1_4_SQ_DR_REGULAR,
+  annotation { "Name": "Star Socket, Ext Torx, 3/8 Sq.Dr, Regular" }
+  STAR_SOCKET_EXT_TORX_3_8_SQ_DR_REGULAR
+}
