@@ -1,12 +1,13 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5cd59b5bd62cc2b2cdf950db");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "146bbe88c26a4a3a41774202");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
 
 const hugeSizeVal = 1000000;
 const tinySizeVal = 0.001;
+const zero        = 0 * millimeter;
 
 annotation { "Feature Type Name": "Socket Cell Cutter" }
 export const socketCellCutter = defineFeature(function(context is Context, id is Id, definition is map)
@@ -14,13 +15,8 @@ precondition {
   annotation { "Name":  "Reference plane", "Filter":  QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks":  1 }
   definition.referencePlane is Query;
 
-  // Pull-down of family titles from SocketWrenchesByFamily keys
-  annotation { "Name":  "Socket family", "Default": SocketFamilyEnum.S_6_POINT_MM_3_8DR_REGULAR  }
-  definition.socketFamily is SocketFamilyEnum;
-
-  // Pull-down of sizings within the selected family
-  annotation { "Name":  "Socket sizing", "Default":  "10mm" }
-  definition.socketSizing is string;
+  annotation { "Name" : "Socket Selection", "Lookup Table" : SocketWrenches3 }
+  definition.socketPath is LookupTablePath;
 
   annotation { "Name":  "Layer height" }
   isLength(definition.layerHeight,   {(millimeter) : [tinySizeVal, 4.55, hugeSizeVal]} as LengthBoundSpec);
@@ -29,24 +25,27 @@ precondition {
   isLength(definition.insertionGap, {(millimeter) : [0, 0.3, hugeSizeVal]} as LengthBoundSpec);
 }
 {
-  const params = socketHolderCellParams(context, definition);
+  const socketParams = socketCellParams(context, definition);
   const ids = {
-    "boundingBoxes":  id + "boundingBoxes",
-    "cutoutShapes":   id + "cutoutShapes",
-    "extrudedCutout": id + "extrudedCutout",
+    boundingBoxes:  id + "boundingBoxes",
+    cutoutShapes:   id + "cutoutShapes",
+    extrudedCutout: id + "extrudedCutout",
   };
 
   const sketchPlane = evPlane(context, { "face":  definition.referencePlane });
+  const bboxesSketch = newSketchOnPlane(context, ids.boundingBoxes, { "sketchPlane":  sketchPlane });
+  const shapesSketch = newSketchOnPlane(context, ids.cutoutShapes,  { "sketchPlane":  sketchPlane });
 
-  drawBoundingBoxes(context, ids.boundingBoxes, sketchPlane, params);
-  drawCutoutShapes(context,  ids.cutoutShapes,  sketchPlane, params);
+  drawBoundingBoxes(context, ids.boundingBoxes, bboxesSketch, socketParams);
+  drawSocketBaseShape(context,  ids.cutoutShapes,  shapesSketch, socketParams.socket, socketParams);
+  skSolve(shapesSketch);
 
   const cutoutFaces = qCreatedBy(ids.cutoutShapes, EntityType.FACE);
   opExtrude(context, ids.extrudedCutout, {
     "entities":  cutoutFaces,
     "direction": sketchPlane.normal,
     "endBound":  BoundingType.BLIND,
-    "endDepth":  params.cutout_depth,
+    "endDepth":  socketParams.cutoutDepth,
   });
 
   setProperty(context, {
@@ -56,52 +55,17 @@ precondition {
   });
 });
 
-function socketHolderCellParams(context, definition is map) returns map {
-  // Look up the sizing map for this family
-  const familySockets = SocketWrenchesByFamily[definition.socketFamily];
-  debug(context, ["BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_REGULAR", definition.socketFamily, SocketWrenchesByFamily[toString(definition.socketFamily)]]);
-  if (familySockets == undefined) { throw regenError("Unknown socket family: " ~ definition.socketFamily); }
-
-  // Look up the specific socket by sizing
-  const socket = familySockets[definition.socketSizing];
-  if (socket == undefined) { throw regenError("Unknown sizing '" ~ definition.socketSizing ~ "' for family '" ~ definition.socketFamily ~ "'"); }
-
-  // wx_overall is always present and equals the outer body diameter
-  const bodyDiam = (socket.wrench_end_diam != undefined) ? socket.wrench_end_diam : socket.wx_overall;
-
-  const insertionGap = definition.insertionGap;
-  const layerHeight  = definition.layerHeight;
-  const cutoutRadius = bodyDiam / 2 + insertionGap;
-  const cutoutDepth  = 2 * layerHeight;
-
-  // Bounding boxes centered at sketch origin
-  const zero     = 0 * millimeter;
-  const nomR     = bodyDiam / 2;
-  const nomBounds = {
-    "minH":  -nomR,        "ctrH":  zero,  "maxH":  nomR,        "sizeH": bodyDiam,
-    "minV":  -nomR,        "ctrV":  zero,  "maxV":  nomR,        "sizeV": bodyDiam,
-  };
-  const cutBounds = {
-    "minH":  -cutoutRadius, "ctrH":  zero,  "maxH":  cutoutRadius, "sizeH": 2 * cutoutRadius,
-    "minV":  -cutoutRadius, "ctrV":  zero,  "maxV":  cutoutRadius, "sizeV": 2 * cutoutRadius,
-  };
-
-  return {
-    "socket":        socket,
-    "body_diam":     bodyDiam,
-    "insertion_gap": insertionGap,
-    "layer_height":  layerHeight,
-    "cutout_radius": cutoutRadius,
-    "cutout_depth":  cutoutDepth,
-    "nom_bounds":    nomBounds,
-    "cut_bounds":    cutBounds,
-  };
+function getSocketFamilyRef(context is Context, keypath is LookupTablePath) {
+  return SocketWrenches2.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant];
 }
 
-function drawBoundingBoxes(context is Context, id is Id, sketchPlane is Plane, params is map) returns builtin {
-  const sketch = newSketchOnPlane(context, id, { "sketchPlane":  sketchPlane });
-  const nb = params.nom_bounds;
-  const cb = params.cut_bounds;
+function getSocketRef(context is Context, keypath is LookupTablePath) {
+  return SocketWrenches3.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant].entries[keypath.sizing];
+}
+
+function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, params is map) returns builtin {
+  const nb = params.nomBounds;
+  const cb = params.cutBounds;
 
   // Nominal body bounding box (construction, matches wrench-end diameter)
   skRectangle(sketch, "nominalBounds", {
@@ -126,21 +90,54 @@ function drawBoundingBoxes(context is Context, id is Id, sketchPlane is Plane, p
   return sketch;
 }
 
-function drawCutoutShapes(context is Context, id is Id, sketchPlane is Plane, params is map) {
-  const sketch = newSketchOnPlane(context, id, { "sketchPlane":  sketchPlane });
-  const center = vector(params.nom_bounds.ctrH, params.nom_bounds.ctrV);
-
+function drawSocketBaseShape(context is Context, id is Id, sketch is Sketch, socket is map, params is map) {
+  const center = vector(params.nomBounds.ctrH, params.nomBounds.ctrV);
   // Nominal wrench-end circle (construction)
-  skCircle(sketch, "wrenchEndCircle", {
-    "center":       center,
-    "radius":       params.body_diam / 2,
-    "construction": true,
-  });
+  skCircle(sketch, "wrenchEndCircle", { "center": center, "radius": params.bodyDiam / 2, "construction": true,  });
   // Cutout circle = wrench-end + insertion gap all around (real region)
-  skCircle(sketch, "cutoutCircle", {
-    "center": center,
-    "radius": params.cutout_radius,
-  });
+  skCircle(sketch, "cutoutCircle",    { "center": center, "radius": params.cutoutRadius });
+}
 
-  skSolve(sketch);
+function socketFamilyCellParams(context, definition is map) returns map {
+  // Look up the specific socket by sizing
+  const socketPath   = definition.socketPath;
+  const socketFamily = getSocketFamilyRef(context, socketPath);
+  debug(context, [definition.socketPath]);
+  if (socketFamily == undefined) { throw regenError("Unknown socket family '" ~ socketPath); }
+
+  return mergeMaps(socketPath, {
+    "socketPath":    socketPath,
+    "socketFamily":  socketFamily,
+    "insertionGap":  definition.insertionGap,
+    "layerHeight":   definition.layerHeight,
+  });
+}
+
+function socketCellParams(context, definition is map) returns map {
+  const socketParams = socketFamilyCellParams(context, definition);
+
+  const socket       = getSocketRef(context, socketParams.socketPath);
+  const bodyDiam     = (socket.wrench_end_diam != undefined) ? socket.wrench_end_diam : socket.wx_overall;
+  const cutoutRadius = bodyDiam / 2 + socketParams.insertionGap;
+  const cutoutDepth  = 2 * socketParams.layerHeight;
+
+  // Bounding boxes centered at sketch origin
+  const nomR      = bodyDiam / 2;
+  const nomBounds = {
+    "minH":  -nomR,        "ctrH":  zero,  "maxH":  nomR,        "sizeH": bodyDiam,
+    "minV":  -nomR,        "ctrV":  zero,  "maxV":  nomR,        "sizeV": bodyDiam,
+  };
+  const cutBounds = {
+    "minH":  -cutoutRadius, "ctrH":  zero,  "maxH":  cutoutRadius, "sizeH": 2 * cutoutRadius,
+    "minV":  -cutoutRadius, "ctrV":  zero,  "maxV":  cutoutRadius, "sizeV": 2 * cutoutRadius,
+  };
+
+  return mergeMaps(socketParams, {
+    "socket":        socket,
+    "bodyDiam":      bodyDiam,
+    "cutoutRadius":  cutoutRadius,
+    "cutoutDepth":   cutoutDepth,
+    "nomBounds":     nomBounds,
+    "cutBounds":    cutBounds,
+  });
 }
