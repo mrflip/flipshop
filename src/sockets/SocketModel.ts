@@ -58,18 +58,18 @@ export class SocketWrench extends Thing implements SocketWrenchT {
    *  socket kind, drive kind, unit system, sq-drive size, socket variant, reach kind.
    *  "Standard" variant and implied-metric drive types are omitted. */
   get familyTitle(): string {
-    const kindTitle          = FE.SocketKindTitles[this.socket_kind]
+    const kindTitle          = /socket_(bit|exthex|extstar)$/.test(this.socket_kind) ? '' : FE.SocketKindTitles[this.socket_kind]
     let   driveTitle: string = FE.SocketDriveTitles[this.drive_kind]
-    const sqDriveTitle        = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
+    const sqDriveTitle       = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
     if (/^socket_(extension|adapter|ujoint)$/.test(this.socket_kind)) { driveTitle = '' } // no sqdrive for extensions or adapters
-    const variantTitle = FE.SocketVariantTitles[this.socket_variant]
     const reachTitle   = FE.SocketReachTitles[this.reach_kind]
+    const variantTitle = FE.SocketVariantTitles[this.socket_variant]
     const unitTitle    = (this.unit_system === 'metric' && SocketWrench.UNIT_IMPLICIT_DRIVES.has(this.drive_kind))
       ? ''
       : FE.UnitSystemTitles[this.unit_system]
-    return [kindTitle, UF.smush(' ', driveTitle, unitTitle), sqDriveTitle, variantTitle, reachTitle]
+    return [kindTitle, driveTitle, unitTitle, sqDriveTitle, reachTitle, variantTitle]
       .filter(Boolean)
-      .join(', ')
+      .join(' ')
   }
 
   toFeaturescript(): string {

@@ -14,10 +14,10 @@ export const socketWrench = CK.obj({
   unit_system:          CK.oneof(FE.UnitSystemVals),
   /** size of the square drive: for Gearwrench, one of the standard US ratchet drive sizes (1/4 in, 3/8 in, 1/2 in, 3/4 in, 1 in) */
   sqdrive_size:         CK.oneof(FE.ToolDriveVals),
-  /** type of variant: standard, impact, ball */
-  socket_variant:       CK.oneof(FE.SocketVariantVals),
   /** type of reach: standard, midlen, deep, long, xlong, other */
   reach_kind:           CK.oneof(FE.SocketReachVals),
+  /** type of variant: standard, impact, ball */
+  socket_variant:       CK.oneof(FE.SocketVariantVals),
   /** type of bit (internal drive sockets); should equal drive_kind */
   bit_kind:             CK.oneof(FE.InternalDriveVals).optional(),
   /** text giving the nominal size of the socket (e.g. "1/4 in", "2 mm", "T10", "E14", "#1", "#00") */

@@ -1,5 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5cd59b5bd62cc2b2cdf950db");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -14,8 +15,8 @@ precondition {
   definition.referencePlane is Query;
 
   // Pull-down of family titles from SocketWrenchesByFamily keys
-  annotation { "Name":  "Socket family", "Default":  "Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Regular" }
-  definition.socketFamily is string;
+  annotation { "Name":  "Socket family", "Default": SocketFamilyEnum.S_6_POINT_MM_3_8DR_REGULAR  }
+  definition.socketFamily is SocketFamilyEnum;
 
   // Pull-down of sizings within the selected family
   annotation { "Name":  "Socket sizing", "Default":  "10mm" }
@@ -28,7 +29,7 @@ precondition {
   isLength(definition.insertionGap, {(millimeter) : [0, 0.3, hugeSizeVal]} as LengthBoundSpec);
 }
 {
-  const params = socketHolderCellParams(definition);
+  const params = socketHolderCellParams(context, definition);
   const ids = {
     "boundingBoxes":  id + "boundingBoxes",
     "cutoutShapes":   id + "cutoutShapes",
@@ -55,9 +56,10 @@ precondition {
   });
 });
 
-function socketHolderCellParams(definition is map) returns map {
+function socketHolderCellParams(context, definition is map) returns map {
   // Look up the sizing map for this family
   const familySockets = SocketWrenchesByFamily[definition.socketFamily];
+  debug(context, ["BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_REGULAR", definition.socketFamily, SocketWrenchesByFamily[toString(definition.socketFamily)]]);
   if (familySockets == undefined) { throw regenError("Unknown socket family: " ~ definition.socketFamily); }
 
   // Look up the specific socket by sizing

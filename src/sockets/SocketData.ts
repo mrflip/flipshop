@@ -17,7 +17,7 @@ export async function loadSocketWrenches(): Promise<TY.Bag<SocketWrench>> {
     const socket = SocketWrench.live(raw)
     SocketWrenchByTitle[socket.title] = socket
     ;(SocketWrenchesByFamily[socket.familyTitle] ??= []).push(socket)
-    const bucket = canhasbucket(SocketWrenches, [socket.socket_kind, socket.drive_kind, socket.unit_system, socket.sqdrive_size, socket.socket_variant, socket.reach_kind])
+    const bucket = canhasbucket(SocketWrenches, [socket.socket_kind, socket.drive_kind, socket.unit_system, socket.sqdrive_size, socket.reach_kind, socket.socket_variant])
     if (bucket[socket.sizing] && (! /^(socket_(sparkplug|ujoint|extension))$/.test(socket.socket_kind))) { console.warn('Duplicate sizing:', socket.sizing, bucket[socket.sizing], socket) }
     bucket[socket.sizing] = socket
   })
@@ -27,7 +27,7 @@ export async function loadSocketWrenches(): Promise<TY.Bag<SocketWrench>> {
 
 /** Converts a family display title to a valid FeatureScript enum identifier (UPPER_SNAKE_CASE). */
 export function familyTitleToEnumKey(title: string): string {
-  return title.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')
+  return 'S_' + title.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')
 }
 
 /** Walks the SocketWrenches tree depth-first; at depth 6 (the sizing map level) records
@@ -66,11 +66,11 @@ export function socketWrenchesToFeaturescript(tree: typeof SocketWrenches): stri
   }
   const familyPaths   = buildFamilyPathMap(tree)
   const sortedEntries = Object.entries(familyPaths).sort(([a], [b]) => a.localeCompare(b))
-  const familyLines   = sortedEntries.map(([title, path]) => `  ${_.padEnd(JSON.stringify(title) + ':', 65)} ${path}`)
-  const familyConst   = `const SocketWrenchesByFamily = {\n${familyLines.join(',\n')}\n};`
+  const familyLines   = sortedEntries.map(([title, path]) => `  SocketFamilyEnum.${_.padEnd(familyTitleToEnumKey(title) + ':', 65)} ${path}`)
+  const familyConst   = `export const SocketWrenchesByFamily = {\n${familyLines.join(',\n')}\n};`
   const enumValues    = sortedEntries.map(([title]) =>
     `  annotation { "Name": ${JSON.stringify(title)} }\n  ${familyTitleToEnumKey(title)}`
   )
   const familyEnum    = `export enum SocketFamilyEnum {\n${enumValues.join(',\n')}\n}`
-  return socketWrenchesFeaturescriptHeader + `\n\nconst SocketWrenches = ${renderNode(tree, 0)};\n\n${familyConst}\n\n${familyEnum}`
+  return socketWrenchesFeaturescriptHeader + `\n\nexport const SocketWrenches = ${renderNode(tree, 0)};\n\n${familyEnum}\n\n${familyConst}`
 }

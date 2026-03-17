@@ -6,17 +6,18 @@ export const drill_title = CK.extkeyish
 
 /** Drive type for square (1/4", 3/8", 1/2") and hex (1/4") drives */
 export const ToolDriveVals   = ['isq_0250in', 'isq_0375in', 'isq_0500in', 'hex_0250in', 'isq_0750in', 'isq_1000in'] as const
+/** Unit system (metric, us) */
+export const UnitSystemVals = ['metric', 'us'] as const
 /** Socket kind (socket_sparkplug, socket_exthex, socket_extstar, socket_bit, socket_extension, socket_ujoint, socket_adapter) */
 export const SocketKindVals  = [
   'socket_sparkplug', 'socket_exthex', 'socket_extstar', 'socket_bit',
   'socket_extension', 'socket_ujoint', 'socket_adapter',
 ] as const
-/** Socket variant (standard, impact, ball) */
-export const SocketVariantVals = ['std', 'impact', 'ball'] as const
 /** Socket reach (standard, midlen, deep, long, xlong, other) */
 export const SocketReachVals = ['reg', 'midlen', 'deep', 'long', 'xlong', 'other', 'uj_reg', 'uj_deep', 'uj_ext'] as const
-/** Unit system (metric, us) */
-export const UnitSystemVals = ['metric', 'us'] as const
+/** Socket variant (standard, impact, ball) */
+export const SocketVariantVals = ['std', 'impact', 'ball'] as const
+
 export const SocketKindTitles = {
   'socket_sparkplug': 'Spark Plug Socket',
   'socket_exthex':    'Bolt Socket',
@@ -33,8 +34,8 @@ export const SocketVariantTitles = {
   'std': '', 'impact': 'Impact', 'ball': 'Ball End',
 } as const
 export const ToolDriveTitles = {
-  'isq_0250in': '1/4 Sq.Dr', 'isq_0375in': '3/8 Sq.Dr', 'isq_0500in': '1/2 Sq.Dr',
-  'hex_0250in': '1/4 Hex.Dr', 'isq_0750in': '3/4 Sq.Dr', 'isq_1000in': '1 Sq.Dr',
+  'isq_0250in': '1/4Dr', 'isq_0375in': '3/8Dr', 'isq_0500in': '1/2Dr',
+  'hex_0250in': '1/4 Hex.Dr', 'isq_0750in': '3/4Dr', 'isq_1000in': '1Dr',
 } as const
 export const FastenerDriveTitles: Record<FastenerDrive, string> = {
   'exthex':        'Hex Bolt',    'extstar':  'Ext Torx',      'extstar12':    '12-Point',
@@ -49,25 +50,25 @@ export const SocketDriveTitles: Record<FastenerDrive, string> = {
   'exthex':        '6-Point',
 }
 export const UnitSystemTitles = {
-  'metric': 'Metric', 'us': 'US',
+  'metric': 'MM', 'us': 'US',
 } as const
 
-/** Tool drive (isq_0250in, isq_0375in, isq_0500in, hex_0250in, isq_0750in, isq_1000in) */
-export const tool_drive      = CK.oneof(ToolDriveVals)
 /** Socket kind (socket_sparkplug, socket_exthex, socket_extstar, socket_bit, socket_extension, socket_ujoint, socket_adapter) */
 export const socket_kind     = CK.oneof(SocketKindVals)
+/** Tool drive (isq_0250in, isq_0375in, isq_0500in, hex_0250in, isq_0750in, isq_1000in) */
+export const tool_drive      = CK.oneof(ToolDriveVals)
+/** Unit system (mm, us) */
+export const unit_system   = CK.oneof(UnitSystemVals)
 /** Socket reach (standard, midlen, deep, long, xlong, other) */
 export const socket_reach    = CK.oneof(SocketReachVals)
 /** Socket variant (standard, impact, ball) */
 export const socket_variant  = CK.oneof(SocketVariantVals)
-/** Unit system (metric, us) */
-export const unit_system   = CK.oneof(UnitSystemVals)
 
-export type  ToolDrive       = typeof ToolDriveVals[number]
 export type SocketKind       = typeof SocketKindVals[number]
+export type ToolDrive        = typeof ToolDriveVals[number]
+export type UnitSystem       = typeof UnitSystemVals[number]
 export type SocketReach      = typeof SocketReachVals[number]
 export type SocketVariant    = typeof SocketVariantVals[number]
-export type UnitSystem       = typeof UnitSystemVals[number]
 
 /** Threading standardization */
 export type  ThreadingStandardization     = typeof ThreadingStandardizationVals[number]

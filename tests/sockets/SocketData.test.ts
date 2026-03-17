@@ -27,23 +27,25 @@ function makeSocket(partial: Partial<SocketWrenchT>): SocketWrench {
 describe('SocketWrench.familyTitle', () => {
   it('bit socket: includes unit system when drive is inthex', () => {
     const s = makeSocket({ socket_kind: 'socket_bit', drive_kind: 'inthex', unit_system: 'us', sqdrive_size: 'isq_0375in', socket_variant: 'ball', reach_kind: 'long' })
-    expect(s.familyTitle).to.equal('Bit Socket, Int Hex US, 3/8 Sq.Dr, Ball End, Long')
+    expect(s.familyTitle).to.equal('Int Hex US 3/8Dr Long Ball End')
   })
   it('bolt socket: includes Metric, omits Standard variant', () => {
     const s = makeSocket({ socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric', sqdrive_size: 'isq_0750in', socket_variant: 'std', reach_kind: 'reg' })
-    expect(s.familyTitle).to.equal('Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Regular')
+    expect(s.familyTitle).to.equal('6-Point MM 3/4Dr Regular')
   })
   it('bolt socket: includes Impact variant', () => {
     const s = makeSocket({ socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric', sqdrive_size: 'isq_0750in', socket_variant: 'impact', reach_kind: 'reg' })
-    expect(s.familyTitle).to.equal('Bolt Socket, 6-Point Metric, 3/4 Sq.Dr, Impact, Regular')
+    expect(s.familyTitle).to.equal('6-Point MM 3/4Dr Regular Impact')
   })
-  it('star socket: omits Metric for extstar drive', () => {
+  it('star socket: omits "MM" and "Standard" for extstar drive in standard variant', () => {
     const s = makeSocket({ socket_kind: 'socket_extstar', drive_kind: 'extstar', unit_system: 'metric', sqdrive_size: 'isq_0375in', socket_variant: 'std', reach_kind: 'reg' })
-    expect(s.familyTitle).to.equal('Star Socket, Ext Torx, 3/8 Sq.Dr, Regular')
+    expect(s.familyTitle).to.equal('Ext Torx 3/8Dr Regular')
   })
   it('omits Metric for torx drive', () => {
     const s = makeSocket({ drive_kind: 'torx', unit_system: 'metric', socket_variant: 'std', reach_kind: 'reg' })
+    expect(s.familyTitle).to.not.include('MM')
     expect(s.familyTitle).to.not.include('Metric')
+    expect(s.familyTitle).to.not.include('US')
   })
   it('still shows US for torx when unit system is us', () => {
     const s = makeSocket({ drive_kind: 'torx', unit_system: 'us', socket_variant: 'std', reach_kind: 'reg' })
@@ -55,7 +57,7 @@ describe('@flipshop/flipshop Sockets', () => {
   beforeAll(async () => {
     await Sockets.loadSocketWrenches()
     _.each(ExemplarKeys, (socketTitle, handle) => { Exemplars[handle] = Sockets.SocketWrenchByTitle[socketTitle] })
-    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.std.reg', 'socket_exthex.exthex.metric.isq_0375in.impact.deep']))
+    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.reg.std', 'socket_exthex.exthex.metric.isq_0375in.deep.impact']))
   })
 
   it('has expected contents', () => {
@@ -121,7 +123,7 @@ describe('@flipshop/flipshop Sockets', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         expect(blob).to.include('FeatureScript 2909;')
         expect(blob).to.include('import(path : "onshape/std/common.fs", version : "2909.0");')
-        expect(blob).to.match(/\nconst SocketWrenches =/)
+        expect(blob).to.match(/\nexport const SocketWrenches =/)
       })
       it('nests enum keys as quoted strings', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
@@ -137,12 +139,12 @@ describe('@flipshop/flipshop Sockets', () => {
       it('appends a SocketWrenchesByFamily const with dotted path references', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         expect(blob).to.include('const SocketWrenchesByFamily =')
-        expect(blob).to.match(/"[^"]+": +SocketWrenches\.\w+\.\w+\.\w+\.\w+\.\w+\.\w+/)
+        expect(blob).to.match(/[A-Z][A-Z0-9_]+: +SocketWrenches\.\w+\.\w+\.\w+\.\w+\.\w+\.\w+/)
       })
       it('family keys are sorted', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         const section = blob.slice(blob.indexOf('const SocketWrenchesByFamily ='))
-        const keys = [...section.matchAll(/"([^"]+)": SocketWrenches/g)].map(m => m[1]!)
+        const keys = [...section.matchAll(/^\s+([A-Z][A-Z0-9_]+): +SocketWrenches/gm)].map(m => m[1]!)
         expect(keys).to.deep.equal([...keys].sort())
       })
       it('appends a SocketFamilyEnum export with one value per family', () => {
@@ -154,8 +156,8 @@ describe('@flipshop/flipshop Sockets', () => {
         expect(enumValues.length).to.equal(pathCount)
       })
       it('familyTitleToEnumKey produces valid UPPER_SNAKE_CASE identifiers', () => {
-        expect(familyTitleToEnumKey('Bolt Socket, 6-Point Metric, 3/8 Sq.Dr, Regular')).to.equal('BOLT_SOCKET_6_POINT_METRIC_3_8_SQ_DR_REGULAR')
-        expect(familyTitleToEnumKey('Star Socket, Ext Torx, 3/8 Sq.Dr, Regular')).to.equal('STAR_SOCKET_EXT_TORX_3_8_SQ_DR_REGULAR')
+        expect(familyTitleToEnumKey('6-Point Metric, 3/8Dr, Regular')).to.equal('S_6_POINT_METRIC_3_8DR_REGULAR')
+        expect(familyTitleToEnumKey('Ext Torx, 3/8Dr, Regular')).to.equal('S_EXT_TORX_3_8DR_REGULAR')
       })
     })
   })
