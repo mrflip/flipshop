@@ -27,20 +27,26 @@ precondition {
 {
   const socketParams = socketCellParams(context, definition);
   const ids = {
-    boundingBoxes:  id + "boundingBoxes",
-    cutoutShapes:   id + "cutoutShapes",
-    extrudedCutout: id + "extrudedCutout",
+    bboxesSk:         id + "bboxesSk",
+    shapesSk:         id + "shapesSk",
+    labelsSk:         id + "labelsSk",
+    calloutsSk:       id + "calloutsSk",
+    extrudedCutout:   id + "extrudedCutout",
   };
 
   const sketchPlane = evPlane(context, { "face":  definition.referencePlane });
-  const bboxesSketch = newSketchOnPlane(context, ids.boundingBoxes, { "sketchPlane":  sketchPlane });
-  const shapesSketch = newSketchOnPlane(context, ids.cutoutShapes,  { "sketchPlane":  sketchPlane });
+  const sketches = {
+   bboxes:    newSketchOnPlane(context, ids.bboxesSk,    { "sketchPlane":  sketchPlane }),
+   shapes:    newSketchOnPlane(context, ids.shapesSk,    { "sketchPlane":  sketchPlane }),
+   labels:    newSketchOnPlane(context, ids.labelsSk,    { "sketchPlane":  sketchPlane }),
+   callouts:  newSketchOnPlane(context, ids.calloutsSk,  { "sketchPlane":  sketchPlane }),
+  };
 
-  drawBoundingBoxes(context, ids.boundingBoxes, bboxesSketch, socketParams);
-  drawSocketBaseShape(context,  ids.cutoutShapes,  shapesSketch, socketParams.socket, socketParams);
-  skSolve(shapesSketch);
+  drawBoundingBoxes(context,   ids.bboxesSk, sketches.bboxes, socketParams);
+  drawSocketBaseShape(context, ids.shapesSk, sketches.shapes, socketParams.socket, socketParams);
+  skSolve(sketches.shapes);
 
-  const cutoutFaces = qCreatedBy(ids.cutoutShapes, EntityType.FACE);
+  const cutoutFaces = qCreatedBy(ids.shapesSk, EntityType.FACE);
   opExtrude(context, ids.extrudedCutout, {
     "entities":  cutoutFaces,
     "direction": sketchPlane.normal,
