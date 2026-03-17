@@ -123,7 +123,7 @@ function extract_dim(rawkey: string, raw: string): [TY.Fieldname, number] {
   //
   const fn = fieldname_remap[raw_fn!]; if (! fn) { console.warn(`Unknown dimension: ${rawkey} => ${raw}`) }
   const num = Number(valstr)
-  const val = units === 'in' ? _.round(num * MM_IN, 4) : num
+  const val = units === 'in' ? _.round(num * MM_IN, 6) : _.round(num, 6)
   // console.warn(`${rawkey} => ${raw} => ${fn} = ${val} ${units} ${num}`)
   return [fn ?? 'oops', val]
 }
@@ -134,7 +134,7 @@ function extract_dist(raw: string): number {
   const [_s,  valstr, units] = match
   //
   const num = Number(valstr)
-  const val = units === 'in' ? _.round(num * MM_IN, 4) : num
+  const val = units === 'in' ? _.round(num * MM_IN, 6) : _.round(num, 6)
   return val
 }
 // --
@@ -231,7 +231,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   if (specifications['Size Range (SAE)']) { result.unit_system = 'us' } if (specifications['Size Range (Metric)']) { result.unit_system = 'metric' }
   result.sizing = result.sizing?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in').replaceAll(/\.0+in/g, 'in')
   result.sizing_mm = DistanceLookup[result.sizing]
-  result.sizing_in = result.sizing_mm / MM_IN
+  result.sizing_in = _.round(result.sizing_mm / MM_IN, 6)
   result.img_url = img_url.replace(/\?itok=.*$/, '')
 
   // Track enum values for each field

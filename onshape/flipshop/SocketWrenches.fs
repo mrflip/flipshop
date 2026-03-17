@@ -1797,33 +1797,33 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Socket Adapter": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "Square Drive": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_adapter.intsq.us.isq_0250in.other.impact
+                "Impact": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_adapter.intsq.us.isq_0375in.other.impact
+                "Impact": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_adapter.intsq.us.isq_0500in.other.impact
+                "Impact": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_adapter.intsq.us.isq_0750in.other.impact
+                "Impact": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]
               }
             }
           }},
-          "1 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_adapter.intsq.us.isq_1000in.other.impact
+                "Impact": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]
               }
             }
           }}
@@ -1833,81 +1833,81 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Bit Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "Int Hex": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Ball End": SocketWrenches.socket_bit.inthex.metric.isq_0375in.long.ball,
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0375in.long.std
+                "Ball End": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"],
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Ball End": SocketWrenches.socket_bit.inthex.metric.isq_0375in.reg.ball,
-                "Impact": SocketWrenches.socket_bit.inthex.metric.isq_0375in.reg.impact,
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0375in.reg.std
+                "Ball End": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"],
+                "Impact": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0375in.midlen.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_bit.inthex.metric.isq_0500in.reg.impact,
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0500in.reg.std
+                "Impact": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]
               }
             },
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0500in.long.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.metric.isq_0500in.midlen.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]
               }
             }
           }}
         }},
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Ball End": SocketWrenches.socket_bit.inthex.us.isq_0375in.long.ball,
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0375in.long.std
+                "Ball End": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"],
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Ball End": SocketWrenches.socket_bit.inthex.us.isq_0375in.reg.ball,
-                "Impact": SocketWrenches.socket_bit.inthex.us.isq_0375in.reg.impact,
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0375in.reg.std
+                "Ball End": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"],
+                "Impact": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0375in.midlen.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_bit.inthex.us.isq_0500in.reg.impact,
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0500in.reg.std
+                "Impact": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]
               }
             },
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0500in.long.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.inthex.us.isq_0500in.midlen.std
+                "Standard": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]
               }
             }
           }}
@@ -1915,9 +1915,9 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
       }},
       "Phillips": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.phillips.metric.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             }
           }}
@@ -1925,9 +1925,9 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
       }},
       "Pozidriv": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.pozidriv.metric.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["pozidriv"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             }
           }}
@@ -1935,29 +1935,29 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
       }},
       "Torx": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torx.metric.isq_0250in.long.std
+                "Standard": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torx.metric.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torx.metric.isq_0375in.long.std
+                "Standard": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["long"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torx.metric.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torx.metric.isq_0500in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0500in"]["reg"]["std"]
               }
             }
           }}
@@ -1965,21 +1965,21 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
       }},
       "Security Torx": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torxtp.metric.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torxtp.metric.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.torxtp.metric.isq_0500in.reg.std
+                "Standard": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0500in"]["reg"]["std"]
               }
             }
           }}
@@ -1987,19 +1987,19 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
       }},
       "Triple Sq.": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.triple_square.metric.isq_0375in.long.std
+                "Standard": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0375in"]["long"]["std"]
               }
             },
             "X-Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.triple_square.metric.isq_0375in.xlong.std
+                "Standard": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0375in"]["xlong"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "X-Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_bit.triple_square.metric.isq_0500in.xlong.std
+                "Standard": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0500in"]["xlong"]["std"]
               }
             }
           }}
@@ -2009,34 +2009,34 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Socket Extension": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "Square Drive": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_extension.intsq.us.isq_0250in.other.impact
+                "Impact": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_extension.intsq.us.isq_0375in.other.impact
+                "Impact": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_extension.intsq.us.isq_0500in.other.impact,
-                "Standard": SocketWrenches.socket_extension.intsq.us.isq_0500in.other.std
+                "Impact": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"],
+                "Standard": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["std"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_extension.intsq.us.isq_0750in.other.impact
+                "Impact": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]
               }
             }
           }},
-          "1 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_extension.intsq.us.isq_1000in.other.impact
+                "Impact": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]
               }
             }
           }}
@@ -2046,161 +2046,161 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Bolt Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "6-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.midlen.std
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]
               }
             },
             "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0250in.uj_reg.std
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             },
             "U-Joint Extended": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.uj_ext.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]
               }
             },
             "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.uj_reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.uj_reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.midlen.std
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]
               }
             },
             "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0500in.uj_reg.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0750in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.metric.isq_0750in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0750in.reg.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]
               }
             }
           }},
-          "1 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_1000in.reg.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]
               }
             }
           }}
         }},
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0250in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0250in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0250in.reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0250in.reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0250in.midlen.std
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]
               }
             },
             "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0250in.uj_reg.std
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0375in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0375in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0375in.reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0375in.reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]
               }
             },
             "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0375in.uj_reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0375in.uj_reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]
               }
             },
             "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0375in.midlen.std
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0500in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0500in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0500in.reg.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0500in.reg.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]
               }
             },
             "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0500in.uj_reg.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0750in.deep.impact,
-                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0750in.deep.std
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"],
+                "Standard": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_0750in.reg.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]
               }
             }
           }},
-          "1 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_1000in.deep.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_exthex.exthex.us.isq_1000in.reg.impact
+                "Impact": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]
               }
             }
           }}
@@ -2208,83 +2208,83 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
       }},
       "12-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0250in.deep.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0375in.deep.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0500in.deep.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0500in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.metric.isq_0750in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]
               }
             }
           }}
         }},
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0250in.deep.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0375in.deep.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0500in.deep.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0500in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_0750in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]
               }
             }
           }},
-          "1 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_exthex.extstar12.us.isq_1000in.reg.std
+                "Standard": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]
               }
             }
           }}
@@ -2294,25 +2294,25 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Star Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "Ext Torx": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_extstar.extstar.metric.isq_0250in.deep.std
+                "Standard": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]
               }
             },
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_extstar.extstar.metric.isq_0250in.reg.std
+                "Standard": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["reg"]["std"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_extstar.extstar.metric.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0375in"]["reg"]["std"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_extstar.extstar.metric.isq_0500in.reg.std
+                "Standard": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0500in"]["reg"]["std"]
               }
             }
           }}
@@ -2322,9 +2322,9 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Spark Plug Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "6-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Standard": SocketWrenches.socket_sparkplug.exthex.us.isq_0375in.reg.std
+                "Standard": SocketWrenches["socket_sparkplug"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]
               }
             }
           }}
@@ -2334,35 +2334,1942 @@ export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket K
     "Socket U-Joint": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
       "Square Drive": { "name": "unit_system", "displayName": "Unit System", "entries": {
         "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
-          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_ujoint.intsq.us.isq_0250in.other.impact
+                "Impact": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]
               }
             }
           }},
-          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_ujoint.intsq.us.isq_0375in.other.impact
+                "Impact": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]
               }
             }
           }},
-          "1/2 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_ujoint.intsq.us.isq_0500in.other.impact
+                "Impact": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]
               }
             }
           }},
-          "3/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_ujoint.intsq.us.isq_0750in.other.impact
+                "Impact": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]
               }
             }
           }},
-          "1 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
             "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
-                "Impact": SocketWrenches.socket_ujoint.intsq.us.isq_1000in.other.impact
+                "Impact": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]
               }
             }
+          }}
+        }}
+      }}
+    }}
+  }};
+
+export const SocketWrenches3 = { "name": "socket_kind", "displayName": "Socket Kind", "entries": {
+    "Socket Adapter": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "Square Drive": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]["3/8in"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/2in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["1/2in"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["3/8in"],
+                  "3/4in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["3/4in"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/2in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]["1/2in"],
+                  "1in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]["1in"]
+                }
+              }
+            }}
+          }},
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/4in": SocketWrenches["socket_adapter"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]["3/4in"]
+                }
+              }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "Bit Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "Int Hex": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "2mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]["2mm"],
+                  "2.5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]["2.5mm"],
+                  "3mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]["3mm"],
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0250in"]["reg"]["std"]["6mm"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Ball End": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["3mm"],
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["6mm"],
+                  "7mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["7mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["8mm"],
+                  "9mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["9mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["ball"]["10mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["long"]["std"]["10mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Ball End": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["6mm"],
+                  "7mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["7mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["8mm"],
+                  "9mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["9mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["ball"]["10mm"]
+                }
+              },
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["6mm"],
+                  "7mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["7mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["8mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["10mm"],
+                  "12mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["impact"]["12mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "2mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["2mm"],
+                  "2.5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["2.5mm"],
+                  "3mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["3mm"],
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["reg"]["std"]["12mm"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["3mm"],
+                  "4mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0375in"]["midlen"]["std"]["10mm"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "9mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["impact"]["15mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["6mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["8mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["10mm"],
+                  "12mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["12mm"],
+                  "14mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["14mm"],
+                  "17mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["17mm"],
+                  "19mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["reg"]["std"]["19mm"]
+                }
+              }
+            }},
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]["6mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]["8mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]["10mm"],
+                  "12mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]["12mm"],
+                  "14mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]["14mm"],
+                  "17mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["long"]["std"]["17mm"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["6mm"],
+                  "8mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["8mm"],
+                  "10mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["10mm"],
+                  "12mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["12mm"],
+                  "14mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["14mm"],
+                  "17mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["17mm"],
+                  "19mm": SocketWrenches["socket_bit"]["inthex"]["metric"]["isq_0500in"]["midlen"]["std"]["19mm"]
+                }
+              }
+            }}
+          }}
+        }},
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["1/16in"],
+                  "5/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["5/64in"],
+                  "3/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["3/32in"],
+                  "7/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["7/64in"],
+                  "1/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["1/8in"],
+                  "9/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["9/64in"],
+                  "5/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0250in"]["reg"]["std"]["1/4in"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Ball End": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["1/8in"],
+                  "5/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["ball"]["3/8in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["1/8in"],
+                  "5/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["long"]["std"]["3/8in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Ball End": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["1/8in"],
+                  "5/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["ball"]["3/8in"]
+                }
+              },
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["impact"]["1/2in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["1/16in"],
+                  "5/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["5/64in"],
+                  "3/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["3/32in"],
+                  "7/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["7/64in"],
+                  "1/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["1/8in"],
+                  "9/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["9/64in"],
+                  "5/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["reg"]["std"]["3/8in"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["1/8in"],
+                  "9/64in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["9/64in"],
+                  "5/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0375in"]["midlen"]["std"]["3/8in"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["impact"]["3/4in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["5/8in"],
+                  "3/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["reg"]["std"]["3/4in"]
+                }
+              }
+            }},
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]["3/8in"],
+                  "1/2in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["long"]["std"]["5/8in"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["5/8in"],
+                  "3/4in": SocketWrenches["socket_bit"]["inthex"]["us"]["isq_0500in"]["midlen"]["std"]["3/4in"]
+                }
+              }
+            }}
+          }}
+        }}
+      }},
+      "Phillips": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]["5mm"],
+                  "6mm": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]["6mm"],
+                  "#1": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]["#1"],
+                  "#2": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]["#2"],
+                  "#3": SocketWrenches["socket_bit"]["phillips"]["metric"]["isq_0375in"]["reg"]["std"]["#3"]
+                }
+              }
+            }}
+          }}
+        }}
+      }},
+      "Pozidriv": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "#2": SocketWrenches["socket_bit"]["pozidriv"]["metric"]["isq_0375in"]["reg"]["std"]["#2"]
+                }
+              }
+            }}
+          }}
+        }}
+      }},
+      "Torx": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T8": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T8"],
+                  "T10": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T10"],
+                  "T15": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T15"],
+                  "T20": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T20"],
+                  "T25": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T25"],
+                  "T27": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T27"],
+                  "T30": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["long"]["std"]["T30"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T8": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T8"],
+                  "T10": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T10"],
+                  "T15": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T15"],
+                  "T20": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T20"],
+                  "T25": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T25"],
+                  "T27": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T27"],
+                  "T30": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0250in"]["reg"]["std"]["T30"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T40": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["long"]["std"]["T40"],
+                  "T45": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["long"]["std"]["T45"],
+                  "T50": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["long"]["std"]["T50"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T40": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T40"],
+                  "T45": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T45"],
+                  "T47": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T47"],
+                  "T50": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T50"],
+                  "T55": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T55"],
+                  "T15": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T15"],
+                  "T20": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T20"],
+                  "T25": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T25"],
+                  "T27": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T27"],
+                  "T30": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0375in"]["reg"]["std"]["T30"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T60": SocketWrenches["socket_bit"]["torx"]["metric"]["isq_0500in"]["reg"]["std"]["T60"]
+                }
+              }
+            }}
+          }}
+        }}
+      }},
+      "Security Torx": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T7": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T7"],
+                  "T8": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T8"],
+                  "T10": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T10"],
+                  "T15": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T15"],
+                  "T20": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T20"],
+                  "T25": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T25"],
+                  "T27": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T27"],
+                  "T30": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0250in"]["reg"]["std"]["T30"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T40": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0375in"]["reg"]["std"]["T40"],
+                  "T45": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0375in"]["reg"]["std"]["T45"],
+                  "T50": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0375in"]["reg"]["std"]["T50"],
+                  "T55": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0375in"]["reg"]["std"]["T55"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "T60": SocketWrenches["socket_bit"]["torxtp"]["metric"]["isq_0500in"]["reg"]["std"]["T60"]
+                }
+              }
+            }}
+          }}
+        }}
+      }},
+      "Triple Sq.": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0375in"]["long"]["std"]["8mm"]
+                }
+              }
+            }},
+            "X-Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0375in"]["xlong"]["std"]["6mm"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "X-Long": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "10mm": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0500in"]["xlong"]["std"]["10mm"],
+                  "12mm": SocketWrenches["socket_bit"]["triple_square"]["metric"]["isq_0500in"]["xlong"]["std"]["12mm"]
+                }
+              }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "Socket Extension": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "Square Drive": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "2in - 1/4in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]["2in - 1/4in"],
+                  "4in - 1/4in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]["4in - 1/4in"],
+                  "6in - 1/4in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]["6in - 1/4in"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["3in - 3/8in"],
+                  "6in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["6in - 3/8in"],
+                  "10in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["10in - 3/8in"],
+                  "12in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["12in - 3/8in"],
+                  "15in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["15in - 3/8in"],
+                  "18in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["18in - 3/8in"],
+                  "24in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["24in - 3/8in"],
+                  "33in - 3/8in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["33in - 3/8in"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["3in - 1/2in"],
+                  "5in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["5in - 1/2in"],
+                  "6in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["6in - 1/2in"],
+                  "10in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["10in - 1/2in"],
+                  "12in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["12in - 1/2in"],
+                  "15in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["15in - 1/2in"],
+                  "18in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["18in - 1/2in"],
+                  "24in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["24in - 1/2in"],
+                  "31in - 1/2in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["31in - 1/2in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["std"]["3in"],
+                  "5in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["std"]["5in"],
+                  "10in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0500in"]["other"]["std"]["10in"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6in - 3/4in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]["6in - 3/4in"],
+                  "10in - 3/4in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]["10in - 3/4in"],
+                  "13in - 3/4in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]["13in - 3/4in"]
+                }
+              }
+            }}
+          }},
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "7in - 1in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]["7in - 1in"],
+                  "13in - 1in": SocketWrenches["socket_extension"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]["13in - 1in"]
+                }
+              }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "Bolt Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "6-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["4mm"],
+                  "4.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["4.5mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["impact"]["15mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["deep"]["std"]["15mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["4mm"],
+                  "4.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["4.5mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["impact"]["15mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["reg"]["std"]["15mm"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["9mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["11mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["10mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["12mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["midlen"]["std"]["15mm"]
+                }
+              }
+            }},
+            "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0250in"]["uj_reg"]["std"]["15mm"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["19mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["impact"]["22mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["22mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["deep"]["std"]["24mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["19mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["impact"]["22mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["reg"]["std"]["22mm"]
+                }
+              }
+            }},
+            "U-Joint Extended": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["8mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_ext"]["impact"]["15mm"]
+                }
+              }
+            }},
+            "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["8mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["19mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["22mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["impact"]["24mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["uj_reg"]["std"]["19mm"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0375in"]["midlen"]["std"]["19mm"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["22mm"],
+                  "23mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["23mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["24mm"],
+                  "25mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["25mm"],
+                  "26mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["26mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["27mm"],
+                  "28mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["28mm"],
+                  "29mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["29mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["30mm"],
+                  "31mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["31mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["32mm"],
+                  "33mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["33mm"],
+                  "34mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["34mm"],
+                  "35mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["35mm"],
+                  "36mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["impact"]["36mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["19mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["deep"]["std"]["21mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["22mm"],
+                  "23mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["23mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["24mm"],
+                  "25mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["25mm"],
+                  "26mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["26mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["27mm"],
+                  "28mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["28mm"],
+                  "29mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["29mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["30mm"],
+                  "31mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["31mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["32mm"],
+                  "36mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["impact"]["36mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "10mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["22mm"],
+                  "23mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["23mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["reg"]["std"]["24mm"]
+                }
+              }
+            }},
+            "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "13mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["19mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["22mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0500in"]["uj_reg"]["impact"]["24mm"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["11/16in"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["19mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["22mm"],
+                  "23mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["23mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["24mm"],
+                  "26mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["26mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["27mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["30mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["32mm"],
+                  "33mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["33mm"],
+                  "35mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["35mm"],
+                  "36mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["36mm"],
+                  "38mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["38mm"],
+                  "41mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["41mm"],
+                  "43mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["impact"]["43mm"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "36mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]["36mm"],
+                  "38mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]["38mm"],
+                  "41mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]["41mm"],
+                  "46mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]["46mm"],
+                  "50mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]["50mm"],
+                  "55mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["deep"]["std"]["55mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "17mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["17mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["22mm"],
+                  "23mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["23mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["24mm"],
+                  "25mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["25mm"],
+                  "26mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["26mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["27mm"],
+                  "28mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["28mm"],
+                  "29mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["29mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["30mm"],
+                  "31mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["31mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["32mm"],
+                  "33mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["33mm"],
+                  "34mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["34mm"],
+                  "35mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["35mm"],
+                  "36mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["36mm"],
+                  "37mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["37mm"],
+                  "38mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["38mm"],
+                  "39mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["39mm"],
+                  "40mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["40mm"],
+                  "41mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["41mm"],
+                  "42mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["42mm"],
+                  "43mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["43mm"],
+                  "44mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["44mm"],
+                  "45mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["45mm"],
+                  "46mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["46mm"],
+                  "47mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["47mm"],
+                  "48mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["48mm"],
+                  "49mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["49mm"],
+                  "50mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_0750in"]["reg"]["impact"]["50mm"]
+                }
+              }
+            }}
+          }},
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "19mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["19mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["22mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["24mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["27mm"],
+                  "28mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["28mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["30mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["32mm"],
+                  "33mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["33mm"],
+                  "36mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["36mm"],
+                  "41mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["41mm"],
+                  "46mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["46mm"],
+                  "50mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["50mm"],
+                  "55mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["55mm"],
+                  "60mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["60mm"],
+                  "65mm": SocketWrenches["socket_exthex"]["exthex"]["metric"]["isq_1000in"]["reg"]["impact"]["65mm"]
+                }
+              }
+            }}
+          }}
+        }},
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["impact"]["9/16in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["deep"]["std"]["9/16in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["impact"]["9/16in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "5/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["reg"]["std"]["9/16in"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["midlen"]["std"]["9/16in"]
+                }
+              }
+            }},
+            "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["9/16in"],
+                  "3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["3/16in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0250in"]["uj_reg"]["std"]["1/2in"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["impact"]["1in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["deep"]["std"]["1in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["impact"]["1in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["1in"]
+                }
+              }
+            }},
+            "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["impact"]["3/4in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["uj_reg"]["std"]["3/4in"]
+                }
+              }
+            }},
+            "Medium": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0375in"]["midlen"]["std"]["7/8in"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["impact"]["1+1/2in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["1+1/8in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["1+1/4in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["deep"]["std"]["1+1/2in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["impact"]["1+1/2in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["7/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["3/8in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1+1/4in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["reg"]["std"]["1+1/2in"]
+                }
+              }
+            }},
+            "U-Joint Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0500in"]["uj_reg"]["impact"]["1+1/8in"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["5/8in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+1/2in"],
+                  "1+9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+9/16in"],
+                  "1+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+5/8in"],
+                  "1+11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+11/16in"],
+                  "1+3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+3/4in"],
+                  "1+13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+13/16in"],
+                  "1+7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+7/8in"],
+                  "1+15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["1+15/16in"],
+                  "2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["impact"]["2in"]
+                }
+              },
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["deep"]["std"]["1+5/8in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+1/2in"],
+                  "1+9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+9/16in"],
+                  "1+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+5/8in"],
+                  "1+11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+11/16in"],
+                  "1+3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+3/4in"],
+                  "1+7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+7/8in"],
+                  "1+13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+13/16in"],
+                  "1+15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["1+15/16in"],
+                  "2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2in"],
+                  "2+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+1/16in"],
+                  "2+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+1/8in"],
+                  "2+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+3/16in"],
+                  "2+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+1/4in"],
+                  "2+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+5/16in"],
+                  "2+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+3/8in"],
+                  "2+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+7/16in"],
+                  "2+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_0750in"]["reg"]["impact"]["2+1/2in"]
+                }
+              }
+            }}
+          }},
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+1/2in"],
+                  "1+9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+9/16in"],
+                  "1+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+5/8in"],
+                  "1+11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+11/16in"],
+                  "1+3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+3/4in"],
+                  "1+13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+13/16in"],
+                  "1+7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+7/8in"],
+                  "1+15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["1+15/16in"],
+                  "2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2in"],
+                  "2+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+1/16in"],
+                  "2+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+1/8in"],
+                  "2+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+3/16in"],
+                  "2+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+1/4in"],
+                  "2+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+5/16in"],
+                  "2+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+3/8in"],
+                  "2+9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+9/16in"],
+                  "2+3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["deep"]["impact"]["2+3/4in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+1/2in"],
+                  "1+9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+9/16in"],
+                  "1+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+5/8in"],
+                  "1+11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+11/16in"],
+                  "1+3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+3/4in"],
+                  "1+13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+13/16in"],
+                  "1+7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+7/8in"],
+                  "1+15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["1+15/16in"],
+                  "2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2in"],
+                  "2+1/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+1/16in"],
+                  "2+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+1/8in"],
+                  "2+3/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+3/16in"],
+                  "2+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+1/4in"],
+                  "2+5/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+5/16in"],
+                  "2+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+3/8in"],
+                  "2+7/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+7/16in"],
+                  "2+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+1/2in"],
+                  "2+9/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+9/16in"],
+                  "2+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+5/8in"],
+                  "2+11/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+11/16in"],
+                  "2+3/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+3/4in"],
+                  "2+13/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+13/16in"],
+                  "2+7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+7/8in"],
+                  "2+15/16in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["2+15/16in"],
+                  "3in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3in"],
+                  "3+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3+1/8in"],
+                  "3+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3+1/4in"],
+                  "3+3/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3+3/8in"],
+                  "3+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3+1/2in"],
+                  "3+5/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3+5/8in"],
+                  "3+7/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["3+7/8in"],
+                  "4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["4in"],
+                  "4+1/2in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["4+1/2in"],
+                  "4+1/8in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["4+1/8in"],
+                  "4+1/4in": SocketWrenches["socket_exthex"]["exthex"]["us"]["isq_1000in"]["reg"]["impact"]["4+1/4in"]
+                }
+              }
+            }}
+          }}
+        }}
+      }},
+      "12-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["deep"]["std"]["15mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "4mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["4mm"],
+                  "5mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["5mm"],
+                  "5.5mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["5.5mm"],
+                  "6mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0250in"]["reg"]["std"]["15mm"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["deep"]["std"]["19mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "6mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["6mm"],
+                  "7mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["7mm"],
+                  "8mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0375in"]["reg"]["std"]["22mm"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "10mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["22mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["24mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["27mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["30mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["deep"]["std"]["32mm"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "8mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["8mm"],
+                  "9mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["9mm"],
+                  "10mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["10mm"],
+                  "11mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["11mm"],
+                  "12mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["12mm"],
+                  "13mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["13mm"],
+                  "14mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["14mm"],
+                  "15mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["15mm"],
+                  "16mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["16mm"],
+                  "17mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["17mm"],
+                  "18mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["18mm"],
+                  "19mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["19mm"],
+                  "20mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["20mm"],
+                  "21mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["21mm"],
+                  "22mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["22mm"],
+                  "23mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["23mm"],
+                  "24mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["24mm"],
+                  "25mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["25mm"],
+                  "26mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["26mm"],
+                  "27mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["27mm"],
+                  "28mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["28mm"],
+                  "29mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["29mm"],
+                  "30mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["30mm"],
+                  "32mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["32mm"],
+                  "36mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0500in"]["reg"]["std"]["36mm"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "36mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["36mm"],
+                  "38mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["38mm"],
+                  "41mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["41mm"],
+                  "42mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["42mm"],
+                  "46mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["46mm"],
+                  "50mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["50mm"],
+                  "54mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["54mm"],
+                  "55mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["55mm"],
+                  "58mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["58mm"],
+                  "60mm": SocketWrenches["socket_exthex"]["extstar12"]["metric"]["isq_0750in"]["reg"]["std"]["60mm"]
+                }
+              }
+            }}
+          }}
+        }},
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["deep"]["std"]["9/16in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "5/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["5/32in"],
+                  "3/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["3/16in"],
+                  "7/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["7/32in"],
+                  "1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["1/4in"],
+                  "9/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["9/32in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["5/16in"],
+                  "11/32in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["11/32in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0250in"]["reg"]["std"]["9/16in"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["deep"]["std"]["1in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["1/4in"],
+                  "5/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["5/16in"],
+                  "3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0375in"]["reg"]["std"]["1in"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["1+1/8in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["1+1/2in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["deep"]["std"]["1+1/4in"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["3/8in"],
+                  "7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["7/16in"],
+                  "1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1/2in"],
+                  "9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["5/8in"],
+                  "11/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["11/16in"],
+                  "3/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["3/4in"],
+                  "13/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["13/16in"],
+                  "7/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1+1/4in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0500in"]["reg"]["std"]["1+1/2in"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "7/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["7/8in"],
+                  "15/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["15/16in"],
+                  "1in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1in"],
+                  "1+1/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+1/16in"],
+                  "1+1/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+1/8in"],
+                  "1+3/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+3/16in"],
+                  "1+1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+1/4in"],
+                  "1+5/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+5/16in"],
+                  "1+3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+3/8in"],
+                  "1+7/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+7/16in"],
+                  "1+1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+1/2in"],
+                  "1+9/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+9/16in"],
+                  "1+5/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+5/8in"],
+                  "1+11/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+11/16in"],
+                  "1+3/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+3/4in"],
+                  "1+13/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+13/16in"],
+                  "1+7/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["1+7/8in"],
+                  "2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2in"],
+                  "2+1/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2+1/16in"],
+                  "2+1/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2+1/8in"],
+                  "2+3/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2+3/16in"],
+                  "2+1/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2+1/4in"],
+                  "2+5/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2+5/16in"],
+                  "2+3/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_0750in"]["reg"]["std"]["2+3/8in"]
+                }
+              }
+            }}
+          }},
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "2+1/2in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]["2+1/2in"],
+                  "2+5/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]["2+5/8in"],
+                  "2+3/4in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]["2+3/4in"],
+                  "2+15/16in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]["2+15/16in"],
+                  "3in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]["3in"],
+                  "3+1/8in": SocketWrenches["socket_exthex"]["extstar12"]["us"]["isq_1000in"]["reg"]["std"]["3+1/8in"]
+                }
+              }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "Star Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "Ext Torx": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "E4": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E4"],
+                  "E5": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E5"],
+                  "E6": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E6"],
+                  "E7": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E7"],
+                  "E8": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E8"],
+                  "E10": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E10"],
+                  "E11": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["deep"]["std"]["E11"]
+                }
+              }
+            }},
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "E4": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["reg"]["std"]["E4"],
+                  "E5": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["reg"]["std"]["E5"],
+                  "E6": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["reg"]["std"]["E6"],
+                  "E7": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["reg"]["std"]["E7"],
+                  "E8": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0250in"]["reg"]["std"]["E8"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "E10": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0375in"]["reg"]["std"]["E10"],
+                  "E12": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0375in"]["reg"]["std"]["E12"],
+                  "E14": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0375in"]["reg"]["std"]["E14"],
+                  "E16": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0375in"]["reg"]["std"]["E16"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "E18": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0500in"]["reg"]["std"]["E18"],
+                  "E20": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0500in"]["reg"]["std"]["E20"],
+                  "E22": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0500in"]["reg"]["std"]["E22"],
+                  "E24": SocketWrenches["socket_extstar"]["extstar"]["metric"]["isq_0500in"]["reg"]["std"]["E24"]
+                }
+              }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "Spark Plug Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "6-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Standard": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "9/16in": SocketWrenches["socket_sparkplug"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["9/16in"],
+                  "5/8in": SocketWrenches["socket_sparkplug"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["5/8in"],
+                  "13/16in": SocketWrenches["socket_sparkplug"]["exthex"]["us"]["isq_0375in"]["reg"]["std"]["13/16in"]
+                }
+              }
+            }}
+          }}
+        }}
+      }}
+    }},
+    "Socket U-Joint": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "Square Drive": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/4in": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0250in"]["other"]["impact"]["1/4in"]
+                }
+              }
+            }}
+          }},
+          "3/8Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/8in": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0375in"]["other"]["impact"]["3/8in"]
+                }
+              }
+            }}
+          }},
+          "1/2Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1/2in": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0500in"]["other"]["impact"]["1/2in"]
+                }
+              }
+            }}
+          }},
+          "3/4Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "3/4in": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_0750in"]["other"]["impact"]["3/4in"]
+                }
+              }
+            }}
+          }},
+          "1Dr": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Other": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+              "Impact": { "name": "sizing", "displayName": "Sizing", "entries": {
+                  "1in": SocketWrenches["socket_ujoint"]["intsq"]["us"]["isq_1000in"]["other"]["impact"]["1in"]
+                }
+              }
+            }}
           }}
         }}
       }}
@@ -2607,121 +4514,121 @@ export enum SocketFamilyEnum {
 }
 
 export const SocketWrenchesByFamily = {
-  SocketFamilyEnum.S_SOCKET_ADAPTER_US_1_4DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["1/4 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_ADAPTER_US_3_8DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["3/8 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_ADAPTER_US_1_2DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["1/2 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_ADAPTER_US_3_4DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["3/4 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_ADAPTER_US_1DR_IMPACT:                                   SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["1 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_INT_HEX_MM_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_LONG_BALL_END:                                 SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8 in"].entries["Long"].entries["Ball End"],
-  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_REGULAR_BALL_END:                              SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Ball End"],
-  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_3_8DR_LONG_BALL_END:                                 SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8 in"].entries["Long"].entries["Ball End"],
-  SocketFamilyEnum.S_INT_HEX_US_3_8DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_3_8DR_REGULAR_BALL_END:                              SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Ball End"],
-  SocketFamilyEnum.S_INT_HEX_US_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_INT_HEX_US_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_INT_HEX_US_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_1_2DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_INT_HEX_US_1_2DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_PHILLIPS_3_8DR_REGULAR:                                         SocketWrenches2.entries["Bit Socket"].entries["Phillips"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_POZIDRIV_3_8DR_REGULAR:                                         SocketWrenches2.entries["Bit Socket"].entries["Pozidriv"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_TORX_1_4DR_LONG:                                                SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["1/4 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_TORX_1_4DR_REGULAR:                                             SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_TORX_3_8DR_LONG:                                                SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["3/8 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_TORX_3_8DR_REGULAR:                                             SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_TORX_1_2DR_REGULAR:                                             SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_SECURITY_TORX_1_4DR_REGULAR:                                    SocketWrenches2.entries["Bit Socket"].entries["Security Torx"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_SECURITY_TORX_3_8DR_REGULAR:                                    SocketWrenches2.entries["Bit Socket"].entries["Security Torx"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_SECURITY_TORX_1_2DR_REGULAR:                                    SocketWrenches2.entries["Bit Socket"].entries["Security Torx"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_TRIPLE_SQ_MM_3_8DR_LONG:                                        SocketWrenches2.entries["Bit Socket"].entries["Triple Sq."].entries["Metric"].entries["3/8 in"].entries["Long"].entries["Standard"],
-  SocketFamilyEnum.S_TRIPLE_SQ_MM_3_8DR_X_LONG:                                      SocketWrenches2.entries["Bit Socket"].entries["Triple Sq."].entries["Metric"].entries["3/8 in"].entries["X-Long"].entries["Standard"],
-  SocketFamilyEnum.S_TRIPLE_SQ_MM_1_2DR_X_LONG:                                      SocketWrenches2.entries["Bit Socket"].entries["Triple Sq."].entries["Metric"].entries["1/2 in"].entries["X-Long"].entries["Standard"],
-  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1_4DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1/4 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_EXTENSION_US_3_8DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["3/8 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1_2DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1/2 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1_2DR:                                      SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1/2 in"].entries["Other"].entries["Standard"],
-  SocketFamilyEnum.S_SOCKET_EXTENSION_US_3_4DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["3/4 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1DR_IMPACT:                                 SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_1_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_1_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_1_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_1_4DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_1_4DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4 in"].entries["U-Joint Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_U_JOINT_EXTENDED_IMPACT:                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["U-Joint Extended"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["U-Joint Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["U-Joint Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_1_2DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_1_2DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_1_2DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2 in"].entries["U-Joint Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_3_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/4 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_3_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_MM_3_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/4 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_MM_1DR_REGULAR_IMPACT:                                  SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["U-Joint Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["U-Joint Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["U-Joint Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["Medium"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_1_2DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1_2DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_1_2DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2 in"].entries["U-Joint Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_3_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/4 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_3_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_6_POINT_US_3_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/4 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1DR_DEEP_IMPACT:                                     SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1 in"].entries["Deep"].entries["Impact"],
-  SocketFamilyEnum.S_6_POINT_US_1DR_REGULAR_IMPACT:                                  SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1 in"].entries["Regular"].entries["Impact"],
-  SocketFamilyEnum.S_12_POINT_1_4DR_DEEP:                                            SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_1_4DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_3_8DR_DEEP:                                            SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["3/8 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_3_8DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_1_2DR_DEEP:                                            SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/2 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_1_2DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_3_4DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["3/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_1_4DR_DEEP:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_1_4DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_3_8DR_DEEP:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["3/8 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_3_8DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_1_2DR_DEEP:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/2 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_1_2DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_3_4DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["3/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_12_POINT_US_1DR_REGULAR:                                        SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_EXT_TORX_1_4DR_DEEP:                                            SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["1/4 in"].entries["Deep"].entries["Standard"],
-  SocketFamilyEnum.S_EXT_TORX_1_4DR_REGULAR:                                         SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["1/4 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_EXT_TORX_3_8DR_REGULAR:                                         SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_EXT_TORX_1_2DR_REGULAR:                                         SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["1/2 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_SPARK_PLUG_SOCKET_6_POINT_US_3_8DR_REGULAR:                     SocketWrenches2.entries["Spark Plug Socket"].entries["6-Point"].entries["US"].entries["3/8 in"].entries["Regular"].entries["Standard"],
-  SocketFamilyEnum.S_SOCKET_U_JOINT_US_1_4DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["1/4 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_U_JOINT_US_3_8DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["3/8 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_U_JOINT_US_1_2DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["1/2 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_U_JOINT_US_3_4DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["3/4 in"].entries["Other"].entries["Impact"],
-  SocketFamilyEnum.S_SOCKET_U_JOINT_US_1DR_IMPACT:                                   SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["1 in"].entries["Other"].entries["Impact"]
+  SocketFamilyEnum.S_SOCKET_ADAPTER_US_1_4DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["1/4Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_ADAPTER_US_3_8DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["3/8Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_ADAPTER_US_1_2DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["1/2Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_ADAPTER_US_3_4DR_IMPACT:                                 SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["3/4Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_ADAPTER_US_1DR_IMPACT:                                   SocketWrenches2.entries["Socket Adapter"].entries["Square Drive"].entries["US"].entries["1Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_INT_HEX_MM_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_LONG_BALL_END:                                 SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8Dr"].entries["Long"].entries["Ball End"],
+  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_REGULAR_BALL_END:                              SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Ball End"],
+  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_MM_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["3/8Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_MM_1_2DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["Metric"].entries["1/2Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_3_8DR_LONG_BALL_END:                                 SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8Dr"].entries["Long"].entries["Ball End"],
+  SocketFamilyEnum.S_INT_HEX_US_3_8DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_3_8DR_REGULAR_BALL_END:                              SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Ball End"],
+  SocketFamilyEnum.S_INT_HEX_US_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_INT_HEX_US_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["3/8Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_INT_HEX_US_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_1_2DR_LONG:                                          SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_INT_HEX_US_1_2DR_MEDIUM:                                        SocketWrenches2.entries["Bit Socket"].entries["Int Hex"].entries["US"].entries["1/2Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_PHILLIPS_3_8DR_REGULAR:                                         SocketWrenches2.entries["Bit Socket"].entries["Phillips"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_POZIDRIV_3_8DR_REGULAR:                                         SocketWrenches2.entries["Bit Socket"].entries["Pozidriv"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_TORX_1_4DR_LONG:                                                SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["1/4Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_TORX_1_4DR_REGULAR:                                             SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_TORX_3_8DR_LONG:                                                SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["3/8Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_TORX_3_8DR_REGULAR:                                             SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_TORX_1_2DR_REGULAR:                                             SocketWrenches2.entries["Bit Socket"].entries["Torx"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_SECURITY_TORX_1_4DR_REGULAR:                                    SocketWrenches2.entries["Bit Socket"].entries["Security Torx"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_SECURITY_TORX_3_8DR_REGULAR:                                    SocketWrenches2.entries["Bit Socket"].entries["Security Torx"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_SECURITY_TORX_1_2DR_REGULAR:                                    SocketWrenches2.entries["Bit Socket"].entries["Security Torx"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_TRIPLE_SQ_MM_3_8DR_LONG:                                        SocketWrenches2.entries["Bit Socket"].entries["Triple Sq."].entries["Metric"].entries["3/8Dr"].entries["Long"].entries["Standard"],
+  SocketFamilyEnum.S_TRIPLE_SQ_MM_3_8DR_X_LONG:                                      SocketWrenches2.entries["Bit Socket"].entries["Triple Sq."].entries["Metric"].entries["3/8Dr"].entries["X-Long"].entries["Standard"],
+  SocketFamilyEnum.S_TRIPLE_SQ_MM_1_2DR_X_LONG:                                      SocketWrenches2.entries["Bit Socket"].entries["Triple Sq."].entries["Metric"].entries["1/2Dr"].entries["X-Long"].entries["Standard"],
+  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1_4DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1/4Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_EXTENSION_US_3_8DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["3/8Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1_2DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1/2Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1_2DR:                                      SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1/2Dr"].entries["Other"].entries["Standard"],
+  SocketFamilyEnum.S_SOCKET_EXTENSION_US_3_4DR_IMPACT:                               SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["3/4Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_EXTENSION_US_1DR_IMPACT:                                 SocketWrenches2.entries["Socket Extension"].entries["Square Drive"].entries["US"].entries["1Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_1_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_1_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_1_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_1_4DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_1_4DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/4Dr"].entries["U-Joint Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_U_JOINT_EXTENDED_IMPACT:                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["U-Joint Extended"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["U-Joint Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["U-Joint Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_1_2DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_1_2DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_1_2DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1/2Dr"].entries["U-Joint Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_3_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/4Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_3_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_3_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/4Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_MM_1DR_REGULAR_IMPACT:                                  SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["1Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4Dr"].entries["U-Joint Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["U-Joint Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_U_JOINT_REGULAR:                               SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["U-Joint Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_3_8DR_MEDIUM:                                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["Medium"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_1_2DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1_2DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_1_2DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1_2DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_1_2DR_U_JOINT_REGULAR_IMPACT:                        SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/2Dr"].entries["U-Joint Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_3_4DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/4Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_3_4DR_DEEP:                                          SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_US_3_4DR_REGULAR_IMPACT:                                SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["3/4Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1DR_DEEP_IMPACT:                                     SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1Dr"].entries["Deep"].entries["Impact"],
+  SocketFamilyEnum.S_6_POINT_US_1DR_REGULAR_IMPACT:                                  SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1Dr"].entries["Regular"].entries["Impact"],
+  SocketFamilyEnum.S_12_POINT_1_4DR_DEEP:                                            SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_1_4DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_3_8DR_DEEP:                                            SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["3/8Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_3_8DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_1_2DR_DEEP:                                            SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/2Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_1_2DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_3_4DR_REGULAR:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["Metric"].entries["3/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_1_4DR_DEEP:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_1_4DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_3_8DR_DEEP:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["3/8Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_3_8DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_1_2DR_DEEP:                                         SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/2Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_1_2DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_3_4DR_REGULAR:                                      SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["3/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_12_POINT_US_1DR_REGULAR:                                        SocketWrenches2.entries["Bolt Socket"].entries["12-Point"].entries["US"].entries["1Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_EXT_TORX_1_4DR_DEEP:                                            SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["1/4Dr"].entries["Deep"].entries["Standard"],
+  SocketFamilyEnum.S_EXT_TORX_1_4DR_REGULAR:                                         SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["1/4Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_EXT_TORX_3_8DR_REGULAR:                                         SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_EXT_TORX_1_2DR_REGULAR:                                         SocketWrenches2.entries["Star Socket"].entries["Ext Torx"].entries["Metric"].entries["1/2Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_SPARK_PLUG_SOCKET_6_POINT_US_3_8DR_REGULAR:                     SocketWrenches2.entries["Spark Plug Socket"].entries["6-Point"].entries["US"].entries["3/8Dr"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_SOCKET_U_JOINT_US_1_4DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["1/4Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_U_JOINT_US_3_8DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["3/8Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_U_JOINT_US_1_2DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["1/2Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_U_JOINT_US_3_4DR_IMPACT:                                 SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["3/4Dr"].entries["Other"].entries["Impact"],
+  SocketFamilyEnum.S_SOCKET_U_JOINT_US_1DR_IMPACT:                                   SocketWrenches2.entries["Socket U-Joint"].entries["Square Drive"].entries["US"].entries["1Dr"].entries["Other"].entries["Impact"]
 };

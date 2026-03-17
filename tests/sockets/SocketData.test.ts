@@ -57,7 +57,7 @@ describe('@flipshop/flipshop Sockets', () => {
   beforeAll(async () => {
     await Sockets.loadSocketWrenches()
     _.each(ExemplarKeys, (socketTitle, handle) => { Exemplars[handle] = Sockets.SocketWrenchByTitle[socketTitle] })
-    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.reg.std', 'socket_exthex.exthex.metric.isq_0375in.deep.impact']))
+    _.merge(SomeSocketWrenches, _.pick(SocketWrenches, ['socket_bit.inthex.isq_0250in', 'socket_exthex.exthex.us.isq_0250in.reg', 'socket_exthex.exthex.metric.isq_0375in.deep']))
   })
 
   it('has expected contents', () => {
@@ -66,7 +66,7 @@ describe('@flipshop/flipshop Sockets', () => {
   })
 
   it('SocketWrenchesByFamily has expected sorted family keys', () => {
-    console.log(_.keys(SocketWrenchesByFamily))
+    // console.log(_.keys(SocketWrenchesByFamily))
     expect(TH.checkSnapshot(Object.keys(SocketWrenchesByFamily).sort())).to.be.true
   })
 
@@ -151,9 +151,10 @@ describe('@flipshop/flipshop Sockets', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         expect(blob).to.include('export enum SocketFamilyEnum')
         const enumSection = blob.slice(blob.indexOf('export enum SocketFamilyEnum'))
-        const enumValues  = [...enumSection.matchAll(/^\s{2}([A-Z][A-Z0-9_]+)/gm)].map(m => m[1]!)
-        const pathCount   = [...blob.matchAll(/SocketWrenches\.\w+\.\w+\.\w+\.\w+\.\w+\.\w+/g)].length
-        expect(enumValues.length).to.equal(pathCount)
+        const enumValues  = [...enumSection.matchAll(/^  S_([A-Z0-9_]+)/gm)].map((mm) => mm[1]!)
+        const refMatches   = [...enumSection.matchAll(/SocketWrenches2(\.entries\["[^"]+\"\]){5,}/g)].map((mm) => mm[1]!)
+        expect(enumValues.length).to.equal(4)
+        expect(refMatches.length).to.equal(4)
       })
       it('familyTitleToEnumKey produces valid UPPER_SNAKE_CASE identifiers', () => {
         expect(familyTitleToEnumKey('6-Point Metric, 3/8Dr, Regular')).to.equal('S_6_POINT_METRIC_3_8DR_REGULAR')
