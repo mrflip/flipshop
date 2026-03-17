@@ -54,16 +54,39 @@ export const SocketWrenches = {
   }
 };
 
+export const SocketWrenches2 = { "name": "socket_kind", "displayName": "Socket Kind", "entries": {
+    "Bolt Socket": { "name": "drive_kind", "displayName": "Drive Kind", "entries": {
+      "6-Point": { "name": "unit_system", "displayName": "Unit System", "entries": {
+        "US": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "1/4 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Regular": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+                "Standard": SocketWrenches.socket_exthex.exthex.us.isq_0250in.reg.std
+              }
+            }
+          }}
+        }},
+        "Metric": { "name": "sqdrive_size", "displayName": "Square Drive Size", "entries": {
+          "3/8 in": { "name": "reach_kind", "displayName": "Reach", "entries": {
+            "Deep": { "name": "socket_variant", "displayName": "Socket Variant", "entries": {
+                "Impact": SocketWrenches.socket_exthex.exthex.metric.isq_0375in.deep.impact
+              }
+            }
+          }}
+        }}
+      }}
+    }}
+  }};
+
 export enum SocketFamilyEnum {
-  annotation { "Name": "6-Point MM 3/8Dr Deep Impact" }
-  S_6_POINT_MM_3_8DR_DEEP_IMPACT,
   annotation { "Name": "6-Point US 1/4Dr Regular" }
-  S_6_POINT_US_1_4DR_REGULAR
+  S_6_POINT_US_1_4DR_REGULAR,
+  annotation { "Name": "6-Point MM 3/8Dr Deep Impact" }
+  S_6_POINT_MM_3_8DR_DEEP_IMPACT
 }
 
 export const SocketWrenchesByFamily = {
-  SocketFamilyEnum.S_6_POINT_MM_3_8DR_DEEP_IMPACT:                                   SocketWrenches.socket_exthex.exthex.metric.isq_0375in.deep.impact,
-  SocketFamilyEnum.S_6_POINT_US_1_4DR_REGULAR:                                       SocketWrenches.socket_exthex.exthex.us.isq_0250in.reg.std
+  SocketFamilyEnum.S_6_POINT_US_1_4DR_REGULAR:                                       SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["US"].entries["1/4 in"].entries["Regular"].entries["Standard"],
+  SocketFamilyEnum.S_6_POINT_MM_3_8DR_DEEP_IMPACT:                                   SocketWrenches2.entries["Bolt Socket"].entries["6-Point"].entries["Metric"].entries["3/8 in"].entries["Deep"].entries["Impact"]
 };"
 `;
 

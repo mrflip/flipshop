@@ -4,6 +4,7 @@ import      { UF }                                from '@freeword/meta'
 import      { SocketWrench }                      from './SocketModel.ts'
 import type { SocketWrenchT }                     from './SocketTypes.ts'
 import type { FastenerDrive, SocketKind, SocketReach, ToolDrive } from '../fastener/FastenerEnums.ts'
+import      { SocketKindTitles, SocketDriveTitles, SocketReachTitles }  from '../fastener/FastenerEnums.ts'
 import      { canhasbucket }                      from '../utils/DatafileHelpers.ts'
 
 // export const SocketWrenchList: SocketWrench[] = []
@@ -30,21 +31,36 @@ export function familyTitleToEnumKey(title: string): string {
   return 'S_' + title.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')
 }
 
+// Axis metadata for the 6 levels of the SocketWrenches tree — used when emitting SocketWrenches2
+const axisWrapperInfo = [
+  { name: 'socket_kind',    displayName: 'Socket Kind',       titles: SocketKindTitles                                                                                               as Record<string, string> },
+  { name: 'drive_kind',     displayName: 'Drive Kind',        titles: SocketDriveTitles                                                                                              as Record<string, string> },
+  { name: 'unit_system',    displayName: 'Unit System',       titles: { metric: 'Metric', us: 'US' }                                                                                 as Record<string, string> },
+  { name: 'sqdrive_size',   displayName: 'Square Drive Size', titles: { isq_0250in: '1/4 in', isq_0375in: '3/8 in', isq_0500in: '1/2 in', hex_0250in: '1/4 Hex', isq_0750in: '3/4 in', isq_1000in: '1 in' } as Record<string, string> },
+  { name: 'reach_kind',     displayName: 'Reach',             titles: { ...SocketReachTitles, other: 'Other' }                                                                       as Record<string, string> },
+  { name: 'socket_variant', displayName: 'Socket Variant',    titles: { std: 'Standard', impact: 'Impact', ball: 'Ball End' }                                                       as Record<string, string> },
+]
+
 /** Walks the SocketWrenches tree depth-first; at depth 6 (the sizing map level) records
- *  familyTitle → "SocketWrenches.k1.k2.k3.k4.k5.k6" using a representative socket. */
+ *  familyTitle → "SocketWrenches2.entries[...].entries[...]..." using a representative socket. */
 function buildFamilyPathMap(tree: typeof SocketWrenches): Record<string, string> {
   const result: Record<string, string> = {}
-  function walk(node: unknown, keys: string[]) {
-    if (keys.length === 6) {
+  function walk(node: unknown, rawKeys: string[], displayKeys: string[]) {
+    if (rawKeys.length === 6) {
       const socket = Object.values(node as Record<string, unknown>).find(v => v instanceof SocketWrench) as SocketWrench | undefined
-      if (socket) { result[socket.familyTitle] = 'SocketWrenches.' + keys.join('.') }
+      if (socket) {
+        const path = 'SocketWrenches2' + displayKeys.map(dk => `.entries[${JSON.stringify(dk)}]`).join('')
+        result[socket.familyTitle] = path
+      }
       return
     }
+    const { titles } = axisWrapperInfo[rawKeys.length]!
     for (const [key, child] of Object.entries(node as Record<string, unknown>)) {
-      walk(child, [...keys, key])
+      const displayKey = titles[key] ?? key
+      walk(child, [...rawKeys, key], [...displayKeys, displayKey])
     }
   }
-  walk(tree, [])
+  walk(tree, [], [])
   return result
 }
 
@@ -64,13 +80,39 @@ export function socketWrenchesToFeaturescript(tree: typeof SocketWrenches): stri
       .map(([kk, vv]) => `${innerPad}${JSON.stringify(kk)}: ${renderNode(vv, depth + 1)}`)
     return `{\n${lines.join(',\n')}\n${pad}}`
   }
-  const familyPaths   = buildFamilyPathMap(tree)
-  const sortedEntries = Object.entries(familyPaths).sort(([a], [b]) => a.localeCompare(b))
-  const familyLines   = sortedEntries.map(([title, path]) => `  SocketFamilyEnum.${_.padEnd(familyTitleToEnumKey(title) + ':', 65)} ${path}`)
+  function renderWrapped(node: unknown, level: number, indent: number, rawKeyPath: string[], stopDepth: number = 6): string {
+    if (level === stopDepth) { return 'SocketWrenches.' + rawKeyPath.join('.') }
+    const { name, displayName, titles } = axisWrapperInfo[level]!
+    const pad  = '  '.repeat(indent)
+    const pad1 = '  '.repeat(indent + 1)
+    const pad2 = '  '.repeat(indent + 2)
+    const header = `{ "name": ${JSON.stringify(name)}, "displayName": ${JSON.stringify(displayName)}, "entries": {`
+    if (level === stopDepth - 1) {
+      // Leaf level: data entries at pad2; two separate closing braces
+      const entryLines = Object.entries(node as Record<string, unknown>).map(([kk, vv]) => {
+        const dk = titles[kk] ?? kk
+        return `${pad2}${JSON.stringify(dk)}: ${renderWrapped(vv, 6, 0, [...rawKeyPath, kk])}`
+      })
+      return `${header}\n${entryLines.join(',\n')}\n${pad1}}\n${pad}}`
+    } else {
+      // Non-leaf: sub-wrapper entries at pad1; double-close at pad
+      const entryLines = Object.entries(node as Record<string, unknown>).map(([kk, vv]) => {
+        const dk = titles[kk] ?? kk
+        return `${pad1}${JSON.stringify(dk)}: ${renderWrapped(vv, level + 1, indent + 1, [...rawKeyPath, kk])}`
+      })
+      return `${header}\n${entryLines.join(',\n')}\n${pad}}}`
+    }
+  }
+  const familyPaths  = buildFamilyPathMap(tree)
+  const familyEntries = Object.entries(familyPaths)
+  const familyLines   = familyEntries.map(([title, path]) => `  SocketFamilyEnum.${_.padEnd(familyTitleToEnumKey(title) + ':', 65)} ${path}`)
   const familyConst   = `export const SocketWrenchesByFamily = {\n${familyLines.join(',\n')}\n};`
-  const enumValues    = sortedEntries.map(([title]) =>
+  const enumValues    = familyEntries.map(([title]) =>
     `  annotation { "Name": ${JSON.stringify(title)} }\n  ${familyTitleToEnumKey(title)}`
   )
   const familyEnum    = `export enum SocketFamilyEnum {\n${enumValues.join(',\n')}\n}`
-  return socketWrenchesFeaturescriptHeader + `\n\nexport const SocketWrenches = ${renderNode(tree, 0)};\n\n${familyEnum}\n\n${familyConst}`
+  return socketWrenchesFeaturescriptHeader
+    + `\n\nexport const SocketWrenches = ${renderNode(tree, 0)};`
+    + `\n\nexport const SocketWrenches2 = ${renderWrapped(tree, 0, 1, [])};`
+    + `\n\n${familyEnum}\n\n${familyConst}`
 }

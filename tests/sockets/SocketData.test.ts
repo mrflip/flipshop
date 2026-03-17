@@ -139,7 +139,7 @@ describe('@flipshop/flipshop Sockets', () => {
       it('appends a SocketWrenchesByFamily const with dotted path references', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
         expect(blob).to.include('const SocketWrenchesByFamily =')
-        expect(blob).to.match(/[A-Z][A-Z0-9_]+: +SocketWrenches\.\w+\.\w+\.\w+\.\w+\.\w+\.\w+/)
+        expect(blob).to.match(/[A-Z][A-Z0-9_]+: +SocketWrenches2\.entries\[\".+\"\].entries\[\".+\"\].entries\[\".+\"\].entries\[\".+\"\].entries\[\".+\"\]/)
       })
       it('family keys are sorted', () => {
         const blob = socketWrenchesToFeaturescript(SomeSocketWrenches)
