@@ -46,6 +46,12 @@ precondition {
   drawSocketBaseShape(context, ids.shapesSk, sketches.shapes, socketParams.socket, socketParams);
   skSolve(sketches.shapes);
 
+  const center = vector(socketParams.nomBounds.ctrH, socketParams.nomBounds.ctrV);
+  radialText(context, ids.calloutsSk, socketParams, sketches.callouts,
+    socketParams.socket.sizing_mm_text, center,
+    145 * degree, socketParams.cutoutRadius, 1.5 * millimeter, 4 * millimeter);
+  skSolve(sketches.callouts);
+
   const cutoutFaces = qCreatedBy(ids.shapesSk, EntityType.FACE);
   opExtrude(context, ids.extrudedCutout, {
     "entities":  cutoutFaces,
@@ -94,6 +100,45 @@ function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, param
 
   skSolve(sketch);
   return sketch;
+}
+
+// Returns a 2-vector from center along rayAngle to the given distance.
+function radialPoint(center is Vector, rayAngle, dist) returns Vector {
+  return center + dist * vector(cos(rayAngle), sin(rayAngle));
+}
+
+// Draws a text label on sketch whose baseline is perpendicular to rayAngle,
+// centered on the ray at (radius + offset) from center.
+function radialText(context is Context, id is Id, params, sketch is Sketch,
+  text is string, center is Vector, rayAngle, radius, offset, textHeight) {
+  const pt      = radialPoint(center, rayAngle, radius + offset);
+  const perpDir = vector(-sin(rayAngle), cos(rayAngle));
+  const rayDir  = vector( cos(rayAngle), sin(rayAngle));
+  const halfW   = textHeight * 0.65 * length(text);
+  skText(sketch, "sizeLabel", {
+    "fontName":      "OpenSans-Regular.ttf",
+    "firstCorner":   pt - halfW * perpDir,
+    "secondCorner":  pt + halfW * perpDir + textHeight * rayDir,
+    "text":          text,
+  });
+}
+
+// Draws text on sketch, solves it, queries the resulting edges, and debugs their bounding box.
+// id must be the feature Id used to create sketch (used to query created entities).
+// textHeight sets the font size; firstCorner is the bottom-left anchor of the text box.
+function drawAndMeasureText(context is Context, id is Id, sketch is Sketch,
+  text is string, textHeight, firstCorner is Vector) {
+  const estimatedWidth = textHeight * 0.65 * length(text);
+  skText(sketch, "text", {
+    "fontName":      "OpenSans-Regular.ttf",
+    "firstCorner":   firstCorner,
+    "secondCorner":  firstCorner + vector(estimatedWidth, textHeight),
+    "text":          text,
+  });
+  skSolve(sketch);
+  const textEnts   = sketchEntityQuery(id, EntityType.EDGE, "text");
+  const textBounds = evBox3d(context, { "topology": textEnts, "tight": true });
+  debug(context, textBounds);
 }
 
 function drawSocketBaseShape(context is Context, id is Id, sketch is Sketch, socket is map, params is map) {

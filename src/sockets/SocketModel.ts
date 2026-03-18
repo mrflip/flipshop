@@ -72,6 +72,8 @@ export class SocketWrench extends Thing implements SocketWrenchT {
       .join(' ')
   }
 
+  get sizing_mm_text(): string { return String(_.round(this.sizing_mm, 1)) }
+
   toFeaturescript(): string {
     const data = this.flatten() as Record<string, unknown>
     const parts = Object.entries(data)

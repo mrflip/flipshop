@@ -123,7 +123,7 @@ function extract_dim(rawkey: string, raw: string): [TY.Fieldname, number] {
   //
   const fn = fieldname_remap[raw_fn!]; if (! fn) { console.warn(`Unknown dimension: ${rawkey} => ${raw}`) }
   const num = Number(valstr)
-  const val = units === 'in' ? _.round(num * MM_IN, 6) : _.round(num, 6)
+  const val = units === 'in' ? _.round(num * MM_IN, 7) : _.round(num, 7)
   // console.warn(`${rawkey} => ${raw} => ${fn} = ${val} ${units} ${num}`)
   return [fn ?? 'oops', val]
 }
@@ -134,7 +134,7 @@ function extract_dist(raw: string): number {
   const [_s,  valstr, units] = match
   //
   const num = Number(valstr)
-  const val = units === 'in' ? _.round(num * MM_IN, 6) : _.round(num, 6)
+  const val = units === 'in' ? _.round(num * MM_IN, 7) : _.round(num, 7)
   return val
 }
 // --
@@ -192,7 +192,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     const fn = fieldname_remap[key]
     if (_.isNull(fn)) { return }
     if (fn === 'bit_kind' && /External/.test(raw)) { return } // a couple pages have bit types where it's not a bit kind
-    if (fn === 'wt_lb')                       { result[fn] = Number(raw.replace(/ lb$/, '')); result.wt = _.round(result.wt_lb * KG_LB, 3); return }
+    if (fn === 'wt_lb')                       { result[fn] = Number(raw.replace(/ lb$/, '')); result.wt = _.round(result.wt_lb * KG_LB, 6); return }
     if (/drive_size$/.test(fn))               { result[fn] = sqdrive_size_remap[raw]; if (! result[fn]) { console.warn(`Unknown drive size: ${raw}`)   } return }
     if (/(bit|drive)_kind$/.test(fn))         { result[fn] = drive_kind_remap[raw];   if (! result[fn]) { console.warn(`Unknown drive kind: ${raw}`)   } return }
     if (fn === 'socket_kind')                 { result[fn] = socket_kind_remap[raw];  if (! result[fn]) { console.warn(`Unknown socket kind: ${raw}`)  } return }
@@ -231,7 +231,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   if (specifications['Size Range (SAE)']) { result.unit_system = 'us' } if (specifications['Size Range (Metric)']) { result.unit_system = 'metric' }
   result.sizing = result.sizing?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in').replaceAll(/\.0+in/g, 'in')
   result.sizing_mm = DistanceLookup[result.sizing]
-  result.sizing_in = _.round(result.sizing_mm / MM_IN, 6)
+  result.sizing_in = _.round(result.sizing_mm / MM_IN, 7)
   result.img_url = img_url.replace(/\?itok=.*$/, '')
 
   // Track enum values for each field

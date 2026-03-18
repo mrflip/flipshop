@@ -24,6 +24,8 @@ export const socketWrench = CK.obj({
   sizing:               CK.str.regex(/^(?:((?:\d+\+)?[\/\d]+in|[\d\.]+mm)|T\d+|E\d+|#[123]|#0+|.+in - .+in)$/),
   /** drive size of the tool in millimeters */
   sizing_mm:            mm_lte_2000,
+  /** sizing_mm rounded to one decimal place with trailing zeros removed (e.g. "9.5", "12.7") */
+  sizing_mm_text:       CK.str.optional(),
   /** drive size of the tool in inches */
   sizing_in:            in_lte_36,
   //
