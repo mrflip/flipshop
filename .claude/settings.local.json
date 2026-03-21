@@ -3,5 +3,6 @@
     "allow": [
       "Bash(yarn test:*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": false
 }
