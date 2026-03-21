@@ -97,6 +97,19 @@ function getSocketRef(context is Context, keypath is LookupTablePath) {
   return SocketWrenches3.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant].entries[keypath.sizing];
 }
 
+// Returns the 2D coordinate in a rotated sketch that locates the same 3D point
+// as coord in the original sketch.  Both sketches share the same origin and normal;
+// only the X axis differs by angle.  Expressing the same point in the rotated frame
+// is equivalent to rotating the 2D coordinate vector by -angle.
+function toRotatedSketchCoord(coord is Vector, angle is ValueWithUnits) returns Vector {
+  const h = coord[0];
+  const v = coord[1];
+  return vector(
+     h * cos(angle) + v * sin(angle),
+    -h * sin(angle) + v * cos(angle)
+  );
+}
+
 // Returns a new sketch whose axes share the origin and normal of params.sketchPlane
 // but are rotated by angle around that normal.
 // Used to angle label text independently of the main geometry sketches.
