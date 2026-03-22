@@ -11,6 +11,7 @@ const tinySizeVal = 0.001;
 // Shorthand aliases used throughout for readability.
 const mm          = millimeter;
 const zero        = 0 * mm;
+var   idUniquer   = 0;
 
 // Cuts a cylindrical socket cell into a body on the selected reference plane.
 // The cutout is a circle sized to the chosen socket's wrench-end diameter plus
@@ -29,6 +30,10 @@ precondition {
 
   annotation { "Name":  "Insertion gap" }
   isLength(definition.insertionGap, {(millimeter) : [0, 0.3, hugeSizeVal]} as LengthBoundSpec);
+
+  // Angular position of the callout label's closest point to the socket center.
+  annotation { "Name":  "Callout angle" }
+  isAngle(definition.calloutAngle, {(degree) : [0, 0, 360]} as AngleBoundSpec);
 }
 {
   const socketParams = socketCellParams(context, definition);
@@ -44,15 +49,16 @@ precondition {
    bboxes:    newSketchOnPlane(context, ids.bboxesSk,    { "sketchPlane":  socketParams.sketchPlane }),
    shapes:    newSketchOnPlane(context, ids.shapesSk,    { "sketchPlane":  socketParams.sketchPlane }),
    labels:    newSketchOnPlane(context, ids.labelsSk,    { "sketchPlane":  socketParams.sketchPlane }),
-   callouts:  rotatedSketch(context, ids.calloutsSk, socketParams, 55 * degree),
+   // Callout sketch X axis is the CW tangent at calloutAngle (= radial rotated −90°),
+   // so text reads perpendicular to the ray and descends in Y when calloutAngle is 0.
+   callouts:  rotatedSketch(context, ids.calloutsSk, socketParams, socketParams.calloutAngle - 90 * degree),
   };
 
   drawBoundingBoxes(context,   ids.bboxesSk, sketches.bboxes, socketParams);
   drawSocketBaseShape(context, ids.shapesSk, sketches.shapes, socketParams.socket, socketParams);
   skSolve(sketches.shapes);
 
-  const center = vector(socketParams.nomBounds.ctrH, socketParams.nomBounds.ctrV);
-  rotatedTextAt(context, sketches.callouts, "label", "Hi, Mom", center);
+  radialText(sketches.callouts, socketParams, "Hi, Mom", 4 * mm);
   skSolve(sketches.callouts);
 
 //   drawAndMeasureText(context, ids.labelsSk, sketches.labels, "Hi, Mom", 5*mm, vector(1*mm, 3*mm));
@@ -72,15 +78,19 @@ precondition {
   });
 });
 
-// Draws a small text entity on sketch at origCoord.
-// NOTE: text and origCoord parameters are currently unused; the label is hardcoded
-// as a placeholder while the text-placement approach is still being worked out.
-function rotatedTextAt(context is Context, sketch is Sketch, eId is string, text is string, origCoord is Vector) {
-  skText(sketch, eId, {
+// Draws text on the callout sketch starting at params.cutoutRadius in the +V
+// direction (radially outward) and centered on the H axis (tangentially).
+// The callout sketch must already be oriented so that +V is the radial direction
+// and +H is the CW tangent (i.e., created with rotatedSketch at calloutAngle − 90°).
+// textHeight controls font size; character width is estimated at 0.65 × textHeight.
+function radialText(sketch is Sketch, params is map, text is string, textHeight is ValueWithUnits) {
+  const halfW       = textHeight * 0.65 * length(text);
+  const innerRadius = params.cutoutRadius;
+  skText(sketch, nextLabelId("callout"), {
     "fontName":     "OpenSans-Regular.ttf",
-    "firstCorner":  vector(0  * mm, 0 * mm),
-    "secondCorner": vector(1 * mm, 5 * mm),
-    "text":         "Hi, Mom",
+    "firstCorner":  vector(-halfW,  innerRadius),
+    "secondCorner": vector( halfW,  innerRadius + textHeight),
+    "text":         text,
   });
 }
 
@@ -158,37 +168,18 @@ function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, param
 
 // // Draws a text label on sketch whose baseline is perpendicular to rayAngle,
 // // centered on the ray at (radius + offset) from center.
-// function radialText(context is Context, id is Id, params, sketch is Sketch,
+// function radialText(context is Context, params, sketch is Sketch, entityId is string,
 //   text is string, center is Vector, rayAngle is ValueWithUnits, radius is ValueWithUnits, offset is ValueWithUnits, textHeight is ValueWithUnits) {
 //   const pt      = radialPoint(center, rayAngle, radius + offset);
 //   const perpDir = vector(-sin(rayAngle), cos(rayAngle));
 //   const rayDir  = vector( cos(rayAngle), sin(rayAngle));
 //   const halfW   = textHeight * 0.65 * length(text);
-//   skText(sketch, "sizeLabel", {
+//   skText(sketch, nextLabelId(entityId), {
 //     "fontName":      "OpenSans-Regular.ttf",
 //     "firstCorner":   pt - halfW * perpDir,
 //     "secondCorner":  pt + halfW * perpDir + textHeight * rayDir,
 //     "text":          text,
 //   });
-// }
-
-// // Draws text on sketch, solves it, queries the resulting edges, and debugs their bounding box.
-// // id must be the feature Id used to create sketch (used to query created entities).
-// // textHeight sets the font size; firstCorner is the bottom-left anchor of the text box.
-// function drawAndMeasureText(context is Context, sketchId is Id, sketch is Sketch, text is string, textHeight, firstCorner is Vector) {
-//   const estimatedWidth = textHeight * 0.65 * length(text);
-//   skText(sketch, "text", {
-//     "fontName":      "OpenSans-Regular.ttf",
-//     "firstCorner":   firstCorner,
-//     "secondCorner":  firstCorner + vector(estimatedWidth, textHeight),
-//     "text":          text,
-//   });
-//   skSolve(sketch);
-//   const textEnts   = sketchEntityQuery(sketchId, EntityType.EDGE, "text");
-//   const xx = qCreatedBy(sketchId, EntityType.BODY);
-//   debug(context, [textEnts, xx, 1], DebugColor.RED);
-//   const textBounds = evBox3d(context, { "topology": xx, "tight": true });
-//   debug(context, [textBounds, 2]);
 // }
 
 // Draws the two circles that define the socket cell profile on sketch.
@@ -218,6 +209,7 @@ function socketFamilyCellParams(context, definition is map) returns map {
     "socketFamily":    socketFamily,
     "insertionGap":    definition.insertionGap,
     "layerHeight":     definition.layerHeight,
+    "calloutAngle":    definition.calloutAngle,
     "sketchPlane":     sketchPlane,
   });
 }
@@ -254,3 +246,5 @@ function socketCellParams(context, definition is map) returns map {
     "cutBounds":     cutBounds,
   });
 }
+
+function nextLabelId(label is string) returns string { return label ~ "_" ~ (idUniquer++); }
