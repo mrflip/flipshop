@@ -341,6 +341,158 @@ export enum ResizingPolicy {
 
 }
 
+/**
+ * Per-dimension ratios of `origSize` to `bounds`, plus the extremes.
+ * A `ratio` > 1 means the original is larger than bounds in that dimension.
+ * @param origSize {Vector} : Original 2-D size.
+ * @param bounds {Vector} : Target 2-D bounds.
+ */
+export function resizingRatios(origSize is Vector, bounds is Vector) returns map {
+  const ratio0 = origSize[0] / bounds[0];
+  const ratio1 = origSize[1] / bounds[1];
+  return {
+    "ratio0":        ratio0,
+    "ratio1":        ratio1,
+    "largestRatio":  max(ratio0, ratio1),
+    "smallestRatio": min(ratio0, ratio1),
+  };
+}
+
+/* Per-axis scale factor for a single independent ResizingPolicy. FOLLOW resolved by caller. */
+function scaleForPolicy(policy is ResizingPolicy, ratio is number) returns number {
+  if (policy == ResizingPolicy.NONE)     { return 1.0; }
+  if (policy == ResizingPolicy.FILL)     { return 1.0 / ratio; }
+  if (policy == ResizingPolicy.LIMIT)    { return min(1.0, 1.0 / ratio); }
+  if (policy == ResizingPolicy.EMBIGGEN) { return max(1.0, 1.0 / ratio); }
+  return 1.0;
+}
+
+/**
+ * Scale factor vector for the given per-axis `ResizingPolicy` pair, derived from `baseFactors`.
+ * Dimension-coupled policies (CONTAIN, COVER, DOWNSCALE, MAXIMIZE) apply the same uniform factor
+ * to both axes; per-axis policies are resolved independently, with FOLLOW inheriting the other axis.
+ * @param baseFactors {map} : Output of @see `resizingRatios`.
+ * @param resizing0 {ResizingPolicy} : Policy for dimension 0 (X).
+ * @param resizing1 {ResizingPolicy} : Policy for dimension 1 (Y).
+ */
+export function resizingFactorsFor(baseFactors is map, resizing0 is ResizingPolicy, resizing1 is ResizingPolicy) returns Vector {
+  const r0 = baseFactors.ratio0;
+  const r1 = baseFactors.ratio1;
+  const lr = baseFactors.largestRatio;
+  const sr = baseFactors.smallestRatio;
+  // Dimension-coupled policies — both axes share the same uniform factor
+  if (resizing0 == ResizingPolicy.CONTAIN)   { return vector(1.0 / lr, 1.0 / lr); }
+  if (resizing0 == ResizingPolicy.COVER)     { return vector(1.0 / sr, 1.0 / sr); }
+  if (resizing0 == ResizingPolicy.DOWNSCALE) { return vector(min(1.0, 1.0 / lr), min(1.0, 1.0 / lr)); }
+  if (resizing0 == ResizingPolicy.MAXIMIZE)  { return vector(max(1.0, 1.0 / sr), max(1.0, 1.0 / sr)); }
+  // Per-axis independent policies; resolve FOLLOW after computing the other axis
+  var sf0 = scaleForPolicy(resizing0, r0);
+  var sf1 = scaleForPolicy(resizing1, r1);
+  if (resizing0 == ResizingPolicy.FOLLOW) { sf0 = sf1; }
+  if (resizing1 == ResizingPolicy.FOLLOW) { sf1 = sf0; }
+  return vector(sf0, sf1);
+}
+
+/**
+ * Resizing result for `origSize` scaled into `bounds` under the given per-axis policies.
+ * Returns `origSize`, `bounds`, and `scaleFactor` (per-axis proportion to apply to origSize).
+ * @param origSize {Vector} : Original 2-D size.
+ * @param bounds {Vector} : Target 2-D bounds.
+ * @param policies {map} : Resizing policies.
+ *   - @field resizing0 {ResizingPolicy} : Policy for dimension 0 (X).
+ *   - @field resizing1 {ResizingPolicy} : Policy for dimension 1 (Y).
+ */
+export function resizingFactors(origSize is Vector, bounds is Vector, policies is map) returns map {
+  const baseFactors = resizingRatios(origSize, bounds);
+  const scaleFactor = resizingFactorsFor(baseFactors, policies.resizing0, policies.resizing1);
+  return {
+    "origSize":    origSize,
+    "bounds":      bounds,
+    "scaleFactor": scaleFactor,
+  };
+}
+
+/**
+ * `skText` entity on `sketch` anchored at `position`, auto-sized and aligned per the given policies.
+ * Measures natural text geometry via `textBounds`, then derives the scaled `baselineHeight` and
+ * `firstCorner` satisfying the resizing and alignment constraints before delegating to `skBasicTextAt`.
+ * Returns `firstCorner`, `baselineHeight` (after scaling), `scaleFactor`, and `textCoords`.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id for @see `textBounds` temporary geometry.
+ * @param entityId {string} : Sketch entity id.
+ * @param sketch {Sketch} : Target sketch.
+ * @param text {string} : Text to draw.
+ * @param position {Vector} : Anchor point; meaning determined by `horizontalAlign`/`verticalAlign`.
+ * @param baselineHeight {ValueWithUnits} : Nominal cap height before any resizing is applied.
+ * @param options {map} : keyword options
+ *   - @field [fontName=FontName.OPEN_SANS_REGULAR] {FontName} : Font filename.
+ *   - @field [bounds] {Vector} : Target 2-D bounds for resizing; required for non-NONE policies.
+ *   - @field [resizing0=ResizingPolicy.NONE] {ResizingPolicy} : Resizing policy for X.
+ *   - @field [resizing1=ResizingPolicy.NONE] {ResizingPolicy} : Resizing policy for Y.
+ *   - @field [horizontalAlign=HorizontalAlignment.LEFT] {HorizontalAlignment} : X anchor interpretation.
+ *   - @field [verticalAlign=VerticalAlignment.BASELINE] {VerticalAlignment} : Y anchor interpretation.
+ *   - @field [keepTools=false] {boolean} : Retain temporary sketch bodies from textBounds.
+ */
+export function skTextAt(context is Context, id is Id, entityId is string, sketch is Sketch, text is string, position is Vector, baselineHeight is ValueWithUnits, options is map) returns map {
+  const opts = mergeMaps({
+    "fontName":        FontName.OPEN_SANS_REGULAR,
+    "baselineHeight":  baselineHeight,
+    "keepTools":       false,
+    "resizing0":       ResizingPolicy.NONE,
+    "resizing1":       ResizingPolicy.NONE,
+    "horizontalAlign": HorizontalAlignment.LEFT,
+    "verticalAlign":   VerticalAlignment.BASELINE,
+  }, options);
+  // Measure natural text geometry at the nominal baselineHeight
+  const tc        = textBounds(context, id, text, opts);
+  const origSize  = vector(tc.actualWidth, tc.capHeight);
+  // text renders uniformly: all metrics (x and y) scale with baselineHeight, i.e. sf[1]
+  const bounds    = opts.bounds == undefined ? origSize : opts.bounds;
+  const factors   = resizingFactors(origSize, bounds, { "resizing0": opts.resizing0, "resizing1": opts.resizing1 });
+  const sf        = factors.scaleFactor;
+  const newHeight = opts.baselineHeight * sf[1];
+  // Horizontal offset: position the named x-anchor of the scaled text at position[0]
+  var xOffset = 0 * mm;
+  if (opts.horizontalAlign == HorizontalAlignment.MIN) {
+    xOffset = -tc.minLeft * sf[1];
+  } else if (opts.horizontalAlign == HorizontalAlignment.LEFT) {
+    xOffset = -tc.left * sf[1];
+  } else if (opts.horizontalAlign == HorizontalAlignment.CENTER) {
+    xOffset = -(tc.left + tc.right) / 2 * sf[1];
+  } else if (opts.horizontalAlign == HorizontalAlignment.CENTER_NOMINAL) {
+    xOffset = -(tc.minLeft + tc.maxRight) / 2 * sf[1];
+  } else if (opts.horizontalAlign == HorizontalAlignment.RIGHT) {
+    xOffset = -tc.right * sf[1];
+  } else if (opts.horizontalAlign == HorizontalAlignment.MAX) {
+    xOffset = -tc.maxRight * sf[1];
+  }
+  // Vertical offset: position the named y-anchor of the scaled text at position[1]
+  var yOffset = 0 * mm;
+  if (opts.verticalAlign == VerticalAlignment.MAX) {
+    yOffset = -tc.maxHeight * sf[1];
+  } else if (opts.verticalAlign == VerticalAlignment.TOP) {
+    yOffset = -tc.bbox.maxCorner[1] * sf[1];
+  } else if (opts.verticalAlign == VerticalAlignment.NOMINAL_CAP) {
+    yOffset = -tc.capHeight * sf[1];
+  } else if (opts.verticalAlign == VerticalAlignment.CENTER) {
+    yOffset = -(tc.bbox.maxCorner[1] + tc.bbox.minCorner[1]) / 2 * sf[1];
+  } else if (opts.verticalAlign == VerticalAlignment.BASELINE) {
+    yOffset = -tc.baselineHeight * sf[1];
+  } else if (opts.verticalAlign == VerticalAlignment.BOTTOM) {
+    yOffset = -tc.bbox.minCorner[1] * sf[1];
+  } else if (opts.verticalAlign == VerticalAlignment.MIN) {
+    yOffset = -tc.minHeight * sf[1];
+  }
+  const firstCorner = position + vector(xOffset, yOffset);
+  skBasicTextAt(context, entityId, sketch, text, firstCorner, newHeight, opts);
+  return {
+    "firstCorner":    firstCorner,
+    "baselineHeight": newHeight,
+    "scaleFactor":    sf,
+    "textCoords":     tc,
+  };
+}
+
 export enum FontName {
   annotation { "Name": "Open Sans Regular (a good default)" }
   OPEN_SANS_REGULAR,
