@@ -14,6 +14,24 @@ export enum ShapeType {
   RECTANGLE
 }
 
+/**
+ * Feature: draws a rectangular grid of solid shapes (circles, rectangles, or rounded
+ * rectangles) on a reference plane and extrudes them, backed by a thin base plate.
+ * @param definition {{
+ *      @field referencePlane {Query} : The plane on which the grid is sketched.
+ *      @field item_x_size {ValueWithUnits} : Width of each item.
+ *      @field item_y_size {ValueWithUnits} : Height of each item.
+ *      @field shape_type {ShapeType} : Shape drawn for each grid cell.
+ *      @field n_x_items {number} : Number of items in the X direction.
+ *      @field n_y_items {number} : Number of items in the Y direction.
+ *      @field corner_radius {ValueWithUnits} : Fillet radius; only used when `shape_type` is `ROUNDRECT`.
+ *      @field x_gutter {ValueWithUnits} : Horizontal gap between adjacent items.
+ *      @field y_gutter {ValueWithUnits} : Vertical gap between adjacent items.
+ *      @field x_margin_left {ValueWithUnits} : Margin added to both sides of the item grid in X.
+ *      @field y_margin_front {ValueWithUnits} : Margin added to both sides of the item grid in Y.
+ *      @field thickness {ValueWithUnits} : Extrusion depth of each item shape.
+ * }}
+ */
 annotation { "Feature Type Name":  "Patterned Shapes" }
 export const patternedShapes = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
@@ -96,6 +114,16 @@ precondition {
   setProperty(context, { "entities": extrudedBodies, "propertyType":  PropertyType.NAME, "value": "Patterned Shapes"  });
 });
 
+/**
+ * Builds a bounding-box map from explicit min/max extents in the H, V, and D axes.
+ * Returns a map with `min`, `ctr`, `max`, and `size` entries for each axis.
+ * @param minH {ValueWithUnits} : Minimum H (horizontal) extent.
+ * @param maxH {ValueWithUnits} : Maximum H extent.
+ * @param minV {ValueWithUnits} : Minimum V (vertical) extent.
+ * @param maxV {ValueWithUnits} : Maximum V extent.
+ * @param minD {ValueWithUnits} : Minimum D (depth) extent.
+ * @param maxD {ValueWithUnits} : Maximum D extent.
+ */
 function boxForBounds(minH is ValueWithUnits, maxH is ValueWithUnits,
   minV is ValueWithUnits, maxV is ValueWithUnits,
   minD is ValueWithUnits, maxD is ValueWithUnits) returns map {
@@ -115,6 +143,16 @@ function boxForBounds(minH is ValueWithUnits, maxH is ValueWithUnits,
     };
   }
 
+/**
+ * Builds a bounding-box map from a center position and total size in H and V,
+ * delegating to `boxForBounds`.  D extents are passed through directly.
+ * @param ctrH {ValueWithUnits} : Center H position.
+ * @param ctrV {ValueWithUnits} : Center V position.
+ * @param sizeH {ValueWithUnits} : Total width in H.
+ * @param sizeV {ValueWithUnits} : Total height in V.
+ * @param minD {ValueWithUnits} : Minimum D extent.
+ * @param maxD {ValueWithUnits} : Maximum D extent.
+ */
 function boxForCenterSize(ctrH is ValueWithUnits, ctrV is ValueWithUnits,
   sizeH is ValueWithUnits, sizeV is ValueWithUnits,
   minD is ValueWithUnits, maxD is ValueWithUnits) returns map {
@@ -124,6 +162,13 @@ function boxForCenterSize(ctrH is ValueWithUnits, ctrV is ValueWithUnits,
     );
   }
 
+/**
+ * Validates and normalizes the feature `definition` into a resolved params map used
+ * throughout the feature.  Clamps the corner radius if it exceeds half the smaller item
+ * dimension.  Computes strides, the first-item bounding box, items bounds, padded bounds
+ * (with margins), and body bounds (including a thin base-plate offset below zero).
+ * @param definition {map} : The raw feature definition map.
+ */
 function patternedShapesParams(definition is map) returns map {
   // Validate gutters
   if (definition.x_gutter <= - definition.item_x_size) { throw regenError("X gutter must be smaller than item X size");  }
@@ -201,6 +246,15 @@ function patternedShapesParams(definition is map) returns map {
   };
 }
 
+/**
+ * Creates a sketch and draws two rectangles: the items bounding box (construction, tight
+ * around all items) and the padded bounds box (solid, includes margins).  Adds midpoint
+ * dots on the top and right edges of each rectangle.  Solves and returns the sketch.
+ * @param context {Context} : The model context.
+ * @param id {Id} : Sketch feature id.
+ * @param sketchPlane {Plane} : The plane on which to create the sketch.
+ * @param params {map} : Resolved params map from `patternedShapesParams`.
+ */
 function drawBoundingAndPaddingBoxes(context is Context, id is Id, sketchPlane is Plane, params is map) returns builtin {
   const sketch = newSketchOnPlane(context, id, { "sketchPlane":  sketchPlane });
   // Draw items bounding box (solid)
@@ -225,6 +279,15 @@ function drawBoundingAndPaddingBoxes(context is Context, id is Id, sketchPlane i
   return sketch;
 }
 
+/**
+ * Creates a sketch and draws all items in the grid pattern, iterating over columns then
+ * rows.  Each item is placed by `addSimpleShape` at its computed center.  After drawing
+ * all items, adds construction decoration lines for the first item via `decorateItem0`.
+ * @param context {Context} : The model context.
+ * @param id {Id} : Sketch feature id.
+ * @param sketchPlane {Plane} : The plane on which to create the sketch.
+ * @param params {map} : Resolved params map from `patternedShapesParams`.
+ */
 function drawPatternedShapes(context is Context, id is Id, sketchPlane is Plane, params is map) {
   const sketch = newSketchOnPlane(context, id, { "sketchPlane":  sketchPlane });
   var itemIndex = 0;
@@ -242,6 +305,14 @@ function drawPatternedShapes(context is Context, id is Id, sketchPlane is Plane,
   skSolve(sketch);
 }
 
+/**
+ * Adds four construction line segments to `sketch` for the first item: horizontal and
+ * vertical guide lines from the item center to its perimeter edges, and extensions from
+ * each perimeter point outward to the corresponding items bounding box edge.
+ * @param sketch {Sketch} : The sketch to draw into.
+ * @param sketchId {Id} : The sketch feature id (reserved, not used in body).
+ * @param params {map} : Resolved params map; uses `item0` and `items_bounds`.
+ */
 function decorateItem0(sketch is Sketch, sketchId is Id, params is map) {
   const center = vector(params.item0.ctrH, params.item0.ctrV);
   // Horizontal line from center to left perimeter
@@ -262,6 +333,15 @@ function decorateItem0(sketch is Sketch, sketchId is Id, params is map) {
   });
 }
 
+/**
+ * Draws a single shape onto `sketch` at `center`, dispatching on `params.shape_type`.
+ * Draws a circle, a rounded rectangle (via `addRoundedPolygon`), or a plain rectangle.
+ * @param sketch {Sketch} : The sketch to draw into.
+ * @param idStr {string} : Sketch entity id prefix for this item.
+ * @param center {Vector} : 2D center position of the shape.
+ * @param params {map} : Resolved params map; uses `shape_type` and `do_fillet_polygons`.
+ * @param itemBox {map} : Bounding box map for the item; provides `sizeH` and `sizeV`.
+ */
 function addSimpleShape(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
   if (params.shape_type == ShapeType.CIRCLE) {
     skCircle(sketch, idStr, { "center":  center, "radius":  itemBox.sizeH / 2 });
@@ -275,6 +355,19 @@ function addSimpleShape(sketch is Sketch, idStr is string, center is Vector, par
   }
 }
 
+/**
+ * Draws an arc on `sketch` specified by center, start, and end points, bridging the
+ * center-based API to `skArc`'s three-point API.  The arc midpoint is computed as the
+ * point on the circle (at the angle bisector of the start and end vectors) at the same
+ * radius as the start point.
+ * @param sketch {Sketch} : The sketch to draw into.
+ * @param id {string} : Sketch entity id.
+ * @param definition {{
+ *      @field center {Vector} : 2D center of the arc's circle.
+ *      @field start {Vector} : 2D start point on the circle.
+ *      @field end {Vector} : 2D end point on the circle.
+ * }}
+ */
 function skCenteredArc(sketch is Sketch, id is string, definition is map) {
   // Convert center-based arc to three-point arc
   // Given center, start, and end, calculate the midpoint on the arc
@@ -293,6 +386,17 @@ function skCenteredArc(sketch is Sketch, id is string, definition is map) {
   skArc(sketch, id, { "start":  start, "mid":  mid, "end":  end });
 }
 
+/**
+ * Computes "ear" geometry for each vertex of a polygon to describe where fillet arcs
+ * start and end.  For each vertex the ear records: `start` (set back from the vertex
+ * along the incoming edge by `size`), `end` (set back along the outgoing edge), `focus`
+ * (center of the fillet circle, offset from the vertex by `size` in both edge directions),
+ * `apex` (the original vertex), and `size`.
+ * @param definition {{
+ *      @field vertices {array} : Ordered array of 2D corner positions (Vector).
+ *      @field size {ValueWithUnits} : Setback distance — the fillet radius.
+ * }}
+ */
 function cornerEars(definition is map) returns array {
   const vertices = definition.vertices;
   const sz = definition.size;
@@ -318,6 +422,12 @@ function cornerEars(definition is map) returns array {
   return ears;
 }
 
+/**
+ * Returns the four corner vertices of a rectangle as an ordered array of 2D Vectors,
+ * starting at bottom-left and proceeding CW: bottom-left, bottom-right, top-right, top-left.
+ * @param center {Vector} : 2D center of the rectangle.
+ * @param itemBox {map} : Bounding box map with `sizeH` and `sizeV` fields.
+ */
 function verticesFromBox(center is Vector, itemBox is map) returns array {
   const halfW = itemBox.sizeH / 2;
   const halfH = itemBox.sizeV / 2;
@@ -331,6 +441,16 @@ function verticesFromBox(center is Vector, itemBox is map) returns array {
   ];
 }
 
+/**
+ * Draws a rounded rectangle onto `sketch` by iterating over corner ears and drawing a
+ * fillet arc at each corner followed by a straight edge to the next corner's arc start.
+ * Arc entity ids are `idStr ~ "_arc_" ~ i`; edge ids are `idStr ~ "_edge_" ~ i`.
+ * @param sketch {Sketch} : The sketch to draw into.
+ * @param idStr {string} : Sketch entity id prefix for this item.
+ * @param center {Vector} : 2D center of the rectangle.
+ * @param params {map} : Resolved params map; uses `corner_radius`.
+ * @param itemBox {map} : Bounding box map for the item.
+ */
 function addRoundedPolygon(sketch is Sketch, idStr is string, center is Vector, params is map, itemBox is map) {
   const vertices = verticesFromBox(center, itemBox);
   const ears = cornerEars({
