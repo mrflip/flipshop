@@ -14,15 +14,14 @@ const zero        = 0 * mm;
 var   idUniquer   = 0;
 
 /**
- * Feature: cuts a cylindrical socket pocket into a body on the selected reference plane.
- * The pocket is a circle sized to the chosen socket's wrench-end diameter plus the
- * insertion gap, extruded two layer-heights deep.
+ * Feature: cylindrical socket pocket cut into a body on the selected plane.
+ * Pocket diameter = socket wrench-end diameter + 2 × insertion gap; depth = 2 × layer height.
  * @param definition {{
- *      @field referencePlaneQ {Query} : The plane on which the socket cell is sketched.
- *      @field socketPath {LookupTablePath} : Socket selection from the `SocketWrenches3` lookup table.
- *      @field layerHeight {ValueWithUnits} : FDM layer height; pocket depth is 2 × this value.
- *      @field insertionGap {ValueWithUnits} : Clearance added to the socket body radius to size the cutout.
- *      @field calloutAngle {ValueWithUnits} : Angular position (0–360°) of the callout label relative to the socket center.
+ *      @field referencePlaneQ {Query} : Sketch plane.
+ *      @field socketPath {LookupTablePath} : Socket selection from `SocketWrenches3`.
+ *      @field layerHeight {ValueWithUnits} : FDM layer height; pocket depth is 2 × this.
+ *      @field insertionGap {ValueWithUnits} : Radial clearance around the socket body.
+ *      @field calloutAngle {ValueWithUnits} : Callout label angle (0–360°) from socket center.
  * }}
  */
 annotation { "Feature Type Name": "Socket Cell Cutter" }
@@ -88,15 +87,12 @@ precondition {
 });
 
 /**
- * Draws a text label on the callout sketch anchored at `params.cutoutRadius` in the +V
- * direction (radially outward) and centered on the H axis (tangentially).
- * The callout sketch must already be oriented so +V is radially outward and +H is the
- * CW tangent — i.e., created with `rotatedSketch` at `calloutAngle − 90°`.
- * Character width is estimated at 0.65 × `textHeight`.
- * @param sketch {Sketch} : The callout sketch to draw into.
- * @param params {map} : Socket cell params; `cutoutRadius` sets the inner radius of the label.
- * @param text {string} : The label text to draw.
- * @param textHeight {ValueWithUnits} : Font size (baseline-to-cap height).
+ * Callout label on `sketch` at `params.cutoutRadius`, centered on the H axis.
+ * Sketch must be oriented with +V radially outward and +H as the CW tangent.
+ * @param sketch {Sketch} : Target callout sketch.
+ * @param params {map} : Socket cell params; uses `cutoutRadius`.
+ * @param text {string} : Label text.
+ * @param textHeight {ValueWithUnits} : Cap height.
  */
 function radialText(sketch is Sketch, params is map, text is string, textHeight is ValueWithUnits) {
   const halfW       = textHeight * 0.65 * length(text);
@@ -110,32 +106,27 @@ function radialText(sketch is Sketch, params is map, text is string, textHeight 
 }
 
 /**
- * Returns the lookup-table entry for a socket family (all sizes) identified by `keypath`.
- * Traverses `SocketWrenches2` to the `socket_variant` tier, stopping before the sizing level.
- * @param context {Context} : The model context (unused, reserved for future use).
- * @param keypath {LookupTablePath} : Lookup table path identifying the socket family.
+ * Family entry from `SocketWrenches2` for `keypath`, stopping before the sizing tier.
+ * @param context {Context} : Model context.
+ * @param keypath {LookupTablePath} : Socket family path.
  */
 function getSocketFamilyRef(context is Context, keypath is LookupTablePath) {
   return SocketWrenches2.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant];
 }
 
 /**
- * Returns the lookup-table entry for a specific socket size identified by `keypath`.
- * Traverses `SocketWrenches3` to the `sizing` tier, returning the full dimension record
- * with fields such as `wrench_end_diam` and `wx_overall`.
- * @param context {Context} : The model context (unused, reserved for future use).
- * @param keypath {LookupTablePath} : Lookup table path identifying the socket and size.
+ * Dimension record from `SocketWrenches3` for the specific size at `keypath`.
+ * @param context {Context} : Model context.
+ * @param keypath {LookupTablePath} : Full socket path including sizing tier.
  */
 function getSocketRef(context is Context, keypath is LookupTablePath) {
   return SocketWrenches3.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant].entries[keypath.sizing];
 }
 
 /**
- * Converts a 2D sketch coordinate to the equivalent coordinate in a sketch whose X axis
- * is rotated by `angle` relative to the original.  Both sketches share the same origin
- * and normal; the conversion is a 2D rotation of `coord` by `-angle`.
- * @param coord {Vector} : 2D coordinate in the original sketch frame.
- * @param angle {ValueWithUnits} : Rotation angle of the target sketch's X axis.
+ * 2D coordinate in a sketch frame whose X axis is rotated `angle` from the original.
+ * @param coord {Vector} : 2D coordinate in the original frame.
+ * @param angle {ValueWithUnits} : X-axis rotation of the target frame.
  */
 function toRotatedSketchCoord(coord is Vector, angle is ValueWithUnits) returns Vector {
   const h = coord[0];
@@ -147,13 +138,11 @@ function toRotatedSketchCoord(coord is Vector, angle is ValueWithUnits) returns 
 }
 
 /**
- * Creates a new sketch on the same plane as `params.sketchPlane` but with its X axis
- * rotated by `angle` around the plane normal.  Used to draw label text at an independent
- * angle from the main geometry sketches.
- * @param context {Context} : The model context.
+ * Sketch on `params.sketchPlane` with X axis rotated `angle` around the plane normal.
+ * @param context {Context} : Model context.
  * @param id {Id} : Sketch feature id.
  * @param params {map} : Must contain `sketchPlane` (Plane).
- * @param angle {ValueWithUnits} : In-plane rotation angle for the sketch X axis.
+ * @param angle {ValueWithUnits} : In-plane rotation angle.
  */
 function rotatedSketch(context is Context, id is Id, params is map, angle is ValueWithUnits) returns Sketch {
 //   const basePlane = evPlane(context, { "face": params.referencePlaneQ });
@@ -164,13 +153,11 @@ function rotatedSketch(context is Context, id is Id, params is map, angle is Val
 }
 
 /**
- * Draws two bounding rectangles onto `sketch`: the nominal box (construction, sized to
- * the wrench-end diameter) and the cutout box (solid, extended by the insertion gap on
- * all sides).  Adds midpoint dots on the top and right edges of each rectangle.  Solves
- * and returns the sketch.
- * @param context {Context} : The model context (unused, reserved for future use).
- * @param id {Id} : Sketch feature id (unused directly; sketch was created by the caller).
- * @param sketch {Sketch} : The sketch to draw into.
+ * Nominal (construction) and cutout (solid) bounding rectangles on `sketch`,
+ * with midpoint dots on the top and right edges of each.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Sketch feature id.
+ * @param sketch {Sketch} : Target sketch.
  * @param params {map} : Socket cell params; uses `nomBounds` and `cutBounds`.
  */
 function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, params is map) returns builtin {
@@ -222,14 +209,12 @@ function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, param
 // }
 
 /**
- * Draws two concentric circles onto `sketch` defining the socket cell profile.
- * The nominal wrench-end circle (construction) shows the socket body diameter; the cutout
- * circle (solid, larger by `insertionGap`) is the region extruded to form the pocket.
- * @param context {Context} : The model context (unused, reserved for future use).
- * @param id {Id} : Sketch feature id (unused directly).
- * @param sketch {Sketch} : The sketch to draw into.
- * @param socket {map} : Socket dimension record (unused; sizing comes from `params`).
- * @param params {map} : Socket cell params; uses `nomBounds.ctrH/ctrV`, `bodyDiam`, `cutoutRadius`.
+ * Nominal wrench-end circle (construction) and cutout circle (solid) on `sketch`.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Sketch feature id.
+ * @param sketch {Sketch} : Target sketch.
+ * @param socket {map} : Socket dimension record.
+ * @param params {map} : Socket cell params; uses `nomBounds`, `bodyDiam`, `cutoutRadius`.
  */
 function drawSocketBaseShape(context is Context, id is Id, sketch is Sketch, socket is map, params is map) {
   const center = vector(params.nomBounds.ctrH, params.nomBounds.ctrV);
@@ -240,12 +225,9 @@ function drawSocketBaseShape(context is Context, id is Id, sketch is Sketch, soc
 }
 
 /**
- * Looks up the socket family in `SocketWrenches2` and builds the base parameter map
- * shared by all sizes in that family.  Throws a regen error if the family is not found.
- * Returns a map merging the lookup-table key fields with `socketPath`, `socketFamily`,
- * `insertionGap`, `layerHeight`, `calloutAngle`, and `sketchPlane`.
- * @param context : The model context (used for `evPlane`).
- * @param definition {map} : The raw feature definition map.
+ * Base param map for a socket family: path, family record, gap, height, callout angle, and sketch plane.
+ * @param context : Model context.
+ * @param definition {map} : Raw feature definition.
  */
 function socketFamilyCellParams(context, definition is map) returns map {
   // Look up the specific socket by sizing
@@ -266,12 +248,10 @@ function socketFamilyCellParams(context, definition is map) returns map {
 }
 
 /**
- * Extends `socketFamilyCellParams` with geometry for the specific socket size: body
- * diameter (from `wrench_end_diam` if present, else `wx_overall`), cutout radius
- * (body radius + `insertionGap`), cutout depth (2 × `layerHeight`), and pre-computed
- * nominal and cutout bounding boxes centered at the sketch origin.
- * @param context : The model context (passed through to `socketFamilyCellParams`).
- * @param definition {map} : The raw feature definition map.
+ * Full socket cell params, adding body diameter, cutout radius, cutout depth,
+ * and bounding boxes to the family params.
+ * @param context : Model context.
+ * @param definition {map} : Raw feature definition.
  */
 function socketCellParams(context, definition is map) returns map {
   const socketParams = socketFamilyCellParams(context, definition);
@@ -303,8 +283,7 @@ function socketCellParams(context, definition is map) returns map {
 }
 
 /**
- * Returns a unique sketch entity id string by appending a monotonically increasing
- * counter to `label`, using the module-level `idUniquer` variable.
- * @param label {string} : Base label prefix.
+ * Unique entity id from `label`, using the module-level counter.
+ * @param label {string} : Base prefix.
  */
 function nextLabelId(label is string) returns string { return label ~ "_" ~ (idUniquer++); }

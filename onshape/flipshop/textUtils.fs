@@ -41,13 +41,11 @@ const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
 // }
 
 /**
- * Creates a new sketch on the same plane as `params.basePlane` but with its X axis
- * rotated by `angle` around the plane normal.  Used to draw label text at an independent
- * angle from the main geometry sketches.
- * @param context {Context} : The model context.
+ * Sketch on `params.basePlane` with X axis rotated `angle` around the plane normal.
+ * @param context {Context} : Model context.
  * @param id {Id} : Sketch feature id.
  * @param params {map} : Must contain `basePlane` (Plane).
- * @param angle {ValueWithUnits} : In-plane rotation angle for the sketch X axis.
+ * @param angle {ValueWithUnits} : In-plane rotation angle.
  */
 export function rotatedSketch(context is Context, id is Id, params is map, angle is ValueWithUnits) returns Sketch {
   const  basePlane    = params.basePlane;
@@ -57,34 +55,32 @@ export function rotatedSketch(context is Context, id is Id, params is map, angle
 }
 
 /**
- * Draws `text` in a temporary sketch on the global XY plane, solves it, and returns a
- * map of text metrics: tight bounding boxes (`tbox`, `bbox`, `wbox`), padded and actual
- * width/height, aspect ratio, overflow fraction, and descender fraction.  The temporary
- * sketch body is deleted before returning unless `overrides.keepTools` is `true`.
- * @param context {Context} : The model context.
- * @param id {Id} : Base feature id; temp sketch id is derived from this.
- * @param text {string} : The text string to measure.
- * @param overrides {map} : @optional Overrides merged over defaults:
- *      `fontName` (string, default `"OpenSans-Regular.ttf"`),
- *      `baselineHeight` (ValueWithUnits, default `10 * mm`),
- *      `keepTools` (boolean, default `false`).
+ * Text metrics for `text`: tight bounding boxes (`tbox`, `bbox`, `wbox`), padded and
+ * actual width/height, aspect ratio, overflow fraction, and descender fraction.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param text {string} : Text to measure.
+ * @param options {map} : keyword options
+ *      - @field [fontName="OpenSans-Regular.ttf"] {string} : Font filename.
+ *      - @field [baselineHeight=10mm] {ValueWithUnits} : Nominal cap height.
+ *      - @field [keepTools=false] {boolean} : Retain the temporary sketch body.
  */
-export function textBounds(context is Context, id is Id, text is string, overrides is map) returns map {
-  const args = mergeMaps({
+export function textBounds(context is Context, id is Id, text is string, options is map) returns map {
+  const opts = mergeMaps({
       "fontName":       "OpenSans-Regular.ttf",
       "baselineHeight": 10*mm,
       "keepTools":      false,
-  }, overrides);
-  const tempSkId  = id + nextLabelId(args, "tempSketch" ~ text);
+  }, options);
+  const tempSkId  = id + nextLabelId(opts, "tempSketch" ~ text);
   const sketch    = newSketchOnPlane(context, tempSkId, { "sketchPlane": PL_TOP });
   // Draw the text
-  skTextAt(context, "textBounds", sketch, text, vector(0 * mm, 0 * mm), args.baselineHeight, args);
+  skBasicTextAt(context, "textBounds", sketch, text, vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
   skSolve(sketch);
   const sketchBody       = qCreatedBy(tempSkId, EntityType.BODY);
   //
   // Text box (includes the margin)
   const wbox             = evBox3d(context, { "topology": sketchBody,                    "tight": true });
-  const tbox             = box3d(vector(0*mm, 0*mm, 0*mm), vector(wbox.maxCorner[0], args.baselineHeight, 0*mm));
+  const tbox             = box3d(vector(0*mm, 0*mm, 0*mm), vector(wbox.maxCorner[0], opts.baselineHeight, 0*mm));
   // Bounding box (tight against the actual text region as rendered)
   const bbox             = evBox3d(context, { "topology": qSketchRegion(tempSkId, true), "tight": true });
   // Calculate the text metrics
@@ -92,7 +88,7 @@ export function textBounds(context is Context, id is Id, text is string, overrid
   const paddedHeight     = tbox.maxCorner[1] - tbox.minCorner[1];
   const actualWidth      = bbox.maxCorner[0] - bbox.minCorner[0];
   const actualHeight     = bbox.maxCorner[1] - bbox.minCorner[1];
-  const overflowHeight   = tbox.maxCorner[1] - args.baselineHeight;
+  const overflowHeight   = tbox.maxCorner[1] - opts.baselineHeight;
   const leftMarginWidth  = tbox.minCorner[0] - bbox.minCorner[0];
   const rightMarginWidth = bbox.maxCorner[0] - tbox.maxCorner[0];
   const result = {
@@ -104,7 +100,7 @@ export function textBounds(context is Context, id is Id, text is string, overrid
     "actualWidth":      actualWidth,     "actualHeight":     actualHeight,
     "overflowHeight":   overflowHeight,
     "aspectRatio":      actualWidth / actualHeight,
-    "descenderFrac":    (actualHeight - overflowHeight - args.baselineHeight) / actualHeight,
+    "descenderFrac":    (actualHeight - overflowHeight - opts.baselineHeight) / actualHeight,
     "overflowFrac":     overflowHeight / actualHeight,
   };
   opDeleteBodies(context, id + "deleteSketch",  { "entities": sketchBody });
@@ -113,62 +109,60 @@ export function textBounds(context is Context, id is Id, text is string, overrid
 }
 
 /**
- * Draws a text entity onto `sketch` at `firstCorner` with the given `baselineHeight`.
- * The second corner is set to `firstCorner + vector(1*mm, baselineHeight)`, so actual
- * width is determined by the font renderer.  Font defaults to `"OpenSans-Regular.ttf"`.
- * @param context {Context} : The model context (unused, reserved for future use).
- * @param entityId {string} : Sketch entity id for the text element.
- * @param sketch {Sketch} : The sketch to draw into.
- * @param text {string} : The text string to draw.
- * @param firstCorner {Vector} : 2D bottom-left anchor of the text box.
- * @param baselineHeight {ValueWithUnits} : Font size (baseline-to-cap height).
- * @param overrides {map} : @optional Overrides; supports `fontName` (string).
+ * `skText` entity on `sketch` at `firstCorner` with the given cap height.
+ * @param context {Context} : Model context.
+ * @param entityId {string} : Sketch entity id.
+ * @param sketch {Sketch} : Target sketch.
+ * @param text {string} : Text to draw.
+ * @param firstCorner {Vector} : Bottom-left anchor.
+ * @param baselineHeight {ValueWithUnits} : Cap height.
+ * @param options {map} : keyword options
+ *      - @field [fontName="OpenSans-Regular.ttf"] {string} : Font filename.
  */
-export function skTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, overrides is map) {
-  const args = mergeMaps({ "fontName": "OpenSans-Regular.ttf" }, overrides);
+export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, options is map) {
+  const opts = mergeMaps({ "fontName": "OpenSans-Regular.ttf" }, options);
   skText(sketch, entityId, {
-    "text": text, fontName: args.fontName, "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
+    "text": text, fontName: opts.fontName, "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
   });
 }
 
 /**
- * Returns the rendered width of `text` at the specified baseline height, measured on the
- * global XY plane by delegating to `textBounds` and reading the actual width from the bbox.
- * @param context {Context} : The model context.
- * @param id {Id} : Base feature id passed through to `textBounds`.
- * @param text {string} : The text string to measure.
- * @param args {map} : Options passed through to `textBounds` (e.g., `fontName`, `baselineHeight`).
+ * Rendered width of `text` on the global XY plane.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param text {string} : Text to measure.
+ * @param opts {map} : Options for @see `textBounds`.
  */
-export function measureTextWidth(context is Context, id is Id, text is string, args is map) returns ValueWithUnits {
-  const  textCoords = textBounds(context, id, text, args);
+export function measureTextWidth(context is Context, id is Id, text is string, opts is map) returns ValueWithUnits {
+  const  textCoords = textBounds(context, id, text, opts);
   return textCoords.maxCorner[0] - textCoords.minCorner[0];
 }
 
 
 /**
- * Intended to return the baseline height metric for `text`; currently delegates to
- * `textBounds` and returns the same value as `measureTextWidth` (work in progress).
- * @param context {Context} : The model context.
- * @param id {Id} : Base feature id passed through to `textBounds`.
- * @param text {string} : The text string to measure.
- * @param args {map} : Options passed through to `textBounds` (e.g., `fontName`, `baselineHeight`).
+ * Rendered baseline metrics for `text` on the global XY plane.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param text {string} : Text to measure.
+ * @param opts {map} : Options for @see `textBounds`.
  */
-export function measureTextBaseline(context is Context, id is Id, text is string, args is map) returns ValueWithUnits {
-  const  textCoords = textBounds(context, id, text, args);
+export function measureTextBaseline(context is Context, id is Id, text is string, opts is map) returns ValueWithUnits {
+  const  textCoords = textBounds(context, id, text, opts);
   return textCoords.maxCorner[0] - textCoords.minCorner[0];
 }
 
 /**
- * Feature: extrudes text on a selected plane and visualizes its bounding boxes.
- * Used for measuring and debugging text metrics (padded box, tight bbox, aspect ratio,
- * descender fraction).  Produces an extruded text body plus a thin carrier plate covering
+ * Feature: extrudes `text` and visualizes its bounding boxes for debugging text metrics.
+ * Produces an extruded text body plus a thin carrier plate covering
  * the tight text area, named with the measured aspect ratio and descender fraction.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
  * @param definition {{
- *      @field text {string} : The text string to render and measure.
- *      @field fontName {string} : Font filename (e.g., `"OpenSans-Regular.ttf"`).
- *      @field baselineHeight {ValueWithUnits} : Font size (baseline-to-cap height).
- *      @field sketchPlaneQ {Query} : The plane on which to draw the text.
- *      @field textAngle {ValueWithUnits} : In-plane rotation angle for the text sketch.
+ *      @field text {string} : Text to render and measure.
+ *      @field fontName {string} : Font filename.
+ *      @field baselineHeight {ValueWithUnits} : Cap height.
+ *      @field sketchPlaneQ {Query} : Sketch plane.
+ *      @field textAngle {ValueWithUnits} : In-plane rotation angle.
  * }}
  */
 annotation { "Feature Type Name": "Measure Text 3D" }
@@ -207,7 +201,7 @@ precondition {
   const textCoords = textBounds(context, id, params.text, params);
 
   // Extrude the text
-  skTextAt(context, "measureText3d", sketches.textFaces, params.text, vector(0*mm, 0*mm), params.baselineHeight, params);
+  skBasicTextAt(context, "measureText3d", sketches.textFaces, params.text, vector(0*mm, 0*mm), params.baselineHeight, params);
   skSolve(sketches.textFaces);
   opExtrude(context, ids.extrudedText, {
     "entities":  qSketchRegion(ids.textFacesSk, true),
@@ -248,11 +242,9 @@ precondition {
 });
 
 /**
- * Returns a unique sketch entity id string derived from `label`, with non-word characters
- * replaced by `-` and a per-call counter appended.  The counter is stored in and read
- * from `params.idUniquer`, so uniqueness is scoped to the params map passed in.
- * @param params {map} : Mutable params map used to track the counter in `idUniquer`.
- * @param label {string} : Base label prefix.
+ * Unique entity id from `label`, with uniqueness scoped to `params`.
+ * @param params {map} : Caller's params map; holds the per-caller counter.
+ * @param label {string} : Base prefix.
  */
 export function nextLabelId(params is map, label is string) returns string {
     params.idUniquer = params.idUniqer == undefined ? 0 : params.idUniqer + 1;

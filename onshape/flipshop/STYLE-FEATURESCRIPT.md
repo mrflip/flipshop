@@ -84,8 +84,8 @@ const name = "item_" ~ itemIndex;
 
 ## Type Annotations
 
-- Use `is Type` syntax in preconditions and function signatures.
-- Declare return types explicitly with `returns map`, `returns array`, `returns builtin`, etc.
+* Use `is Type` syntax in preconditions and function signatures.
+* Declare return types explicitly with `returns map`, `returns array`, `returns builtin`, etc.
 
 ```featurescript
 function my_func(definition is map) returns map {
@@ -97,39 +97,88 @@ function my_func(definition is map) returns map {
 
 ## Comments
 
+Bulleted lists should use `*` at the top level and `-` (indented by two spaces per level) for sub-lists:
+
+```
+/** drawShape
+ * * circle: draws a circle
+ * * polygon: based on number of sids:
+ *   - will error if sides is 2 or less.
+ */
+```
+
 ### Function preambles (`/** */` docblocks)
 
-All functions get a JSDoc-style `/** */` block comment immediately above the definition, following the Onshape stdlib convention (`onshape/std/`):
+All functions get a `/** */` docblock immediately above the definition. Follow the Onshape stdlib style (`onshape/std/`).
+
+**Tone and content:**
+* Lead with what the function *is* or *returns*, not with "Creates/Builds/Draws" when you can say it more directly. "Bounding-box map from min/max extents" beats "Builds a bounding-box map from min/max extents."
+* Omit implementation details: delegation chains, internal mechanics, unused parameters, regex patterns, etc.
+* If repetitive tokens can be elided without cost to clarity, do so: for example, `@params context {Context} : Model context` improves on `@params context {Context} : The Model context structure.` by omitting "The", "structure" and the ".".
+
+With all that said, it's easier for the next programmer to remove excess prose than to wonder at missing details; be informative, not prolix, but never mum.
+
+**Positional parameters** — use `@param`:
 
 ```featurescript
 /**
- * Brief one-line description of what the function does.
- * Additional context if needed.
- * @param id : @autocomplete `id + "operationName1"`
+ * Arc on `sketch` from center, start, and end — adapts to `skArc`'s three-point API.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Sketch feature id.
+ * @param sketch {Sketch} : Target sketch.
+ * @param angle {ValueWithUnits} : In-plane rotation angle.
+ */
+```
+
+**Keyword-options maps** — name the parameter `options`, document fields as `- @field` bullets, defaults inline with `[name=default]` (using two spaces to indent):
+
+```featurescript
+/**
+ * Text metrics for `text`: tight bounding boxes, width/height, aspect ratio, etc.
+ * @param context {Context} : Model context.
+ * @param text {string} : Text to measure.
+ * @param options {map} : keyword options
+ *   - @field [fontName="OpenSans-Regular.ttf"] {string} : Font filename.
+ *   - @field [baselineHeight=10mm] {ValueWithUnits} : Nominal cap height.
+ *   - @field [keepTools=false] {boolean} : Retain the temporary sketch body.
+ */
+```
+
+**Pass-through options** — use `@see` instead of re-listing fields:
+
+```featurescript
+/**
+ * Rendered width of `text` on the global XY plane.
+ * @param opts {map} : Options for @see `textBounds`, plus
+ *   @field poem {string} : a poem to sing while we measure
+ */
+```
+
+**Definition maps** (feature `definition` or named struct-like maps) — use `@field` inside `{{ }}`:
+
+```featurescript
+/**
+ * Feature: rectangular grid of extruded shapes on a reference plane.
  * @param definition {{
- *      @field fieldName {Type} : Description of the field.
- *      @field optionalField {boolean} : @optional Description. Default is `false`.
- *      @field conditionalField {ValueWithUnits} : @requiredif {`someFlag` is `true`}
- *          @eg `0.2 * inch`
+ *      @field referencePlane {Query} : Sketch plane.
+ *      @field shape_type {ShapeType} : Shape per grid cell.
+ *      @field [corner_radius=0] {ValueWithUnits} : Fillet radius; applies only when `shape_type` is `ROUNDRECT`.
  * }}
  */
 ```
 
-**Tag reference:**
+**Other tags:**
 
-| Tag | Usage |
-|-----|-------|
+| Tag                                          | Usage                      |
+| -------------------------------------------- | -------------------------- |
 | `@param id : @autocomplete \`id + "name1"\`` | Standard id parameter hint |
-| `@param definition {{ ... }}` | Double-braces wraps the field list |
-| `@field name {Type} : desc` | One field per line, indented 6 spaces inside definition |
-| `@optional` | Field is optional (append to field description) |
-| `@requiredif { condition }` | Conditionally required (note: stdlib uses both `@requiredif` and `@requiredIf` inconsistently — prefer lowercase) |
-| `@eg \`expression\`` | Inline example value |
-| `@ex \`expression\`` | Longer example (multiline context) |
-| `@seealso [functionName]` | Cross-reference to another function |
-| `@internal` | Marks the function as not part of the public API |
+| `@optional`                                  | Field is optional          |
+| `@requiredif { condition }`                  | Conditionally required     |
+| `@eg \`expression\``                         | Inline example value       |
+| `@seealso [functionName]`                    | Cross-reference            |
+| `@internal`                                  | Not part of the public API |
 
-Use `/* brief note */` inline block comments for TODOs or import-group labels:
+**Inline notes** — use `/* */` for TODOs or import-group labels; `//` for same-line clarifications and commented-out code:
 
 ```featurescript
 /* TODO: describe this in fuller detail */
