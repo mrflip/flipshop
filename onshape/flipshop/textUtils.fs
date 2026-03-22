@@ -20,6 +20,248 @@ const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
 //                     "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
 //                     "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~"];
 
+export enum VerticalAlignment {
+  annotation { "Name": "Top of the tallest letter" }
+  MAX,
+  annotation { "Name": "Top of the text, as rendered" }
+  TOP,
+  annotation { "Name": "Nominal cap height" }
+  NOMINAL_CAP,
+  annotation { "Name": "Center of the text, as rendered" }
+  CENTER,
+  annotation { "Name": "Baseline of the text" }
+  BASELINE,
+  annotation { "Name": "Bottom of the text, as rendered" }
+  BOTTOM,
+  annotation { "Name": "Bottom of the lowest-hanging letter" }
+  MIN,
+}
+
+export enum HorizontalAlignment {
+  annotation { "Name": "Left of the text, including padding" }
+  MIN,
+  annotation { "Name": "Left of the text, as rendered" }
+  LEFT,
+  annotation { "Name": "Center of the text, as rendered" }
+  CENTER,
+  annotation { "Name": "Center of the text, including padding" }
+  CENTER_NOMINAL,
+  annotation { "Name": "Right of the text, as rendered" }
+  RIGHT,
+  annotation { "Name": "Right of the text, including padding" }
+  MAX,
+}
+
+export enum FontName {
+  annotation { "Name": "Open Sans Regular (a good default)" }
+  OPEN_SANS_REGULAR,
+  annotation {"Name": "Open Sans Bold" }
+  OPEN_SANS_BOLD,
+  annotation {"Name": "Open Sans Italic" }
+  OPEN_SANS_ITALIC,
+  annotation { "Name": "Allerta (no bold/italic options)" }
+  ALLERTA,
+  annotation { "Name": "Allerta Stencil (no bold/italic options)" }
+  ALLERTA_STENCIL,
+  annotation { "Name": "Arimo (sans-serif font)" }
+  ARIMO,
+  annotation { "Name": "Arimo Bold" }
+  ARIMO_BOLD,
+  annotation { "Name": "Arimo Italic" }
+  ARIMO_ITALIC,
+  annotation { "Name": "Balthazar (no bold/italic options)" }
+  BALTHAZAR,
+  annotation { "Name": "Baumans (no bold/italic options)" }
+  BAUMANS,
+  annotation { "Name": "Bebas Neue (no bold/italic options)" }
+  BEBAS_NEUE,
+  annotation { "Name": "Comic Neue" }
+  COMIC_NEUE,
+  annotation { "Name": "Comic Neue Bold" }
+  COMIC_NEUE_BOLD,
+  annotation { "Name": "Comic Neue Italic" }
+  COMIC_NEUE_ITALIC,
+  annotation { "Name": "Courier Prime (monospaced)" }
+  COURIER_PRIME,
+  annotation { "Name": "Courier Prime Bold" }
+  COURIER_PRIME_BOLD,
+  annotation { "Name": "Courier Prime Italic" }
+  COURIER_PRIME_ITALIC,
+  annotation { "Name": "Didact Gothic (no bold/italic options)" }
+  DIDACT_GOTHIC,
+  annotation { "Name": "Droid Sans Mono (monospaced sans-serif font, no bold/italic options)" }
+  DROID_SANS_MONO,
+  annotation { "Name": "Inconsolata (monospaced sans-serif font)" }
+  INCONSOLATA,
+  annotation { "Name": "Inconsolata Bold" }
+  INCONSOLATA_BOLD,
+  annotation { "Name": "Inter (sans-serif font, no italic options)" }
+  INTER,
+  annotation { "Name": "Inter Bold" }
+  INTER_BOLD,
+  annotation { "Name": "Michroma (sans-serif font, no italic options)" }
+  MICHROMA,
+  annotation { "Name": "MPLUSRounded1c (sans-serif font, no italic options)" }
+  MPLUSRounded1c,
+  annotation { "Name": "MPLUSRounded1c Bold" }
+  MPLUSRounded1c_BOLD,
+  annotation { "Name": "Noto Sans (sans-serif font)" }
+  NOTO_SANS,
+  annotation { "Name": "Noto Sans Bold" }
+  NOTO_SANS_BOLD,
+  annotation { "Name": "Noto Sans Italic" }
+  NOTO_SANS_ITALIC,
+  annotation { "Name": "Noto Sans CJK JP (Japanese font, no italic options)" }
+  NOTO_SANS_CJK_JP,
+  annotation { "Name": "Noto Sans CJK JP Bold" }
+  NOTO_SANS_CJK_JP_BOLD,
+  annotation { "Name": "Noto Sans CJK KR (Korean font, no italic options)" }
+  NOTO_SANS_CJK_KR,
+  annotation { "Name": "Noto Sans CJK KR Bold" }
+  NOTO_SANS_CJK_KR_BOLD,
+  annotation { "Name": "Noto Sans CJK SC (Chinese (simplified) font, no italic options)" }
+  NOTO_SANS_CJK_SC,
+  annotation { "Name": "Noto Sans CJK SC Bold" }
+  NOTO_SANS_CJK_SC_BOLD,
+  annotation { "Name": "Noto Sans CJK TC (Chinese (traditional) font, no italic options)" }
+  NOTO_SANS_CJK_TC,
+  annotation { "Name": "Noto Sans CJK TC Bold" }
+  NOTO_SANS_CJK_TC_BOLD,
+  annotation { "Name": "Noto Serif (serif font)" }
+  NOTO_SERIF,
+  annotation { "Name": "Noto Serif Bold" }
+  NOTO_SERIF_BOLD,
+  annotation { "Name": "Noto Serif Italic" }
+  NOTO_SERIF_ITALIC,
+  annotation { "Name": "Orbitron (sans-serif font, no italic options)" }
+  ORBITRON,
+  annotation { "Name": "Orbitron Bold" }
+  ORBITRON_BOLD,
+  annotation { "Name": "Oswald (sans-serif font, no italic options)" }
+  OSWALD,
+  annotation { "Name": "Oswald Bold" }
+  OSWALD_BOLD,
+  annotation { "Name": "Poppins (sans-serif font)" }
+  POPPINS,
+  annotation { "Name": "Poppins Bold" }
+  POPPINS_BOLD,
+  annotation { "Name": "Poppins Italic" }
+  POPPINS_ITALIC,
+  annotation { "Name": "PTSans (sans-serif font)" }
+  PTSANS,
+  annotation { "Name": "PTSans Bold" }
+  PTSANS_BOLD,
+  annotation { "Name": "PTSans Italic" }
+  PTSANS_ITALIC,
+  annotation { "Name": "Rajdhani (sans-serif font, no italic options)" }
+  RAJDHANI,
+  annotation { "Name": "Rajdhani Bold" }
+  RAJDHANI_BOLD,
+  annotation { "Name": "Roboto (sans-serif font)" }
+  ROBOTO,
+  annotation { "Name": "Roboto Bold" }
+  ROBOTO_BOLD,
+  annotation { "Name": "Roboto Italic" }
+  ROBOTO_ITALIC,
+  annotation { "Name": "Roboto Slab (sans-serif font, no italic options)" }
+  ROBOTO_SLAB,
+  annotation { "Name": "Roboto Slab Bold" }
+  ROBOTO_SLAB_BOLD,
+  annotation { "Name": "Ropa Sans (sans-serif font, no bold options)" }
+  ROPA_SANS,
+  annotation { "Name": "Ropa Sans Italic" }
+  ROPA_SANS_ITALIC,
+  annotation { "Name": "Sofia Sans (sans-serif font)" }
+  SOFIA_SANS,
+  annotation { "Name": "Sofia Sans Bold" }
+  SOFIA_SANS_BOLD,
+  annotation { "Name": "Sofia Sans Italic" }
+  SOFIA_SANS_ITALIC,
+  annotation { "Name": "Source Sans Pro (sans-serif font)" }
+  SOURCE_SANS_PRO,
+  annotation { "Name": "Source Sans Pro Bold" }
+  SOURCE_SANS_PRO_BOLD,
+  annotation { "Name": "Source Sans Pro Italic" }
+  SOURCE_SANS_PRO_ITALIC,
+  annotation { "Name": "Tinos (serif font, metrically compatible with Times New Roman)" }
+  TINOS,
+  annotation { "Name": "Tinos Bold" }
+  TINOS_BOLD,
+  annotation { "Name": "Tinos Italic" }
+  TINOS_ITALIC,
+ }
+
+ export const FontNameString = {
+  FontName.OPEN_SANS_REGULAR:     "OpenSans-Regular.ttf",
+  FontName.OPEN_SANS_BOLD:        "OpenSans-Bold.ttf",
+  FontName.OPEN_SANS_ITALIC:      "OpenSans-Italic.ttf",
+  FontName.ALLERTA:               "Allerta-Regular.ttf",
+  FontName.ALLERTA_STENCIL:       "AllertaStencil-Regular.ttf",
+  FontName.ARIMO:                 "Arimo-Regular.ttf",
+  FontName.ARIMO_BOLD:            "Arimo-Bold.ttf",
+  FontName.ARIMO_ITALIC:          "Arimo-Italic.ttf",
+  FontName.BALTHAZAR:             "Balthazar-Regular.ttf",
+  FontName.BAUMANS:               "Baumans-Regular.ttf",
+  FontName.BEBAS_NEUE:            "BebasNeue-Regular.ttf",
+  FontName.COMIC_NEUE:            "ComicNeue-Regular.ttf",
+  FontName.COMIC_NEUE_BOLD:       "ComicNeue-Bold.ttf",
+  FontName.COMIC_NEUE_ITALIC:     "ComicNeue-Italic.ttf",
+  FontName.COURIER_PRIME:         "CourierPrime-Regular.ttf",
+  FontName.COURIER_PRIME_BOLD:    "CourierPrime-Bold.ttf",
+  FontName.COURIER_PRIME_ITALIC:  "CourierPrime-Italic.ttf",
+  FontName.DIDACT_GOTHIC:         "DidactGothic-Regular.ttf",
+  FontName.DROID_SANS_MONO:       "DroidSansMono.ttf",
+  FontName.INCONSOLATA:           "Inconsolata-Regular.ttf",
+  FontName.INCONSOLATA_BOLD:      "Inconsolata-Bold.ttf",
+  FontName.INTER:                 "Inter-Regular.ttf",
+  FontName.INTER_BOLD:            "Inter-Bold.ttf",
+  FontName.MICHROMA:              "Michroma-Regular.ttf",
+  FontName.MPLUSRounded1c:        "MPLUSRounded1c-Regular.ttf",
+  FontName.MPLUSRounded1c_BOLD:   "MPLUSRounded1c-Bold.ttf",
+  FontName.NOTO_SANS:             "NotoSans-Regular.ttf",
+  FontName.NOTO_SANS_BOLD:        "NotoSans-Bold.ttf",
+  FontName.NOTO_SANS_ITALIC:      "NotoSans-Italic.ttf",
+  FontName.NOTO_SANS_CJK_JP:      "NotoSansCJKjp-Regular.otf",
+  FontName.NOTO_SANS_CJK_JP_BOLD: "NotoSansCJKjp-Bold.otf",
+  FontName.NOTO_SANS_CJK_KR:      "NotoSansCJKkr-Regular.otf",
+  FontName.NOTO_SANS_CJK_KR_BOLD: "NotoSansCJKkr-Bold.otf",
+  FontName.NOTO_SANS_CJK_SC:      "NotoSansCJKsc-Regular.otf",
+  FontName.NOTO_SANS_CJK_SC_BOLD: "NotoSansCJKsc-Bold.otf",
+  FontName.NOTO_SANS_CJK_TC:      "NotoSansCJKtc-Regular.otf",
+  FontName.NOTO_SANS_CJK_TC_BOLD: "NotoSansCJKtc-Bold.otf",
+  FontName.NOTO_SERIF:            "NotoSerif-Regular.ttf",
+  FontName.NOTO_SERIF_BOLD:       "NotoSerif-Bold.ttf",
+  FontName.NOTO_SERIF_ITALIC:     "NotoSerif-Italic.ttf",
+  FontName.ORBITRON:              "Orbitron-Regular.ttf",
+  FontName.ORBITRON_BOLD:         "Orbitron-Bold.ttf",
+  FontName.OSWALD:                "Oswald-Regular.ttf",
+  FontName.OSWALD_BOLD:           "Oswald-Bold.ttf",
+  FontName.POPPINS:               "Poppins-Regular.ttf",
+  FontName.POPPINS_BOLD:          "Poppins-Bold.ttf",
+  FontName.POPPINS_ITALIC:        "Poppins-Italic.ttf",
+  FontName.PTSANS:                "PTSans-Regular.ttf",
+  FontName.PTSANS_BOLD:           "PTSans-Bold.ttf",
+  FontName.PTSANS_ITALIC:         "PTSans-Italic.ttf",
+  FontName.RAJDHANI:              "Rajdhani-Regular.ttf",
+  FontName.RAJDHANI_BOLD:         "Rajdhani-Bold.ttf",
+  FontName.ROBOTO:                "Roboto-Regular.ttf",
+  FontName.ROBOTO_BOLD:           "Roboto-Bold.ttf",
+  FontName.ROBOTO_ITALIC:         "Roboto-Italic.ttf",
+  FontName.ROBOTO_SLAB:           "RobotoSlab-Regular.ttf",
+  FontName.ROBOTO_SLAB_BOLD:      "RobotoSlab-Bold.ttf",
+  FontName.ROPA_SANS:             "RopaSans-Regular.ttf",
+  FontName.ROPA_SANS_ITALIC:      "RopaSans-Italic.ttf",
+  FontName.SOFIA_SANS:            "SofiaSans-Regular.ttf",
+  FontName.SOFIA_SANS_BOLD:       "SofiaSans-Bold.ttf",
+  FontName.SOFIA_SANS_ITALIC:     "SofiaSans-Italic.ttf",
+  FontName.SOURCE_SANS_PRO:       "SourceSansPro-Regular.ttf",
+  FontName.SOURCE_SANS_PRO_BOLD:   "SourceSansPro-Bold.ttf",
+  FontName.SOURCE_SANS_PRO_ITALIC: "SourceSansPro-Italic.ttf",
+  FontName.TINOS:                 "Tinos-Regular.otf",
+  FontName.TINOS_BOLD:            "Tinos-Bold.ttf",
+  FontName.TINOS_ITALIC:          "Tinos-Italic.ttf",
+ };
+
 // /** Draws text on sketch, solves it, queries the resulting edges, and debugs their bounding box.
 //  * id must be the feature Id used to create sketch (used to query created entities).
 //  * textHeight sets the font size; firstCorner is the bottom-left anchor of the text box.
@@ -61,41 +303,72 @@ export function rotatedSketch(context is Context, id is Id, params is map, angle
  * @param id {Id} : Base feature id.
  * @param text {string} : Text to measure.
  * @param options {map} : keyword options
- *      - @field [fontName="OpenSans-Regular.ttf"] {string} : Font filename.
+ *      - @field [fontName=FontName.OPEN_SANS_REGULAR] {FontName} : Font filename.
  *      - @field [baselineHeight=10mm] {ValueWithUnits} : Nominal cap height.
  *      - @field [keepTools=false] {boolean} : Retain the temporary sketch body.
  */
 export function textBounds(context is Context, id is Id, text is string, options is map) returns map {
   const opts = mergeMaps({
-      "fontName":       "OpenSans-Regular.ttf",
+      "fontName":       FontName.OPEN_SANS_REGULAR,
       "baselineHeight": 10*mm,
       "keepTools":      false,
   }, options);
   const tempSkId  = id + nextLabelId(opts, "tempSketch" ~ text);
-  const sketch    = newSketchOnPlane(context, tempSkId, { "sketchPlane": PL_TOP });
+  const sketch    = newSketchOnPlane(context, tempSkId + "text", { "sketchPlane": PL_TOP });
+  const maxSketch = newSketchOnPlane(context, tempSkId + "max",  { "sketchPlane": PL_TOP });
+  const minSketch = newSketchOnPlane(context, tempSkId + "min",  { "sketchPlane": PL_TOP });
   // Draw the text
-  skBasicTextAt(context, "textBounds", sketch, text, vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
-  skSolve(sketch);
-  const sketchBody       = qCreatedBy(tempSkId, EntityType.BODY);
+  skBasicTextAt(context, "textBounds", sketch,    text,                     vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skBasicTextAt(context, "maxBounds",  maxSketch, "'[}lLTQZ96|^$§`" ~ text ~ "gjpqyQ;,", vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skBasicTextAt(context, "minBounds",  minSketch, "x",                      vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skSolve(sketch); skSolve(maxSketch); skSolve(minSketch);
+  const sketchBodies       = qCreatedBy(tempSkId + "text", EntityType.BODY);
+  const maxBodies          = qCreatedBy(tempSkId + "max",  EntityType.BODY);
+  const minBodies          = qCreatedBy(tempSkId + "min",  EntityType.BODY);
   //
-  // Text box (includes the margin)
-  const wbox             = evBox3d(context, { "topology": sketchBody,                    "tight": true });
+  // Wide box (includes horizontal padding and actual extent of text)
+  const wbox             = evBox3d(context, { "topology": sketchBodies,                    "tight": true });
+  // Text box (includes horizontal padding; extends from baseline to cap height)
   const tbox             = box3d(vector(0*mm, 0*mm, 0*mm), vector(wbox.maxCorner[0], opts.baselineHeight, 0*mm));
   // Bounding box (tight against the actual text region as rendered)
-  const bbox             = evBox3d(context, { "topology": qSketchRegion(tempSkId, true), "tight": true });
+  const bbox             = evBox3d(context, { "topology": qSketchRegion(tempSkId + "text", true), "tight": true });
+  // Max box (tight against the actual text region rendering both tall letters (l,|,`, etc) and low letters (j,y,;,Q,etc))
+  const ylMeasurer       = evBox3d(context, { "topology": qSketchRegion(tempSkId + "max", true), "tight": true });
+  // Min box (tight against the actual text region using only "x")
+  const xMeasurer        = evBox3d(context, { "topology": qSketchRegion(tempSkId + "min", true), "tight": true });
   // Calculate the text metrics
+  const minLeft          = wbox.minCorner[0];
+  const left             = bbox.minCorner[0];
+  const right            = bbox.maxCorner[0];
+  const maxRight         = wbox.maxCorner[0];
+  const maxHeight        = ylMeasurer.maxCorner[1];
+  const capHeight        = opts.baselineHeight;
+  const xHeight          = xMeasurer.maxCorner[1];
+  const baselineHeight   = xMeasurer.minCorner[1];
+  const minHeight        = ylMeasurer.minCorner[1];
+  const minBbox          = box3d(vector(minLeft, baselineHeight, 0*mm), vector(maxRight, xHeight,   0*mm));
+  const maxBbox          = box3d(vector(left,    minHeight,      0*mm), vector(right,    maxHeight, 0*mm));
+  const padBbox          = box3d(vector(minLeft, minHeight,      0*mm), vector(maxRight, maxHeight, 0*mm));
   const paddedWidth      = tbox.maxCorner[0] - tbox.minCorner[0];
   const paddedHeight     = tbox.maxCorner[1] - tbox.minCorner[1];
   const actualWidth      = bbox.maxCorner[0] - bbox.minCorner[0];
   const actualHeight     = bbox.maxCorner[1] - bbox.minCorner[1];
   const overflowHeight   = tbox.maxCorner[1] - opts.baselineHeight;
-  const leftMarginWidth  = tbox.minCorner[0] - bbox.minCorner[0];
-  const rightMarginWidth = bbox.maxCorner[0] - tbox.maxCorner[0];
+  const leftPaddingWidth  = tbox.minCorner[0] - bbox.minCorner[0];
+  const rightPaddingWidth = bbox.maxCorner[0] - tbox.maxCorner[0];
   const result = {
     "tbox":             tbox,
     "bbox":             bbox,
     "wbox":             wbox,
-    "leftMarginWidth":  leftMarginWidth, "rightMarginWidth": rightMarginWidth,
+    "minBbox":          minBbox,
+    "padBbox":          padBbox,
+    "maxBbox":          maxBbox,
+    "minLeft":          minLeft, "left": left, "right": right, "maxRight": maxRight,
+    "maxHeight":        maxHeight, "capHeight": capHeight, "xHeight": xHeight, "baselineHeight": baselineHeight, "minHeight": minHeight,
+    "minCenter":        vector((right    + left)    / 2, (xHeight   + baselineHeight) / 2),
+    "maxCenter":        vector((right    + left)    / 2, (maxHeight + minHeight)      / 2),
+    "padCenter":        vector((maxRight + minLeft) / 2, (maxHeight + minHeight)      / 2),
+    "leftPaddingWidth": leftPaddingWidth, "rightPaddingWidth": rightPaddingWidth,
     "paddedWidth":      paddedWidth,     "paddedHeight":     paddedHeight,
     "actualWidth":      actualWidth,     "actualHeight":     actualHeight,
     "overflowHeight":   overflowHeight,
@@ -103,8 +376,14 @@ export function textBounds(context is Context, id is Id, text is string, options
     "descenderFrac":    (actualHeight - overflowHeight - opts.baselineHeight) / actualHeight,
     "overflowFrac":     overflowHeight / actualHeight,
   };
-  opDeleteBodies(context, id + "deleteSketch",  { "entities": sketchBody });
-  debug(context, [tbox, bbox]);
+  opDeleteBodies(context, id + "deleteSketch",  { "entities": sketchBodies });
+  opDeleteBodies(context, id + "deleteMax",     { "entities": maxBodies });
+  opDeleteBodies(context, id + "deleteMin",     { "entities": minBodies });
+  debug(context, ["textBounds tbox", text, boxMag(tbox, 1*mm)]);
+  debug(context, ["textBounds wbox", text, boxMag(wbox, 1*mm)]);
+  debug(context, ["textBounds bbox", text, boxMag(bbox, 1*mm)]);
+  debug(context, ["textBounds  min",  text, boxMag(minBbox, 1*mm)]);
+  debug(context, ["textBounds  max",  text, boxMag(maxBbox, 1*mm)]);
   return result;
 }
 
@@ -117,12 +396,13 @@ export function textBounds(context is Context, id is Id, text is string, options
  * @param firstCorner {Vector} : Bottom-left anchor.
  * @param baselineHeight {ValueWithUnits} : Cap height.
  * @param options {map} : keyword options
- *      - @field [fontName="OpenSans-Regular.ttf"] {string} : Font filename.
+ *   - @field [fontName="OpenSans-Regular.ttf"] {FontName} : Font filename.
  */
 export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, options is map) {
-  const opts = mergeMaps({ "fontName": "OpenSans-Regular.ttf" }, options);
+  const opts = mergeMaps({ "fontName": FontName.OPEN_SANS_REGULAR }, options);
+  debug(context, [opts.fontName, FontName.ARIMO, FontNameString[opts.fontName]]);
   skText(sketch, entityId, {
-    "text": text, fontName: opts.fontName, "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
+    "text": text, fontName: FontNameString[opts.fontName], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
   });
 }
 
@@ -159,7 +439,7 @@ export function measureTextBaseline(context is Context, id is Id, text is string
  * @param id {Id} : Base feature id.
  * @param definition {{
  *      @field text {string} : Text to render and measure.
- *      @field fontName {string} : Font filename.
+ *      @field fontName {FontName} : Font filename.
  *      @field baselineHeight {ValueWithUnits} : Cap height.
  *      @field sketchPlaneQ {Query} : Sketch plane.
  *      @field textAngle {ValueWithUnits} : In-plane rotation angle.
@@ -171,8 +451,8 @@ precondition {
   annotation { "Name": "Text" }
   definition.text is string;
 
-  annotation { "Name": "Font Name" }
-  definition.fontName is string;
+  annotation { "Name": "Font Name", "UIHint" : UIHint.SHOW_LABEL }
+  definition.fontName is FontName;
 
   annotation { "Name": "Baseline Height" }
   isLength(definition.baselineHeight, { (millimeter): [0.001, 10, 1000000] } as LengthBoundSpec);
@@ -213,10 +493,15 @@ precondition {
 
   // Draw the text extents
   debug(context, ["measureText3d", boxMag(textCoords.tbox, 1*mm), boxMag(textCoords.bbox, 1*mm)], DebugColor.CYAN);
-  skRectangle(sketches.carrierSk, "bbox", { "firstCorner": vector2(textCoords.bbox.minCorner), "secondCorner": vector2(textCoords.bbox.maxCorner)  });
-  skRectangle(sketches.carrierSk, "tbox", { "firstCorner": vector2(textCoords.tbox.minCorner), "secondCorner": vector2(textCoords.tbox.maxCorner), construction: true });
-  skPoint(sketches.carrierSk, "minCorner", { "position" : vector2(textCoords.wbox.minCorner) });
-  skPoint(sketches.carrierSk, "maxCorner", { "position" : vector2(textCoords.wbox.maxCorner) });
+  skRectangle(sketches.carrierSk,    "bbox",  { firstCorner: vector2(textCoords.bbox.minCorner),                secondCorner: vector2(textCoords.bbox.maxCorner)  });
+  skRectangle(sketches.carrierSk,    "tbox",  { firstCorner: vector2(textCoords.tbox.minCorner),                secondCorner: vector2(textCoords.tbox.maxCorner), construction: true });
+  skLineSegment(sketches.carrierSk, "xheight", { start: vector(textCoords.left, textCoords.xHeight), end: vector(textCoords.right, textCoords.xHeight),    construction: true });
+  skLineSegment(sketches.carrierSk, "padCorners", { start: vector2(textCoords.padBbox.minCorner),              end: vector2(textCoords.padBbox.maxCorner), construction: true });
+  skLineSegment(sketches.carrierSk, "maxCorners", { start: vector2(textCoords.maxBbox.minCorner),              end: vector2(textCoords.maxBbox.maxCorner), construction: true });
+  skPoint(sketches.carrierSk, "minCorner", { "position":    vector2(textCoords.wbox.minCorner) });
+  skPoint(sketches.carrierSk, "maxCorner", { "position":    vector2(textCoords.wbox.maxCorner) });
+  skPoint(sketches.carrierSk, "padCenter", { "position":    vector2(textCoords.padCenter) });
+  skPoint(sketches.carrierSk, "maxCenter", { "position":    vector2(textCoords.maxCenter) });
   skSolve(sketches.carrierSk);
 
   // Extrude a carrier plate covering the whole text area
