@@ -97,9 +97,44 @@ function my_func(definition is map) returns map {
 
 ## Comments
 
-- Use `//` for all comments.
-- Place a comment on the line **above** the code it describes, not inline unless very short.
-- Use inline `//` comments only for brief clarifications on the same line.
+### Function preambles (`/** */` docblocks)
+
+All functions get a JSDoc-style `/** */` block comment immediately above the definition, following the Onshape stdlib convention (`onshape/std/`):
+
+```featurescript
+/**
+ * Brief one-line description of what the function does.
+ * Additional context if needed.
+ * @param id : @autocomplete `id + "operationName1"`
+ * @param definition {{
+ *      @field fieldName {Type} : Description of the field.
+ *      @field optionalField {boolean} : @optional Description. Default is `false`.
+ *      @field conditionalField {ValueWithUnits} : @requiredif {`someFlag` is `true`}
+ *          @eg `0.2 * inch`
+ * }}
+ */
+```
+
+**Tag reference:**
+
+| Tag | Usage |
+|-----|-------|
+| `@param id : @autocomplete \`id + "name1"\`` | Standard id parameter hint |
+| `@param definition {{ ... }}` | Double-braces wraps the field list |
+| `@field name {Type} : desc` | One field per line, indented 6 spaces inside definition |
+| `@optional` | Field is optional (append to field description) |
+| `@requiredif { condition }` | Conditionally required (note: stdlib uses both `@requiredif` and `@requiredIf` inconsistently — prefer lowercase) |
+| `@eg \`expression\`` | Inline example value |
+| `@ex \`expression\`` | Longer example (multiline context) |
+| `@seealso [functionName]` | Cross-reference to another function |
+| `@internal` | Marks the function as not part of the public API |
+
+Use `/* brief note */` inline block comments for TODOs or import-group labels:
+
+```featurescript
+/* TODO: describe this in fuller detail */
+/* enumerations used by opBodyDraft */
+```
 
 ---
 
