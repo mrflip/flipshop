@@ -13,6 +13,8 @@ const mm          = millimeter;
 const zero        = 0 * mm;
 var   idUniquer   = 0;
 
+// == [Socket Cell Cutter] ==
+
 /**
  * Feature: cylindrical socket pocket cut into a body on the selected plane.
  * Pocket diameter = socket wrench-end diameter + 2 × insertion gap; depth = 2 × layer height.
@@ -85,6 +87,9 @@ precondition {
     "value":        "Socket Cell Cutter",
   });
 });
+// --
+
+// == [Radial Text] ==
 
 /**
  * Callout label on `sketch` at `params.cutoutRadius`, centered on the H axis.
@@ -97,13 +102,17 @@ precondition {
 function radialText(sketch is Sketch, params is map, text is string, textHeight is ValueWithUnits) {
   const halfW       = textHeight * 0.65 * length(text);
   const innerRadius = params.cutoutRadius;
-  skText(sketch, nextLabelId("callout"), {
+  skText(sketch, nextLabelId(params, "callout"), {
     "fontName":     "OpenSans-Regular.ttf",
     "firstCorner":  vector(-halfW,  innerRadius),
     "secondCorner": vector( halfW,  innerRadius + textHeight),
     "text":         text,
   });
 }
+
+// --
+
+// == [Socket Data Helpers] ==
 
 /**
  * Family entry from `SocketWrenches2` for `keypath`, stopping before the sizing tier.
@@ -122,6 +131,7 @@ function getSocketFamilyRef(context is Context, keypath is LookupTablePath) {
 function getSocketRef(context is Context, keypath is LookupTablePath) {
   return SocketWrenches3.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant].entries[keypath.sizing];
 }
+// --
 
 /**
  * 2D coordinate in a sketch frame whose X axis is rotated `angle` from the original.
@@ -200,7 +210,7 @@ function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, param
 //   const perpDir = vector(-sin(rayAngle), cos(rayAngle));
 //   const rayDir  = vector( cos(rayAngle), sin(rayAngle));
 //   const halfW   = textHeight * 0.65 * length(text);
-//   skText(sketch, nextLabelId(entityId), {
+//   skText(sketch, nextLabelId(entityId, "radialText"), {
 //     "fontName":      "OpenSans-Regular.ttf",
 //     "firstCorner":   pt - halfW * perpDir,
 //     "secondCorner":  pt + halfW * perpDir + textHeight * rayDir,
@@ -281,9 +291,3 @@ function socketCellParams(context, definition is map) returns map {
     "cutBounds":     cutBounds,
   });
 }
-
-/**
- * Unique entity id from `label`, using the module-level counter.
- * @param label {string} : Base prefix.
- */
-function nextLabelId(label is string) returns string { return label ~ "_" ~ (idUniquer++); }

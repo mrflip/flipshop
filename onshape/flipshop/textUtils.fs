@@ -5,19 +5,30 @@ export import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc2
 const mm = millimeter;
 const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
 
+// == [Sketch Text] ==
+
 /**
- * Sketch on `params.basePlane` with X axis rotated `angle` around the plane normal.
+ * `skText` entity on `sketch` at `firstCorner` with the given cap height.
  * @param context {Context} : Model context.
- * @param id {Id} : Sketch feature id.
- * @param params {map} : Must contain `basePlane` (Plane).
- * @param angle {ValueWithUnits} : In-plane rotation angle.
+ * @param entityId {string} : Sketch entity id.
+ * @param sketch {Sketch} : Target sketch.
+ * @param text {string} : Text to draw.
+ * @param firstCorner {Vector} : Bottom-left anchor.
+ * @param baselineHeight {ValueWithUnits} : Cap height.
+ * @param options {map} : keyword options
+ *   - @field [fontName="OpenSans-Regular.ttf"] {FontName} : Font filename.
  */
-export function rotatedSketch(context is Context, id is Id, params is map, angle is ValueWithUnits) returns Sketch {
-  const  basePlane    = params.basePlane;
-  const  rotatedX     = cos(angle) * basePlane.x + sin(angle) * cross(basePlane.normal, basePlane.x);
-  const  rotatedPlane = plane(basePlane.origin, basePlane.normal, rotatedX);
-  return newSketchOnPlane(context, id, { "sketchPlane": rotatedPlane });
+export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, options is map) {
+  const opts = mergeMaps({ "fontName": FontName.OPEN_SANS_REGULAR }, options);
+  debug(context, [opts.fontName, FontName.ARIMO, FontNameString[opts.fontName]]);
+  skText(sketch, entityId, {
+    "text": text, fontName: FontNameString[opts.fontName], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
+  });
 }
+
+// --
+
+// == [Measure Text] ==
 
 /**
  * Text metrics for `text`: tight bounding boxes (`tbox`, `bbox`, `wbox`), padded and
@@ -111,25 +122,6 @@ export function textBounds(context is Context, id is Id, text is string, options
 }
 
 /**
- * `skText` entity on `sketch` at `firstCorner` with the given cap height.
- * @param context {Context} : Model context.
- * @param entityId {string} : Sketch entity id.
- * @param sketch {Sketch} : Target sketch.
- * @param text {string} : Text to draw.
- * @param firstCorner {Vector} : Bottom-left anchor.
- * @param baselineHeight {ValueWithUnits} : Cap height.
- * @param options {map} : keyword options
- *   - @field [fontName="OpenSans-Regular.ttf"] {FontName} : Font filename.
- */
-export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, options is map) {
-  const opts = mergeMaps({ "fontName": FontName.OPEN_SANS_REGULAR }, options);
-  debug(context, [opts.fontName, FontName.ARIMO, FontNameString[opts.fontName]]);
-  skText(sketch, entityId, {
-    "text": text, fontName: FontNameString[opts.fontName], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
-  });
-}
-
-/**
  * Rendered width of `text` on the global XY plane.
  * @param context {Context} : Model context.
  * @param id {Id} : Base feature id.
@@ -151,6 +143,20 @@ export function measureTextWidth(context is Context, id is Id, text is string, o
 export function measureTextBaseline(context is Context, id is Id, text is string, opts is map) returns ValueWithUnits {
   const  textCoords = textBounds(context, id, text, opts);
   return textCoords.maxCorner[0] - textCoords.minCorner[0];
+}
+
+/**
+ * Sketch on `params.basePlane` with X axis rotated `angle` around the plane normal.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Sketch feature id.
+ * @param params {map} : Must contain `basePlane` (Plane).
+ * @param angle {ValueWithUnits} : In-plane rotation angle.
+ */
+export function rotatedSketch(context is Context, id is Id, params is map, angle is ValueWithUnits) returns Sketch {
+  const  basePlane    = params.basePlane;
+  const  rotatedX     = cos(angle) * basePlane.x + sin(angle) * cross(basePlane.normal, basePlane.x);
+  const  rotatedPlane = plane(basePlane.origin, basePlane.normal, rotatedX);
+  return newSketchOnPlane(context, id, { "sketchPlane": rotatedPlane });
 }
 
 /**
@@ -247,99 +253,9 @@ precondition {
     "value":        "AR: " ~ replace(substring(toString(round(textCoords.aspectRatio, 0.1)), 0, 3), "(\\.?0+$|0+$)", "") ~ " df: " ~ substring(toString(round(textCoords.descenderFrac, 0.1)), 0, 3),
   });
 });
+// --
 
-/**
- * Unique entity id from `label`, with uniqueness scoped to `params`.
- * @param params {map} : Caller's params map; holds the per-caller counter.
- * @param label {string} : Base prefix.
- */
-export function nextLabelId(params is map, label is string) returns string {
-    params.idUniquer = params.idUniqer == undefined ? 0 : params.idUniqer + 1;
-    return replace(label ~ "_" ~ params.idUniquer, "[^\\w]", '-');
-}
-
-
-// // Pangram character array for use in LUT building (buildTextWidthTableFor, coming later).
-// const pangram      = "How quickly daft jumping zebras vex";
-// const pangramChars = ["H", "o", "w", " ", "q", "u", "i", "c", "k", "l", "y", " ", "d", "a", "f", "t",
-//                       " ", "j", "u", "m", "p", "i", "n", "g", " ", "z", "e", "b", "r", "a", "s",
-//                       " ", "v", "e", "x"];
-
-// // Printable ASCII from 0x20 (space) to 0x7e (tilde); 0x7f (DEL) has no glyph and is omitted.
-// const asciiChars = [" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
-//                     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?",
-//                     "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-//                     "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_",
-//                     "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-//                     "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~"];
-
-export enum VerticalAlignment {
-  annotation { "Name": "Top of the tallest letter" }
-  MAX,
-  annotation { "Name": "Top of the text, as rendered" }
-  TOP,
-  annotation { "Name": "Nominal cap height" }
-  NOMINAL_CAP,
-  annotation { "Name": "Center of the text, as rendered" }
-  CENTER,
-  annotation { "Name": "Baseline of the text" }
-  BASELINE,
-  annotation { "Name": "Bottom of the text, as rendered" }
-  BOTTOM,
-  annotation { "Name": "Bottom of the lowest-hanging letter" }
-  MIN,
-}
-
-export enum HorizontalAlignment {
-  annotation { "Name": "Left of the text, including padding" }
-  MIN,
-  annotation { "Name": "Left of the text, as rendered" }
-  LEFT,
-  annotation { "Name": "Center of the text, as rendered" }
-  CENTER,
-  annotation { "Name": "Center of the text, including padding" }
-  CENTER_NOMINAL,
-  annotation { "Name": "Right of the text, as rendered" }
-  RIGHT,
-  annotation { "Name": "Right of the text, including padding" }
-  MAX,
-}
-
-export enum ResizingPolicy {
-  // Dimension-independent policies: can mix and match these
-
-  /** Preserve original dimensions; no resizing. */
-  annotation { "Name": "No resizing (preserve original)" }
-  NONE,
-  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
-  annotation { "Name": "Constrain maximum size (shrink only)" }
-  LIMIT,
-  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
-  annotation { "Name": "Constrain minimum size (expand only)" }
-  EMBIGGEN,
-  /** Stretch to fill the bounds exactly, ignoring aspect ratio. */
-  annotation { "Name": "Stretch to fill (ignore aspect ratio)" }
-  FILL,
-  /** Scale proportionally to match the scaling factor of the other dimension. Maintains aspect ratio (e.g., height follows width changes). */
-  annotation { "Name": "Follow other dimension (maintain aspect ratio)" }
-  FOLLOW,
-
-  // Dimension-dependent policies: resizing1 must be undefined or equal to resizing0
-
-  /** Resize proportionally to fit entirely within bounds, with at least one dimension fitting exactly. May shrink or expand. */
-  annotation { "Name": "Grow/Shrink proportionally to fit inside bounds" }
-  CONTAIN,
-  /** Resize proportionally to fill bounds, with at least one dimension fitting exactly. May shrink or expand. */
-  annotation { "Name": "Grow/Shrink proportionally to cover bounds completely" }
-  COVER,
-  /** Shrink proportionally to fit within bounds, but never expand. */
-  annotation { "Name": "Shrink until both fit (but never enlarge)" }
-  DOWNSCALE,
-  /** Grow proportionally to fill bounds, but never shrink */
-  annotation { "Name": "Grow until both fit (but never shrink)" }
-  MAXIMIZE,
-
-}
+// == [Resizing Text] ==
 
 /**
  * Per-dimension ratios of `origSize` to `bounds`, plus the extremes.
@@ -491,6 +407,107 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
     "scaleFactor":    sf,
     "textCoords":     tc,
   };
+}
+
+// == [Utility Functions] ==
+
+/**
+ * Unique entity id from `label`, with uniqueness scoped to `params`.
+ * @param params {map} : Caller's params map; holds the per-caller counter.
+ * @param label {string} : Base prefix.
+ */
+export function nextLabelId(params is map, label is string) returns string {
+    params.idUniquer = params.idUniqer == undefined ? 0 : params.idUniqer + 1;
+    return replace(label ~ "_" ~ params.idUniquer, "[^\\w]", '-');
+}
+
+// --
+
+// // Pangram character array for use in LUT building (buildTextWidthTableFor, coming later).
+// const pangram      = "how quickly daft jumping zebras vex";
+// const pangramChars = [
+//   "h", "o", "w", " ", "q", "u", "i", "c", "k", "l", "y", " ", "d", "a", "f", "t",
+//   " ", "j", "u", "m", "p", "i", "n", "g", " ", "z", "e", "b", "r", "a", "s",
+//   " ", "v", "e", "x",
+//   "H", "O", "W", " ", "Q", "U", "I", "C", "K", "L", "Y", " ", "D", "A", "F", "T",
+//   " ", "J", "U", "M", "P", "I", "N", "G", " ", "Z", "E", "B", "R", "A", "S",
+//   " ", "V", "E", "X"
+// ];
+
+// // Printable ASCII from 0x20 (space) to 0x7e (tilde); 0x7f (DEL) has no glyph and is omitted.
+// const asciiChars = [" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
+//                     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?",
+//                     "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+//                     "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_",
+//                     "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+//                     "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~"];
+
+export enum VerticalAlignment {
+  annotation { "Name": "Top of the tallest letter" }
+  MAX,
+  annotation { "Name": "Top of the text, as rendered" }
+  TOP,
+  annotation { "Name": "Nominal cap height" }
+  NOMINAL_CAP,
+  annotation { "Name": "Center of the text, as rendered" }
+  CENTER,
+  annotation { "Name": "Baseline of the text" }
+  BASELINE,
+  annotation { "Name": "Bottom of the text, as rendered" }
+  BOTTOM,
+  annotation { "Name": "Bottom of the lowest-hanging letter" }
+  MIN,
+}
+
+export enum HorizontalAlignment {
+  annotation { "Name": "Left of the text, including padding" }
+  MIN,
+  annotation { "Name": "Left of the text, as rendered" }
+  LEFT,
+  annotation { "Name": "Center of the text, as rendered" }
+  CENTER,
+  annotation { "Name": "Center of the text, including padding" }
+  CENTER_NOMINAL,
+  annotation { "Name": "Right of the text, as rendered" }
+  RIGHT,
+  annotation { "Name": "Right of the text, including padding" }
+  MAX,
+}
+
+export enum ResizingPolicy {
+  // Dimension-independent policies: can mix and match these
+
+  /** Preserve original dimensions; no resizing. */
+  annotation { "Name": "No resizing (preserve original)" }
+  NONE,
+  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
+  annotation { "Name": "Constrain maximum size (shrink only)" }
+  LIMIT,
+  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
+  annotation { "Name": "Constrain minimum size (expand only)" }
+  EMBIGGEN,
+  /** Stretch to fill the bounds exactly, ignoring aspect ratio. */
+  annotation { "Name": "Stretch to fill (ignore aspect ratio)" }
+  FILL,
+  /** Scale proportionally to match the scaling factor of the other dimension. Maintains aspect ratio (e.g., height follows width changes). */
+  annotation { "Name": "Follow other dimension (maintain aspect ratio)" }
+  FOLLOW,
+
+  // Dimension-dependent policies: resizing1 must be undefined or equal to resizing0
+
+  /** Resize proportionally to fit entirely within bounds, with at least one dimension fitting exactly. May shrink or expand. */
+  annotation { "Name": "Grow/Shrink proportionally to fit inside bounds" }
+  CONTAIN,
+  /** Resize proportionally to fill bounds, with at least one dimension fitting exactly. May shrink or expand. */
+  annotation { "Name": "Grow/Shrink proportionally to cover bounds completely" }
+  COVER,
+  /** Shrink proportionally to fit within bounds, but never expand. */
+  annotation { "Name": "Shrink until both fit (but never enlarge)" }
+  DOWNSCALE,
+  /** Grow proportionally to fill bounds, but never shrink */
+  annotation { "Name": "Grow until both fit (but never shrink)" }
+  MAXIMIZE,
+
 }
 
 export enum FontName {
