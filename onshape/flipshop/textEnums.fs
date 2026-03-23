@@ -57,24 +57,6 @@ export enum VSizingExtent {
 }
 
 export enum ResizingPolicy {
-  // Dimension-independent policies: can mix and match these
-
-  /** Preserve original dimensions; no resizing. */
-  annotation { "Name": "No resizing (preserve original)" }
-  NONE,
-  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
-  annotation { "Name": "Constrain maximum size (shrink only)" }
-  LIMIT,
-  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
-  annotation { "Name": "Constrain minimum size (expand only)" }
-  EMBIGGEN,
-  /** Stretch to fill the bounds exactly, ignoring aspect ratio. */
-  annotation { "Name": "Stretch to fill (ignore aspect ratio)" }
-  FILL,
-  /** Scale proportionally to match the scaling factor of the other dimension. Maintains aspect ratio (e.g., height follows width changes). */
-  annotation { "Name": "Follow other dimension (maintain aspect ratio)" }
-  FOLLOW,
-
   // Dimension-dependent policies: resizing1 must be undefined or equal to resizing0
 
   /** Resize proportionally to fit entirely within bounds, with at least one dimension fitting exactly. May shrink or expand. */
@@ -88,8 +70,41 @@ export enum ResizingPolicy {
   DOWNSCALE,
   /** Grow proportionally to fill bounds, but never shrink */
   annotation { "Name": "Grow until both fit (but never shrink)" }
-  MAXIMIZE
+  MAXIMIZE,
+
+  // Dimension-independent policies: can mix and match these
+
+  /** Preserve original dimensions; no resizing. */
+  annotation { "Name": "No resizing (preserve original)" }
+  NONE,
+  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
+  annotation { "Name": "Shrink to size or smaller" }
+  LIMIT,
+  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
+  annotation { "Name": "Grow to size or larger" }
+  EMBIGGEN,
+  /** Stretch to fill the bounds exactly, ignoring aspect ratio. */
+  annotation { "Name": "Stretch independently to fill" }
+  STRETCH,
+  /** Scale proportionally to match the scaling factor of the other dimension. Maintains aspect ratio (e.g., height follows width changes). */
+  annotation { "Name": "Scale with other dimension proportionally" }
+  FOLLOW,
 }
+
+export const ProportionalResizingPolicy = {
+  "Contain (proportionally resize to fit)":   ResizingPolicy.CONTAIN,
+  "Downscale (proportionally shrink to fit)": ResizingPolicy.DOWNSCALE,
+  "Cover (proportionally resize to cover)":   ResizingPolicy.COVER,
+  "Maximize (proportionally grow to cover)":  ResizingPolicy.MAXIMIZE,
+};
+
+export const IndependentResizingPolicy = {
+  "None (no resizing)":                       ResizingPolicy.NONE,
+  "Fill (proportionally resize to fit)":      ResizingPolicy.STRETCH,
+  "Limit (proportionally shrink to fit)":     ResizingPolicy.LIMIT,
+  "Embiggen (proportionally grow to fill)":   ResizingPolicy.EMBIGGEN,
+  "Follow (scale with other dimension)":      ResizingPolicy.FOLLOW,
+};
 
 export enum FontName {
   annotation { "Name": "Open Sans Regular" }

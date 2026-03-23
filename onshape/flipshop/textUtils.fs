@@ -35,6 +35,8 @@ const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
 annotation { "Feature Type Name": "Render Text" }
 export const renderText = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
+  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 1 }
+  definition.sketchPlaneQ is Query;
   annotation { "Name": "Text", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.text is string;
   annotation { "Name": "Font Name", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
@@ -45,16 +47,14 @@ precondition {
   isLength(definition.boundsWidth, { (millimeter): [0.001, 50, 1000000] } as LengthBoundSpec);
   annotation { "Name": "Bounds Height", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.boundsHeight, { (millimeter): [0.001, 10, 1000000] } as LengthBoundSpec);
-  annotation { "Name": "X Resizing", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
-  definition.resizing0 is ResizingPolicy;
-  annotation { "Name": "Y Resizing", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
-  definition.resizing1 is ResizingPolicy;
   annotation { "Name": "Horizontal Alignment", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.horizontalAlign is HorizontalAlignment;
   annotation { "Name": "Vertical Alignment", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.verticalAlign is VerticalAlignment;
-  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 1 }
-  definition.sketchPlaneQ is Query;
+  annotation { "Name": "Horizontal Resizing", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.resizing0 is ResizingPolicy;
+  annotation { "Name": "Vertical Resizing", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.resizing1 is ResizingPolicy;
   annotation { "Name": "Text Angle" }
   isAngle(definition.textAngle, { (degree): [0, 0, 360] } as AngleBoundSpec);
   annotation { "Name": "Text Depth" }
@@ -513,7 +513,7 @@ export function resizingRatios(origSize is Vector, bounds is Vector) returns map
 /* Per-axis scale factor for a single independent ResizingPolicy. FOLLOW resolved by caller. */
 function scaleForPolicy(policy is ResizingPolicy, ratio is number) returns number {
   if (policy == ResizingPolicy.NONE)     { return 1.0; }
-  if (policy == ResizingPolicy.FILL)     { return 1.0 / ratio; }
+  if (policy == ResizingPolicy.STRETCH)  { return 1.0 / ratio; }
   if (policy == ResizingPolicy.LIMIT)    { return min(1.0, 1.0 / ratio); }
   if (policy == ResizingPolicy.EMBIGGEN) { return max(1.0, 1.0 / ratio); }
   return 1.0;
@@ -533,10 +533,10 @@ export function resizingFactorsFor(baseFactors is map, resizing0 is ResizingPoli
   const lr = baseFactors.largestRatio;
   const sr = baseFactors.smallestRatio;
   // Dimension-coupled policies — both axes share the same uniform factor
-  if (resizing0 == ResizingPolicy.CONTAIN)   { return vector(1.0 / lr, 1.0 / lr); }
-  if (resizing0 == ResizingPolicy.COVER)     { return vector(1.0 / sr, 1.0 / sr); }
-  if (resizing0 == ResizingPolicy.DOWNSCALE) { return vector(min(1.0, 1.0 / lr), min(1.0, 1.0 / lr)); }
-  if (resizing0 == ResizingPolicy.MAXIMIZE)  { return vector(max(1.0, 1.0 / sr), max(1.0, 1.0 / sr)); }
+  if (resizing0 == ResizingPolicy.CONTAIN)   { return vector(    1.0 / lr,         1.0 / lr);     }
+  if (resizing0 == ResizingPolicy.COVER)     { return vector(    1.0 / sr,         1.0 / sr);     }
+  if (resizing0 == ResizingPolicy.DOWNSCALE) { return vector(min(1.0 / lr, 1), min(1.0 / lr, 1)); }
+  if (resizing0 == ResizingPolicy.MAXIMIZE)  { return vector(max(1.0 / sr, 1), max(1.0 / sr, 1)); }
   // Per-axis independent policies; resolve FOLLOW after computing the other axis
   var sf0 = scaleForPolicy(resizing0, r0);
   var sf1 = scaleForPolicy(resizing1, r1);
