@@ -1,6 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
+export import(path : "8fa2dd9caf18bedfb6b0eda2/2427f262f8e5525a71e20081/7683b6ccf9499ff664904299", version : "8d62d0d3921f7b515fea74b7");
 
 const mm = millimeter;
 const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
@@ -24,6 +25,28 @@ export function skBasicTextAt(context is Context, entityId is string, sketch is 
   skText(sketch, entityId, {
     "text": text, fontName: FontNameString[opts.fontName], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
   });
+}
+
+
+export function foo(context is Context, id is Id, text is string, definition is map) {
+  const params =  {
+    baseline:       definition.baseline,
+    surface:        definition.surface,
+    alignment:      Alignment.JUSTIFY,
+    useExpression:  false,
+    textLiteral:    text,
+    font:           FontFace.AllertaStencil,
+    invertTextDirection:    false,
+    invertExtrudeDirection: false,
+    thickness:        2*mm,
+    spacing:          0*mm,
+    kerning:          "",
+    vertialAlignment: VAlignment.MIDDLE,
+    baselineOffset:   0*mm,
+    letterType:       LetterType.RAISED_NEW,
+    filletLetters:    false,
+    height:           10*mm,
+  };
 }
 
 // --
@@ -346,7 +369,7 @@ export function resizingFactors(origSize is Vector, bounds is Vector, policies i
  *   - @field [resizing0=ResizingPolicy.NONE] {ResizingPolicy} : Resizing policy for X.
  *   - @field [resizing1=ResizingPolicy.NONE] {ResizingPolicy} : Resizing policy for Y.
  *   - @field [horizontalAlign=HorizontalAlignment.LEFT] {HorizontalAlignment} : X anchor interpretation.
- *   - @field [verticalAlign=VerticalAlignment.BASELINE] {VerticalAlignment} : Y anchor interpretation.
+ *   - @field [verticalAlign=VerticalAlignment.TOP_BASELINE] {VerticalAlignment} : Y anchor interpretation.
  *   - @field [keepTools=false] {boolean} : Retain temporary sketch bodies from textBounds.
  */
 export function skTextAt(context is Context, id is Id, entityId is string, sketch is Sketch, text is string, position is Vector, baselineHeight is ValueWithUnits, options is map) returns map {
@@ -354,10 +377,10 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
     "fontName":        FontName.OPEN_SANS_REGULAR,
     "baselineHeight":  baselineHeight,
     "keepTools":       false,
-    "resizing0":       ResizingPolicy.NONE,
-    "resizing1":       ResizingPolicy.NONE,
-    "horizontalAlign": HorizontalAlignment.LEFT,
-    "verticalAlign":   VerticalAlignment.BASELINE,
+    "resizing0":       ResizingPolicy.DOWNSCALE,
+    "resizing1":       ResizingPolicy.DOWNSCALE,
+    "horizontalAlign": HorizontalAlignment.CENTER,
+    "verticalAlign":   VerticalAlignment.BOTTOM_EXTENT,
   }, options);
   // Measure natural text geometry at the nominal baselineHeight
   const tc        = textBounds(context, id, text, opts);
@@ -386,15 +409,15 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
   var yOffset = 0 * mm;
   if (opts.verticalAlign == VerticalAlignment.MAX) {
     yOffset = -tc.maxHeight * sf[1];
-  } else if (opts.verticalAlign == VerticalAlignment.TOP) {
+  } else if (opts.verticalAlign == VerticalAlignment.TOP_EXTENT) {
     yOffset = -tc.bbox.maxCorner[1] * sf[1];
-  } else if (opts.verticalAlign == VerticalAlignment.NOMINAL_CAP) {
+  } else if (opts.verticalAlign == VerticalAlignment.TOP_BASELINE) {
     yOffset = -tc.capHeight * sf[1];
-  } else if (opts.verticalAlign == VerticalAlignment.CENTER) {
+  } else if (opts.verticalAlign == VerticalAlignment.MIDDLE) {
     yOffset = -(tc.bbox.maxCorner[1] + tc.bbox.minCorner[1]) / 2 * sf[1];
-  } else if (opts.verticalAlign == VerticalAlignment.BASELINE) {
+  } else if (opts.verticalAlign == VerticalAlignment.BOTTOM_BASELINE) {
     yOffset = -tc.baselineHeight * sf[1];
-  } else if (opts.verticalAlign == VerticalAlignment.BOTTOM) {
+  } else if (opts.verticalAlign == VerticalAlignment.BOTTOM_EXTENT) {
     yOffset = -tc.bbox.minCorner[1] * sf[1];
   } else if (opts.verticalAlign == VerticalAlignment.MIN) {
     yOffset = -tc.minHeight * sf[1];
@@ -408,6 +431,138 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
     "textCoords":     tc,
   };
 }
+
+// == [Render Text] ==
+
+/**
+ * Feature: extrudes `text` sized and aligned within a bounding plate.
+ * Creates two sketches — `boundsSk` (the carrier plate rectangle) and `textSk` (the text) —
+ * calls @see `skTextAt` to size and place the text, then extrudes both into solid bodies.
+ * The `position` parameter is the sketch origin; move the sketch plane to relocate.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param definition {{
+ *      @field text {string} : Text to render.
+ *      @field fontName {FontName} : Font filename.
+ *      @field baselineHeight {ValueWithUnits} : Nominal cap height (before resizing).
+ *      @field boundsWidth {ValueWithUnits} : Carrier plate width.
+ *      @field boundsHeight {ValueWithUnits} : Carrier plate height.
+ *      @field resizing0 {ResizingPolicy} : Resizing policy for X.
+ *      @field resizing1 {ResizingPolicy} : Resizing policy for Y.
+ *      @field horizontalAlign {HorizontalAlignment} : X anchor within the plate.
+ *      @field verticalAlign {VerticalAlignment} : Y anchor within the plate.
+ *      @field sketchPlaneQ {Query} : Sketch plane.
+ *      @field textAngle {ValueWithUnits} : In-plane rotation angle.
+ *      @field textDepth {ValueWithUnits} : Extrusion depth of the text lettering.
+ *      @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
+ * }}
+ */
+annotation { "Feature Type Name": "Render Text" }
+export const renderText = defineFeature(function(context is Context, id is Id, definition is map)
+precondition {
+  annotation { "Name": "Text" }
+  definition.text is string;
+
+  annotation { "Name": "Font Name", "UIHint": UIHint.SHOW_LABEL }
+  definition.fontName is FontName;
+
+  annotation { "Name": "Baseline Height" }
+  isLength(definition.baselineHeight, { (millimeter): [0.001, 10, 1000000] } as LengthBoundSpec);
+
+  annotation { "Name": "Bounds Width" }
+  isLength(definition.boundsWidth, { (millimeter): [0.001, 50, 1000000] } as LengthBoundSpec);
+
+  annotation { "Name": "Bounds Height" }
+  isLength(definition.boundsHeight, { (millimeter): [0.001, 10, 1000000] } as LengthBoundSpec);
+
+  annotation { "Name": "X Resizing", "UIHint": UIHint.SHOW_LABEL }
+  definition.resizing0 is ResizingPolicy;
+
+  annotation { "Name": "Y Resizing", "UIHint": UIHint.SHOW_LABEL }
+  definition.resizing1 is ResizingPolicy;
+
+  annotation { "Name": "Horizontal Alignment", "UIHint": UIHint.SHOW_LABEL }
+  definition.horizontalAlign is HorizontalAlignment;
+
+  annotation { "Name": "Vertical Alignment", "UIHint": UIHint.SHOW_LABEL }
+  definition.verticalAlign is VerticalAlignment;
+
+  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 1 }
+  definition.sketchPlaneQ is Query;
+
+  annotation { "Name": "Text Angle" }
+  isAngle(definition.textAngle, { (degree): [0, 0, 360] } as AngleBoundSpec);
+
+  annotation { "Name": "Text Depth" }
+  isLength(definition.textDepth, { (millimeter): [0.001, 1, 1000000] } as LengthBoundSpec);
+
+  annotation { "Name": "Plate Depth" }
+  isLength(definition.plateDepth, { (millimeter): [0.001, 0.5, 1000000] } as LengthBoundSpec);
+}
+{
+  const textSkId   = id + "textSk";
+  const boundsSkId = id + "boundsSk";
+  const basePlane  = evPlane(context, { "face": definition.sketchPlaneQ });
+  const textSk     = rotatedSketch(context, textSkId,   { "basePlane": basePlane }, definition.textAngle);
+  const boundsSk   = rotatedSketch(context, boundsSkId, { "basePlane": basePlane }, definition.textAngle);
+
+  // Anchor offset: how far into the bounds box the text anchor sits (in sketch coords)
+  var anchorX = 0 * mm;
+  if (definition.horizontalAlign == HorizontalAlignment.CENTER || definition.horizontalAlign == HorizontalAlignment.CENTER_NOMINAL) {
+    anchorX = definition.boundsWidth / 2;
+  } else if (definition.horizontalAlign == HorizontalAlignment.RIGHT || definition.horizontalAlign == HorizontalAlignment.MAX) {
+    anchorX = definition.boundsWidth;
+  }
+  var anchorY = 0 * mm;
+  if (definition.verticalAlign == VerticalAlignment.MIDDLE) {
+    anchorY = definition.boundsHeight / 2;
+  } else if (definition.verticalAlign == VerticalAlignment.TOP_EXTENT || definition.verticalAlign == VerticalAlignment.TOP_BASELINE || definition.verticalAlign == VerticalAlignment.MAX) {
+    anchorY = definition.boundsHeight;
+  }
+
+  // Carrier plate: bounds rectangle with the anchor at the sketch origin
+  skRectangle(boundsSk, "plate", {
+    "firstCorner":  vector(-anchorX,                              -anchorY),
+    "secondCorner": vector(definition.boundsWidth - anchorX, definition.boundsHeight - anchorY),
+  });
+  skSolve(boundsSk);
+
+  // Text: sized and aligned within the bounds at the sketch origin
+  skTextAt(context, id, "text", textSk, definition.text, vector(0 * mm, 0 * mm), definition.baselineHeight, {
+    "fontName":        definition.fontName,
+    "bounds":          vector(definition.boundsWidth, definition.boundsHeight),
+    "resizing0":       definition.resizing0,
+    "resizing1":       definition.resizing1,
+    "horizontalAlign": definition.horizontalAlign,
+    "verticalAlign":   definition.verticalAlign,
+  });
+  skSolve(textSk);
+
+  // Extrude text lettering
+  const extrudeTextId = id + "extrudeText";
+  opExtrude(context, extrudeTextId, {
+    "entities":  qSketchRegion(textSkId, true),
+    "direction": basePlane.normal,
+    "endBound":  BoundingType.BLIND,
+    "endDepth":  definition.textDepth,
+  });
+  const textBodies = qCreatedBy(extrudeTextId, EntityType.BODY);
+
+  // Extrude carrier plate, merging with the text bodies
+  extrude(context, id + "extrudePlate", {
+    "entities":          qCreatedBy(boundsSkId, EntityType.FACE),
+    "direction":         basePlane.normal,
+    "endBound":          BoundingType.BLIND,
+    "depth":             definition.plateDepth,
+    "operationType":     NewBodyOperationType.ADD,
+    "bodyType":          ExtendedToolBodyType.SOLID,
+    "defaultScope":      false,
+    "oppositeDirection": true,
+    "booleanScope":      textBodies,
+  });
+});
+
+// --
 
 // == [Utility Functions] ==
 
@@ -446,15 +601,15 @@ export enum VerticalAlignment {
   annotation { "Name": "Top of the tallest letter" }
   MAX,
   annotation { "Name": "Top of the text, as rendered" }
-  TOP,
+  TOP_EXTENT,
   annotation { "Name": "Nominal cap height" }
-  NOMINAL_CAP,
-  annotation { "Name": "Center of the text, as rendered" }
-  CENTER,
+  TOP_BASELINE,
+  annotation { "Name": "Midline of the text, as rendered" }
+  MIDDLE,
   annotation { "Name": "Baseline of the text" }
-  BASELINE,
+  BOTTOM_BASELINE,
   annotation { "Name": "Bottom of the text, as rendered" }
-  BOTTOM,
+  BOTTOM_EXTENT,
   annotation { "Name": "Bottom of the lowest-hanging letter" }
   MIN,
 }
@@ -472,6 +627,7 @@ export enum HorizontalAlignment {
   RIGHT,
   annotation { "Name": "Right of the text, including padding" }
   MAX,
+  // JUSTIFY is not supported yet
 }
 
 export enum ResizingPolicy {
