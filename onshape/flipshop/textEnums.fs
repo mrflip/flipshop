@@ -1,35 +1,59 @@
+FeatureScript 2909;
+import(path : "onshape/std/common.fs", version : "2909.0");
 
 export enum VerticalAlignment {
-  annotation { "Name": "Top of the tallest letter" }
+  annotation { "Name": "Top of tallest renderable (l-height)" }
   MAX,
-  annotation { "Name": "Top of the text, as rendered" }
+  annotation { "Name": "Top, as rendered" }
   TOP_EXTENT,
   annotation { "Name": "Nominal cap height" }
   TOP_BASELINE,
-  annotation { "Name": "Midline of the text, as rendered" }
+  annotation { "Name": "Midline, as rendered" }
   MIDDLE,
-  annotation { "Name": "Baseline of the text" }
+  annotation { "Name": "Baseline" }
   BOTTOM_BASELINE,
-  annotation { "Name": "Bottom of the text, as rendered" }
+  annotation { "Name": "Bottom, as rendered" }
   BOTTOM_EXTENT,
-  annotation { "Name": "Bottom of the lowest-hanging letter" }
+  annotation { "Name": "Bottom of the lowest renderable (y-height)" }
   MIN,
 }
 
 export enum HorizontalAlignment {
-  annotation { "Name": "Left of the text, including padding" }
+  annotation { "Name": "Left, including padding" }
   MIN,
-  annotation { "Name": "Left of the text, as rendered" }
+  annotation { "Name": "Left, as rendered" }
   LEFT,
-  annotation { "Name": "Center of the text, as rendered" }
+  annotation { "Name": "Center, as rendered" }
   CENTER,
-  annotation { "Name": "Center of the text, including padding" }
+  annotation { "Name": "Center, including padding" }
   CENTER_NOMINAL,
-  annotation { "Name": "Right of the text, as rendered" }
+  annotation { "Name": "Right, as rendered" }
   RIGHT,
-  annotation { "Name": "Right of the text, including padding" }
-  MAX,
+  annotation { "Name": "Right, including padding" }
+  MAX
   // JUSTIFY is not supported yet
+}
+
+export enum HSizingExtent {
+  annotation { "Name": "Full width, including padding" }
+  PADDED,
+  annotation { "Name": "Real width (no padding)" }
+  REAL
+}
+
+export enum VSizingExtent {
+  /** Size will be the same regardless of the text content. */
+  annotation { "Name": "Lowest to tallest renderable (y-height to l-height)" }
+  MIN_MAX,
+  /** Size will be the same regardless of the text content. */
+  annotation { "Name": "Baseline to tallest renderable (l-height)" }
+  BASELINE_MAX,
+  /** Size will be the same regardless of the text content. */
+  annotation { "Name": "Baseline-to-cap height" }
+  NOMINAL,
+  /** Size (and perhaps position) will vary on content: `axe` vs `Y0l0!` vs `eggy;` vs `jiggy` vs 'yolo!' */
+  annotation { "Name": "Actual rendered height" }
+  ACTUAL
 }
 
 export enum ResizingPolicy {
@@ -64,51 +88,31 @@ export enum ResizingPolicy {
   DOWNSCALE,
   /** Grow proportionally to fill bounds, but never shrink */
   annotation { "Name": "Grow until both fit (but never shrink)" }
-  MAXIMIZE,
-
+  MAXIMIZE
 }
 
-// // Pangram character array for use in LUT building (buildTextWidthTableFor, coming later).
-// const pangram      = "how quickly daft jumping zebras vex";
-// const pangramChars = [
-//   "h", "o", "w", " ", "q", "u", "i", "c", "k", "l", "y", " ", "d", "a", "f", "t",
-//   " ", "j", "u", "m", "p", "i", "n", "g", " ", "z", "e", "b", "r", "a", "s",
-//   " ", "v", "e", "x",
-//   "H", "O", "W", " ", "Q", "U", "I", "C", "K", "L", "Y", " ", "D", "A", "F", "T",
-//   " ", "J", "U", "M", "P", "I", "N", "G", " ", "Z", "E", "B", "R", "A", "S",
-//   " ", "V", "E", "X"
-// ];
-
-// // Printable ASCII from 0x20 (space) to 0x7e (tilde); 0x7f (DEL) has no glyph and is omitted.
-// const asciiChars = [" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
-//                     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?",
-//                     "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-//                     "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_",
-//                     "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-//                     "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~"];
-
 export enum FontName {
-  annotation { "Name": "Open Sans Regular (a good default)" }
+  annotation { "Name": "Open Sans Regular" }
   OPEN_SANS_REGULAR,
   annotation {"Name": "Open Sans Bold" }
   OPEN_SANS_BOLD,
   annotation {"Name": "Open Sans Italic" }
   OPEN_SANS_ITALIC,
-  annotation { "Name": "Allerta (no bold/italic options)" }
+  annotation { "Name": "Allerta" }
   ALLERTA,
-  annotation { "Name": "Allerta Stencil (no bold/italic options)" }
+  annotation { "Name": "Allerta Stencil" }
   ALLERTA_STENCIL,
-  annotation { "Name": "Arimo (sans-serif font)" }
+  annotation { "Name": "Arimo (sans-serif)" }
   ARIMO,
   annotation { "Name": "Arimo Bold" }
   ARIMO_BOLD,
   annotation { "Name": "Arimo Italic" }
   ARIMO_ITALIC,
-  annotation { "Name": "Balthazar (no bold/italic options)" }
+  annotation { "Name": "Balthazar (classical serif)" }
   BALTHAZAR,
-  annotation { "Name": "Baumans (no bold/italic options)" }
+  annotation { "Name": "Baumans (cheeky sans)" }
   BAUMANS,
-  annotation { "Name": "Bebas Neue (no bold/italic options)" }
+  annotation { "Name": "Bebas Neue (compact ss caps)" }
   BEBAS_NEUE,
   annotation { "Name": "Comic Neue" }
   COMIC_NEUE,
@@ -122,103 +126,103 @@ export enum FontName {
   COURIER_PRIME_BOLD,
   annotation { "Name": "Courier Prime Italic" }
   COURIER_PRIME_ITALIC,
-  annotation { "Name": "Didact Gothic (no bold/italic options)" }
+  annotation { "Name": "Didact Gothic" }
   DIDACT_GOTHIC,
-  annotation { "Name": "Droid Sans Mono (monospaced sans-serif font, no bold/italic options)" }
+  annotation { "Name": "Droid Sans Mono (monospaced sans-serif)" }
   DROID_SANS_MONO,
-  annotation { "Name": "Inconsolata (monospaced sans-serif font)" }
+  annotation { "Name": "Inconsolata (monospaced sans-serif)" }
   INCONSOLATA,
   annotation { "Name": "Inconsolata Bold" }
   INCONSOLATA_BOLD,
-  annotation { "Name": "Inter (sans-serif font, no italic options)" }
+  annotation { "Name": "Inter (sans-serif)" }
   INTER,
   annotation { "Name": "Inter Bold" }
   INTER_BOLD,
-  annotation { "Name": "Michroma (sans-serif font, no italic options)" }
+  annotation { "Name": "Michroma (sans-serif)" }
   MICHROMA,
-  annotation { "Name": "MPLUSRounded1c (sans-serif font, no italic options)" }
+  annotation { "Name": "MPLUSRounded1c (sans-serif)" }
   MPLUSRounded1c,
   annotation { "Name": "MPLUSRounded1c Bold" }
   MPLUSRounded1c_BOLD,
-  annotation { "Name": "Noto Sans (sans-serif font)" }
+  annotation { "Name": "Noto Sans (sans-serif)" }
   NOTO_SANS,
   annotation { "Name": "Noto Sans Bold" }
   NOTO_SANS_BOLD,
   annotation { "Name": "Noto Sans Italic" }
   NOTO_SANS_ITALIC,
-  annotation { "Name": "Noto Sans CJK JP (Japanese font, no italic options)" }
+  annotation { "Name": "Noto Sans CJK JP (Japanese)" }
   NOTO_SANS_CJK_JP,
-  annotation { "Name": "Noto Sans CJK JP Bold" }
+  annotation { "Name": "Noto Sans CJK JP (Japanese) Bold" }
   NOTO_SANS_CJK_JP_BOLD,
-  annotation { "Name": "Noto Sans CJK KR (Korean font, no italic options)" }
+  annotation { "Name": "Noto Sans CJK KR (Korean)" }
   NOTO_SANS_CJK_KR,
-  annotation { "Name": "Noto Sans CJK KR Bold" }
+  annotation { "Name": "Noto Sans CJK KR (Korean) Bold" }
   NOTO_SANS_CJK_KR_BOLD,
-  annotation { "Name": "Noto Sans CJK SC (Chinese (simplified) font, no italic options)" }
+  annotation { "Name": "Noto Sans CJK SC (Chinese simplified)" }
   NOTO_SANS_CJK_SC,
   annotation { "Name": "Noto Sans CJK SC Bold" }
   NOTO_SANS_CJK_SC_BOLD,
-  annotation { "Name": "Noto Sans CJK TC (Chinese (traditional) font, no italic options)" }
+  annotation { "Name": "Noto Sans CJK TC (Chinese traditional)" }
   NOTO_SANS_CJK_TC,
   annotation { "Name": "Noto Sans CJK TC Bold" }
   NOTO_SANS_CJK_TC_BOLD,
-  annotation { "Name": "Noto Serif (serif font)" }
+  annotation { "Name": "Noto Serif (serif)" }
   NOTO_SERIF,
   annotation { "Name": "Noto Serif Bold" }
   NOTO_SERIF_BOLD,
   annotation { "Name": "Noto Serif Italic" }
   NOTO_SERIF_ITALIC,
-  annotation { "Name": "Orbitron (sans-serif font, no italic options)" }
+  annotation { "Name": "Orbitron (tron sans-serif)" }
   ORBITRON,
   annotation { "Name": "Orbitron Bold" }
   ORBITRON_BOLD,
-  annotation { "Name": "Oswald (sans-serif font, no italic options)" }
+  annotation { "Name": "Oswald (skinny sans-serif)" }
   OSWALD,
   annotation { "Name": "Oswald Bold" }
   OSWALD_BOLD,
-  annotation { "Name": "Poppins (sans-serif font)" }
+  annotation { "Name": "Poppins (sans-serif)" }
   POPPINS,
   annotation { "Name": "Poppins Bold" }
   POPPINS_BOLD,
   annotation { "Name": "Poppins Italic" }
   POPPINS_ITALIC,
-  annotation { "Name": "PTSans (sans-serif font)" }
+  annotation { "Name": "PTSans (sans-serif)" }
   PTSANS,
   annotation { "Name": "PTSans Bold" }
   PTSANS_BOLD,
   annotation { "Name": "PTSans Italic" }
   PTSANS_ITALIC,
-  annotation { "Name": "Rajdhani (sans-serif font, no italic options)" }
+  annotation { "Name": "Rajdhani (sans-serif)" }
   RAJDHANI,
   annotation { "Name": "Rajdhani Bold" }
   RAJDHANI_BOLD,
-  annotation { "Name": "Roboto (sans-serif font)" }
+  annotation { "Name": "Roboto (sans-serif)" }
   ROBOTO,
   annotation { "Name": "Roboto Bold" }
   ROBOTO_BOLD,
   annotation { "Name": "Roboto Italic" }
   ROBOTO_ITALIC,
-  annotation { "Name": "Roboto Slab (sans-serif font, no italic options)" }
+  annotation { "Name": "Roboto Slab (sans-serif)" }
   ROBOTO_SLAB,
   annotation { "Name": "Roboto Slab Bold" }
   ROBOTO_SLAB_BOLD,
-  annotation { "Name": "Ropa Sans (sans-serif font, no bold options)" }
+  annotation { "Name": "Ropa Sans (sans-serif)" }
   ROPA_SANS,
   annotation { "Name": "Ropa Sans Italic" }
   ROPA_SANS_ITALIC,
-  annotation { "Name": "Sofia Sans (sans-serif font)" }
+  annotation { "Name": "Sofia Sans (sans-serif)" }
   SOFIA_SANS,
   annotation { "Name": "Sofia Sans Bold" }
   SOFIA_SANS_BOLD,
   annotation { "Name": "Sofia Sans Italic" }
   SOFIA_SANS_ITALIC,
-  annotation { "Name": "Source Sans Pro (sans-serif font)" }
+  annotation { "Name": "Source Sans Pro (sans-serif)" }
   SOURCE_SANS_PRO,
   annotation { "Name": "Source Sans Pro Bold" }
   SOURCE_SANS_PRO_BOLD,
   annotation { "Name": "Source Sans Pro Italic" }
   SOURCE_SANS_PRO_ITALIC,
-  annotation { "Name": "Tinos (serif font, metrically compatible with Times New Roman)" }
+  annotation { "Name": "Tinos (serif)" }
   TINOS,
   annotation { "Name": "Tinos Bold" }
   TINOS_BOLD,
@@ -292,7 +296,28 @@ export enum FontName {
   FontName.SOURCE_SANS_PRO:       "SourceSansPro-Regular.ttf",
   FontName.SOURCE_SANS_PRO_BOLD:   "SourceSansPro-Bold.ttf",
   FontName.SOURCE_SANS_PRO_ITALIC: "SourceSansPro-Italic.ttf",
-  FontName.TINOS:                 "Tinos-Regular.otf",
+  FontName.TINOS:                 "Tinos-Regular.ttf",
   FontName.TINOS_BOLD:            "Tinos-Bold.ttf",
   FontName.TINOS_ITALIC:          "Tinos-Italic.ttf",
  };
+
+// // Pangram character array for use in LUT building (buildTextWidthTableFor, coming later).
+// const pangram      = "how quickly daft jumping zebras vex";
+// const pangramChars = [
+//   "h", "o", "w", " ", "q", "u", "i", "c", "k", "l", "y", " ", "d", "a", "f", "t",
+//   " ", "j", "u", "m", "p", "i", "n", "g", " ", "z", "e", "b", "r", "a", "s",
+//   " ", "v", "e", "x",
+//   "H", "O", "W", " ", "Q", "U", "I", "C", "K", "L", "Y", " ", "D", "A", "F", "T",
+//   " ", "J", "U", "M", "P", "I", "N", "G", " ", "Z", "E", "B", "R", "A", "S",
+//   " ", "V", "E", "X"
+// ];
+
+/** Printable ASCII from 0x20 (space) to 0x7e (tilde) */
+export const asciiChars = [
+  " ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
+  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?",
+  "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+  "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_",
+  "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+  "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~",        // 0x7f (DEL) has no glyph and is omitted.
+];
