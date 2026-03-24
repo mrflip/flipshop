@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "e64154c01aea2d47a286d4a3");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "a94691844bf62160b9b52068");
 export import(path : "4989999bb256f6d486ab7381", version : "bf7d3efcd063891b56281618");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
@@ -47,13 +47,7 @@ precondition {
 }
 {
   const socketParams = socketCellParams(context, definition);
-  const ids = {
-    bboxesSk:         id + "bboxesSk",
-    shapesSk:         id + "shapesSk",
-    labelsSk:         id + "labelsSk",
-    calloutsSk:       id + "calloutsSk",
-    extrudedCutout:   id + "extrudedCutout",
-  };
+  const ids = { bboxesSk: id + "bboxesSk", shapesSk: id + "shapesSk", labelsSk: id + "labelsSk", calloutsSk: id + "calloutsSk", extrudedCutout: id + "extrudedCutout" };
 
   const sketches = {
    bboxes:    newSketchOnPlane(context, ids.bboxesSk,    { "sketchPlane":  socketParams.basePlane }),
@@ -67,15 +61,15 @@ precondition {
   drawBoundingBoxes(context,   ids.bboxesSk, sketches.bboxes, socketParams);
   drawSocketBaseShape(context, ids.shapesSk, sketches.shapes, socketParams.socket, socketParams);
   skSolve(sketches.shapes);
+  const shapesSkFacesQ = qCreatedBy(ids.shapesSk, EntityType.FACE);
 
   radialText(sketches.callouts, socketParams, "Hi, Mom", 4 * mm);
   skSolve(sketches.callouts);
 
 //   drawAndMeasureText(context, ids.labelsSk, sketches.labels, "Hi, Mom", 5*mm, vector(1*mm, 3*mm));
 
-  const cutoutFaces = qCreatedBy(ids.shapesSk, EntityType.FACE);
   opExtrude(context, ids.extrudedCutout, {
-    "entities":  cutoutFaces,
+    "entities":  shapesSkFacesQ,
     "direction": socketParams.basePlane.normal,
     "endBound":  BoundingType.BLIND,
     "endDepth":  socketParams.cutoutDepth,
@@ -373,76 +367,78 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   const cx = center[0];
   const cy = center[1];
 
+  const ids = { cutoutSk: id + "cutoutSk", decoSk: id + "decoSk", calloutSk: id + "calloutSk", labelSk: id + "labelSk", plate: id + "plate", pocketTool: id + "pocketTool", pocketCut: id + "pocketCut" };
+  const sketches = {
+    cutout:  newSketchOnPlane(context, ids.cutoutSk,  { "sketchPlane":  opts.basePlane }),
+    deco:    newSketchOnPlane(context, ids.decoSk,    { "sketchPlane":  opts.basePlane }),
+    callout: newSketchOnPlane(context, ids.calloutSk, { "sketchPlane":  opts.basePlane }),
+    label:   newSketchOnPlane(context, ids.labelSk,   { "sketchPlane":  opts.basePlane }),
+  };
+
   // Cutout sketch — solid circle only; face is extruded into the pocket tool
-  const cutoutSkId = id + "cutoutSk";
-  const cutoutSk   = newSketchOnPlane(context, cutoutSkId, { "sketchPlane":  opts.basePlane });
-  skCircle(cutoutSk, "cutout", { "center": vector(cx, cy), "radius":  cutoutRadius });
-  skSolve(cutoutSk);
+  skCircle(sketches.cutout, "cutout", { "center": vector(cx, cy), "radius":  cutoutRadius });
+  skSolve(sketches.cutout);
+  const cutoutSkFacesQ = qCreatedBy(ids.cutoutSk, EntityType.FACE);
 
   // Decoration sketch — padded circle (construction), bbox (construction), border (solid)
-  const decoSkId = id + "decoSk";
-  const decoSk   = newSketchOnPlane(context, decoSkId, { "sketchPlane":  opts.basePlane });
-  skCircle(decoSk, "padded", {
+  skCircle(sketches.deco, "padded", {
     "center":       vector(cx, cy),
     "radius":       paddedRadius,
     "construction": true,
   });
-  skRectangle(decoSk, "bbox", {
+  skRectangle(sketches.deco, "bbox", {
     "firstCorner":  vector(cx + cs.bboxMinH, cy + cs.bboxMinV),
     "secondCorner": vector(cx + cs.bboxMaxH, cy + cs.bboxMaxV),
     "construction": true,
   });
-  skRectangle(decoSk, "border", {
+  skRectangle(sketches.deco, "border", {
     "firstCorner":  vector(cx + cs.borderMinH, cy + cs.borderMinV),
     "secondCorner": vector(cx + cs.borderMaxH, cy + cs.borderMaxV),
   });
-  skSolve(decoSk);
+  skSolve(sketches.deco);
+  const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
 
   // Callout sketch — sizing_mm_text; BOTTOM_EXTENT tangent to padded circle at 9 o'clock
-  const calloutSkId = id + "calloutSk";
-  const calloutSk   = newSketchOnPlane(context, calloutSkId, { "sketchPlane":  opts.basePlane });
-  skTextAt(context, id + "calloutTxt", "callout", calloutSk, cs.calloutText,
+  skTextAt(context, id + "calloutTxt", "callout", sketches.callout, cs.calloutText,
     vector(cx - cs.paddedRadius, cy),
     opts.calloutHeight, {
       "horizontalAlign":  HorizontalAlignment.RIGHT,
       "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
     });
-  skSolve(calloutSk);
+  skSolve(sketches.callout);
 
   // Label sketch — sizing text; TOP_EXTENT tangent to padded circle at 6 o'clock, centered
-  const labelSkId = id + "labelSk";
-  const labelSk   = newSketchOnPlane(context, labelSkId, { "sketchPlane":  opts.basePlane });
-  skTextAt(context, id + "labelTxt", "label", labelSk, cs.labelText,
+  skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
     vector(cx, cy - cs.paddedRadius),
     opts.labelHeight, {
       "horizontalAlign":  HorizontalAlignment.CENTER,
       "verticalAlign":    VerticalAlignment.TOP_EXTENT,
     });
-  skSolve(labelSk);
+  skSolve(sketches.label);
 
   // Extrude cell body from border rectangle face
-  opExtrude(context, id + "plate", {
-    "entities":  qCreatedBy(decoSkId, EntityType.FACE),
+  opExtrude(context, ids.plate, {
+    "entities":  decoSkFacesQ,
     "direction": opts.basePlane.normal,
     "endBound":  BoundingType.BLIND,
     "endDepth":  opts.holderDepth,
   });
 
   // Extrude pocket tool from cutout circle, then subtract from cell body
-  opExtrude(context, id + "pocketTool", {
-    "entities":  qCreatedBy(cutoutSkId, EntityType.FACE),
+  opExtrude(context, ids.pocketTool, {
+    "entities":  cutoutSkFacesQ,
     "direction": opts.basePlane.normal,
     "endBound":  BoundingType.BLIND,
     "endDepth":  2 * opts.layerHeight,
   });
-  opBoolean(context, id + "pocketCut", {
-    "tools":          qCreatedBy(id + "pocketTool", EntityType.BODY),
-    "targets":        qCreatedBy(id + "plate",      EntityType.BODY),
+  opBoolean(context, ids.pocketCut, {
+    "tools":          qCreatedBy(ids.pocketTool, EntityType.BODY),
+    "targets":        qCreatedBy(ids.plate,      EntityType.BODY),
     "operationType":  BooleanOperationType.SUBTRACTION,
   });
 
   setProperty(context, {
-    "entities":     qCreatedBy(id + "plate", EntityType.BODY),
+    "entities":     qCreatedBy(ids.plate, EntityType.BODY),
     "propertyType": PropertyType.NAME,
     "value":        socket.title,
   });

@@ -215,6 +215,36 @@ export enum ShapeType {
 
 ---
 
+## Feature Parts with Multiple Sketches or Ids
+
+Any feature or helper function that creates more than one sketch or operation id must use a unified `ids` map and a `sketches` map, following `socketCellCutter` as the reference.
+
+**`ids` map** — all id strings in one `const` declaration, using `fooSk` keys for sketches and plain camel-case for non-sketch operations:
+
+```featurescript
+const ids = { bboxesSk: id + "bboxesSk", shapesSk: id + "shapesSk", extrudedCutout: id + "extrudedCutout" };
+```
+
+**`sketches` map** — maps the base name to its `Sketch` object, aligned:
+
+```featurescript
+const sketches = {
+  bboxes: newSketchOnPlane(context, ids.bboxesSk, { "sketchPlane":  socketParams.basePlane }),
+  shapes: newSketchOnPlane(context, ids.shapesSk, { "sketchPlane":  socketParams.basePlane }),
+};
+```
+
+**Queries** — declare the query for a sketch immediately after its `skSolve`, not at the call site where it is first consumed:
+
+```featurescript
+skSolve(sketches.shapes);
+const shapesSkFacesQ = qCreatedBy(ids.shapesSk, EntityType.FACE);
+```
+
+The query variable name follows the pattern `<baseName>Sk<EntityType>Q` (e.g. `shapesSkFacesQ`, `cutoutSkBodiesQ`).
+
+---
+
 ## Multi-line Function Signatures
 
 When parameters don't fit on one line, indent continuation lines by 2 spaces:

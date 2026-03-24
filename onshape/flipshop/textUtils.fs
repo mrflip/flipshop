@@ -63,11 +63,12 @@ precondition {
   isLength(definition.plateDepth, { (millimeter): [0.001, 0.5, 1000000] } as LengthBoundSpec);
 }
 {
-  const textSkId   = id + "textSk";
-  const boundsSkId = id + "boundsSk";
-  const basePlane  = evPlane(context, { "face": definition.sketchPlaneQ });
-  const textSk     = rotatedSketch(context, textSkId,   { "basePlane": basePlane }, definition.textAngle);
-  const boundsSk   = rotatedSketch(context, boundsSkId, { "basePlane": basePlane }, definition.textAngle);
+  const basePlane = evPlane(context, { "face": definition.sketchPlaneQ });
+  const ids = { textSk: id + "textSk", boundsSk: id + "boundsSk", extrudeText: id + "extrudeText", extrudePlate: id + "extrudePlate" };
+  const sketches = {
+    text:   rotatedSketch(context, ids.textSk,   { "basePlane": basePlane }, definition.textAngle),
+    bounds: rotatedSketch(context, ids.boundsSk, { "basePlane": basePlane }, definition.textAngle),
+  };
   // Anchor offset: how far into the bounds box the text anchor sits (in sketch coords)
   var anchorX = 0 * mm;
   if (definition.horizontalAlign == HorizontalAlignment.CENTER || definition.horizontalAlign == HorizontalAlignment.CENTER_NOMINAL) {
@@ -83,14 +84,15 @@ precondition {
   }
 
   // Carrier plate: bounds rectangle with the anchor at the sketch origin
-  skRectangle(boundsSk, "plate", {
-    "firstCorner":  vector(-anchorX,                              -anchorY),
+  skRectangle(sketches.bounds, "plate", {
+    "firstCorner":  vector(-anchorX,                         -anchorY),
     "secondCorner": vector(definition.boundsWidth - anchorX, definition.boundsHeight - anchorY),
   });
-  skSolve(boundsSk);
+  skSolve(sketches.bounds);
+  const boundsSkFacesQ = qCreatedBy(ids.boundsSk, EntityType.FACE);
 
   // Text: sized and aligned within the bounds at the sketch origin
-  skTextAt(context, id, "text", textSk, definition.text, vector(0 * mm, 0 * mm), definition.baselineHeight, {
+  skTextAt(context, id, "text", sketches.text, definition.text, vector(0 * mm, 0 * mm), definition.baselineHeight, {
     "fontName":        definition.fontName,
     "bounds":          vector(definition.boundsWidth, definition.boundsHeight),
     "resizing0":       definition.resizing0,
@@ -98,21 +100,21 @@ precondition {
     "horizontalAlign": definition.horizontalAlign,
     "verticalAlign":   definition.verticalAlign,
   });
-  skSolve(textSk);
+  skSolve(sketches.text);
+  const textSkRegionQ = qSketchRegion(ids.textSk, true);
 
   // Extrude text lettering
-  const extrudeTextId = id + "extrudeText";
-  opExtrude(context, extrudeTextId, {
-    "entities":  qSketchRegion(textSkId, true),
+  opExtrude(context, ids.extrudeText, {
+    "entities":  textSkRegionQ,
     "direction": basePlane.normal,
     "endBound":  BoundingType.BLIND,
     "endDepth":  definition.textDepth,
   });
-  const textBodies = qCreatedBy(extrudeTextId, EntityType.BODY);
+  const textBodiesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
 
   // Extrude carrier plate, merging with the text bodies
-  extrude(context, id + "extrudePlate", {
-    "entities":          qCreatedBy(boundsSkId, EntityType.FACE),
+  extrude(context, ids.extrudePlate, {
+    "entities":          boundsSkFacesQ,
     "direction":         basePlane.normal,
     "endBound":          BoundingType.BLIND,
     "depth":             definition.plateDepth,
@@ -120,13 +122,13 @@ precondition {
     "bodyType":          ExtendedToolBodyType.SOLID,
     "defaultScope":      false,
     "oppositeDirection": true,
-    "booleanScope":      textBodies,
+    "booleanScope":      textBodiesQ,
   });
   //
   const scrubbed = replace(definition.text, "[\\s]+", " ");
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
   setProperty(context, {
-    "entities":     qUnion([textBodies, qCreatedBy(id + "extrudePlate", EntityType.BODY)]),
+    "entities":     qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]),
     "propertyType": PropertyType.NAME,
     "value":        partName,
   });
@@ -283,29 +285,35 @@ export function textBounds(context is Context, id is Id, text is string, options
       "baselineHeight": 10*mm,
       "keepTools":      false,
   }, options);
-  const tempSkId  = id + nextLabelId(opts, "tempSketch" ~ text);
-  const sketch    = newSketchOnPlane(context, tempSkId + "text", { "sketchPlane": PL_TOP });
-  const maxSketch = newSketchOnPlane(context, tempSkId + "max",  { "sketchPlane": PL_TOP });
-  const minSketch = newSketchOnPlane(context, tempSkId + "min",  { "sketchPlane": PL_TOP });
+  const prefix = id + nextLabelId(opts, "tempSketch" ~ text);
+  const ids = { textSk: prefix + "text", maxSk: prefix + "max", minSk: prefix + "min", deleteText: id + "deleteSketch", deleteMax: id + "deleteMax", deleteMin: id + "deleteMin" };
+  const sketches = {
+    text: newSketchOnPlane(context, ids.textSk, { "sketchPlane": PL_TOP }),
+    max:  newSketchOnPlane(context, ids.maxSk,  { "sketchPlane": PL_TOP }),
+    min:  newSketchOnPlane(context, ids.minSk,  { "sketchPlane": PL_TOP }),
+  };
   // Draw the text
-  skBasicTextAt(context, "textBounds", sketch,    text,                     vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
-  skBasicTextAt(context, "maxBounds",  maxSketch, "'[}lLTQZ96|^$§`" ~ text ~ "gjpqyQ;,", vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
-  skBasicTextAt(context, "minBounds",  minSketch, "x",                      vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
-  skSolve(sketch); skSolve(maxSketch); skSolve(minSketch);
-  const sketchBodies       = qCreatedBy(tempSkId + "text", EntityType.BODY);
-  const maxBodies          = qCreatedBy(tempSkId + "max",  EntityType.BODY);
-  const minBodies          = qCreatedBy(tempSkId + "min",  EntityType.BODY);
+  skBasicTextAt(context, "textBounds", sketches.text, text,                                    vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skBasicTextAt(context, "maxBounds",  sketches.max,  "'[}lLTQZ96|^$§`" ~ text ~ "gjpqyQ;,", vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skBasicTextAt(context, "minBounds",  sketches.min,  "x",                                    vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skSolve(sketches.text);
+  const textSkBodiesQ  = qCreatedBy(ids.textSk, EntityType.BODY);
+  const textSkRegionQ  = qSketchRegion(ids.textSk, true);
+  skSolve(sketches.max);
+  const maxSkRegionQ   = qSketchRegion(ids.maxSk, true);
+  skSolve(sketches.min);
+  const minSkRegionQ   = qSketchRegion(ids.minSk, true);
   //
   // Wide box (includes horizontal padding and actual extent of text)
-  const wbox             = evBox3d(context, { "topology": sketchBodies,                    "tight": true });
+  const wbox             = evBox3d(context, { "topology": textSkBodiesQ,  "tight": true });
   // Text box (includes horizontal padding; extends from baseline to cap height)
   const tbox             = box3d(vector(0*mm, 0*mm, 0*mm), vector(wbox.maxCorner[0], opts.baselineHeight, 0*mm));
   // Bounding box (tight against the actual text region as rendered)
-  const bbox             = evBox3d(context, { "topology": qSketchRegion(tempSkId + "text", true), "tight": true });
+  const bbox             = evBox3d(context, { "topology": textSkRegionQ,  "tight": true });
   // Max box (tight against the actual text region rendering both tall letters (l,|,`, etc) and low letters (j,y,;,Q,etc))
-  const ylMeasurer       = evBox3d(context, { "topology": qSketchRegion(tempSkId + "max", true), "tight": true });
+  const ylMeasurer       = evBox3d(context, { "topology": maxSkRegionQ,   "tight": true });
   // Min box (tight against the actual text region using only "x")
-  const xMeasurer        = evBox3d(context, { "topology": qSketchRegion(tempSkId + "min", true), "tight": true });
+  const xMeasurer        = evBox3d(context, { "topology": minSkRegionQ,   "tight": true });
   // Calculate the text metrics
   const minLeft          = wbox.minCorner[0];
   const left             = bbox.minCorner[0];
@@ -346,9 +354,9 @@ export function textBounds(context is Context, id is Id, text is string, options
     "descenderFrac":    (actualHeight - overflowHeight - opts.baselineHeight) / actualHeight,
     "overflowFrac":     overflowHeight / actualHeight,
   };
-  opDeleteBodies(context, id + "deleteSketch",  { "entities": sketchBodies });
-  opDeleteBodies(context, id + "deleteMax",     { "entities": maxBodies });
-  opDeleteBodies(context, id + "deleteMin",     { "entities": minBodies });
+  opDeleteBodies(context, ids.deleteText, { "entities": textSkBodiesQ });
+  opDeleteBodies(context, ids.deleteMax,  { "entities": qCreatedBy(ids.maxSk, EntityType.BODY) });
+  opDeleteBodies(context, ids.deleteMin,  { "entities": qCreatedBy(ids.minSk, EntityType.BODY) });
   //   debug(context, ["textBounds tbox", text, boxMag(tbox, 1*mm)]);
   //   debug(context, ["textBounds wbox", text, boxMag(wbox, 1*mm)]);
   //   debug(context, ["textBounds bbox", text, boxMag(bbox, 1*mm)]);
