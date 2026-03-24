@@ -2,7 +2,7 @@ FeatureScript 2909;
 import(path : "onshape/std/common.fs", version : "2909.0");
 
 export enum VerticalAlignment {
-  annotation { "Name": "Top of tallest renderable (l-height)" }
+  annotation { "Name": "Top of tallest renderable (ll-height)" }
   MAX,
   annotation { "Name": "Top, as rendered" }
   TOP_EXTENT,
@@ -97,6 +97,15 @@ export const ProportionalResizingPolicy = {
   "Cover (proportionally resize to cover)":   ResizingPolicy.COVER,
   "Maximize (proportionally grow to cover)":  ResizingPolicy.MAXIMIZE,
 };
+
+/** Returns true if `val` is a proportional `ResizingPolicy` (i.e. both axes scale uniformly). */
+export function resizingIPolicysProportional(val is ResizingPolicy) returns boolean {
+  return val == ResizingPolicy.CONTAIN  ||
+         val == ResizingPolicy.COVER    ||
+         val == ResizingPolicy.DOWNSCALE ||
+         val == ResizingPolicy.MAXIMIZE ||
+         val == ResizingPolicy.FOLLOW;
+}
 
 export const IndependentResizingPolicy = {
   "None (no resizing)":                       ResizingPolicy.NONE,

@@ -2,7 +2,7 @@ FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
 export import(path : "8fa2dd9caf18bedfb6b0eda2/2427f262f8e5525a71e20081/7683b6ccf9499ff664904299", version : "8d62d0d3921f7b515fea74b7");
-export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "bf8ec21549e535f0b9557c71");
+export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "147ab80c285e6c2d15e1347b");
 
 const mm = millimeter;
 const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
@@ -236,7 +236,7 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
  */
 export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, options is map) {
   const opts = mergeMaps({ "fontName": FontName.OPEN_SANS_REGULAR }, options);
-  debug(context, [opts.fontName, FontName.ARIMO, FontNameString[opts.fontName]]);
+  //   debug(context, [opts.fontName, FontName.ARIMO, FontNameString[opts.fontName]]);
   skText(sketch, entityId, {
     "text": text, fontName: FontNameString[opts.fontName], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
   });
@@ -349,11 +349,11 @@ export function textBounds(context is Context, id is Id, text is string, options
   opDeleteBodies(context, id + "deleteSketch",  { "entities": sketchBodies });
   opDeleteBodies(context, id + "deleteMax",     { "entities": maxBodies });
   opDeleteBodies(context, id + "deleteMin",     { "entities": minBodies });
-  debug(context, ["textBounds tbox", text, boxMag(tbox, 1*mm)]);
-  debug(context, ["textBounds wbox", text, boxMag(wbox, 1*mm)]);
-  debug(context, ["textBounds bbox", text, boxMag(bbox, 1*mm)]);
-  debug(context, ["textBounds  min",  text, boxMag(minBbox, 1*mm)]);
-  debug(context, ["textBounds  max",  text, boxMag(maxBbox, 1*mm)]);
+  //   debug(context, ["textBounds tbox", text, boxMag(tbox, 1*mm)]);
+  //   debug(context, ["textBounds wbox", text, boxMag(wbox, 1*mm)]);
+  //   debug(context, ["textBounds bbox", text, boxMag(bbox, 1*mm)]);
+  //   debug(context, ["textBounds  min",  text, boxMag(minBbox, 1*mm)]);
+  //   debug(context, ["textBounds  max",  text, boxMag(maxBbox, 1*mm)]);
   return result;
 }
 
@@ -456,7 +456,7 @@ precondition {
   const extrudedBodies = qCreatedBy(ids.extrudedText, EntityType.BODY);
 
   // Draw the text extents
-  debug(context, ["measureText3d", boxMag(textCoords.tbox, 1*mm), boxMag(textCoords.bbox, 1*mm)], DebugColor.CYAN);
+  // debug(context, ["measureText3d", boxMag(textCoords.tbox, 1*mm), boxMag(textCoords.bbox, 1*mm)], DebugColor.CYAN);
   skRectangle(sketches.carrierSk,    "bbox",  { firstCorner: vector2(textCoords.bbox.minCorner),                secondCorner: vector2(textCoords.bbox.maxCorner)  });
   skRectangle(sketches.carrierSk,    "tbox",  { firstCorner: vector2(textCoords.tbox.minCorner),                secondCorner: vector2(textCoords.tbox.maxCorner), construction: true });
   skLineSegment(sketches.carrierSk, "xheight", { start: vector(textCoords.left, textCoords.xHeight), end: vector(textCoords.right, textCoords.xHeight),    construction: true });
