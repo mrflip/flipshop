@@ -1,7 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "146bbe88c26a4a3a41774202");
-export import(path : "4989999bb256f6d486ab7381", version : "75b239924e285228035fc1a4");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "b4ae8fb11060cdb844128d16");
+export import(path : "4989999bb256f6d486ab7381", version : "bf7d3efcd063891b56281618");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -297,6 +297,8 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const cutoutRadius = bodyDiam / 2 + opts.insertionGap;
   const paddedRadius = cutoutRadius + opts.cutoutPadding;
 
+  debug(context, ["socketCellSize", socket.sizing_mm_text, socket]);
+
   const calloutText = socket.sizing_mm_text;
   const labelText   = socket.sizing;
   const calloutTc   = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight });
@@ -457,12 +459,15 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
  */
 function socketHolder(context is Context, id is Id, familyRef is map, opts is map) {
   var cursorX = zero;
-//   var idx     = 0;
+  //   var idx     = 0;
+  debug(context, ["socketHolder", keys(familyRef), familyRef]);
 
-  for (var sizingKey, socketRecord in familyRef.entries) {
+  for (var sizingKey, socketRecord in familyRef) {
+    debug(context, ["socketHolder", sizingKey]);
     // Pre-measure so we can position the circle center: left border edge is at cursorX,
     // and the circle is at -cs.borderMinH to the right of the left edge.
-    const cs     = socketCellSize(context, id + ("ps" ~ sizingKey), socketRecord, opts);
+    // const cs     = socketCellSize(context, id + ("ps" ~ sizingKey), socketRecord, opts);
+    const cs = { borderMinH: 5*mm, cellWidth: 25*mm };
     const center = vector(cursorX - cs.borderMinH, zero);
     socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, center);
     cursorX  = cursorX + cs.cellWidth;
@@ -523,11 +528,10 @@ precondition {
 }
 {
   const basePlane = evPlane(context, { "face":  definition.referencePlaneQ });
+  // a map sizing key to socket -- eg `{ "7/16": {...}, "1/2": { ... } ... }`
   const familyRef   = getSocketFamilyRef(context, definition.familyPath);
-  debug(context, [familyRef], DebugColor.MAGENTA);
-  if (familyRef == undefined) {
-    throw regenError("Unknown socket family");
-  }
+  debug(context, ["socketHolderPart", familyRef], DebugColor.MAGENTA);
+  if (familyRef == undefined) { throw regenError("Unknown socket family"); }
 
   socketHolder(context, id, familyRef, {
     "basePlane":     basePlane,
