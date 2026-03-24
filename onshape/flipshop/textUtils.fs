@@ -288,9 +288,9 @@ export function textBounds(context is Context, id is Id, text is string, options
   const prefix = id + nextLabelId(opts, "tempSketch" ~ text);
   const ids = { textSk: prefix + "text", maxSk: prefix + "max", minSk: prefix + "min", deleteText: id + "deleteSketch", deleteMax: id + "deleteMax", deleteMin: id + "deleteMin" };
   const sketches = {
-    text: newSketchOnPlane(context, ids.textSk, { "sketchPlane": PL_TOP }),
-    max:  newSketchOnPlane(context, ids.maxSk,  { "sketchPlane": PL_TOP }),
-    min:  newSketchOnPlane(context, ids.minSk,  { "sketchPlane": PL_TOP }),
+    "text": newSketchOnPlane(context, ids.textSk, { "sketchPlane": PL_TOP }),
+    "max":  newSketchOnPlane(context, ids.maxSk,  { "sketchPlane": PL_TOP }),
+    "min":  newSketchOnPlane(context, ids.minSk,  { "sketchPlane": PL_TOP }),
   };
   // Draw the text
   skBasicTextAt(context, "textBounds", sketches.text, text,                                    vector(0 * mm, 0 * mm), opts.baselineHeight, opts);

@@ -22,6 +22,7 @@ if (x > 0) {
 
 ## Maps
 
+- **Always quote map keys** with double-quotes: `{ "key":  value }`, not `{ key:  value }`. This applies to every map literal — `ids`, `sketches`, return maps, option maps, etc. The only exception is dot-access on the right-hand side of an expression (`ids.fooSk`, `sketches.foo`), which uses unquoted identifiers.
 - Put the colon **immediately after** the closing quote: `"key":  value` (no space before `:`).
 - Use **two spaces** after the colon as a minimum, then pad further to **vertically align** all values in the same map literal.
 - Always put a **trailing comma** on the last element of a multi-line map or array.

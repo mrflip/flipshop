@@ -1,7 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "daa2f7d60ba23b30cdfc9d62", version : "a94691844bf62160b9b52068");
-export import(path : "4989999bb256f6d486ab7381", version : "bf7d3efcd063891b56281618");
+export import(path : "4989999bb256f6d486ab7381", version : "ffdb0ffe5f74177ae1ad0ca3");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -360,9 +360,6 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
  * @param center {Vector} : 2-D sketch-plane coordinate of the socket circle center.
  */
 function socketCell(context is Context, id is Id, socket is map, opts is map, center is Vector) returns map {
-  const bodyDiam     = (socket.wrench_end_diam != undefined) ? socket.wrench_end_diam : socket.wx_overall;
-  const cutoutRadius = bodyDiam / 2 + opts.insertionGap;
-  const paddedRadius = cutoutRadius + opts.cutoutPadding;
   const cs = socketCellSize(context, id + "sz", socket, opts);
   const cx = center[0];
   const cy = center[1];
@@ -376,14 +373,14 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   };
 
   // Cutout sketch — solid circle only; face is extruded into the pocket tool
-  skCircle(sketches.cutout, "cutout", { "center": vector(cx, cy), "radius":  cutoutRadius });
+  skCircle(sketches.cutout, "cutout", { "center": vector(cx, cy), "radius":  cs.cutoutRadius });
   skSolve(sketches.cutout);
   const cutoutSkFacesQ = qCreatedBy(ids.cutoutSk, EntityType.FACE);
 
   // Decoration sketch — padded circle (construction), bbox (construction), border (solid)
   skCircle(sketches.deco, "padded", {
     "center":       vector(cx, cy),
-    "radius":       paddedRadius,
+    "radius":       cs.paddedRadius,
     "construction": true,
   });
   skRectangle(sketches.deco, "bbox", {
