@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "b4ae8fb11060cdb844128d16");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "e64154c01aea2d47a286d4a3");
 export import(path : "4989999bb256f6d486ab7381", version : "bf7d3efcd063891b56281618");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
@@ -300,7 +300,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   debug(context, ["socketCellSize", socket.sizing_mm_text, socket]);
 
   const calloutText = socket.sizing_mm_text;
-  const labelText   = socket.sizing;
+  const labelText   = replace(socket.sizing, '(in|mm)$', '');
   const calloutTc   = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight });
   const labelTc     = textBounds(context, id + "labelTC",   labelText,   { "baselineHeight":  opts.labelHeight  });
 
@@ -366,6 +366,9 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
  * @param center {Vector} : 2-D sketch-plane coordinate of the socket circle center.
  */
 function socketCell(context is Context, id is Id, socket is map, opts is map, center is Vector) returns map {
+  const bodyDiam     = (socket.wrench_end_diam != undefined) ? socket.wrench_end_diam : socket.wx_overall;
+  const cutoutRadius = bodyDiam / 2 + opts.insertionGap;
+  const paddedRadius = cutoutRadius + opts.cutoutPadding;
   const cs = socketCellSize(context, id + "sz", socket, opts);
   const cx = center[0];
   const cy = center[1];
@@ -373,7 +376,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   // Cutout sketch — solid circle only; face is extruded into the pocket tool
   const cutoutSkId = id + "cutoutSk";
   const cutoutSk   = newSketchOnPlane(context, cutoutSkId, { "sketchPlane":  opts.basePlane });
-  skCircle(cutoutSk, "cutout", { "center": vector(cx, cy), "radius":  cs.cutoutRadius });
+  skCircle(cutoutSk, "cutout", { "center": vector(cx, cy), "radius":  cutoutRadius });
   skSolve(cutoutSk);
 
   // Decoration sketch — padded circle (construction), bbox (construction), border (solid)
@@ -381,7 +384,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   const decoSk   = newSketchOnPlane(context, decoSkId, { "sketchPlane":  opts.basePlane });
   skCircle(decoSk, "padded", {
     "center":       vector(cx, cy),
-    "radius":       cs.paddedRadius,
+    "radius":       paddedRadius,
     "construction": true,
   });
   skRectangle(decoSk, "bbox", {
@@ -441,7 +444,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   setProperty(context, {
     "entities":     qCreatedBy(id + "plate", EntityType.BODY),
     "propertyType": PropertyType.NAME,
-    "value":        "Socket Cell " ~ socket.sizing,
+    "value":        socket.title,
   });
 
   return cs;
@@ -457,21 +460,19 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
  * @param familyRef {map} : Socket variant map from @see `getSocketFamilyRef` (contains `.entries`).
  * @param opts {map} : Options for @see `socketCell`.
  */
-function socketHolder(context is Context, id is Id, familyRef is map, opts is map) {
+function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
+  debug(context, ["socketHolder", familyRef]);
   var cursorX = zero;
-  //   var idx     = 0;
-  debug(context, ["socketHolder", keys(familyRef), familyRef]);
+  var cs = { borderMinH: 0*mm, cellWidth: 25*mm };
 
-  for (var sizingKey, socketRecord in familyRef) {
+  for (var socketRecord in familyRef) {
+    const sizingKey = socketRecord.sizing;
     debug(context, ["socketHolder", sizingKey]);
     // Pre-measure so we can position the circle center: left border edge is at cursorX,
     // and the circle is at -cs.borderMinH to the right of the left edge.
-    // const cs     = socketCellSize(context, id + ("ps" ~ sizingKey), socketRecord, opts);
-    const cs = { borderMinH: 5*mm, cellWidth: 25*mm };
     const center = vector(cursorX - cs.borderMinH, zero);
-    socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, center);
+    cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, center);
     cursorX  = cursorX + cs.cellWidth;
-    // idx     += 1;
   }
 }
 // --
@@ -512,7 +513,7 @@ precondition {
   isLength(definition.insertionGap, { (millimeter): [0, 0.3, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Cutout padding", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.cutoutPadding, { (millimeter): [0, 1, hugeSizeVal] } as LengthBoundSpec);
+  isLength(definition.cutoutPadding, { (millimeter): [0, 0.5, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Border padding", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.borderPadding, { (millimeter): [0, 1, hugeSizeVal] } as LengthBoundSpec);

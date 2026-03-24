@@ -42,7 +42,7 @@ export interface ThruholeSk extends CK.Zsketch<typeof thruhole> {}
 export interface ThruholeT extends CK.Zcasted<typeof thruhole> {}
 
 export const nut = CK.obj({
-  driver_title: FE.wrench_title,
+  driver_sz: FE.wrench_sz,
   diam_af:      mm_lte_100,
   ht:           mm_lte_100,
   refsku:       CK.keyish.optional(),
@@ -63,7 +63,7 @@ export type WasherT  = CK.Zcasted<typeof washer>
 export const screw = CK.obj({
   drive_kind:   FE.fastener_drive,
   head_form:    FE.head_form,
-  driver_title: FE.driver_title,
+  driver_sz: FE.driver_sz,
   head_ht:      mm_lte_100,
   refsku:       CK.keyish.optional(),
 })
@@ -71,13 +71,13 @@ export const external_drive_screw = CK.obj({
   ...screw.shape,
   drive_kind:   FE.external_drive,
   head_form:    CK.oneof(['bolt']).default('bolt'),
-  driver_title: FE.wrench_title,
+  driver_sz: FE.wrench_sz,
   head_diam_af: mm_lte_100,
 })
 export const internal_drive_screw = CK.obj({
   ...screw.shape,
   drive_kind:   FE.internal_drive,
-  driver_title: FE.keydrive_title,
+  driver_sz: FE.keydrive_sz,
   head_diam_od: mm_lte_100,
   key_diam_af:  mm_lte_100,
   key_dp:       mm_lte_100.optional(),
@@ -101,18 +101,18 @@ export interface ScrewT<TDK extends FE.FastenerDrive, THF extends FE.HeadForm> e
 export interface ExternalDriveScrewT<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends ScrewT<TDK, THF>, CK.Zcasted<typeof external_drive_screw> {
   drive_kind:   TDK
   head_form:    THF
-  driver_title: FE.WrenchSizing
+  driver_sz: FE.WrenchSizing
 }
 
 export interface ExternalDriveScrewSk<TDK extends FE.ExternalDrive = FE.ExternalDrive, THF extends 'bolt' = 'bolt'> extends Optionalize<ScrewSk, 'head_form'>, CK.Zsketch<typeof external_drive_screw> {
   drive_kind:    TDK
   head_form?:    THF | undefined
-  driver_title: FE.WrenchSizing
+  driver_sz: FE.WrenchSizing
 }
 export interface InternalDriveScrewT<TDK extends FE.InternalDrive = FE.InternalDrive, THF extends FE.HeadForm = 'socket'> extends ScrewT<TDK, THF>, CK.Zcasted<typeof internal_drive_screw> {
   drive_kind:   TDK
   head_form:    THF
-  driver_title: FE.KeydriveSizing
+  driver_sz: FE.KeydriveSizing
 }
 
 export const threading = CK.obj({

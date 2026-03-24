@@ -213,13 +213,24 @@ export const DistanceLookup = {
   'T60':                    60,
 
   // Phillips sizes -- these are standins from an AI, need checking
-  '#000':                   1.2,
-  '#00':                    2,
-  '#0':                     2.5,
-  '#1':                     3,
-  '#2':                     5,
-  '#3':                     8,
-  '#4':                     10,
+  'Ph000':                   1.2,
+  'Ph00':                    2,
+  'Ph0':                     2.5,
+  'Ph1':                     3,
+  'Ph2':                     5,
+  'Ph3':                     8,
+  'Ph4':                     10,
+  'Pz1':                     3,
+  'Pz2':                     5,
+  'Pz3':                     8,
+  'Pz4':                     10,
+
+  'Sl1':                     1,
+  'Sl2':                     2,
+  'Sl3':                     3,
+  'Sl4':                     4,
+  'Sl5':                     5,
+  'Sl6':                     6,
 } as const satisfies Bag<number>
 
 _.each(DistanceLookup, (val, key) => { DistanceLookup[key] = _.round(val, 4) })

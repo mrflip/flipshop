@@ -3,10 +3,12 @@ import      _                                /**/ from 'lodash'
 import      { load as cheerioLoad }               from 'cheerio'
 //
 import type * as TY                               from '@freeword/meta'
-import      { CK, UF }                            from '@freeword/meta'
+import      { CK }                                from '@freeword/meta'
 import      * as Fastener                         from '../fastener/index.ts'
 import      * as Sockets                          from '../sockets/index.ts'
 import       { DistanceLookup }                   from './DistanceLookup.ts'
+import       { DriveToDriven }                    from '../sockets/DriverTargets.ts'
+import type * as FE                               from '../fastener/FastenerEnums.ts'
 
 const { MM_IN, KG_LB } = Fastener
 
@@ -142,6 +144,13 @@ function extract_dist(raw: string): number {
 
 // == [Parsing] ==
 
+const DriverKindToPrefix = {
+  exthex:          'Wr',   extstar:         'E',   extstar12:       'Wr',   inthex:          'H',
+  intsq:           'Dr',   torx:            'T',   torxtp:          'TP',   triple_square:   'Sq3',
+  slotted:         'Sl',   square:          'Sq',  phillips:        'Ph',   pozidriv:        'Pz',
+  phslot:          'Ph',   knurled:         'Kn',  carriage:        'Cr',
+} as const satisfies { [key in Fastener.FastenerEnums.FastenerDrive]: string }
+
 /** Parses a gearwrench socket product page and returns a SocketWrenchProductT */
 export function parseProductPage(filepath: TY.Anypath, textblob: string): GearwrenchSocketT {
   const $ = cheerioLoad(textblob)
@@ -186,7 +195,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     const value = spans.eq(1).text().replace(/\s+/g, ' ').trim()
     if (label) specifications[label] = value
   })
-  const result: TY.AnyBag = { sku, gwtitle, url, img_url }
+  const result = { sku, gwtitle, url, img_url } as GearwrenchSocketSk & { drive_end_hex_af: any, bit_ln_exposed: any, wt_lb: any }
 
   _.each(specifications, (raw, key) => {
     if (/^Dim\./.test(key)) { const [fn, val] = extract_dim(key, raw); result[fn] = val; return }
@@ -206,8 +215,8 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     if (fn) { result[fn] = raw; return }
     console.warn(`Unknown specification: ${key} = ${raw}`)
   })
-  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(gwtitle)) { result.reach_kind = 'uj_' + result.reach_kind }
-  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(gwtitle))   { result.reach_kind = 'uj_' + result.reach_kind }
+  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(gwtitle)) { result.reach_kind = 'uj_' + result.reach_kind as FE.SocketReach}
+  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(gwtitle))   { result.reach_kind = 'uj_' + result.reach_kind as FE.SocketReach }
   if (specifications['Type'] === 'Socket Extension') { result.reach_kind = 'uj_ext' }
   result.socket_variant = 'std'
   if (/impact/i.test(gwtitle))                              { result.socket_variant = 'impact' }
@@ -218,8 +227,12 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     result.bit_ln       = _.min([result.bit_ln, result.bit_ln_exposed])
     delete result.bit_ln_exposed
   }
+  if (/slotted/.test(result.bit_kind!)) { result.drive_kind = 'slotted'; result.sizing = result.sizing.replace(/^(?:Sl)?#?(\d+)(mm)?/, 'Sl$1') }
+  if (result.bit_kind && (result.bit_kind !== result.drive_kind)) { console.warn(`Bit kind mismatch: ${result.bit_kind} !== ${result.drive_kind}`, result) }
   if (result.wrench_end_diam === 1024.89) { result.wrench_end_diam = 102.489 } // assuming this is a typo for 4.035 in (102.489 mm)
-  if (result.drive_kind === 'extstar') { result.socket_kind = 'socket_extstar'; result.unit_system = 'metric' }
+  if (result.drive_kind === 'extstar')  { result.socket_kind = 'socket_extstar'; result.unit_system = 'metric' }
+  if (result.drive_kind === 'phillips') { result.sizing = result.sizing.replace(/^(Ph)?#?/, 'Ph') }
+  if (result.drive_kind === 'pozidriv') { result.sizing = result.sizing.replace(/^(Pz)?#?/, 'Pz') }
   if (/^(socket_(extension|adapter|ujoint))$/.test(result.socket_kind)) { result.reach_kind = 'other'; result.drive_kind = 'intsq' }
   if (/^(socket_(extension))$/.test(result.socket_kind)) {
     result.unit_system ??= 'us'
@@ -227,7 +240,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   }
   if (/^(socket_(adapter|ujoint))$/.test(result.socket_kind)) {
     result.unit_system ??= 'us'
-    result.sizing ??= specifications['Male Drive Size'] ?? specifications['Drive Tang Size']
+    result.sizing ??= specifications['Male Drive Size'] ?? specifications['Drive Tang Size'] as string
   }
   if (specifications['Size Range (SAE)']) { result.unit_system = 'us' } if (specifications['Size Range (Metric)']) { result.unit_system = 'metric' }
   result.sizing = result.sizing?.replace(/ +(mm|in)\b/g, '$1').replaceAll(/(\d+)-(\d+\/\d+)in/g, '$1+$2in').replaceAll(/\.0+in/g, 'in')
@@ -244,7 +257,14 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   if (overall_wx) { result.wx_overall = overall_wx } if (overall_wy) { result.wy_overall = overall_wy }
   // if (specifications['Type'] === 'Socket Extension') { console.warn('\nSocket Extension\n', gwtitle, specifications, result) }
 
-  result.title = result.gwtitle
+  result.title    = result.gwtitle
+  const driverSizingPrefix = DriverKindToPrefix[result.drive_kind]
+  const driver_sz =  (driverSizingPrefix + result.sizing.replace(/^([ET]+|P[hz]|Sl)/, '')) as FE.ToolDrive
+  result.targets = DriveToDriven[driver_sz] ?? {}
+  if (/socket_(exthex|extstar|bit)$/.test(result.socket_kind)) {
+    if (! Fastener.FastenerEnums.DriverSizingVals.includes(driver_sz)) { console.warn(driver_sz) }
+    // drives.exthex_sz = result.sizing
+  }
   const socket = gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
   socket.title = socket.sizing + " " + Sockets.SocketWrench.familyTitleFor(socket)
   return socket

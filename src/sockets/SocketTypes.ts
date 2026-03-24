@@ -1,6 +1,7 @@
 import      _                                   /**/ from 'lodash'
 import      { CK }                                   from '@freeword/meta'
 import      * as FE                                  from '../fastener/FastenerEnums.ts'
+import      { driverTargets }                        from './DriverTargets.ts'
 import      { in_lte_36, mm_lte_100, mm_lte_2000, mm_lte_360 }  from '../fastener/FastenerTypes.ts'
 
 export const socketWrench = CK.obj({
@@ -20,8 +21,8 @@ export const socketWrench = CK.obj({
   socket_variant:       CK.oneof(FE.SocketVariantVals),
   /** type of bit (internal drive sockets); should equal drive_kind */
   bit_kind:             CK.oneof(FE.InternalDriveVals).optional(),
-  /** text giving the nominal size of the socket (e.g. "1/4 in", "2 mm", "T10", "E14", "#1", "#00") */
-  sizing:               CK.str.regex(/^(?:((?:\d+\+)?[\/\d]+in|[\d\.]+mm)|T\d+|E\d+|#[123]|#0+|.+in - .+in)$/),
+  /** text giving the nominal size of the socket (e.g. "1/4 in", "2 mm", "T10", "E14", "Ph1", "Ph00") */
+  sizing:               CK.str.regex(/^(?:((?:\d+\+)?[\/\d]+in|[\d\.]+mm)|T\d+|E\d+|Sl\d+|P[hz](?:[01234]|00|000)|.+in - .+in)$/),
   /** drive size of the tool in millimeters */
   sizing_mm:            mm_lte_2000,
   /** sizing_mm rounded to one decimal place with trailing zeros removed (e.g. "9.5", "12.7") */
@@ -55,6 +56,8 @@ export const socketWrench = CK.obj({
   male_drive_size:      CK.oneof(FE.ToolDriveVals).optional(),
   /** for adapters, extensions and universal joints, the size of the female (wrench) end */
   female_drive_size:    CK.oneof(FE.ToolDriveVals).optional(),
+  /** drive to driven mapping */
+  targets:              driverTargets.default({}),
   /** weight of the socket in kilograms */
   wt:                   mm_lte_100.optional(),
   /** weight of the socket in pounds */

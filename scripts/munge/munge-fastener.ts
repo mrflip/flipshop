@@ -16,4 +16,4 @@ const FastenerMasterData = FastenerMasterDataLines.map((vals) => {
   return Flipshop.Fastener.FastenerSizing.fill(obj)
 })
 
-console.log(_.take(FastenerMasterData, 4))
+console.log(_.take(FastenerMasterData, 14))

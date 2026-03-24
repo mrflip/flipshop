@@ -7,6 +7,7 @@ import      { Thing }                                from '../utils/Thing.ts'
 import      { fsStringField, fsBoolField, fsMmField, fsInchField, fsNumField } from '../utils/FeaturescriptHelpers.ts'
 import       * as FE                                 from '../fastener/FastenerEnums.ts'
 import       { socketWrench, type SocketWrenchT }    from './SocketTypes.ts'
+import type { DriverTargetsT }                       from './DriverTargets.ts'
 
 export class SocketWrench extends Thing implements SocketWrenchT {
   //
@@ -36,6 +37,7 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   declare male_drive_size?:     FE.ToolDrive         | undefined
   declare female_drive_size?:   FE.ToolDrive         | undefined
   //
+  declare targets:              DriverTargetsT
   declare wt?:                  TY.MM                | undefined
   declare wt_lb?:               TY.MM                | undefined
   declare sku:                  TY.SKU
@@ -56,25 +58,12 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   /** Drive types where unit system is implied (always metric) — suppress "Metric" in titles */
   private static readonly UNIT_IMPLICIT_DRIVES = new Set<FE.FastenerDrive>(['torx', 'torxtp', 'phillips', 'pozidriv', 'extstar', 'extstar12'])
 
+  /** Human-readable family title built from the standard nested key order: @see {SocketWrench.familyTitleFor} */
+  get familyTitle(): string { return SocketWrench.familyTitleFor(this)   }
+
   /** Human-readable family title built from the standard nested key order:
    *  socket kind, drive kind, unit system, sq-drive size, socket variant, reach kind.
    *  "Standard" variant and implied-metric drive types are omitted. */
-  get familyTitle(): string {
-    // const kindTitle          = /socket_(bit|exthex|extstar)$/.test(this.socket_kind) ? '' : FE.SocketKindTitles[this.socket_kind]
-    // let   driveTitle: string = FE.SocketDriveTitles[this.drive_kind]
-    // const sqDriveTitle       = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
-    // if (/^socket_(extension|adapter|ujoint)$/.test(this.socket_kind)) { driveTitle = '' } // no sqdrive for extensions or adapters
-    // const reachTitle   = FE.SocketReachTitles[this.reach_kind]
-    // const variantTitle = FE.SocketVariantTitles[this.socket_variant]
-    // const unitTitle    = (this.unit_system === 'metric' && SocketWrench.UNIT_IMPLICIT_DRIVES.has(this.drive_kind))
-    //   ? ''
-    //   : FE.UnitSystemTitles[this.unit_system]
-    // return [kindTitle, driveTitle, unitTitle, sqDriveTitle, reachTitle, variantTitle]
-    //   .filter(Boolean)
-    //   .join(' ')
-    return SocketWrench.familyTitleFor(this)
-  }
-
   static familyTitleFor(socket: SocketWrenchT): string {
     const kindTitle          = /socket_(bit|exthex|extstar)$/.test(socket.socket_kind) ? '' : FE.SocketKindTitles[socket.socket_kind]
     let   driveTitle: string = FE.SocketDriveTitles[socket.drive_kind]
