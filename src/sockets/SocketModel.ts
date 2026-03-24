@@ -10,7 +10,6 @@ import       { socketWrench, type SocketWrenchT }    from './SocketTypes.ts'
 
 export class SocketWrench extends Thing implements SocketWrenchT {
   //
-  declare title:                TY.Title
   declare sizing:               string
   declare sizing_mm:            TY.MM
   declare sizing_in:            TY.Inch
@@ -43,11 +42,14 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   declare upc:                  TY.SKU
   declare url:                  TY.URLStr
   declare img_url:              TY.URLStr
+  declare gwtitle:              TY.Title
   //
   static get checker()    { return socketWrench }
   get Factory():            typeof SocketWrench  { return this.constructor as typeof SocketWrench }
   static fill(raw: SocketWrenchT): SocketWrenchT { return super.fill(raw)  as        SocketWrenchT }
   static live(raw: SocketWrenchT): SocketWrench  { return super.live(raw)  as        SocketWrench  }
+  get title(): string { return this.sizing + " " + this.familyTitle }
+  set title(_title: string) { /* noop */ } // we will make this ourselves but want to let importers validate
 
   private static readonly INCH_FIELDS  = new Set<string>(['sizing_in'])
   private static readonly PLAIN_FIELDS = new Set<string>(['wt', 'wt_lb'])
@@ -58,15 +60,31 @@ export class SocketWrench extends Thing implements SocketWrenchT {
    *  socket kind, drive kind, unit system, sq-drive size, socket variant, reach kind.
    *  "Standard" variant and implied-metric drive types are omitted. */
   get familyTitle(): string {
-    const kindTitle          = /socket_(bit|exthex|extstar)$/.test(this.socket_kind) ? '' : FE.SocketKindTitles[this.socket_kind]
-    let   driveTitle: string = FE.SocketDriveTitles[this.drive_kind]
-    const sqDriveTitle       = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
-    if (/^socket_(extension|adapter|ujoint)$/.test(this.socket_kind)) { driveTitle = '' } // no sqdrive for extensions or adapters
-    const reachTitle   = FE.SocketReachTitles[this.reach_kind]
-    const variantTitle = FE.SocketVariantTitles[this.socket_variant]
-    const unitTitle    = (this.unit_system === 'metric' && SocketWrench.UNIT_IMPLICIT_DRIVES.has(this.drive_kind))
+    // const kindTitle          = /socket_(bit|exthex|extstar)$/.test(this.socket_kind) ? '' : FE.SocketKindTitles[this.socket_kind]
+    // let   driveTitle: string = FE.SocketDriveTitles[this.drive_kind]
+    // const sqDriveTitle       = FE.ToolDriveTitles[this.sqdrive_size as FE.ToolDrive]
+    // if (/^socket_(extension|adapter|ujoint)$/.test(this.socket_kind)) { driveTitle = '' } // no sqdrive for extensions or adapters
+    // const reachTitle   = FE.SocketReachTitles[this.reach_kind]
+    // const variantTitle = FE.SocketVariantTitles[this.socket_variant]
+    // const unitTitle    = (this.unit_system === 'metric' && SocketWrench.UNIT_IMPLICIT_DRIVES.has(this.drive_kind))
+    //   ? ''
+    //   : FE.UnitSystemTitles[this.unit_system]
+    // return [kindTitle, driveTitle, unitTitle, sqDriveTitle, reachTitle, variantTitle]
+    //   .filter(Boolean)
+    //   .join(' ')
+    return SocketWrench.familyTitleFor(this)
+  }
+
+  static familyTitleFor(socket: SocketWrenchT): string {
+    const kindTitle          = /socket_(bit|exthex|extstar)$/.test(socket.socket_kind) ? '' : FE.SocketKindTitles[socket.socket_kind]
+    let   driveTitle: string = FE.SocketDriveTitles[socket.drive_kind]
+    const sqDriveTitle       = FE.ToolDriveTitles[socket.sqdrive_size as FE.ToolDrive]
+    if (/^socket_(extension|adapter|ujoint)$/.test(socket.socket_kind)) { driveTitle = '' } // no sqdrive for extensions or adapters
+    const reachTitle   = FE.SocketReachTitles[socket.reach_kind]
+    const variantTitle = FE.SocketVariantTitles[socket.socket_variant]
+    const unitTitle    = (socket.unit_system === 'metric' && SocketWrench.UNIT_IMPLICIT_DRIVES.has(socket.drive_kind))
       ? ''
-      : FE.UnitSystemTitles[this.unit_system]
+      : FE.UnitSystemTitles[socket.unit_system]
     return [kindTitle, driveTitle, unitTitle, sqDriveTitle, reachTitle, variantTitle]
       .filter(Boolean)
       .join(' ')

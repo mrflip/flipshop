@@ -81,8 +81,17 @@ export function socketWrenchesToFeaturescript(tree: typeof SocketWrenches): stri
       .map(([kk, vv]) => `${innerPad}${JSON.stringify(kk)}: ${renderNode(vv, depth + 1)}`)
     return `{\n${lines.join(',\n')}\n${pad}}`
   }
-  function renderWrapped(node: unknown, level: number, indent: number, rawKeyPath: string[], stopDepth: number): string {
-    if (level === stopDepth) { return 'SocketWrenches["' + rawKeyPath.join('"]["') + '"]' }
+  function renderWrapped(node: unknown, level: number, indent: number, rawKeyPath: string[], stopDepth: number, arrayLeaf = false): string {
+    if (level === stopDepth) {
+      const prefix = 'SocketWrenches["' + rawKeyPath.join('"]["') + '"]'
+      if (arrayLeaf) {
+        const pad  = '  '.repeat(indent)
+        const pad1 = '  '.repeat(indent + 1)
+        const items = Object.keys(node as Record<string, unknown>).map(sizing => `${pad1}${prefix}[${JSON.stringify(sizing)}]`)
+        return `[\n${items.join(',\n')}\n${pad}]`
+      }
+      return prefix
+    }
     const { name, displayName, titles } = axisWrapperInfo[level]!
     const pad  = '  '.repeat(indent)
     const pad1 = '  '.repeat(indent + 1)
@@ -92,13 +101,13 @@ export function socketWrenchesToFeaturescript(tree: typeof SocketWrenches): stri
       // Leaf level: data entries at pad2; two separate closing braces
       const entryLines = Object.entries(node as Record<string, unknown>).map(([kk, vv]) => {
         const dk = titles[kk] ?? kk
-        return `${pad2}${JSON.stringify(dk)}: ${renderWrapped(vv, stopDepth, 0, [...rawKeyPath, kk], stopDepth)}`
+        return `${pad2}${JSON.stringify(dk)}: ${renderWrapped(vv, stopDepth, indent + 2, [...rawKeyPath, kk], stopDepth, arrayLeaf)}`
       })
       return `${header}\n${entryLines.join(',\n')}\n${pad1}}\n${pad}}`
     } else {
       // Non-leaf: sub-wrapper entries at pad1; double-close at pad
       const entryLines = Object.entries(node as Record<string, unknown>).map(([kk, vv]) => (
-        `${pad1}${JSON.stringify(titles[kk] ?? kk)}: ${renderWrapped(vv, level + 1, indent + 1, [...rawKeyPath, kk], stopDepth)}`
+        `${pad1}${JSON.stringify(titles[kk] ?? kk)}: ${renderWrapped(vv, level + 1, indent + 1, [...rawKeyPath, kk], stopDepth, arrayLeaf)}`
       ))
       return `${header}\n${entryLines.join(',\n')}\n${pad}}}`
     }
@@ -113,7 +122,7 @@ export function socketWrenchesToFeaturescript(tree: typeof SocketWrenches): stri
   const familyEnum    = `export enum SocketFamilyEnum {\n${enumValues.join(',\n')}\n}`
   return socketWrenchesFeaturescriptHeader
     + `\n\nexport const SocketWrenches = ${renderNode(tree, 0)};`
-    + `\n\nexport const SocketWrenches2 = ${renderWrapped(tree, 0, 1, [], 6)};`
+    + `\n\nexport const SocketWrenches2 = ${renderWrapped(tree, 0, 1, [], 6, true)};`
     + `\n\nexport const SocketWrenches3 = ${renderWrapped(tree, 0, 1, [], 7)};`
     + `\n\n${familyEnum}\n\n${familyConst}`
 }

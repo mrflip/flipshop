@@ -14,6 +14,7 @@ const { MM_IN, KG_LB } = Fastener
 
 export const gearwrenchSocket = CK.obj({
   ...Sockets.socketWrench.shape,
+  gwtitle:              CK.titleish,
   is_knurled:           CK.bool.optional(),
   is_magnetic:          CK.bool.optional(),
   is_wobble:            CK.bool.optional(),
@@ -170,7 +171,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
       }
     } catch { /* malformed JSON-LD, skip */ }
   })
-  const title = rawTitle
+  const gwtitle = rawTitle
     .replace(/\s*-\s*Gearwrench\s*$/i, '')
     .replace(sku + ' ', '')
     .replaceAll(/(\d) *"/g, '$1in')
@@ -185,7 +186,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     const value = spans.eq(1).text().replace(/\s+/g, ' ').trim()
     if (label) specifications[label] = value
   })
-  const result: TY.AnyBag = { sku, title, url, img_url }
+  const result: TY.AnyBag = { sku, gwtitle, url, img_url }
 
   _.each(specifications, (raw, key) => {
     if (/^Dim\./.test(key)) { const [fn, val] = extract_dim(key, raw); result[fn] = val; return }
@@ -205,11 +206,11 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
     if (fn) { result[fn] = raw; return }
     console.warn(`Unknown specification: ${key} = ${raw}`)
   })
-  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(title)) { result.reach_kind = 'uj_' + result.reach_kind }
-  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(title))   { result.reach_kind = 'uj_' + result.reach_kind }
+  if (result.socket_kind === 'socket_exthex' && /\bFlex Socket\b/i.test(gwtitle)) { result.reach_kind = 'uj_' + result.reach_kind }
+  if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(gwtitle))   { result.reach_kind = 'uj_' + result.reach_kind }
   if (specifications['Type'] === 'Socket Extension') { result.reach_kind = 'uj_ext' }
   result.socket_variant = 'std'
-  if (/impact/i.test(title))                              { result.socket_variant = 'impact' }
+  if (/impact/i.test(gwtitle))                              { result.socket_variant = 'impact' }
   if (/ball/i.test(specifications['Drive Type'] ?? 'xx')) { result.socket_variant = 'ball' }
   delete result.drive_end_hex_af
   if (result.bit_ln_exposed) {
@@ -241,8 +242,11 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   const overall_wx = result.wx_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
   const overall_wy = result.wy_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
   if (overall_wx) { result.wx_overall = overall_wx } if (overall_wy) { result.wy_overall = overall_wy }
-  // if (specifications['Type'] === 'Socket Extension') { console.warn('\nSocket Extension\n', title, specifications, result) }
+  // if (specifications['Type'] === 'Socket Extension') { console.warn('\nSocket Extension\n', gwtitle, specifications, result) }
 
-  return gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
+  result.title = result.gwtitle
+  const socket = gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
+  socket.title = socket.sizing + " " + Sockets.SocketWrench.familyTitleFor(socket)
+  return socket
 }
 // --

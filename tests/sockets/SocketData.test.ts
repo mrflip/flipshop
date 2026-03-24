@@ -9,7 +9,7 @@ import      { SocketWrench }                      from '../../src/sockets/Socket
 import type { SocketWrenchT }                     from '../../src/sockets/SocketTypes.ts'
 
 const ExemplarKeys = {
-  hex_socket_10mm: `3/8in Drive Long Ball End Hex Bit Metric Socket 10mm`,
+  hex_socket_10mm: `10mm Int Hex MM 3/8Dr Long Ball End`,
 } as const satisfies Record<string, string>
 const Exemplars = { hex_socket_10mm: undefined! } as Record<keyof typeof ExemplarKeys, Flipshop.Sockets.SocketWrench>
 const SomeSocketWrenches = {} as typeof SocketWrenches
@@ -80,7 +80,7 @@ describe('@flipshop/flipshop Sockets', () => {
       })
       it('formats the title as a quoted string', () => {
         const fs = Exemplars.hex_socket_10mm.toFeaturescript()
-        expect(fs).to.include(`"title": "3/8in Drive Long Ball End Hex Bit Metric Socket 10mm"`)
+        expect(fs).to.include(`"title": "10mm Int Hex MM 3/8Dr Long Ball End"`)
       })
       it('formats mm fields with * mm', () => {
         const fs = Exemplars.hex_socket_10mm.toFeaturescript()
