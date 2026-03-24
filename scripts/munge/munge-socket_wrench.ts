@@ -36,7 +36,7 @@ for (const ripdDir of dirs) {
   SocketWrenchProducts.push(...products)
   console.warn(`Parsed ${products.length} / ${files.length} products from ${ripdDir}.`)
 }
-const sorted = _.orderBy(SocketWrenchProducts, ['socket_kind', 'drive_kind', 'unit_system', 'sqdrive_size', 'reach_kind', 'socket_variant', 'wrench_end_diam', 'ln_overall'])
+const sorted = _.orderBy(SocketWrenchProducts, ['socket_kind', 'drive_kind', 'unit_system', 'sqdrive_size', 'reach_kind', 'socket_variant', 'sizing_mm', 'wrench_end_diam', 'ln_overall'])
 // console.warn(UF.prettify(Enumish))
 console.log(JSON.stringify(sorted, null, 2))
 
