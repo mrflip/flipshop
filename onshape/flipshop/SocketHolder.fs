@@ -1,7 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
-export import(path : "4989999bb256f6d486ab7381", version : "9ae7bd80e57a4b0fd31d3a06");
+export import(path : "4989999bb256f6d486ab7381", version : "96386dfa6df6e97b66ddbeab");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -546,7 +546,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     opts.labelHeight, {
       "horizontalAlign":    HorizontalAlignment.CENTER,
       "verticalAlign":      VerticalAlignment.TOP_EXTENT,
-    });
+  });
   skSolve(sketches.label);
 
   // Extrude cell body from border rectangle face
@@ -565,9 +565,10 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "endBound":  BoundingType.BLIND,
     "endDepth":  opts.holderDepth - 2 * opts.layerHeight,
   });
+  const plateBodiesQ = qCreatedBy(ids.plate,      EntityType.BODY);
   opBoolean(context, ids.pocketCut, {
     "tools":          qCreatedBy(ids.pocketTool, EntityType.BODY),
-    "targets":        qCreatedBy(ids.plate,      EntityType.BODY),
+    "targets":        plateBodiesQ,
     "operationType":  BooleanOperationType.SUBTRACTION,
   });
 
@@ -580,7 +581,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   // Deboss sizing label into the top face of the cell body
   const debossDepth = min(2 * mm, 0.8 * opts.layerHeight);
   embossText(context, id + "labelDeboss",
-    opts.basePlane, vector(cx, cy - cs.paddedRadius), EmbossType.DEBOSS,
+    opts.basePlane, vector(cx, cy - cs.paddedRadius), plateBodiesQ,
     cs.labelText, EmbossType.DEBOSS, opts.labelHeight, debossDepth, {
       "horizontalAlign":  HorizontalAlignment.CENTER,
       "verticalAlign":    VerticalAlignment.TOP_EXTENT,

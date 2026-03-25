@@ -511,8 +511,8 @@ export enum EmbossType {
 
 /**
  * Extrudes `text` and booleans it into or out of `targets`.
- * EMBOSS raises letters above `sketchPlane` (extrudes against normal, unions with targets).
- * DEBOSS carves letters into `sketchPlane` (extrudes along normal, subtracts from targets).
+ * EMBOSS raises letters above `sketchPlane` (extrudes along normal, unions with targets).
+ * DEBOSS carves letters into `sketchPlane` (extrudes against normal, subtracts from targets).
  * @param context {Context} : Model context.
  * @param id {Id} : Base feature id.
  * @param sketchPlane {Plane} : Plane on which text is sketched; normal points into the material.
@@ -536,24 +536,30 @@ export function embossText(context is Context, id is Id, sketchPlane is Plane,
   skSolve(sketch);
   const textFacesQ = qSketchRegion(ids.textSk, true);
   // EMBOSS: letters protrude outward (against normal); DEBOSS: letters cut inward (along normal)
-  const extrudeDir = (embossType == EmbossType.EMBOSS) ? sketchPlane.normal : sketchPlane.normal * -1;
-  opExtrude(context, ids.extrude, {
-    "entities":  textFacesQ,
-    "direction": extrudeDir,
-    "endBound":  BoundingType.BLIND,
-    "endDepth":  depth,
-  });
-  const textBodiesQ = qCreatedBy(ids.extrude, EntityType.BODY);
+  const extrudeDir = (embossType == EmbossType.EMBOSS) ? sketchPlane.normal * -1 : sketchPlane.normal;
+  opExtrude(context, ids.extrude, mergeMaps(options, {
+    "entities":   textFacesQ,
+    "direction":  extrudeDir,
+    "endBound":   BoundingType.BLIND,
+    "endDepth":   31.5*mm, // depth,
+    "startDepth": 29.5*mm,
+    "startBound": BoundingType.BLIND,
+    "isStartBoundOpposite": false,
+  }));
+  const textBodiesQ  = qCreatedBy(ids.extrude, EntityType.BODY);
+  const targetSolids = qBodyType(targets, BodyType.SOLID);
   if (embossType == EmbossType.EMBOSS) {
     opBoolean(context, ids.bool, {
-      "tools":          qUnion([textBodiesQ, qBodyType(targets, BodyType.SOLID)]),
+      "tools":          qUnion([targetSolids, textBodiesQ]),
       "operationType":  BooleanOperationType.UNION,
+      "keepTools":      false,
     });
   } else {
     opBoolean(context, ids.bool, {
       "tools":          textBodiesQ,
-      "targets":        qBodyType(targets, BodyType.SOLID),
+      "targets":        targetSolids,
       "operationType":  BooleanOperationType.SUBTRACTION,
+      "keepTools":      false,
     });
   }
 }
