@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "2571b2bfb92a4968d33a5860");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
 export import(path : "4989999bb256f6d486ab7381", version : "ffdb0ffe5f74177ae1ad0ca3");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
@@ -12,8 +12,8 @@ const tinySizeVal = 0.001;
 // Shorthand aliases used throughout for readability.
 const mm          = millimeter;
 const zero        = 0 * mm;
-const callout1Angle =  40 * degree;
-const callout2Angle = 140 * degree;
+const callout1Angle = 140 * degree;
+const callout2Angle =  40 * degree;
 const socketCellPadding = { left: 4*mm, top: 3*mm };
 
 // == [Socket Cell Cutter] ==
@@ -211,7 +211,7 @@ function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, param
 function drawSocketBaseShape(context is Context, id is Id, sketch is Sketch, socket is map, params is map) {
   const center = vector(params.nomBounds.ctrH, params.nomBounds.ctrV);
   // Nominal wrench-end circle (construction)
-  skCircle(sketch, "wrenchEndCircle", { "center": center, "radius": params.bodyDiam / 2, "construction": true,  });
+  skCircle(sketch, "ratchetEndCircle", { "center": center, "radius": params.bodyDiam / 2, "construction": true,  });
   // Cutout circle = wrench-end + insertion gap all around (real region)
   skCircle(sketch, "cutoutCircle",    { "center": center, "radius": params.cutoutRadius });
 }
@@ -403,31 +403,37 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const bboxMaxV = max(max(max(max( paddedRadius, calloutCbMaxV), fhcsCbMaxV), labelMaxV),
                        bodyRadius + socketCellPadding.top);
 
-  // Cell border = tight bounding box expanded by borderPadding on all sides
+  // Border = tight bounding box expanded by borderPadding on all sides
   const borderMinH = bboxMinH - opts.borderPadding;
   const borderMaxH = bboxMaxH + opts.borderPadding;
   const borderMinV = bboxMinV - opts.borderPadding;
   const borderMaxV = bboxMaxV + opts.borderPadding;
 
-  // Snap cell width and height up to nearest gridSize multiple
+  // Snap up to nearest gridSize multiple.
+  // Horizontal: center the extra space (split evenly left/right).
+  // Vertical: extra space grows upward only — bottom edge stays at borderMinV for a stable baseline.
   const rawWidth   = borderMaxH - borderMinH;
   const rawHeight  = borderMaxV - borderMinV;
   const cellWidth  = ceil(rawWidth  / opts.gridSize) * opts.gridSize;
   const cellHeight = ceil(rawHeight / opts.gridSize) * opts.gridSize;
+  const cellMinH   = borderMinH - (cellWidth  - rawWidth)  / 2;
+  const cellMaxH   = borderMaxH + (cellWidth  - rawWidth)  / 2;
+  const cellMinV   = borderMinV;
+  const cellMaxV   = borderMaxV + (cellHeight - rawHeight);
 
   return {
     "bodyDiam":      bodyDiam,
     "cutoutRadius":  cutoutRadius,
     "paddedRadius":  paddedRadius,
     "noseDiam":      noseDiam,
-    "driveEndDiam":  driveEndDiam,
+    "targetDiam":    targetDiam,
     "calloutText":   calloutText,
     "fhcsText":      fhcsText,
     "labelText":     labelText,
     "bboxMinH":      bboxMinH,   "bboxMaxH":   bboxMaxH,
     "bboxMinV":      bboxMinV,   "bboxMaxV":   bboxMaxV,
-    "borderMinH":    borderMinH, "borderMaxH": borderMaxH,
-    "borderMinV":    borderMinV, "borderMaxV": borderMaxV,
+    "cellMinH":      cellMinH,   "cellMaxH":   cellMaxH,
+    "cellMinV":      cellMinV,   "cellMaxV":   cellMaxV,
     "cellWidth":     cellWidth,  "cellHeight": cellHeight,
   };
 }
@@ -446,13 +452,13 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
  *   - @field basePlane {Plane} : Drawing plane; sketch origin is the coordinate origin.
  *   - @field layerHeight {ValueWithUnits} : Pocket depth = 2 × this.
  *   - @field holderDepth {ValueWithUnits} : Full cell body thickness.
- * @param basePoint {Vector} : Bottom-center of the cell border in `basePlane` local coords;
- *   the socket circle center is placed `|cs.borderMinV|` above this point.
+ * @param basePoint {Vector} : Bottom-center of the cell rectangle in `basePlane` local coords;
+ *   the socket circle center is placed `|cs.cellMinV|` above this point.
  */
 function socketCell(context is Context, id is Id, socket is map, opts is map, basePoint is Vector) returns map {
   const cs = socketCellSize(context, id + "sz", socket, opts);
   const cx = basePoint[0];
-  const cy = basePoint[1] - cs.borderMinV;
+  const cy = basePoint[1] - cs.cellMinV;
 
   const ids = { cutoutSk: id + "cutoutSk", decoSk: id + "decoSk", calloutSk1: id + "calloutSk1", calloutSk2: id + "calloutSk2", labelSk: id + "labelSk", plate: id + "plate", pocketTool: id + "pocketTool", pocketCut: id + "pocketCut" };
   const sketches = {
@@ -470,18 +476,18 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   const cutoutSkFacesQ = qCreatedBy(ids.cutoutSk, EntityType.FACE);
 
   // Decoration sketch — padded circle (construction), ratchet-end and nose circles (construction),
-  //   bbox (construction), border (solid)
+  //   bbox (construction), cell rectangle (solid — extruded into the holder body)
   skCircle(sketches.deco, "padded", {
     "center":       vector(cx, cy),
     "radius":       cs.paddedRadius,
     "construction": true,
   });
-  skCircle(sketches.deco, "driveEndCircle", {
+  skCircle(sketches.deco, "targetEndCircle", {
     "center":       vector(cx, cy),
-    "radius":       cs.driveEndDiam / 2,
+    "radius":       cs.targetDiam / 2,
     "construction": true,
   });
-  skPoint(sketches.deco, "driveEndDot", { "position":  vector(cx, cy + cs.driveEndDiam / 2) });
+  skPoint(sketches.deco, "targetEndDot", { "position":  vector(cx, cy + cs.targetDiam / 2) });
   skCircle(sketches.deco, "noseCircle", {
     "center":       vector(cx, cy),
     "radius":       cs.noseDiam / 2,
@@ -505,9 +511,9 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "secondCorner": vector(cx + cs.bboxMaxH, cy + cs.bboxMaxV),
     "construction": true,
   });
-  skRectangle(sketches.deco, "border", {
-    "firstCorner":  vector(cx + cs.borderMinH, cy + cs.borderMinV),
-    "secondCorner": vector(cx + cs.borderMaxH, cy + cs.borderMaxV),
+  skRectangle(sketches.deco, "cell", {
+    "firstCorner":  vector(cx + cs.cellMinH, cy + cs.cellMinV),
+    "secondCorner": vector(cx + cs.cellMaxH, cy + cs.cellMaxV),
   });
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
@@ -518,7 +524,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
       vector(0 * mm, cs.paddedRadius),
       opts.calloutHeight, mergeMaps(calloutChipOpts(opts), {
         "horizontalAlign":  HorizontalAlignment.CENTER,
-        "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
+        "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
   }
   skSolve(sketches.callout1);
@@ -529,7 +535,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
       vector(0 * mm, cs.paddedRadius),
       opts.calloutHeight, mergeMaps(calloutChipOpts(opts), {
         "horizontalAlign":  HorizontalAlignment.CENTER,
-        "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
+        "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
   }
   skSolve(sketches.callout2);
@@ -586,13 +592,13 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
   // debug(context, ["socketHolder", familyRef]);
   var cursorX = zero;
-  var cs = { borderMinH: 0*mm, cellWidth: 25*mm };
+  var cs = { cellMinH: 0*mm, cellWidth: 25*mm };
 
   for (var socketRecord in familyRef) {
     const sizingKey = socketRecord.sizing;
-    // Pre-measure: left border edge is at cursorX; socket center is |borderMinH| to its right.
+    // Pre-measure: left cell edge is at cursorX; socket center is |cellMinH| to its right.
     // basePoint x = socket center x; y = 0 (common bottom baseline for all cells).
-    const basePoint = vector(cursorX - cs.borderMinH, zero);
+    const basePoint = vector(cursorX - cs.cellMinH, zero);
     cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, basePoint);
     cursorX  = cursorX + cs.cellWidth;
   }
