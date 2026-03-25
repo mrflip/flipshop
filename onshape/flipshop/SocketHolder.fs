@@ -695,13 +695,13 @@ precondition {
   });
 
   if (definition.mergeCells) {
-    const allCellsQ = qCreatedBy(id, EntityType.BODY);
+    const allCellsQ = qCreatedBy(id, EntityType.BODY)->qBodyType(BodyType.SOLID);
     opBoolean(context, id + "merge", {
       "tools":          allCellsQ,
       "operationType":  BooleanOperationType.UNION,
     });
     setProperty(context, {
-      "entities":     qCreatedBy(id + "merge", EntityType.BODY),
+      "entities":     allCellsQ,
       "propertyType": PropertyType.NAME,
       "value":        familyTitle,
     });

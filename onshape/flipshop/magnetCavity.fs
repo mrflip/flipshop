@@ -10,18 +10,18 @@ const tinySizeVal = 0.001;
  * Part feature: rectangular magnet cavity array cut into target bodies.
  * Delegates all geometry to @see `magnetCavity`.
  * @param definition {{
- *   @field basePoint {Query} : Reference face/plane; origin becomes the base point of the cavity grid.
+ *   @field basePoint {Query} : Reference face/plane; its origin becomes the base point of the cavity grid.
  *   @field targetBodies {Query} : Solid bodies to cut cavities into.
  *   @field length {ValueWithUnits} : Magnet nominal length (H dimension). Default 60 mm.
  *   @field width {ValueWithUnits} : Magnet nominal width (V dimension). Default 10 mm.
  *   @field depth {ValueWithUnits} : Cavity insertion depth. Default 3 mm.
- *   @field insertion_gap {ValueWithUnits} : Per-dimension clearance added to each cavity. Default +0.15 mm.
- *   @field horizontal_reps {number} : Columns of cavities.
- *   @field vertical_reps {number} : Rows of cavities.
- *   @field horizontal_spacing {ValueWithUnits} : Edge-to-edge gap between adjacent columns. Default 1 mm.
- *   @field vertical_spacing {ValueWithUnits} : Edge-to-edge gap between adjacent rows. Default 1 mm.
- *   @field horizontal_shift {ValueWithUnits} : Shifts the base point rightward (+H) from the face origin. Default 0 mm.
- *   @field vertical_shift {ValueWithUnits} : Shifts the base point upward (+V) from the face origin. Default 0 mm.
+ *   @field [insertion_gap=0.15mm] {ValueWithUnits} : Per-dimension clearance added to each cavity.
+ *   @field [horizontal_reps=1] {number} : Columns of cavities.
+ *   @field [vertical_reps=1] {number} : Rows of cavities.
+ *   @field [horizontal_spacing=1mm] {ValueWithUnits} : Edge-to-edge gap between columns.
+ *   @field [vertical_spacing=1mm] {ValueWithUnits} : Edge-to-edge gap between rows.
+ *   @field [horizontal_shift=0] {ValueWithUnits} : Shifts the base point rightward (+H) from the face origin.
+ *   @field [vertical_shift=0] {ValueWithUnits} : Shifts the base point upward (+V) from the face origin.
  * }}
  */
 annotation { "Feature Type Name": "Magnet Cavity" }
@@ -68,7 +68,7 @@ precondition {
     "target_bodies":      definition.targetBodies,
     "length":             definition.length,
     "width":              definition.width,
-    "depth":             definition.depth,
+    "depth":              definition.depth,
     "insertion_gap":      definition.insertion_gap,
     "horizontal_reps":    definition.horizontal_reps,
     "vertical_reps":      definition.vertical_reps,
@@ -83,7 +83,7 @@ precondition {
 // == [Magnet Cavity Geometry] ==
 
 /**
- * Cuts a grid of rectangular magnet cavities into `options.target_bodies`.
+ * Grid of rectangular magnet cavities cut into `options.target_bodies`.
  * The base point lies at the center of the left edge of the cavity grid bounding box:
  * H = 0 is the left face of the leftmost column; V = 0 is vertically centered on the grid.
  * Cavities tile rightward; for odd `vertical_reps` the center row aligns with V = 0,
@@ -91,7 +91,7 @@ precondition {
  * @param context {Context} : Model context.
  * @param id {Id} : Feature id prefix.
  * @param basePoint {Query} : Reference face/plane; its origin and axes define the cavity coordinate frame.
- * @param options {map} :
+ * @param options {map} : keyword options
  *   - @field target_bodies {Query} : Bodies to subtract cavities from.
  *   - @field length {ValueWithUnits} : Magnet nominal length (H).
  *   - @field width {ValueWithUnits} : Magnet nominal width (V).
@@ -101,16 +101,22 @@ precondition {
  *   - @field vertical_reps {number} : Rows of cavities.
  *   - @field horizontal_spacing {ValueWithUnits} : Edge-to-edge gap between columns.
  *   - @field vertical_spacing {ValueWithUnits} : Edge-to-edge gap between rows.
- *   - @field horizontal_shift {ValueWithUnits} : Shifts the base point right (+H) from the face origin.
- *   - @field vertical_shift {ValueWithUnits} : Shifts the base point up (+V) from the face origin.
+ *   - @field horizontal_shift {ValueWithUnits} : Shifts base point right (+H) from the face origin.
+ *   - @field vertical_shift {ValueWithUnits} : Shifts base point up (+V) from the face origin.
  */
 function magnetCavity(context is Context, id is Id, basePoint is Query, options is map) {
-  const basePlane    = evPlane(context, { "face": basePoint });
-  const vAxis        = cross(basePlane.normal, basePlane.x);
-  const workOrigin   = basePlane.origin
-                     + options.horizontal_shift * basePlane.x
-                     + options.vertical_shift   * vAxis;
-  const workPlane    = plane(workOrigin, basePlane.normal, basePlane.x);
+  const ids = {
+    cavitySk:      id + "cavitySk",
+    cavityExtrude: id + "cavityExtrude",
+    boolSubtract:  id + "boolSubtract",
+  };
+
+  const basePlane  = evPlane(context, { "face": basePoint });
+  const vAxis      = cross(basePlane.normal, basePlane.x);
+  const workOrigin = basePlane.origin
+                   + options.horizontal_shift * basePlane.x
+                   + options.vertical_shift   * vAxis;
+  const workPlane  = plane(workOrigin, basePlane.normal, basePlane.x);
 
   // Cavity dimensions include the per-dimension insertion gap.
   const cavityLength = options.length + options.insertion_gap;
@@ -118,44 +124,41 @@ function magnetCavity(context is Context, id is Id, basePoint is Query, options 
   const strideH      = cavityLength + options.horizontal_spacing;
   const strideV      = cavityWidth  + options.vertical_spacing;
 
-  // V center of the first (bottom) row so that the grid is vertically centered on V = 0.
-  // Derivation: firstCtrV = -((vertical_reps - 1) * strideV) / 2
-  // For 1 rep → 0; for 2 reps → ±strideV/2; for 3 reps → -strideV, 0, +strideV.
+  // V center of the first (bottom) row, so the grid is vertically centered on V = 0.
+  // For 1 rep → 0; for 2 → ±strideV/2; for 3 → −strideV, 0, +strideV.
   const firstCtrV = -((options.vertical_reps - 1) * strideV) / 2;
 
   // Draw all cavity rectangles in a single sketch.
-  const sketchId = id + "cavitySk";
-  const sketch   = newSketchOnPlane(context, sketchId, { "sketchPlane": workPlane });
+  const sketch = newSketchOnPlane(context, ids.cavitySk, { "sketchPlane": workPlane });
   var cavIdx = 0;
   for (var iy = 0; iy < options.vertical_reps; iy += 1) {
     for (var ix = 0; ix < options.horizontal_reps; ix += 1) {
       const minH = ix * strideH;
       const maxH = minH + cavityLength;
       const ctrV = firstCtrV + iy * strideV;
-      const minV = ctrV - cavityWidth / 2;
-      const maxV = ctrV + cavityWidth / 2;
       skRectangle(sketch, "cav_" ~ cavIdx, {
-        "firstCorner":  vector(minH, minV),
-        "secondCorner": vector(maxH, maxV),
+        "firstCorner":  vector(minH, ctrV - cavityWidth / 2),
+        "secondCorner": vector(maxH, ctrV + cavityWidth / 2),
       });
       cavIdx += 1;
     }
   }
   skSolve(sketch);
+  const cavitySkFacesQ = qCreatedBy(ids.cavitySk, EntityType.FACE);
 
   // Extrude all cavities into the material (opposite the face normal).
-  const extrudeId = id + "cavityExtrude";
-  opExtrude(context, extrudeId, {
-    "entities":  qCreatedBy(sketchId, EntityType.FACE),
+  opExtrude(context, ids.cavityExtrude, {
+    "entities":  cavitySkFacesQ,
     "direction": -workPlane.normal,
     "endBound":  BoundingType.BLIND,
     "endDepth":  options.depth,
   });
+  const cavityExtrudeBodiesQ = qCreatedBy(ids.cavityExtrude, EntityType.BODY);
 
   // Subtract all cutter bodies from the target bodies.
-  opBoolean(context, id + "boolSubtract", {
+  opBoolean(context, ids.boolSubtract, {
     "targets":       options.target_bodies,
-    "tools":         qCreatedBy(extrudeId, EntityType.BODY),
+    "tools":         cavityExtrudeBodiesQ,
     "operationType": BooleanOperationType.SUBTRACTION,
   });
 }
