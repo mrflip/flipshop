@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "a94691844bf62160b9b52068");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "2571b2bfb92a4968d33a5860");
 export import(path : "4989999bb256f6d486ab7381", version : "ffdb0ffe5f74177ae1ad0ca3");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
@@ -12,6 +12,8 @@ const tinySizeVal = 0.001;
 // Shorthand aliases used throughout for readability.
 const mm          = millimeter;
 const zero        = 0 * mm;
+const callout1Angle =  40 * degree;
+const callout2Angle = 140 * degree;
 
 // == [Socket Cell Cutter] ==
 
@@ -222,7 +224,7 @@ function socketFamilyCellParams(context, definition is map) returns map {
   // Look up the specific socket by sizing
   const socketPath   = definition.socketPath;
   const socketFamily = getSocketFamilyRef(context, socketPath);
-  debug(context, [definition.socketPath]);
+  // debug(context, [definition.socketPath]);
   if (socketFamily == undefined) { throw regenError("Unknown socket family '" ~ socketPath); }
   const basePlane = evPlane(context, { "face":  definition.referencePlaneQ });
 
@@ -343,17 +345,17 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
 
   // Callout chips use targets.drives (chip 1 at 120°) and targets.fhcs_sz (chip 2 at 210°)
   const targets     = socket.targets;
-  const calloutText = (targets != undefined && targets.drives  != undefined) ? targets.drives  : "";
-  const fhcsText    = (targets != undefined && targets.fhcs_sz != undefined) ? targets.fhcs_sz : "";
+  const calloutText = ((targets != undefined) && (targets.drives  != undefined)) ? replace(targets.drives,  '(in|mm)$', '')  : "-";
+  const fhcsText    = ((targets != undefined) && (targets.fhcs_sz != undefined)) ? replace(targets.fhcs_sz, '(in|mm)$', '')  : "-";
   const labelText   = replace(socket.sizing, '(in|mm)$', '');
+  //   debug(context, ["socketCellSize", calloutText, fhcsText, labelText, socket, targets]);
 
-  debug(context, ["socketCellSize", calloutText, fhcsText, socket]);
 
   // Callout chip 1 at 120° (60° above left horizon)
   var calloutCbMinH = zero; var calloutCbMaxH = zero; var calloutCbMinV = zero; var calloutCbMaxV = zero;
   if (calloutText != "") {
-    const calloutTc = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight });
-    const calloutCb = calloutChipBounds(calloutTc, paddedRadius, 120 * degree);
+    const calloutTc = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight, fontName: FontName.BEBAS_NEUE });
+    const calloutCb = calloutChipBounds(calloutTc, paddedRadius, callout1Angle);
     calloutCbMinH = calloutCb.minH;
     calloutCbMaxH = calloutCb.maxH;
     calloutCbMinV = calloutCb.minV;
@@ -362,8 +364,8 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   // Callout chip 2 at 210° (30° below left horizon)
   var fhcsCbMinH = zero; var fhcsCbMaxH = zero; var fhcsCbMinV = zero; var fhcsCbMaxV = zero;
   if (fhcsText != "") {
-    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, { "baselineHeight":  opts.calloutHeight });
-    const fhcsCb = calloutChipBounds(fhcsTc, paddedRadius, 210 * degree);
+    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, { "baselineHeight":  opts.calloutHeight, fontName: FontName.BEBAS_NEUE });
+    const fhcsCb = calloutChipBounds(fhcsTc, paddedRadius, callout2Angle);
     fhcsCbMinH = fhcsCb.minH;
     fhcsCbMaxH = fhcsCb.maxH;
     fhcsCbMinV = fhcsCb.minV;
@@ -439,8 +441,8 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
     cutout:   newSketchOnPlane(context, ids.cutoutSk,  { "sketchPlane":  opts.basePlane }),
     deco:     newSketchOnPlane(context, ids.decoSk,    { "sketchPlane":  opts.basePlane }),
     // Rotated callout sketches: V axis points radially outward, so text at (0, paddedRadius) is tangent to padded circle
-    callout1: rotatedSketchAt(context, ids.calloutSk1, opts.basePlane, vector(cx, cy), 120 * degree - 90 * degree),
-    callout2: rotatedSketchAt(context, ids.calloutSk2, opts.basePlane, vector(cx, cy), 210 * degree - 90 * degree),
+    callout1: rotatedSketchAt(context, ids.calloutSk1, opts.basePlane, vector(cx, cy), callout1Angle - 90 * degree),
+    callout2: rotatedSketchAt(context, ids.calloutSk2, opts.basePlane, vector(cx, cy), callout2Angle - 90 * degree),
     label:    newSketchOnPlane(context, ids.labelSk,   { "sketchPlane":  opts.basePlane }),
   };
 
@@ -487,6 +489,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
       opts.calloutHeight, {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
+        "fontName":         FontName.BEBAS_NEUE,
       });
   }
   skSolve(sketches.callout1);
@@ -498,6 +501,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
       opts.calloutHeight, {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
+        "fontName":         FontName.BEBAS_NEUE,
       });
   }
   skSolve(sketches.callout2);
@@ -506,8 +510,8 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
     vector(cx, cy - cs.paddedRadius),
     opts.labelHeight, {
-      "horizontalAlign":  HorizontalAlignment.CENTER,
-      "verticalAlign":    VerticalAlignment.TOP_EXTENT,
+      "horizontalAlign":    HorizontalAlignment.CENTER,
+      "verticalAlign":      VerticalAlignment.TOP_EXTENT,
     });
   skSolve(sketches.label);
 
@@ -552,13 +556,12 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
  * @param opts {map} : Options for @see `socketCell`.
  */
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
-  debug(context, ["socketHolder", familyRef]);
+  // debug(context, ["socketHolder", familyRef]);
   var cursorX = zero;
   var cs = { borderMinH: 0*mm, cellWidth: 25*mm };
 
   for (var socketRecord in familyRef) {
     const sizingKey = socketRecord.sizing;
-    debug(context, ["socketHolder", sizingKey]);
     // Pre-measure so we can position the circle center: left border edge is at cursorX,
     // and the circle is at -cs.borderMinH to the right of the left edge.
     const center = vector(cursorX - cs.borderMinH, zero);
@@ -622,7 +625,7 @@ precondition {
   const basePlane = evPlane(context, { "face":  definition.referencePlaneQ });
   // a map sizing key to socket -- eg `{ "7/16": {...}, "1/2": { ... } ... }`
   const familyRef   = getSocketFamilyRef(context, definition.familyPath);
-  debug(context, ["socketHolderPart", familyRef], DebugColor.MAGENTA);
+  // debug(context, ["socketHolderPart", familyRef], DebugColor.MAGENTA);
   if (familyRef == undefined) { throw regenError("Unknown socket family"); }
 
   socketHolder(context, id, familyRef, {
