@@ -1,7 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
-export import(path : "4989999bb256f6d486ab7381", version : "96386dfa6df6e97b66ddbeab");
+export import(path : "4989999bb256f6d486ab7381", version : "fd5ff5e3245fee3b70aab636");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -323,6 +323,19 @@ function rotatedSketchAt(context is Context, id is Id, basePlane is Plane, cente
 }
 
 /**
+ * Plane on `basePlane` with origin translated to `center` (2-D local coords) and X axis
+ * rotated by `angle`. Mirrors the geometry that @see `rotatedSketchAt` creates.
+ */
+function rotatedPlaneAt(basePlane is Plane, center is Vector, angle is ValueWithUnits) returns Plane {
+  const yAxis = cross(basePlane.normal, basePlane.x);
+  return plane(
+    basePlane.origin + center[0] * basePlane.x + center[1] * yAxis,
+    basePlane.normal,
+    cos(angle) * basePlane.x + sin(angle) * yAxis
+  );
+}
+
+/**
  * Shared text options for callout chips: font and baseline height.
  * Pass directly to @see `textBounds`; merge with alignment options for @see `skTextAt`.
  * @param opts {map} : Socket cell opts; uses `calloutHeight`.
@@ -549,19 +562,19 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   });
   skSolve(sketches.label);
 
-  // Extrude cell body from border rectangle face
+  // Extrude cell body downward from the top sketch plane
   opExtrude(context, ids.plate, {
     "entities":  decoSkFacesQ,
-    "direction": opts.basePlane.normal,
+    "direction": opts.basePlane.normal * -1,
     "endBound":  BoundingType.BLIND,
     "endDepth":  opts.holderDepth,
   });
 
-  // Extrude pocket tool from cutout circle, then subtract from cell body.
-  // Layers 1 and 2 (from bottom) are solid; cutout starts at the top of layer 2.
+  // Extrude pocket tool from cutout circle downward; socket is inserted from the top.
+  // Bottom 2 layers remain solid; pocket starts at the top face.
   opExtrude(context, ids.pocketTool, {
     "entities":  cutoutSkFacesQ,
-    "direction": opts.basePlane.normal,
+    "direction": opts.basePlane.normal * -1,
     "endBound":  BoundingType.BLIND,
     "endDepth":  opts.holderDepth - 2 * opts.layerHeight,
   });
@@ -578,16 +591,108 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "value":        socket.title,
   });
 
-  // Deboss sizing label into the top face of the cell body
+  // Deboss text into the top face of the cell body
   const debossDepth = min(2 * mm, 0.8 * opts.layerHeight);
   embossText(context, id + "labelDeboss",
     opts.basePlane, vector(cx, cy - cs.paddedRadius), plateBodiesQ,
-    cs.labelText, EmbossType.DEBOSS, opts.labelHeight, debossDepth, {
+    cs.labelText, EmbossType.DEBOSS, opts.labelHeight, {
+      "endDepth":         debossDepth,
       "horizontalAlign":  HorizontalAlignment.CENTER,
       "verticalAlign":    VerticalAlignment.TOP_EXTENT,
     });
+  if (cs.calloutText != "") {
+    embossText(context, id + "callout1Deboss",
+      rotatedPlaneAt(opts.basePlane, vector(cx, cy), callout1Angle - 90 * degree),
+      vector(0 * mm, cs.paddedRadius), plateBodiesQ,
+      cs.calloutText, EmbossType.DEBOSS, opts.calloutHeight,
+      mergeMaps(calloutChipOpts(opts), {
+        "endDepth":         debossDepth,
+        "horizontalAlign":  HorizontalAlignment.CENTER,
+        "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
+      }));
+  }
+  if (cs.fhcsText != "") {
+    embossText(context, id + "callout2Deboss",
+      rotatedPlaneAt(opts.basePlane, vector(cx, cy), callout2Angle - 90 * degree),
+      vector(0 * mm, cs.paddedRadius), plateBodiesQ,
+      cs.fhcsText, EmbossType.DEBOSS, opts.calloutHeight,
+      mergeMaps(calloutChipOpts(opts), {
+        "endDepth":         debossDepth,
+        "horizontalAlign":  HorizontalAlignment.CENTER,
+        "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
+      }));
+  }
 
   return cs;
+}
+// --
+
+// == [Hole Carrier] ==
+
+/**
+ * Thin tab overlapping the right edge of the last cell, bored with two through-holes.
+ * The carrier is `tabW` wide, positioned so its right edge aligns with `rightEdgeX`,
+ * overlapping the last cell by the full carrier width.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Unique id prefix.
+ * @param opts {map} : Must contain `basePlane` and `holderDepth`.
+ * @param rightEdgeX {ValueWithUnits} : X coordinate of the last cell's right edge.
+ * @param cellHeight {ValueWithUnits} : Height of the carrier (matches last cell height).
+ * @param carrierOpts {map} :
+ *   - @field tapholeDiam {ValueWithUnits} : Diameter of the through-holes to bore.
+ *   - @field headDiam {ValueWithUnits} : Diameter of the screw-head marking circles.
+ */
+function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is ValueWithUnits, cellHeight is ValueWithUnits, carrierOpts is map) {
+  const tabW    = 5 * mm;
+  const tabLeft = rightEdgeX - tabW;
+  const tabH    = cellHeight;
+  const ids = {
+    "carrierSk":   id + "carrierSk",
+    "headMarksSk": id + "headMarksSk",
+    "tapSk":       id + "tapSk",
+    "plate":       id + "plate",
+    "holeTool":    id + "holeTool",
+    "holeCut":     id + "holeCut",
+  };
+
+  // Carrier plate rectangle, extruded downward
+  const carrierSk = newSketchOnPlane(context, ids.carrierSk, { "sketchPlane":  opts.basePlane });
+  skRectangle(carrierSk, "carrier", {
+    "firstCorner":  vector(tabLeft,    zero),
+    "secondCorner": vector(rightEdgeX, tabH),
+  });
+  skSolve(carrierSk);
+  opExtrude(context, ids.plate, {
+    "entities":  qCreatedBy(ids.carrierSk, EntityType.FACE),
+    "direction": opts.basePlane.normal * -1,
+    "endBound":  BoundingType.BLIND,
+    "endDepth":  opts.holderDepth,
+  });
+
+  const holeCtrX = tabLeft + tabW / 2;
+
+  // Head mark circles (non-construction) for laser-cutter reference
+  const headMarksSk = newSketchOnPlane(context, ids.headMarksSk, { "sketchPlane":  opts.basePlane });
+  skCircle(headMarksSk, "head1", { "center":  vector(holeCtrX, tabH * 0.15), "radius":  carrierOpts.headDiam / 2 });
+  skCircle(headMarksSk, "head2", { "center":  vector(holeCtrX, tabH * 0.85), "radius":  carrierOpts.headDiam / 2 });
+  skSolve(headMarksSk);
+
+  // Taphole circles in a separate sketch — only these are extruded and subtracted
+  const tapSk = newSketchOnPlane(context, ids.tapSk, { "sketchPlane":  opts.basePlane });
+  skCircle(tapSk, "tap1", { "center":  vector(holeCtrX, tabH * 0.15), "radius":  carrierOpts.tapholeDiam / 2 });
+  skCircle(tapSk, "tap2", { "center":  vector(holeCtrX, tabH * 0.85), "radius":  carrierOpts.tapholeDiam / 2 });
+  skSolve(tapSk);
+  opExtrude(context, ids.holeTool, {
+    "entities":  qCreatedBy(ids.tapSk, EntityType.FACE),
+    "direction": opts.basePlane.normal * -1,
+    "endBound":  BoundingType.BLIND,
+    "endDepth":  opts.holderDepth,
+  });
+  opBoolean(context, ids.holeCut, {
+    "tools":          qCreatedBy(ids.holeTool, EntityType.BODY),
+    "targets":        qCreatedBy(ids.plate,    EntityType.BODY),
+    "operationType":  BooleanOperationType.SUBTRACTION,
+  });
 }
 // --
 
@@ -617,45 +722,10 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
     lastCs = cs;
   }
 
-  // End tab: 5 mm wide, same height as last cell, with two 2.6 mm screw holes
   if (lastCs != undefined) {
-    const tabW = 5 * mm;
-    const tabH = lastCs.cellHeight;
-    const tabIds = {
-      "tabSk":        id + "tabSk",
-      "tabHolesSk":   id + "tabHolesSk",
-      "tabPlate":     id + "tabPlate",
-      "tabHoleTool":  id + "tabHoleTool",
-      "tabHoleCut":   id + "tabHoleCut",
-    };
-    const tabSk = newSketchOnPlane(context, tabIds.tabSk, { "sketchPlane":  opts.basePlane });
-    skRectangle(tabSk, "tab", {
-      "firstCorner":  vector(cursorX,        zero),
-      "secondCorner": vector(cursorX + tabW, tabH),
-    });
-    skSolve(tabSk);
-    opExtrude(context, tabIds.tabPlate, {
-      "entities":  qCreatedBy(tabIds.tabSk, EntityType.FACE),
-      "direction": opts.basePlane.normal,
-      "endBound":  BoundingType.BLIND,
-      "endDepth":  opts.holderDepth,
-    });
-
-    const holeCtrX = cursorX + tabW / 2;
-    const tabHolesSk = newSketchOnPlane(context, tabIds.tabHolesSk, { "sketchPlane":  opts.basePlane });
-    skCircle(tabHolesSk, "hole1", { "center":  vector(holeCtrX, tabH * 0.15), "radius":  1.3 * mm });
-    skCircle(tabHolesSk, "hole2", { "center":  vector(holeCtrX, tabH * 0.85), "radius":  1.3 * mm });
-    skSolve(tabHolesSk);
-    opExtrude(context, tabIds.tabHoleTool, {
-      "entities":  qCreatedBy(tabIds.tabHolesSk, EntityType.FACE),
-      "direction": opts.basePlane.normal,
-      "endBound":  BoundingType.BLIND,
-      "endDepth":  opts.holderDepth,
-    });
-    opBoolean(context, tabIds.tabHoleCut, {
-      "tools":          qCreatedBy(tabIds.tabHoleTool, EntityType.BODY),
-      "targets":        qCreatedBy(tabIds.tabPlate,    EntityType.BODY),
-      "operationType":  BooleanOperationType.SUBTRACTION,
+    holeCarrier(context, id + "hc", opts, cursorX, lastCs.cellHeight, {
+      "tapholeDiam":  2.6 * mm,
+      "headDiam":     5.0 * mm,
     });
   }
 
@@ -666,7 +736,7 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
       "operationType":  BooleanOperationType.UNION,
     });
     setProperty(context, {
-      "entities":     allCellsQ,
+      "entities":     qCreatedBy(id + "merge", EntityType.BODY),
       "propertyType": PropertyType.NAME,
       "value":        opts.familyTitle,
     });

@@ -515,37 +515,33 @@ export enum EmbossType {
  * DEBOSS carves letters into `sketchPlane` (extrudes against normal, subtracts from targets).
  * @param context {Context} : Model context.
  * @param id {Id} : Base feature id.
- * @param sketchPlane {Plane} : Plane on which text is sketched; normal points into the material.
+ * @param sketchPlane {Plane} : Plane on which text is sketched; normal points outward from material surface.
  * @param position {Vector} : Anchor point in sketch-plane local coords.
  * @param targets {Query} : Solid bodies to boolean with.
  * @param text {string} : Text to emboss/deboss.
  * @param embossType {EmbossType} : EMBOSS or DEBOSS.
  * @param textHeight {ValueWithUnits} : Cap height.
- * @param depth {ValueWithUnits} : Extrusion depth (positive).
- * @param options {map} : keyword options for @see `skTextAt`
+ * @param options {map} : keyword options for @see `skTextAt`, plus:
+ *   - @field endDepth {ValueWithUnits} : Extrusion depth (positive, required).
  *   - @field [fontName=FontName.OPEN_SANS_REGULAR] {FontName} : Font filename.
  *   - @field [horizontalAlign=HorizontalAlignment.CENTER] {HorizontalAlignment}
  *   - @field [verticalAlign=VerticalAlignment.BOTTOM_BASELINE] {VerticalAlignment}
  */
 export function embossText(context is Context, id is Id, sketchPlane is Plane,
   position is Vector, targets is Query, text is string, embossType is EmbossType,
-  textHeight is ValueWithUnits, depth is ValueWithUnits, options is map) {
+  textHeight is ValueWithUnits, options is map) {
   const ids = { "textSk":  id + "textSk",  "extrude": id + "extrude", "bool": id + "bool" };
   const sketch = newSketchOnPlane(context, ids.textSk, { "sketchPlane":  sketchPlane });
   skTextAt(context, id + "meas", "text", sketch, text, position, textHeight, options);
   skSolve(sketch);
   const textFacesQ = qSketchRegion(ids.textSk, true);
-  // EMBOSS: letters protrude outward (against normal); DEBOSS: letters cut inward (along normal)
-  const extrudeDir = (embossType == EmbossType.EMBOSS) ? sketchPlane.normal * -1 : sketchPlane.normal;
-  opExtrude(context, ids.extrude, mergeMaps(options, {
-    "entities":   textFacesQ,
-    "direction":  extrudeDir,
-    "endBound":   BoundingType.BLIND,
-    "endDepth":   31.5*mm, // depth,
-    "startDepth": 29.5*mm,
-    "startBound": BoundingType.BLIND,
-    "isStartBoundOpposite": false,
-  }));
+  // EMBOSS: letters protrude along normal; DEBOSS: letters cut against normal (into material)
+  const extrudeDir = (embossType == EmbossType.EMBOSS) ? sketchPlane.normal : sketchPlane.normal * -1;
+  opExtrude(context, ids.extrude, mergeMaps({
+    "entities":  textFacesQ,
+    "direction": extrudeDir,
+    "endBound":  BoundingType.BLIND,
+  }, options));
   const textBodiesQ  = qCreatedBy(ids.extrude, EntityType.BODY);
   const targetSolids = qBodyType(targets, BodyType.SOLID);
   if (embossType == EmbossType.EMBOSS) {
