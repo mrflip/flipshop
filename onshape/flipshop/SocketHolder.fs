@@ -452,12 +452,12 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
  *   - @field basePlane {Plane} : Drawing plane; sketch origin is the coordinate origin.
  *   - @field layerHeight {ValueWithUnits} : Pocket depth = 2 × this.
  *   - @field holderDepth {ValueWithUnits} : Full cell body thickness.
- * @param basePoint {Vector} : Bottom-center of the cell rectangle in `basePlane` local coords;
- *   the socket circle center is placed `|cs.cellMinV|` above this point.
+ * @param basePoint {Vector} : Bottom-left corner of the cell rectangle in `basePlane` local coords.
+ *   The socket center is at `(-cs.cellMinH, -cs.cellMinV)` relative to this point.
  */
 function socketCell(context is Context, id is Id, socket is map, opts is map, basePoint is Vector) returns map {
   const cs = socketCellSize(context, id + "sz", socket, opts);
-  const cx = basePoint[0];
+  const cx = basePoint[0] - cs.cellMinH;
   const cy = basePoint[1] - cs.cellMinV;
 
   const ids = { cutoutSk: id + "cutoutSk", decoSk: id + "decoSk", calloutSk1: id + "calloutSk1", calloutSk2: id + "calloutSk2", labelSk: id + "labelSk", plate: id + "plate", pocketTool: id + "pocketTool", pocketCut: id + "pocketCut" };
@@ -592,14 +592,12 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
   // debug(context, ["socketHolder", familyRef]);
   var cursorX = zero;
-  var cs = { cellMinH: 0*mm, cellWidth: 25*mm };
 
   for (var socketRecord in familyRef) {
     const sizingKey = socketRecord.sizing;
-    // Pre-measure: left cell edge is at cursorX; socket center is |cellMinH| to its right.
-    // basePoint x = socket center x; y = 0 (common bottom baseline for all cells).
-    const basePoint = vector(cursorX - cs.cellMinH, zero);
-    cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, basePoint);
+    // basePoint is the bottom-left corner of the cell rectangle; cells tile left-to-right.
+    const basePoint = vector(cursorX, zero);
+    const cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, basePoint);
     cursorX  = cursorX + cs.cellWidth;
   }
 }
