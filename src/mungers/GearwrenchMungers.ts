@@ -74,15 +74,15 @@ export const fieldname_remap = {
   "Overall Width":      'wx_overall',
   "Overall Height":     'wy_overall',
   //
-  "Wrench Depth":       'wrench_dp',
-  "Bolt Depth":         'wrench_dp',
+  "Wrench Depth":       'target_dp',
+  "Bolt Depth":         'target_dp',
   "Bit Length":         'bit_ln',
   "Exposed Bit Length": 'bit_ln_exposed',
   "Nose Diameter":      'nose_diam',
-  "Drive End":          'drive_end_diam',
+  "Drive End":          'ratchet_end_diam',
   "Bolt Clearance":     'bolt_clr_diam',
   "Length to Shoulder": 'shoulder_ln',
-  "Wrench End":         'wrench_end_diam',
+  "Wrench End":         'target_end_diam',
   "Drive End Hex Across Flats": 'drive_end_hex_af', // data is inconsistent
   //
   "Male Drive Size":    'male_drive_size',
@@ -219,7 +219,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   if (result.socket_kind === 'socket_exthex' && /\bUniversal\b/i.test(gwtitle))   { result.reach_kind = 'uj_' + result.reach_kind as FE.SocketReach }
   if (specifications['Type'] === 'Socket Extension') { result.reach_kind = 'uj_ext' }
   result.socket_variant = 'std'
-  if (/impact/i.test(gwtitle))                              { result.socket_variant = 'impact' }
+  if (/impact/i.test(gwtitle))                            { result.socket_variant = 'impact' }
   if (/ball/i.test(specifications['Drive Type'] ?? 'xx')) { result.socket_variant = 'ball' }
   delete result.drive_end_hex_af
   if (result.bit_ln_exposed) {
@@ -229,7 +229,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   }
   if (/slotted/.test(result.bit_kind!)) { result.drive_kind = 'slotted'; result.sizing = result.sizing.replace(/^(?:Sl)?#?(\d+)(mm)?/, 'Sl$1') }
   if (result.bit_kind && (result.bit_kind !== result.drive_kind)) { console.warn(`Bit kind mismatch: ${result.bit_kind} !== ${result.drive_kind}`, result) }
-  if (result.wrench_end_diam === 1024.89) { result.wrench_end_diam = 102.489 } // assuming this is a typo for 4.035 in (102.489 mm)
+  if (result.target_end_diam === 1024.89) { result.target_end_diam = 102.489 } // assuming this is a typo for 4.035 in (102.489 mm)
   if (result.drive_kind === 'extstar')  { result.socket_kind = 'socket_extstar'; result.unit_system = 'metric' }
   if (result.drive_kind === 'phillips') { result.sizing = result.sizing.replace(/^(Ph)?#?/, 'Ph') }
   if (result.drive_kind === 'pozidriv') { result.sizing = result.sizing.replace(/^(Pz)?#?/, 'Pz') }
@@ -252,8 +252,8 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   _.each(_.pick(result, _.keys(Enumish)), (val, key) => { const seen = Enumish[key]; if (! seen.includes(val)) { seen.push(val) }  })
 
   // if (! (result.ln_overall && result.wy_overall && result.wx_overall)) { console.warn(`No overall length`, UF.prettify(result)); result.ln_overall ??= 1; result.wy_overall ??= 1; result.wx_overall ??= 1; }
-  const overall_wx = result.wx_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
-  const overall_wy = result.wy_overall ?? _.max([result.wrench_end_diam, result.drive_end_diam])
+  const overall_wx = result.wx_overall ?? _.max([result.target_end_diam, result.ratchet_end_diam])
+  const overall_wy = result.wy_overall ?? _.max([result.target_end_diam, result.ratchet_end_diam])
   if (overall_wx) { result.wx_overall = overall_wx } if (overall_wy) { result.wy_overall = overall_wy }
   // if (specifications['Type'] === 'Socket Extension') { console.warn('\nSocket Extension\n', gwtitle, specifications, result) }
 

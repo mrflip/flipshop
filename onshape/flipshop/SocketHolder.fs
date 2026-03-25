@@ -14,6 +14,7 @@ const mm          = millimeter;
 const zero        = 0 * mm;
 const callout1Angle =  40 * degree;
 const callout2Angle = 140 * degree;
+const socketCellPadding = { left: 4*mm, top: 3*mm };
 
 // == [Socket Cell Cutter] ==
 
@@ -248,7 +249,7 @@ function socketCellParams(context, definition is map) returns map {
   const socketParams = socketFamilyCellParams(context, definition);
 
   const socket       = getSocketRef(context, socketParams.socketPath);
-  const bodyDiam     = (socket.wrench_end_diam != undefined) ? socket.wrench_end_diam : socket.wx_overall;
+  const bodyDiam     = (socket.ratchet_end_diam != undefined) ? socket.ratchet_end_diam : socket.wx_overall;
   const cutoutRadius = bodyDiam / 2 + socketParams.insertionGap;
   const cutoutDepth  = 2 * socketParams.layerHeight;
 
@@ -322,6 +323,18 @@ function rotatedSketchAt(context is Context, id is Id, basePlane is Plane, cente
 }
 
 /**
+ * Shared text options for callout chips: font and baseline height.
+ * Pass directly to @see `textBounds`; merge with alignment options for @see `skTextAt`.
+ * @param opts {map} : Socket cell opts; uses `calloutHeight`.
+ */
+function calloutChipOpts(opts is map) returns map {
+  return {
+    "baselineHeight":  opts.calloutHeight,
+    "fontName":        FontName.BEBAS_NEUE,
+  };
+}
+
+/**
  * Geometry record for a single socket cell: radii, text extents, bounding boxes, grid-snapped dimensions.
  * @param context {Context} : Model context.
  * @param id {Id} : Id prefix for temporary text-measurement operations.
@@ -335,13 +348,14 @@ function rotatedSketchAt(context is Context, id is Id, basePlane is Plane, cente
  *   - @field labelHeight {ValueWithUnits} : Cap height of the label chip text.
  */
 function socketCellSize(context is Context, id is Id, socket is map, opts is map) returns map {
-  const bodyDiam     = (socket.wrench_end_diam != undefined) ? socket.wrench_end_diam : socket.wx_overall;
-  const cutoutRadius = bodyDiam / 2 + opts.insertionGap;
+  const bodyDiam     = (socket.ratchet_end_diam != undefined) ? socket.ratchet_end_diam : socket.wx_overall;
+  const bodyRadius   = bodyDiam / 2;
+  const cutoutRadius = bodyRadius + opts.insertionGap;
   const paddedRadius = cutoutRadius + opts.cutoutPadding;
 
-  // Nose and drive-end diameters, falling back to body diameter when absent
-  const noseDiam     = (socket.nose_diam      != undefined) ? socket.nose_diam      : bodyDiam;
-  const driveEndDiam = (socket.drive_end_diam != undefined) ? socket.drive_end_diam : bodyDiam;
+  // Nose and target-end diameters, falling back to body diameter when absent
+  const noseDiam      = (socket.nose_diam      != undefined) ? socket.nose_diam      : bodyDiam;
+  const targetDiam    = (socket.target_end_diam != undefined) ? socket.target_end_diam : bodyDiam;
 
   // Callout chips use targets.drives (chip 1 at 120°) and targets.fhcs_sz (chip 2 at 210°)
   const targets     = socket.targets;
@@ -354,7 +368,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   // Callout chip 1 at 120° (60° above left horizon)
   var calloutCbMinH = zero; var calloutCbMaxH = zero; var calloutCbMinV = zero; var calloutCbMaxV = zero;
   if (calloutText != "") {
-    const calloutTc = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight, fontName: FontName.BEBAS_NEUE });
+    const calloutTc = textBounds(context, id + "calloutTC", calloutText, calloutChipOpts(opts));
     const calloutCb = calloutChipBounds(calloutTc, paddedRadius, callout1Angle);
     calloutCbMinH = calloutCb.minH;
     calloutCbMaxH = calloutCb.maxH;
@@ -364,7 +378,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   // Callout chip 2 at 210° (30° below left horizon)
   var fhcsCbMinH = zero; var fhcsCbMaxH = zero; var fhcsCbMinV = zero; var fhcsCbMaxV = zero;
   if (fhcsText != "") {
-    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, { "baselineHeight":  opts.calloutHeight, fontName: FontName.BEBAS_NEUE });
+    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, calloutChipOpts(opts));
     const fhcsCb = calloutChipBounds(fhcsTc, paddedRadius, callout2Angle);
     fhcsCbMinH = fhcsCb.minH;
     fhcsCbMaxH = fhcsCb.maxH;
@@ -380,11 +394,14 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const labelMinV  = -paddedRadius - labelTc.actualHeight;
   const labelMaxV  = -paddedRadius;
 
-  // Tight bounding box over padded circle + callout chips + label chip
-  const bboxMinH = min(min(min(-paddedRadius, calloutCbMinH), fhcsCbMinH), labelMinH);
+  // Tight bounding box over padded circle + callout chips + label chip +
+  //   socketCellPadding sentinel extents (body circle + its padding lines)
+  const bboxMinH = min(min(min(min(-paddedRadius, calloutCbMinH), fhcsCbMinH), labelMinH),
+                       -(bodyRadius + socketCellPadding.left));
   const bboxMaxH = max(max(max( paddedRadius, calloutCbMaxH), fhcsCbMaxH), labelMaxH);
   const bboxMinV = min(min(min(-paddedRadius, calloutCbMinV), fhcsCbMinV), labelMinV);
-  const bboxMaxV = max(max(max( paddedRadius, calloutCbMaxV), fhcsCbMaxV), labelMaxV);
+  const bboxMaxV = max(max(max(max( paddedRadius, calloutCbMaxV), fhcsCbMaxV), labelMaxV),
+                       bodyRadius + socketCellPadding.top);
 
   // Cell border = tight bounding box expanded by borderPadding on all sides
   const borderMinH = bboxMinH - opts.borderPadding;
@@ -419,8 +436,8 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
 // == [Socket Cell] ==
 
 /**
- * Single holder cell for `socket`, centered at `center` on `opts.basePlane`.
- * Creates four sketches (cutout, decoration, callout, label), extrudes a solid cell body,
+ * Single holder cell for `socket` on `opts.basePlane`, bottom-aligned to `basePoint`.
+ * Creates five sketches (cutout, decoration, callout×2, label), extrudes a solid cell body,
  * and cuts a pocket for the socket. Returns the geometry from @see `socketCellSize`.
  * @param context {Context} : Model context.
  * @param id {Id} : Unique id prefix for all sketch and extrude operations.
@@ -429,12 +446,13 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
  *   - @field basePlane {Plane} : Drawing plane; sketch origin is the coordinate origin.
  *   - @field layerHeight {ValueWithUnits} : Pocket depth = 2 × this.
  *   - @field holderDepth {ValueWithUnits} : Full cell body thickness.
- * @param center {Vector} : 2-D sketch-plane coordinate of the socket circle center.
+ * @param basePoint {Vector} : Bottom-center of the cell border in `basePlane` local coords;
+ *   the socket circle center is placed `|cs.borderMinV|` above this point.
  */
-function socketCell(context is Context, id is Id, socket is map, opts is map, center is Vector) returns map {
+function socketCell(context is Context, id is Id, socket is map, opts is map, basePoint is Vector) returns map {
   const cs = socketCellSize(context, id + "sz", socket, opts);
-  const cx = center[0];
-  const cy = center[1];
+  const cx = basePoint[0];
+  const cy = basePoint[1] - cs.borderMinV;
 
   const ids = { cutoutSk: id + "cutoutSk", decoSk: id + "decoSk", calloutSk1: id + "calloutSk1", calloutSk2: id + "calloutSk2", labelSk: id + "labelSk", plate: id + "plate", pocketTool: id + "pocketTool", pocketCut: id + "pocketCut" };
   const sketches = {
@@ -451,7 +469,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   skSolve(sketches.cutout);
   const cutoutSkFacesQ = qCreatedBy(ids.cutoutSk, EntityType.FACE);
 
-  // Decoration sketch — padded circle (construction), drive-end and nose circles (construction),
+  // Decoration sketch — padded circle (construction), ratchet-end and nose circles (construction),
   //   bbox (construction), border (solid)
   skCircle(sketches.deco, "padded", {
     "center":       vector(cx, cy),
@@ -470,6 +488,18 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
     "construction": true,
   });
   skPoint(sketches.deco, "noseDot", { "position":  vector(cx, cy - cs.noseDiam / 2) });
+  // socketCellPadding indicators: construction lines at 9 o'clock and 12 o'clock on the body circle
+  const bodyRadius = cs.bodyDiam / 2;
+  skLineSegment(sketches.deco, "padLeft", {
+    "start":        vector(cx - bodyRadius,                              cy),
+    "end":          vector(cx - bodyRadius - socketCellPadding.left,    cy),
+    "construction": true,
+  });
+  skLineSegment(sketches.deco, "padTop", {
+    "start":        vector(cx, cy + bodyRadius),
+    "end":          vector(cx, cy + bodyRadius + socketCellPadding.top),
+    "construction": true,
+  });
   skRectangle(sketches.deco, "bbox", {
     "firstCorner":  vector(cx + cs.bboxMinH, cy + cs.bboxMinV),
     "secondCorner": vector(cx + cs.bboxMaxH, cy + cs.bboxMaxV),
@@ -486,11 +516,10 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   if (cs.calloutText != "") {
     skTextAt(context, id + "calloutTxt1", "callout1", sketches.callout1, cs.calloutText,
       vector(0 * mm, cs.paddedRadius),
-      opts.calloutHeight, {
+      opts.calloutHeight, mergeMaps(calloutChipOpts(opts), {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
-        "fontName":         FontName.BEBAS_NEUE,
-      });
+      }));
   }
   skSolve(sketches.callout1);
 
@@ -498,11 +527,10 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   if (cs.fhcsText != "") {
     skTextAt(context, id + "calloutTxt2", "callout2", sketches.callout2, cs.fhcsText,
       vector(0 * mm, cs.paddedRadius),
-      opts.calloutHeight, {
+      opts.calloutHeight, mergeMaps(calloutChipOpts(opts), {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
-        "fontName":         FontName.BEBAS_NEUE,
-      });
+      }));
   }
   skSolve(sketches.callout2);
 
@@ -562,10 +590,10 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
 
   for (var socketRecord in familyRef) {
     const sizingKey = socketRecord.sizing;
-    // Pre-measure so we can position the circle center: left border edge is at cursorX,
-    // and the circle is at -cs.borderMinH to the right of the left edge.
-    const center = vector(cursorX - cs.borderMinH, zero);
-    cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, center);
+    // Pre-measure: left border edge is at cursorX; socket center is |borderMinH| to its right.
+    // basePoint x = socket center x; y = 0 (common bottom baseline for all cells).
+    const basePoint = vector(cursorX - cs.borderMinH, zero);
+    cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, basePoint);
     cursorX  = cursorX + cs.cellWidth;
   }
 }

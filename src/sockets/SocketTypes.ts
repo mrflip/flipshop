@@ -32,14 +32,14 @@ export const socketWrench = CK.obj({
   //
   /** overall length of the socket along the central axis */
   ln_overall:           mm_lte_2000.optional(),
-  /** overall size of the socket in the X direction; equals the larger of the wrench end diameter and the drive end diameter */
+  /** overall size of the socket in the X direction; equals the larger of the ratchet end diameter and the target end diameter */
   wx_overall:           mm_lte_360.optional(),
-  /** overall size of the socket in the Y direction; equals the larger of the wrench end diameter and the drive end diameter */
+  /** overall size of the socket in the Y direction; equals the larger of the ratchet end diameter and the target end diameter */
   wy_overall:           mm_lte_360.optional(),
-  /** diameter at the base (wrench end) */
-  wrench_end_diam:      mm_lte_2000.optional(),
-  /** diameter at the tip (drive end) */
-  drive_end_diam:       mm_lte_100.optional(),
+  /** diameter at the base (ratchet end) */
+  target_end_diam:      mm_lte_2000.optional(),
+  /** diameter at the tip (target end) */
+  ratchet_end_diam:       mm_lte_100.optional(),
   /** length of bit (internal drive sockets) between the tip and the nose. Note: the specs sometimes list only bit length, and it's not clear which is the total length. */
   bit_ln:               mm_lte_360.optional(),
   /** length of bit (internal drive sockets) between the tip and where it ends inside the socket, assumedly. Note: the specs sometimes list only bit length, and it's not clear which is the total length. */
@@ -49,7 +49,7 @@ export const socketWrench = CK.obj({
   /** diameter at the nose for bit sockets (where the bit is inserted) */
   nose_diam:            mm_lte_100.optional(),
   /** depth of fastener (nut/head) accomodated (for external drive sockets) */
-  wrench_dp:            mm_lte_100.optional(),
+  target_dp:            mm_lte_100.optional(),
   /** diameter of bore to clear bolt protruding past nut (for external drive sockets) */
   bolt_clr_diam:        mm_lte_360.optional(),
   /** for adapters, extensions and universal joints, the size of the male (driver) end */

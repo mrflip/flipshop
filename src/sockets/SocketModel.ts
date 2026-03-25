@@ -25,14 +25,14 @@ export class SocketWrench extends Thing implements SocketWrenchT {
   declare ln_overall?:          TY.MM                | undefined
   declare wx_overall?:          TY.MM                | undefined
   declare wy_overall?:          TY.MM                | undefined
-  declare drive_end_diam?:      TY.MM                | undefined
-  declare wrench_end_diam?:     TY.MM                | undefined
+  declare ratchet_end_diam?:    TY.MM                | undefined
+  declare target_end_diam?:     TY.MM                | undefined
   //
   declare bit_ln?:              TY.MM                | undefined
   declare bit_ln_total?:        TY.MM                | undefined
   declare nose_diam?:           TY.MM                | undefined
   declare shoulder_ln?:         TY.MM                | undefined
-  declare wrench_dp?:           TY.MM                | undefined
+  declare target_dp?:           TY.MM                | undefined
   declare bolt_clr_diam?:       TY.MM                | undefined
   declare male_drive_size?:     FE.ToolDrive         | undefined
   declare female_drive_size?:   FE.ToolDrive         | undefined
