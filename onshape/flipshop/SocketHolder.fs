@@ -586,19 +586,22 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
  * Holder cells for every socket in `familyRef`, arranged left-to-right on `opts.basePlane`.
  * @param context {Context} : Model context.
  * @param id {Id} : Unique id prefix.
- * @param familyRef {map} : Socket variant map from @see `getSocketFamilyRef` (contains `.entries`).
- * @param opts {map} : Options for @see `socketCell`.
+ * @param familyRef {array} : Socket records from @see `getSocketFamilyRef`.
+ * @param opts {map} : Options for @see `socketCell`, plus:
+ *   - @field omitSockets {array} : Sizing keys or loop-index strings to skip.
+ *   - @field maxTotalWidth {ValueWithUnits} : Stop before starting a new cell once cursor reaches this.
  */
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
-  // debug(context, ["socketHolder", familyRef]);
   var cursorX = zero;
 
-  for (var socketRecord in familyRef) {
-    const sizingKey = socketRecord.sizing;
-    // basePoint is the bottom-left corner of the cell rectangle; cells tile left-to-right.
+  for (var i = 0; i < size(familyRef); i += 1) {
+    if (cursorX >= opts.maxTotalWidth) { break; }
+    const socketRecord = familyRef[i];
+    if (isIn(toString(i), opts.omitSockets) || isIn(socketRecord.sizing, opts.omitSockets)) { continue; }
+    // Id is index-based so part identities survive family changes.
     const basePoint = vector(cursorX, zero);
-    const cs = socketCell(context, id + ("c" ~ sizingKey), socketRecord, opts, basePoint);
-    cursorX  = cursorX + cs.cellWidth;
+    const cs = socketCell(context, id + ("c" ~ toString(i)), socketRecord, opts, basePoint);
+    cursorX += cs.cellWidth;
   }
 }
 // --
@@ -618,6 +621,9 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
  *      @field gridSize {ValueWithUnits} : Cell width/height snapped to this multiple.
  *      @field calloutHeight {ValueWithUnits} : Cap height of callout text chip.
  *      @field labelHeight {ValueWithUnits} : Cap height of label text chip.
+ *      @field omitSockets {string} : Comma-separated sizing keys or loop indices to skip.
+ *      @field maxTotalWidth {ValueWithUnits} : Stop adding cells once cursor reaches this (0 = no limit).
+ *      @field mergeCells {boolean} : When true, union all cell bodies into one and name it for the family.
  * }}
  */
 annotation { "Feature Type Name": "Socket Holder" }
@@ -652,6 +658,15 @@ precondition {
 
   annotation { "Name": "Label height", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.labelHeight, { (millimeter): [tinySizeVal, 3, hugeSizeVal] } as LengthBoundSpec);
+
+  annotation { "Name": "Omit sockets", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  definition.omitSockets is string;
+
+  annotation { "Name": "Max total width", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  isLength(definition.maxTotalWidth, { (millimeter): [0, 0, hugeSizeVal] } as LengthBoundSpec);
+
+  annotation { "Name": "Merge cells", "Default": true }
+  definition.mergeCells is boolean;
 }
 {
   const basePlane = evPlane(context, { "face":  definition.referencePlaneQ });
@@ -660,16 +675,36 @@ precondition {
   // debug(context, ["socketHolderPart", familyRef], DebugColor.MAGENTA);
   if (familyRef == undefined) { throw regenError("Unknown socket family"); }
 
+  const omitSockets   = (definition.omitSockets == "") ? [] : splitByRegexp(definition.omitSockets, ",\\s*");
+  const maxTotalWidth = (definition.maxTotalWidth < tinySizeVal * mm) ? hugeSizeVal * mm : definition.maxTotalWidth;
+  // Family title: strip the sizing prefix from the first socket's title ("2mm Int Hex…" → "Int Hex…")
+  const familyTitle   = replace(familyRef[0].title, "^" ~ familyRef[0].sizing ~ "\\s+", "");
+
   socketHolder(context, id, familyRef, {
-    "basePlane":     basePlane,
-    "holderDepth":   definition.holderDepth,
-    "layerHeight":   definition.layerHeight,
-    "insertionGap":  definition.insertionGap,
-    "cutoutPadding": definition.cutoutPadding,
-    "borderPadding": definition.borderPadding,
-    "gridSize":      definition.gridSize,
-    "calloutHeight": definition.calloutHeight,
-    "labelHeight":   definition.labelHeight,
+    "basePlane":      basePlane,
+    "holderDepth":    definition.holderDepth,
+    "layerHeight":    definition.layerHeight,
+    "insertionGap":   definition.insertionGap,
+    "cutoutPadding":  definition.cutoutPadding,
+    "borderPadding":  definition.borderPadding,
+    "gridSize":       definition.gridSize,
+    "calloutHeight":  definition.calloutHeight,
+    "labelHeight":    definition.labelHeight,
+    "omitSockets":    omitSockets,
+    "maxTotalWidth":  maxTotalWidth,
   });
+
+  if (definition.mergeCells) {
+    const allCellsQ = qCreatedBy(id, EntityType.BODY);
+    opBoolean(context, id + "merge", {
+      "tools":          allCellsQ,
+      "operationType":  BooleanOperationType.UNION,
+    });
+    setProperty(context, {
+      "entities":     qCreatedBy(id + "merge", EntityType.BODY),
+      "propertyType": PropertyType.NAME,
+      "value":        familyTitle,
+    });
+  }
 });
 // --
