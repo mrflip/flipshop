@@ -1,7 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
-export import(path : "4989999bb256f6d486ab7381", version : "ffdb0ffe5f74177ae1ad0ca3");
+export import(path : "4989999bb256f6d486ab7381", version : "9ae7bd80e57a4b0fd31d3a06");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -557,12 +557,13 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "endDepth":  opts.holderDepth,
   });
 
-  // Extrude pocket tool from cutout circle, then subtract from cell body
+  // Extrude pocket tool from cutout circle, then subtract from cell body.
+  // Layers 1 and 2 (from bottom) are solid; cutout starts at the top of layer 2.
   opExtrude(context, ids.pocketTool, {
     "entities":  cutoutSkFacesQ,
     "direction": opts.basePlane.normal,
     "endBound":  BoundingType.BLIND,
-    "endDepth":  2 * opts.layerHeight,
+    "endDepth":  opts.holderDepth - 2 * opts.layerHeight,
   });
   opBoolean(context, ids.pocketCut, {
     "tools":          qCreatedBy(ids.pocketTool, EntityType.BODY),
@@ -575,6 +576,15 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "propertyType": PropertyType.NAME,
     "value":        socket.title,
   });
+
+  // Deboss sizing label into the top face of the cell body
+  const debossDepth = min(2 * mm, 0.8 * opts.layerHeight);
+  embossText(context, id + "labelDeboss",
+    opts.basePlane, vector(cx, cy - cs.paddedRadius), EmbossType.DEBOSS,
+    cs.labelText, EmbossType.DEBOSS, opts.labelHeight, debossDepth, {
+      "horizontalAlign":  HorizontalAlignment.CENTER,
+      "verticalAlign":    VerticalAlignment.TOP_EXTENT,
+    });
 
   return cs;
 }
@@ -593,6 +603,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
  */
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
   var cursorX = zero;
+  var lastCs = undefined;
 
   for (var i = 0; i < size(familyRef); i += 1) {
     if (cursorX >= opts.maxTotalWidth) { break; }
@@ -602,6 +613,62 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
     const basePoint = vector(cursorX, zero);
     const cs = socketCell(context, id + ("c" ~ toString(i)), socketRecord, opts, basePoint);
     cursorX += cs.cellWidth;
+    lastCs = cs;
+  }
+
+  // End tab: 5 mm wide, same height as last cell, with two 2.6 mm screw holes
+  if (lastCs != undefined) {
+    const tabW = 5 * mm;
+    const tabH = lastCs.cellHeight;
+    const tabIds = {
+      "tabSk":        id + "tabSk",
+      "tabHolesSk":   id + "tabHolesSk",
+      "tabPlate":     id + "tabPlate",
+      "tabHoleTool":  id + "tabHoleTool",
+      "tabHoleCut":   id + "tabHoleCut",
+    };
+    const tabSk = newSketchOnPlane(context, tabIds.tabSk, { "sketchPlane":  opts.basePlane });
+    skRectangle(tabSk, "tab", {
+      "firstCorner":  vector(cursorX,        zero),
+      "secondCorner": vector(cursorX + tabW, tabH),
+    });
+    skSolve(tabSk);
+    opExtrude(context, tabIds.tabPlate, {
+      "entities":  qCreatedBy(tabIds.tabSk, EntityType.FACE),
+      "direction": opts.basePlane.normal,
+      "endBound":  BoundingType.BLIND,
+      "endDepth":  opts.holderDepth,
+    });
+
+    const holeCtrX = cursorX + tabW / 2;
+    const tabHolesSk = newSketchOnPlane(context, tabIds.tabHolesSk, { "sketchPlane":  opts.basePlane });
+    skCircle(tabHolesSk, "hole1", { "center":  vector(holeCtrX, tabH * 0.15), "radius":  1.3 * mm });
+    skCircle(tabHolesSk, "hole2", { "center":  vector(holeCtrX, tabH * 0.85), "radius":  1.3 * mm });
+    skSolve(tabHolesSk);
+    opExtrude(context, tabIds.tabHoleTool, {
+      "entities":  qCreatedBy(tabIds.tabHolesSk, EntityType.FACE),
+      "direction": opts.basePlane.normal,
+      "endBound":  BoundingType.BLIND,
+      "endDepth":  opts.holderDepth,
+    });
+    opBoolean(context, tabIds.tabHoleCut, {
+      "tools":          qCreatedBy(tabIds.tabHoleTool, EntityType.BODY),
+      "targets":        qCreatedBy(tabIds.tabPlate,    EntityType.BODY),
+      "operationType":  BooleanOperationType.SUBTRACTION,
+    });
+  }
+
+  if (opts.mergeCells) {
+    const allCellsQ = qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.SOLID);
+    opBoolean(context, id + "merge", {
+      "tools":          allCellsQ,
+      "operationType":  BooleanOperationType.UNION,
+    });
+    setProperty(context, {
+      "entities":     allCellsQ,
+      "propertyType": PropertyType.NAME,
+      "value":        opts.familyTitle,
+    });
   }
 }
 // --
@@ -613,8 +680,8 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
  * @param definition {{
  *      @field referencePlaneQ {Query} : Top face of the holder; sketches are drawn here.
  *      @field familyPath {LookupTablePath} : Socket family from SocketWrenches2.
- *      @field holderDepth {ValueWithUnits} : Holder plate thickness.
- *      @field layerHeight {ValueWithUnits} : FDM layer height; pocket depth = 2 × this.
+ *      @field holderDepth {ValueWithUnits} : Holder plate thickness; snapped up to a ceiling multiple of `layerHeight`.
+ *      @field layerHeight {ValueWithUnits} : FDM layer height. Layers 1–2 from bottom are solid; socket pocket starts at layer 3.
  *      @field insertionGap {ValueWithUnits} : Radial clearance between socket and cutout.
  *      @field cutoutPadding {ValueWithUnits} : Gap from cutout edge to padded circle.
  *      @field borderPadding {ValueWithUnits} : Gap from bounding box to cell border rectangle.
@@ -679,10 +746,12 @@ precondition {
   const maxTotalWidth = (definition.maxTotalWidth < tinySizeVal * mm) ? hugeSizeVal * mm : definition.maxTotalWidth;
   // Family title: strip the sizing prefix from the first socket's title ("2mm Int Hex…" → "Int Hex…")
   const familyTitle   = replace(familyRef[0].title, "^" ~ familyRef[0].sizing ~ "\\s+", "");
+  // Snap holder depth to ceiling multiple of layer height so all layers are full
+  const holderDepth   = ceil(definition.holderDepth / definition.layerHeight) * definition.layerHeight;
 
   socketHolder(context, id, familyRef, {
     "basePlane":      basePlane,
-    "holderDepth":    definition.holderDepth,
+    "holderDepth":    holderDepth,
     "layerHeight":    definition.layerHeight,
     "insertionGap":   definition.insertionGap,
     "cutoutPadding":  definition.cutoutPadding,
@@ -692,19 +761,8 @@ precondition {
     "labelHeight":    definition.labelHeight,
     "omitSockets":    omitSockets,
     "maxTotalWidth":  maxTotalWidth,
+    "familyTitle":    familyTitle,
+    "mergeCells":     definition.mergeCells,
   });
-
-  if (definition.mergeCells) {
-    const allCellsQ = qCreatedBy(id, EntityType.BODY)->qBodyType(BodyType.SOLID);
-    opBoolean(context, id + "merge", {
-      "tools":          allCellsQ,
-      "operationType":  BooleanOperationType.UNION,
-    });
-    setProperty(context, {
-      "entities":     allCellsQ,
-      "propertyType": PropertyType.NAME,
-      "value":        familyTitle,
-    });
-  }
 });
 // --

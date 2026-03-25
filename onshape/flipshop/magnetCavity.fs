@@ -15,6 +15,7 @@ const tinySizeVal = 0.001;
  *   @field length {ValueWithUnits} : Magnet nominal length (H dimension). Default 60 mm.
  *   @field width {ValueWithUnits} : Magnet nominal width (V dimension). Default 10 mm.
  *   @field depth {ValueWithUnits} : Cavity insertion depth. Default 3 mm.
+ *   @field [extrusion_offset=0] {ValueWithUnits} : Distance along the cut direction before the cavity begins. Default 0 mm.
  *   @field [insertion_gap=0.15mm] {ValueWithUnits} : Per-dimension clearance added to each cavity.
  *   @field [horizontal_reps=1] {number} : Columns of cavities.
  *   @field [vertical_reps=1] {number} : Rows of cavities.
@@ -27,40 +28,43 @@ const tinySizeVal = 0.001;
 annotation { "Feature Type Name": "Magnet Cavity" }
 export const magnetCavityPart = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
-  annotation { "Name": "Base point", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 1 }
+  annotation { "Name": "Base point", "Filter": QueryFilterCompound.ALLOWS_PLANE, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.basePoint is Query;
 
-  annotation { "Name": "Target bodies", "Filter": EntityType.BODY, "MaxNumberOfPicks": -1 }
+  annotation { "Name": "Target bodies", "Filter": EntityType.BODY, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.targetBodies is Query;
 
-  annotation { "Name": "Length" }
+  annotation { "Name": "Length", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.length, {(millimeter) : [tinySizeVal, 60, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Width" }
+  annotation { "Name": "Width", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.width, {(millimeter) : [tinySizeVal, 10, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Depth" }
+  annotation { "Name": "Depth", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.depth, {(millimeter) : [tinySizeVal, 3, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Insertion gap" }
+  annotation { "Name": "Extrusion offset", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  isLength(definition.extrusion_offset, {(millimeter) : [-hugeSizeVal, 0, hugeSizeVal]} as LengthBoundSpec);
+
+  annotation { "Name": "Insertion gap", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.insertion_gap, {(millimeter) : [-hugeSizeVal, 0.15, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Horizontal reps" }
+  annotation { "Name": "Horizontal reps", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isInteger(definition.horizontal_reps, {(unitless) : [1, 1, 100]} as IntegerBoundSpec);
 
-  annotation { "Name": "Vertical reps" }
+  annotation { "Name": "Vertical reps", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isInteger(definition.vertical_reps, {(unitless) : [1, 1, 100]} as IntegerBoundSpec);
 
-  annotation { "Name": "Horizontal spacing" }
+  annotation { "Name": "Horizontal spacing", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.horizontal_spacing, {(millimeter) : [-hugeSizeVal, 1, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Vertical spacing" }
+  annotation { "Name": "Vertical spacing", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.vertical_spacing, {(millimeter) : [-hugeSizeVal, 1, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Horizontal shift" }
+  annotation { "Name": "Horizontal shift", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.horizontal_shift, {(millimeter) : [-hugeSizeVal, 0, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Vertical shift" }
+  annotation { "Name": "Vertical shift", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.vertical_shift, {(millimeter) : [-hugeSizeVal, 0, hugeSizeVal]} as LengthBoundSpec);
 }
 {
@@ -69,6 +73,7 @@ precondition {
     "length":             definition.length,
     "width":              definition.width,
     "depth":              definition.depth,
+    "extrusion_offset":   definition.extrusion_offset,
     "insertion_gap":      definition.insertion_gap,
     "horizontal_reps":    definition.horizontal_reps,
     "vertical_reps":      definition.vertical_reps,
@@ -95,7 +100,8 @@ precondition {
  *   - @field target_bodies {Query} : Bodies to subtract cavities from.
  *   - @field length {ValueWithUnits} : Magnet nominal length (H).
  *   - @field width {ValueWithUnits} : Magnet nominal width (V).
- *   - @field depth {ValueWithUnits} : Cavity insertion depth (into the material).
+ *   - @field depth {ValueWithUnits} : Cavity insertion depth.
+ *   - @field [extrusion_offset=0] {ValueWithUnits} : Distance along the cut direction before the cavity begins.
  *   - @field insertion_gap {ValueWithUnits} : Clearance added once to each cavity dimension.
  *   - @field horizontal_reps {number} : Columns of cavities.
  *   - @field vertical_reps {number} : Rows of cavities.
@@ -128,8 +134,16 @@ function magnetCavity(context is Context, id is Id, basePoint is Query, options 
   // For 1 rep → 0; for 2 → ±strideV/2; for 3 → −strideV, 0, +strideV.
   const firstCtrV = -((options.vertical_reps - 1) * strideV) / 2;
 
+  // The sketch plane is offset along the cut direction by extrusion_offset,
+  // so the cavity runs from extrusion_offset to extrusion_offset + depth.
+  const sketchPlane = plane(
+    workOrigin + options.extrusion_offset * workPlane.normal,
+    workPlane.normal,
+    workPlane.x
+  );
+
   // Draw all cavity rectangles in a single sketch.
-  const sketch = newSketchOnPlane(context, ids.cavitySk, { "sketchPlane": workPlane });
+  const sketch = newSketchOnPlane(context, ids.cavitySk, { "sketchPlane": sketchPlane });
   var cavIdx = 0;
   for (var iy = 0; iy < options.vertical_reps; iy += 1) {
     for (var ix = 0; ix < options.horizontal_reps; ix += 1) {
@@ -146,10 +160,10 @@ function magnetCavity(context is Context, id is Id, basePoint is Query, options 
   skSolve(sketch);
   const cavitySkFacesQ = qCreatedBy(ids.cavitySk, EntityType.FACE);
 
-  // Extrude all cavities into the material (opposite the face normal).
+  // Extrude all cavities into the material (in the face normal direction).
   opExtrude(context, ids.cavityExtrude, {
     "entities":  cavitySkFacesQ,
-    "direction": -workPlane.normal,
+    "direction": workPlane.normal,
     "endBound":  BoundingType.BLIND,
     "endDepth":  options.depth,
   });
