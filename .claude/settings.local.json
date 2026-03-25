@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(yarn test:*)"
+      "Bash(yarn test:*)",
+      "Bash(grep -n \"^function \" /Users/flip/code/flipshop/onshape/flipshop/*.fs)",
+      "Bash(wc:*)"
     ]
   },
   "enableAllProjectMcpServers": false

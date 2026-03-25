@@ -110,7 +110,7 @@ precondition {
   });
 
   // debug(context, [qCreatedBy(ids.boundingBoxSk, EntityType.BODY), qCreatedBy(ids.patternedShapes, EntityType.BODY)]);
-  setProperty(context, { "entities": extrudedBodies, "propertyType":  PropertyType.NAME, "value": "Patterned Shapes"  });
+  setName(context, extrudedBodies, "Patterned Shapes");
 });
 
 /**

@@ -1,8 +1,10 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
 export import(path : "8fa2dd9caf18bedfb6b0eda2/2427f262f8e5525a71e20081/7683b6ccf9499ff664904299", version : "8d62d0d3921f7b515fea74b7");
 export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "147ab80c285e6c2d15e1347b");
+import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "ab8e8784345ea381f94ce62a");
+
 
 const mm = millimeter;
 const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
@@ -127,11 +129,7 @@ precondition {
   //
   const scrubbed = replace(definition.text, "[\\s]+", " ");
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
-  setProperty(context, {
-    "entities":     qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]),
-    "propertyType": PropertyType.NAME,
-    "value":        partName,
-  });
+  setName(context, qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]), partName);
 });
 
 // --
@@ -490,12 +488,7 @@ precondition {
     "booleanScope":      extrudedBodies,
   });
 
-  setProperty(context, {
-    "entities":     extrudedBodies,
-    "propertyType": PropertyType.NAME,
-    // "value":        definition.text,
-    "value":        "AR: " ~ replace(substring(toString(round(textCoords.aspectRatio, 0.1)), 0, 3), "(\\.?0+$|0+$)", "") ~ " df: " ~ substring(toString(round(textCoords.descenderFrac, 0.1)), 0, 3),
-  });
+  setName(context, extrudedBodies, "AR: " ~ replace(substring(toString(round(textCoords.aspectRatio, 0.1)), 0, 3), "(\\.?0+$|0+$)", "") ~ " df: " ~ substring(toString(round(textCoords.descenderFrac, 0.1)), 0, 3));
 });
 
 // --

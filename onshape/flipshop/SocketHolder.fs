@@ -1,7 +1,9 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
-export import(path : "4989999bb256f6d486ab7381", version : "fd5ff5e3245fee3b70aab636");
+import(path : "4989999bb256f6d486ab7381", version : "640ef615fbc327868b875279");
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "ab8e8784345ea381f94ce62a");
+
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
@@ -12,8 +14,8 @@ const tinySizeVal = 0.001;
 // Shorthand aliases used throughout for readability.
 const mm          = millimeter;
 const zero        = 0 * mm;
-const callout1Angle = 140 * degree;
-const callout2Angle =  40 * degree;
+const callout1Angle = 132 * degree;
+const callout2Angle =  48 * degree;
 const socketCellPadding = { left: 4*mm, top: 3*mm };
 
 // == [Socket Cell Cutter] ==
@@ -78,11 +80,7 @@ precondition {
     "endDepth":  socketParams.cutoutDepth,
   });
 
-  setProperty(context, {
-    "entities":     qCreatedBy(ids.extrudedCutout, EntityType.BODY),
-    "propertyType": PropertyType.NAME,
-    "value":        "Socket Cell Cutter",
-  });
+  setName(context, qCreatedBy(ids.extrudedCutout, EntityType.BODY), "Socket Cell Cutter");
 });
 // --
 
@@ -585,11 +583,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "operationType":  BooleanOperationType.SUBTRACTION,
   });
 
-  setProperty(context, {
-    "entities":     qCreatedBy(ids.plate, EntityType.BODY),
-    "propertyType": PropertyType.NAME,
-    "value":        socket.title,
-  });
+  setName(context, qCreatedBy(ids.plate, EntityType.BODY), socket.title);
 
   // Deboss text into the top face of the cell body
   const debossDepth = min(2 * mm, 0.8 * opts.layerHeight);
@@ -643,8 +637,8 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
  *   - @field headDiam {ValueWithUnits} : Diameter of the screw-head marking circles.
  */
 function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is ValueWithUnits, cellHeight is ValueWithUnits, carrierOpts is map) {
-  const tabW    = 5 * mm;
-  const tabLeft = rightEdgeX - tabW;
+  const tabW    = 6 * mm;
+  const tabLeft = rightEdgeX - opts.borderPadding;
   const tabH    = cellHeight;
   const ids = {
     "carrierSk":   id + "carrierSk",
@@ -658,8 +652,8 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
   // Carrier plate rectangle, extruded downward
   const carrierSk = newSketchOnPlane(context, ids.carrierSk, { "sketchPlane":  opts.basePlane });
   skRectangle(carrierSk, "carrier", {
-    "firstCorner":  vector(tabLeft,    zero),
-    "secondCorner": vector(rightEdgeX, tabH),
+    "firstCorner":  vector(tabLeft,                             zero),
+    "secondCorner": vector(tabLeft + tabW + opts.borderPadding, tabH),
   });
   skSolve(carrierSk);
   opExtrude(context, ids.plate, {
@@ -710,15 +704,17 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
   var cursorX = zero;
   var lastCs = undefined;
+  var actualIdx = 0;
 
-  for (var i = 0; i < size(familyRef); i += 1) {
+  for (var ii = 0; ii < size(familyRef); ii += 1) {
     if (cursorX >= opts.maxTotalWidth) { break; }
-    const socketRecord = familyRef[i];
-    if (isIn(toString(i), opts.omitSockets) || isIn(socketRecord.sizing, opts.omitSockets)) { continue; }
+    const socketRecord = familyRef[ii];
+    if (isIn(toString(ii), opts.omitSockets) || isIn(socketRecord.sizing, opts.omitSockets)) { continue; }
     // Id is index-based so part identities survive family changes.
     const basePoint = vector(cursorX, zero);
-    const cs = socketCell(context, id + ("c" ~ toString(i)), socketRecord, opts, basePoint);
-    cursorX += cs.cellWidth;
+    const cs = socketCell(context, id + ("c" ~ toString(actualIdx)), socketRecord, opts, basePoint);
+    cursorX   += cs.cellWidth;
+    actualIdx += 1;
     lastCs = cs;
   }
 
@@ -735,11 +731,7 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
       "tools":          allCellsQ,
       "operationType":  BooleanOperationType.UNION,
     });
-    setProperty(context, {
-      "entities":     qCreatedBy(id + "merge", EntityType.BODY),
-      "propertyType": PropertyType.NAME,
-      "value":        opts.familyTitle,
-    });
+    setName(context, allCellsQ, opts.familyTitle);
   }
 }
 // --
