@@ -4,7 +4,7 @@ import      { UF }                                   from '@freeword/meta'
 import type * as TY                                  from './internal.ts'
 //
 import      { Thing }                                from '../utils/Thing.ts'
-import      { fsStringField, fsBoolField, fsMmField, fsInchField, fsNumField } from '../utils/FeaturescriptHelpers.ts'
+import      * as FSH                                 from '../utils/FeaturescriptHelpers.ts'
 import       * as FE                                 from '../fastener/FastenerEnums.ts'
 import       { socketWrench, type SocketWrenchT }    from './SocketTypes.ts'
 import type { DriverTargetsT }                       from './DriverTargets.ts'
@@ -86,14 +86,15 @@ export class SocketWrench extends Thing implements SocketWrenchT {
     const parts = Object.entries(data)
       .filter(([_k, vv]) => vv !== undefined && vv !== null)
       .map(([kk, vv]) => {
-        if (typeof vv === 'string')  { return fsStringField(kk, vv) }
-        if (typeof vv === 'boolean') { return fsBoolField(kk, vv) }
+        if (kk === 'targets') { return FSH.fsObjectField(kk, vv as Record<string, unknown>) }
+        if (typeof vv === 'string')  { return FSH.fsStringField(kk, vv) }
+        if (typeof vv === 'boolean') { return FSH.fsBoolField(kk, vv) }
         if (typeof vv === 'number') {
-          if (SocketWrench.INCH_FIELDS.has(kk))  { return fsInchField(kk, vv) }
-          if (SocketWrench.PLAIN_FIELDS.has(kk)) { return fsNumField(kk, vv) }
-          return fsMmField(kk, vv)
+          if (SocketWrench.INCH_FIELDS.has(kk))  { return FSH.fsInchField(kk, vv) }
+          if (SocketWrench.PLAIN_FIELDS.has(kk)) { return FSH.fsNumField(kk, vv) }
+          return FSH.fsMmField(kk, vv)
         }
-        return fsStringField(kk, JSON.stringify(vv))
+        return FSH.fsStringField(kk, JSON.stringify(vv))
       })
     return `{ ${parts.join(', ')} }`
   }

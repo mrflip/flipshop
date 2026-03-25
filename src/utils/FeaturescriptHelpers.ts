@@ -1,3 +1,4 @@
+export function fsObjectField(kk: string, vv: Record<string, unknown>):  string { return `"${kk}": ${JSON.stringify(vv)}` }
 export function fsStringField(kk: string, vv: string):  string { return `"${kk}": ${JSON.stringify(vv)}` }
 export function fsBoolField  (kk: string, vv: boolean): string { return `"${kk}": ${vv}` }
 export function fsMmField    (kk: string, vv: number):  string { return `"${kk}": ${vv} * mm` }

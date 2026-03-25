@@ -274,6 +274,52 @@ function socketCellParams(context, definition is map) returns map {
 // == [Socket Cell Size] ==
 
 /**
+ * Axis-aligned bounding box (centered at origin) of a text chip placed tangentially at `angle`
+ * on the padded circle.
+ * @param tc {map} : Text bounds from @see `textBounds`; uses `actualWidth` and `actualHeight`.
+ * @param paddedRadius {ValueWithUnits} : Distance from center to inner (baseline) edge of chip.
+ * @param angle {ValueWithUnits} : Position angle (0 = 3 o'clock, 90 = 12 o'clock, CCW).
+ */
+function calloutChipBounds(tc is map, paddedRadius is ValueWithUnits, angle is ValueWithUnits) returns map {
+  const hw   = tc.actualWidth / 2;
+  const v0   = paddedRadius;
+  const v1   = paddedRadius + tc.actualHeight;
+  const sinA = sin(angle);
+  const cosA = cos(angle);
+  // Rotated-sketch frame: H = CW tangent = (sinA, -cosA), V = radial = (cosA, sinA)
+  // World coord of (h, v): x = h*sinA + v*cosA,  y = -h*cosA + v*sinA
+  const x00 = (-hw) * sinA + v0 * cosA;
+  const x10 = ( hw) * sinA + v0 * cosA;
+  const x01 = (-hw) * sinA + v1 * cosA;
+  const x11 = ( hw) * sinA + v1 * cosA;
+  const y00 =   hw  * cosA + v0 * sinA;
+  const y10 = (-hw) * cosA + v0 * sinA;
+  const y01 =   hw  * cosA + v1 * sinA;
+  const y11 = (-hw) * cosA + v1 * sinA;
+  return {
+    "minH":  min(min(x00, x10), min(x01, x11)),
+    "maxH":  max(max(x00, x10), max(x01, x11)),
+    "minV":  min(min(y00, y10), min(y01, y11)),
+    "maxV":  max(max(y00, y10), max(y01, y11)),
+  };
+}
+
+/**
+ * Sketch on `basePlane` with origin translated to `center` (local 2-D coords) and X axis
+ * rotated by `angle`.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Sketch feature id.
+ * @param basePlane {Plane} : Reference plane.
+ * @param center {Vector} : 2-D offset from `basePlane.origin` in the plane's local (H, V) frame.
+ * @param angle {ValueWithUnits} : In-plane rotation of the new sketch's X axis.
+ */
+function rotatedSketchAt(context is Context, id is Id, basePlane is Plane, center is Vector, angle is ValueWithUnits) returns Sketch {
+  const yAxis    = cross(basePlane.normal, basePlane.x);
+  const newPlane = plane(basePlane.origin + center[0] * basePlane.x + center[1] * yAxis, basePlane.normal, basePlane.x);
+  return rotatedSketch(context, id, { "basePlane":  newPlane }, angle);
+}
+
+/**
  * Geometry record for a single socket cell: radii, text extents, bounding boxes, grid-snapped dimensions.
  * @param context {Context} : Model context.
  * @param id {Id} : Id prefix for temporary text-measurement operations.
@@ -291,19 +337,40 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const cutoutRadius = bodyDiam / 2 + opts.insertionGap;
   const paddedRadius = cutoutRadius + opts.cutoutPadding;
 
-  debug(context, ["socketCellSize", socket.sizing_mm_text, socket]);
+  // Nose and drive-end diameters, falling back to body diameter when absent
+  const noseDiam     = (socket.nose_diam      != undefined) ? socket.nose_diam      : bodyDiam;
+  const driveEndDiam = (socket.drive_end_diam != undefined) ? socket.drive_end_diam : bodyDiam;
 
-  const calloutText = socket.sizing_mm_text;
+  // Callout chips use targets.drives (chip 1 at 120°) and targets.fhcs_sz (chip 2 at 210°)
+  const targets     = socket.targets;
+  const calloutText = (targets != undefined && targets.drives  != undefined) ? targets.drives  : "";
+  const fhcsText    = (targets != undefined && targets.fhcs_sz != undefined) ? targets.fhcs_sz : "";
   const labelText   = replace(socket.sizing, '(in|mm)$', '');
-  const calloutTc   = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight });
-  const labelTc     = textBounds(context, id + "labelTC",   labelText,   { "baselineHeight":  opts.labelHeight  });
 
-  // Callout chip: BOTTOM_EXTENT at y=0, right edge tangent to padded circle at 9 o'clock (left)
-  const calloutMinH = -paddedRadius - calloutTc.actualWidth;
-  const calloutMaxH = -paddedRadius;
-  const calloutMinV = zero;
-  const calloutMaxV = calloutTc.bbox.maxCorner[1];
+  debug(context, ["socketCellSize", calloutText, fhcsText, socket]);
 
+  // Callout chip 1 at 120° (60° above left horizon)
+  var calloutCbMinH = zero; var calloutCbMaxH = zero; var calloutCbMinV = zero; var calloutCbMaxV = zero;
+  if (calloutText != "") {
+    const calloutTc = textBounds(context, id + "calloutTC", calloutText, { "baselineHeight":  opts.calloutHeight });
+    const calloutCb = calloutChipBounds(calloutTc, paddedRadius, 120 * degree);
+    calloutCbMinH = calloutCb.minH;
+    calloutCbMaxH = calloutCb.maxH;
+    calloutCbMinV = calloutCb.minV;
+    calloutCbMaxV = calloutCb.maxV;
+  }
+  // Callout chip 2 at 210° (30° below left horizon)
+  var fhcsCbMinH = zero; var fhcsCbMaxH = zero; var fhcsCbMinV = zero; var fhcsCbMaxV = zero;
+  if (fhcsText != "") {
+    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, { "baselineHeight":  opts.calloutHeight });
+    const fhcsCb = calloutChipBounds(fhcsTc, paddedRadius, 210 * degree);
+    fhcsCbMinH = fhcsCb.minH;
+    fhcsCbMaxH = fhcsCb.maxH;
+    fhcsCbMinV = fhcsCb.minV;
+    fhcsCbMaxV = fhcsCb.maxV;
+  }
+
+  const labelTc    = textBounds(context, id + "labelTC", labelText, { "baselineHeight":  opts.labelHeight });
   // Label chip: TOP_EXTENT at y=-paddedRadius (6 o'clock), horizontally centered at x=0
   const labelHalfW = labelTc.actualWidth / 2;
   const labelMinH  = -labelHalfW;
@@ -311,11 +378,11 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const labelMinV  = -paddedRadius - labelTc.actualHeight;
   const labelMaxV  = -paddedRadius;
 
-  // Tight bounding box over padded circle + callout chip + label chip
-  const bboxMinH = min(min(-paddedRadius, calloutMinH), labelMinH);
-  const bboxMaxH = max(max( paddedRadius, calloutMaxH), labelMaxH);
-  const bboxMinV = min(min(-paddedRadius, calloutMinV), labelMinV);
-  const bboxMaxV = max(max( paddedRadius, calloutMaxV), labelMaxV);
+  // Tight bounding box over padded circle + callout chips + label chip
+  const bboxMinH = min(min(min(-paddedRadius, calloutCbMinH), fhcsCbMinH), labelMinH);
+  const bboxMaxH = max(max(max( paddedRadius, calloutCbMaxH), fhcsCbMaxH), labelMaxH);
+  const bboxMinV = min(min(min(-paddedRadius, calloutCbMinV), fhcsCbMinV), labelMinV);
+  const bboxMaxV = max(max(max( paddedRadius, calloutCbMaxV), fhcsCbMaxV), labelMaxV);
 
   // Cell border = tight bounding box expanded by borderPadding on all sides
   const borderMinH = bboxMinH - opts.borderPadding;
@@ -333,7 +400,10 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
     "bodyDiam":      bodyDiam,
     "cutoutRadius":  cutoutRadius,
     "paddedRadius":  paddedRadius,
+    "noseDiam":      noseDiam,
+    "driveEndDiam":  driveEndDiam,
     "calloutText":   calloutText,
+    "fhcsText":      fhcsText,
     "labelText":     labelText,
     "bboxMinH":      bboxMinH,   "bboxMaxH":   bboxMaxH,
     "bboxMinV":      bboxMinV,   "bboxMaxV":   bboxMaxV,
@@ -364,12 +434,14 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   const cx = center[0];
   const cy = center[1];
 
-  const ids = { cutoutSk: id + "cutoutSk", decoSk: id + "decoSk", calloutSk: id + "calloutSk", labelSk: id + "labelSk", plate: id + "plate", pocketTool: id + "pocketTool", pocketCut: id + "pocketCut" };
+  const ids = { cutoutSk: id + "cutoutSk", decoSk: id + "decoSk", calloutSk1: id + "calloutSk1", calloutSk2: id + "calloutSk2", labelSk: id + "labelSk", plate: id + "plate", pocketTool: id + "pocketTool", pocketCut: id + "pocketCut" };
   const sketches = {
-    cutout:  newSketchOnPlane(context, ids.cutoutSk,  { "sketchPlane":  opts.basePlane }),
-    deco:    newSketchOnPlane(context, ids.decoSk,    { "sketchPlane":  opts.basePlane }),
-    callout: newSketchOnPlane(context, ids.calloutSk, { "sketchPlane":  opts.basePlane }),
-    label:   newSketchOnPlane(context, ids.labelSk,   { "sketchPlane":  opts.basePlane }),
+    cutout:   newSketchOnPlane(context, ids.cutoutSk,  { "sketchPlane":  opts.basePlane }),
+    deco:     newSketchOnPlane(context, ids.decoSk,    { "sketchPlane":  opts.basePlane }),
+    // Rotated callout sketches: V axis points radially outward, so text at (0, paddedRadius) is tangent to padded circle
+    callout1: rotatedSketchAt(context, ids.calloutSk1, opts.basePlane, vector(cx, cy), 120 * degree - 90 * degree),
+    callout2: rotatedSketchAt(context, ids.calloutSk2, opts.basePlane, vector(cx, cy), 210 * degree - 90 * degree),
+    label:    newSketchOnPlane(context, ids.labelSk,   { "sketchPlane":  opts.basePlane }),
   };
 
   // Cutout sketch — solid circle only; face is extruded into the pocket tool
@@ -377,12 +449,25 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   skSolve(sketches.cutout);
   const cutoutSkFacesQ = qCreatedBy(ids.cutoutSk, EntityType.FACE);
 
-  // Decoration sketch — padded circle (construction), bbox (construction), border (solid)
+  // Decoration sketch — padded circle (construction), drive-end and nose circles (construction),
+  //   bbox (construction), border (solid)
   skCircle(sketches.deco, "padded", {
     "center":       vector(cx, cy),
     "radius":       cs.paddedRadius,
     "construction": true,
   });
+  skCircle(sketches.deco, "driveEndCircle", {
+    "center":       vector(cx, cy),
+    "radius":       cs.driveEndDiam / 2,
+    "construction": true,
+  });
+  skPoint(sketches.deco, "driveEndDot", { "position":  vector(cx, cy + cs.driveEndDiam / 2) });
+  skCircle(sketches.deco, "noseCircle", {
+    "center":       vector(cx, cy),
+    "radius":       cs.noseDiam / 2,
+    "construction": true,
+  });
+  skPoint(sketches.deco, "noseDot", { "position":  vector(cx, cy - cs.noseDiam / 2) });
   skRectangle(sketches.deco, "bbox", {
     "firstCorner":  vector(cx + cs.bboxMinH, cy + cs.bboxMinV),
     "secondCorner": vector(cx + cs.bboxMaxH, cy + cs.bboxMaxV),
@@ -395,14 +480,27 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ce
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
 
-  // Callout sketch — sizing_mm_text; BOTTOM_EXTENT tangent to padded circle at 9 o'clock
-  skTextAt(context, id + "calloutTxt", "callout", sketches.callout, cs.calloutText,
-    vector(cx - cs.paddedRadius, cy),
-    opts.calloutHeight, {
-      "horizontalAlign":  HorizontalAlignment.RIGHT,
-      "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
-    });
-  skSolve(sketches.callout);
+  // Callout sketch 1 — targets.drives; baseline tangent to padded circle at 120° (60° above left horizon)
+  if (cs.calloutText != "") {
+    skTextAt(context, id + "calloutTxt1", "callout1", sketches.callout1, cs.calloutText,
+      vector(0 * mm, cs.paddedRadius),
+      opts.calloutHeight, {
+        "horizontalAlign":  HorizontalAlignment.CENTER,
+        "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
+      });
+  }
+  skSolve(sketches.callout1);
+
+  // Callout sketch 2 — targets.fhcs_sz; baseline tangent to padded circle at 210° (30° below left horizon)
+  if (cs.fhcsText != "") {
+    skTextAt(context, id + "calloutTxt2", "callout2", sketches.callout2, cs.fhcsText,
+      vector(0 * mm, cs.paddedRadius),
+      opts.calloutHeight, {
+        "horizontalAlign":  HorizontalAlignment.CENTER,
+        "verticalAlign":    VerticalAlignment.BOTTOM_EXTENT,
+      });
+  }
+  skSolve(sketches.callout2);
 
   // Label sketch — sizing text; TOP_EXTENT tangent to padded circle at 6 o'clock, centered
   skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
