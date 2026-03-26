@@ -1,9 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "ab8e8784345ea381f94ce62a");
-
-const hugeSizeVal = 1000000;
-const tinySizeVal = 0.001;
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
 
 // == [Magnet Cavity Part Feature] ==
 
@@ -11,12 +8,12 @@ const tinySizeVal = 0.001;
  * Part feature: rectangular magnet cavity array cut into target bodies.
  * Delegates all geometry to @see `magnetCavity`.
  * @param definition {{
- *   @field basePoint {Query} : Reference face/plane; its origin becomes the base point of the cavity grid.
+ *   @field basePoints {Query} : Reference faces/planes; each becomes a separate cavity grid origin.
  *   @field targetBodies {Query} : Solid bodies to cut cavities into.
  *   @field length {ValueWithUnits} : Magnet nominal length (H dimension). Default 60 mm.
  *   @field width {ValueWithUnits} : Magnet nominal width (V dimension). Default 10 mm.
  *   @field depth {ValueWithUnits} : Cavity insertion depth. Default 3 mm.
- *   @field [extrusion_offset=0] {ValueWithUnits} : Distance along the cut direction before the cavity begins. Default 0 mm.
+ *   @field [extrusion_offset=0] {ValueWithUnits} : Distance along the cut direction before the cavity begins.
  *   @field [insertion_gap=0.15mm] {ValueWithUnits} : Per-dimension clearance added to each cavity.
  *   @field [horizontal_reps=1] {number} : Columns of cavities.
  *   @field [vertical_reps=1] {number} : Rows of cavities.
@@ -24,13 +21,14 @@ const tinySizeVal = 0.001;
  *   @field [vertical_spacing=1mm] {ValueWithUnits} : Edge-to-edge gap between rows.
  *   @field [horizontal_shift=0] {ValueWithUnits} : Shifts the base point rightward (+H) from the face origin.
  *   @field [vertical_shift=0] {ValueWithUnits} : Shifts the base point upward (+V) from the face origin.
+ *   @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  * }}
  */
 annotation { "Feature Type Name": "Magnet Cavity" }
-export const magnetCavityPart = defineFeature(function(context is Context, id is Id, definition is map)
+export const magnetCavityF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
-  annotation { "Name": "Base point", "Filter": QueryFilterCompound.ALLOWS_PLANE, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  definition.basePoint is Query;
+  annotation { "Name": "Base points", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 10, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  definition.basePoints is Query;
 
   annotation { "Name": "Target bodies", "Filter": EntityType.BODY, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.targetBodies is Query;
@@ -67,9 +65,12 @@ precondition {
 
   annotation { "Name": "Vertical shift", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.vertical_shift, {(millimeter) : [-hugeSizeVal, 0, hugeSizeVal]} as LengthBoundSpec);
+
+  annotation { "Name": "Cleanup sketches" }
+  definition.cleanupSketches is boolean;
 }
 {
-  magnetCavity(context, id, definition.basePoint, {
+  magnetCavity(context, id, definition.basePoints, {
     "target_bodies":      definition.targetBodies,
     "length":             definition.length,
     "width":              definition.width,
@@ -82,6 +83,7 @@ precondition {
     "vertical_spacing":   definition.vertical_spacing,
     "horizontal_shift":   definition.horizontal_shift,
     "vertical_shift":     definition.vertical_shift,
+    "cleanupSketches":    definition.cleanupSketches,
   });
 });
 // --
@@ -89,15 +91,29 @@ precondition {
 // == [Magnet Cavity Geometry] ==
 
 /**
- * Grid of rectangular magnet cavities cut into `options.target_bodies`.
- * The base point lies at the center of the left edge of the cavity grid bounding box:
- * H = 0 is the left face of the leftmost column; V = 0 is vertically centered on the grid.
- * Cavities tile rightward; for odd `vertical_reps` the center row aligns with V = 0,
- * for even `vertical_reps` the gap between the two center rows straddles V = 0.
+ * Grid of rectangular magnet cavities cut into `options.target_bodies` at each point in `basePoints`.
+ * Calls @see `magnetCavityAt` for each evaluated point.
  * @param context {Context} : Model context.
  * @param id {Id} : Feature id prefix.
- * @param basePoint {Query} : Reference face/plane; its origin and axes define the cavity coordinate frame.
- * @param options {map} : keyword options
+ * @param basePoints {Query} : Reference faces/planes; each defines a separate cavity coordinate frame.
+ * @param options {map} : Keyword options — see @see `magnetCavityAt`.
+ */
+export function magnetCavity(context is Context, id is Id, basePoints is Query, options is map) {
+  var ptIdx = 0;
+  for (var bp in evaluateQuery(context, basePoints)) {
+    magnetCavityAt(context, id + ("p" ~ toString(ptIdx)), bp, options);
+    ptIdx += 1;
+  }
+}
+
+/**
+ * Grid of rectangular magnet cavities at a single base point.
+ * The base point lies at the center of the left edge of the cavity grid bounding box:
+ * H = 0 is the left face of the leftmost column; V = 0 is vertically centered on the grid.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Feature id prefix.
+ * @param basePoint {Query} : Single reference face/plane; its origin and axes define the cavity frame.
+ * @param options {map} : Keyword options.
  *   - @field target_bodies {Query} : Bodies to subtract cavities from.
  *   - @field length {ValueWithUnits} : Magnet nominal length (H).
  *   - @field width {ValueWithUnits} : Magnet nominal width (V).
@@ -110,12 +126,14 @@ precondition {
  *   - @field vertical_spacing {ValueWithUnits} : Edge-to-edge gap between rows.
  *   - @field horizontal_shift {ValueWithUnits} : Shifts base point right (+H) from the face origin.
  *   - @field vertical_shift {ValueWithUnits} : Shifts base point up (+V) from the face origin.
+ *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  */
-function magnetCavity(context is Context, id is Id, basePoint is Query, options is map) {
+function magnetCavityAt(context is Context, id is Id, basePoint is Query, options is map) {
   const ids = {
     cavitySk:      id + "cavitySk",
     cavityExtrude: id + "cavityExtrude",
     boolSubtract:  id + "boolSubtract",
+    cleanup:       id + "cleanup",
   };
 
   const basePlane  = evPlane(context, { "face": basePoint });
@@ -176,5 +194,11 @@ function magnetCavity(context is Context, id is Id, basePoint is Query, options 
     "tools":         cavityExtrudeBodiesQ,
     "operationType": BooleanOperationType.SUBTRACTION,
   });
+
+  if (options.cleanupSketches) {
+    opDeleteBodies(context, ids.cleanup, {
+      "entities": qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.WIRE),
+    });
+  }
 }
 // --

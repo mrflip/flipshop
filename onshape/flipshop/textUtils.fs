@@ -3,22 +3,15 @@ import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "8fa2dd9caf18bedfb6b0eda2/2427f262f8e5525a71e20081/7683b6ccf9499ff664904299", version : "8d62d0d3921f7b515fea74b7");
 export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "147ab80c285e6c2d15e1347b");
 import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "ab8e8784345ea381f94ce62a");
-
-
-const mm = millimeter;
-const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
 
 // == [Render Text] ==
 
 /**
- * Feature: extrudes `text` sized and aligned within a bounding plate.
- * Creates two sketches — `boundsSk` (the carrier plate rectangle) and `textSk` (the text) —
- * calls @see `skTextAt` to size and place the text, then extrudes both into solid bodies.
- * The `position` parameter is the sketch origin; move the sketch plane to relocate.
- * @param context {Context} : Model context.
- * @param id {Id} : Base feature id.
+ * Part feature: extrudes `text` sized and aligned within a bounding plate at each selected plane.
+ * Delegates all geometry to @see `renderText`.
  * @param definition {{
+ *      @field sketchPlaneQ {Query} : One or more sketch planes; a separate text body is created at each.
  *      @field text {string} : Text to render.
  *      @field fontName {FontName} : Font filename.
  *      @field baselineHeight {ValueWithUnits} : Nominal cap height (before resizing).
@@ -28,16 +21,16 @@ const PL_TOP  = plane(WORLD_ORIGIN, Z_AXIS.direction);
  *      @field resizing1 {ResizingPolicy} : Resizing policy for Y.
  *      @field horizontalAlign {HorizontalAlignment} : X anchor within the plate.
  *      @field verticalAlign {VerticalAlignment} : Y anchor within the plate.
- *      @field sketchPlaneQ {Query} : Sketch plane.
  *      @field textAngle {ValueWithUnits} : In-plane rotation angle.
  *      @field textDepth {ValueWithUnits} : Extrusion depth of the text lettering.
  *      @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
+ *      @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  * }}
  */
 annotation { "Feature Type Name": "Render Text" }
-export const renderText = defineFeature(function(context is Context, id is Id, definition is map)
+export const renderTextF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
-  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 1 }
+  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 10 }
   definition.sketchPlaneQ is Query;
   annotation { "Name": "Text", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.text is string;
@@ -63,10 +56,59 @@ precondition {
   isLength(definition.textDepth, { (millimeter): [0.001, 1, 1000000] } as LengthBoundSpec);
   annotation { "Name": "Plate Depth" }
   isLength(definition.plateDepth, { (millimeter): [0.001, 0.5, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Cleanup sketches" }
+  definition.cleanupSketches is boolean;
 }
 {
-  const basePlane = evPlane(context, { "face": definition.sketchPlaneQ });
-  const ids = { textSk: id + "textSk", boundsSk: id + "boundsSk", extrudeText: id + "extrudeText", extrudePlate: id + "extrudePlate" };
+  renderText(context, id, definition);
+});
+
+// --
+
+/**
+ * Extrudes `definition.text` at each plane in `definition.sketchPlaneQ`.
+ * Calls @see `renderTextAt` for each evaluated plane.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param definition {map} : Options for @see `renderTextAt`, plus `sketchPlaneQ`.
+ */
+export function renderText(context is Context, id is Id, definition is map) {
+  var ptIdx = 0;
+  for (var planeEnt in evaluateQuery(context, definition.sketchPlaneQ)) {
+    renderTextAt(context, id + ("p" ~ toString(ptIdx)), planeEnt, definition);
+    ptIdx += 1;
+  }
+}
+
+/**
+ * Extrudes `definition.text` sized and aligned within a bounding plate at a single plane.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param planeEnt {Query} : Single sketch plane entity.
+ * @param definition {map} : Keyword options.
+ *   - @field text {string} : Text to render.
+ *   - @field fontName {FontName} : Font filename.
+ *   - @field baselineHeight {ValueWithUnits} : Nominal cap height (before resizing).
+ *   - @field boundsWidth {ValueWithUnits} : Carrier plate width.
+ *   - @field boundsHeight {ValueWithUnits} : Carrier plate height.
+ *   - @field resizing0 {ResizingPolicy} : Resizing policy for X.
+ *   - @field resizing1 {ResizingPolicy} : Resizing policy for Y.
+ *   - @field horizontalAlign {HorizontalAlignment} : X anchor within the plate.
+ *   - @field verticalAlign {VerticalAlignment} : Y anchor within the plate.
+ *   - @field textAngle {ValueWithUnits} : In-plane rotation angle.
+ *   - @field textDepth {ValueWithUnits} : Extrusion depth of the text lettering.
+ *   - @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
+ *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
+ */
+function renderTextAt(context is Context, id is Id, planeEnt is Query, definition is map) {
+  const basePlane = evPlane(context, { "face": planeEnt });
+  const ids = {
+    textSk:       id + "textSk",
+    boundsSk:     id + "boundsSk",
+    extrudeText:  id + "extrudeText",
+    extrudePlate: id + "extrudePlate",
+    cleanup:      id + "cleanup",
+  };
   const sketches = {
     text:   rotatedSketch(context, ids.textSk,   { "basePlane": basePlane }, definition.textAngle),
     bounds: rotatedSketch(context, ids.boundsSk, { "basePlane": basePlane }, definition.textAngle),
@@ -126,11 +168,16 @@ precondition {
     "oppositeDirection": true,
     "booleanScope":      textBodiesQ,
   });
-  //
   const scrubbed = replace(definition.text, "[\\s]+", " ");
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
   setName(context, qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]), partName);
-});
+
+  if (definition.cleanupSketches) {
+    opDeleteBodies(context, ids.cleanup, {
+      "entities": qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.WIRE),
+    });
+  }
+}
 
 // --
 

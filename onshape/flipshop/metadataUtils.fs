@@ -1,6 +1,16 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 
+// Shorthand aliases used throughout for readability.
+export const mm          = millimeter;
+export const zero        = 0 * mm;
+export const PL_TOP      = plane(WORLD_ORIGIN, Z_AXIS.direction);
+
+// Sentinel values for LengthBoundSpec min/max when no practical limit applies.
+export const hugeSizeVal = 1000000;
+export const tinySizeVal = 0.001;
+
+
 /**
  * Sets both a FeatureScript property and a same-keyed attribute on entities.
  * Use attributes (not properties) to read names back during regeneration, since
@@ -12,8 +22,8 @@ import(path : "onshape/std/geometry.fs", version : "2909.0");
  * @param value {string} : the value to set
  */
 export function setPropAndAttribute(context is Context, entities is Query, propType, attrName is string, value is string) {
-  setProperty(context, { "entities": entities, "propertyType": propType, "value": value });
-  setAttribute(context, { "entities": entities, "name": attrName, "attribute": value });
+  setProperty(context,  { "entities": entities, "propertyType": propType, "value":     value });
+  setAttribute(context, { "entities": entities, "name":         attrName, "attribute": value });
 }
 
 /**
@@ -22,8 +32,8 @@ export function setPropAndAttribute(context is Context, entities is Query, propT
  * @param entities {Query}
  * @param name {string}
  */
-export function setName(context is Context, entities is Query, name is string) {
-  setPropAndAttribute(context, entities, PropertyType.NAME, "name", name);
+export function setName(context is Context, entities is Query, nameText is string) {
+  setPropAndAttribute(context, entities, PropertyType.NAME, "name", nameText);
 }
 
 /**
@@ -59,13 +69,9 @@ export function getAttrs(context is Context, query is Query, attrName is string,
  */
 export function getBestAttr(context is Context, query is Query, attrName is string, defaultVal) {
   const entries = getAttrs(context, query, attrName, defaultVal);
-  if (size(entries) == 0) {
-    return undefined;
-  }
+  if (size(entries) == 0) { return undefined; }
   for (var i = 0; i < size(entries); i += 1) {
-    if (entries[i].val != defaultVal) {
-      return mergeMaps(entries[i], { "thingIndex": i });
-    }
+    if (entries[i].val != defaultVal) { return mergeMaps(entries[i], { "thingIndex": i }); }
   }
   return mergeMaps(entries[0], { "thingIndex": 0 });
 }
@@ -90,4 +96,10 @@ export function getNames(context is Context, query is Query, defaultVal is strin
  */
 export function getName(context is Context, query is Query, defaultVal is string) {
   return getBestAttr(context, query, "name", defaultVal);
+}
+
+export function getNameOfBody(context is Context, body is Query, defaultVal is string) {
+  const nameAttr = getAttributes(context, { "entities" : body, "name": "name" });
+  if ((size(nameAttr) == 0) || (nameAttr[0] == undefined)) { return defaultVal; }
+  return nameAttr[0];
 }

@@ -1,10 +1,7 @@
 FeatureScript 2909;
+// import(path : "onshape/std/common.fs", version : "2909.0");
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "ab8e8784345ea381f94ce62a");
-
-
-const hugeSizeVal = 1000000;
-const tinySizeVal = 0.001;
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
 
 export enum ShapeType {
   annotation { "Name": "Circle" }
@@ -33,7 +30,7 @@ export enum ShapeType {
  * }}
  */
 annotation { "Feature Type Name":  "Patterned Shapes" }
-export const patternedShapes = defineFeature(function(context is Context, id is Id, definition is map)
+export const patternedShapesF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
   annotation { "Name":  "Reference plane", "Filter":  QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks":  1 }
   definition.referencePlane is Query;
@@ -70,36 +67,48 @@ precondition {
 
   annotation { "Name":  "Thickness" }
   isLength(definition.thickness, {(millimeter) : [tinySizeVal, 5, hugeSizeVal]} as LengthBoundSpec);
+
+  annotation { "Name":  "Cleanup sketches" }
+  definition.cleanupSketches is boolean;
 }
 {
-  // Normalize and validate parameters
+  patternedShapes(context, id, definition);
+});
+// --
+
+/**
+ * Rectangular grid of extruded shapes on a reference plane, backed by a thin base plate.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Feature id prefix.
+ * @param definition {map} : Options matching the `patternedShapesF` precondition fields, plus:
+ *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
+ */
+export function patternedShapes(context is Context, id is Id, definition is map) {
   const params = patternedShapesParams(definition);
   const ids = {
-    "boundingBoxSk":     id + "boundingBoxSk",   "shapesSk": id + "shapesSk", "extrudedShapes": id + "extrudedShapes",
-    "patternedShapes":   id + "patternedShapes",
+    boundingBoxSk:   id + "boundingBoxSk",
+    shapesSk:        id + "shapesSk",
+    extrudedShapes:  id + "extrudedShapes",
+    patternedShapes: id + "patternedShapes",
+    cleanup:         id + "cleanup",
   };
 
-  // Get the sketch plane
   const sketchPlane = evPlane(context, { "face":  definition.referencePlane });
 
-  // Bounding Box Sketch
-  const boundsSketch = drawBoundingAndPaddingBoxes(context, ids.boundingBoxSk, sketchPlane, params);
-  // Create items sketch
+  drawBoundingAndPaddingBoxes(context, ids.boundingBoxSk, sketchPlane, params);
   drawPatternedShapes(context, ids.shapesSk, sketchPlane, params);
 
-  // Extrude items forward
-  const shapesQuery = qCreatedBy(ids.shapesSk, EntityType.FACE);
+  const shapesQuery    = qCreatedBy(ids.shapesSk,        EntityType.FACE);
+  const extrudedBodies = qCreatedBy(ids.extrudedShapes,  EntityType.BODY);
   opExtrude(context, ids.extrudedShapes, {
-    "entities":     shapesQuery,
-    "direction":    sketchPlane.normal,
-    "endBound":     BoundingType.BLIND,
-    "endDepth":     params.body_bounds.sizeD
+    "entities":  shapesQuery,
+    "direction": sketchPlane.normal,
+    "endBound":  BoundingType.BLIND,
+    "endDepth":  params.body_bounds.sizeD,
   });
 
-  const plateFace  = qCreatedBy(ids.boundingBoxSk, EntityType.FACE);
-  const extrudedBodies = qCreatedBy(ids.extrudedShapes, EntityType.BODY);
   extrude(context, ids.patternedShapes, {
-    "entities":          plateFace,
+    "entities":          qCreatedBy(ids.boundingBoxSk, EntityType.FACE),
     "direction":         sketchPlane.normal,
     "endBound":          BoundingType.BLIND,
     "depth":             abs(params.body_bounds.maxD) / 100,
@@ -110,9 +119,14 @@ precondition {
     "booleanScope":      extrudedBodies,
   });
 
-  // debug(context, [qCreatedBy(ids.boundingBoxSk, EntityType.BODY), qCreatedBy(ids.patternedShapes, EntityType.BODY)]);
   setName(context, extrudedBodies, "Patterned Shapes");
-});
+
+  if (definition.cleanupSketches) {
+    opDeleteBodies(context, ids.cleanup, {
+      "entities": qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.WIRE),
+    });
+  }
+}
 
 /**
  * Bounding-box map from explicit min/max extents on H, V, and D axes;

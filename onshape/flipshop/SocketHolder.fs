@@ -1,19 +1,11 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
-import(path : "4989999bb256f6d486ab7381", version : "640ef615fbc327868b875279");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "ab8e8784345ea381f94ce62a");
-
+import(path : "4989999bb256f6d486ab7381", version : "5ee552a78fc587adfde7cbf5");
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
-
-// Sentinel values for LengthBoundSpec min/max when no practical limit applies.
-const hugeSizeVal = 1000000;
-const tinySizeVal = 0.001;
-// Shorthand aliases used throughout for readability.
-const mm          = millimeter;
-const zero        = 0 * mm;
 const callout1Angle = 132 * degree;
 const callout2Angle =  48 * degree;
 const socketCellPadding = { left: 4*mm, top: 3*mm };
@@ -32,7 +24,7 @@ const socketCellPadding = { left: 4*mm, top: 3*mm };
  * }}
  */
 annotation { "Feature Type Name": "Socket Cell Cutter" }
-export const socketCellCutter = defineFeature(function(context is Context, id is Id, definition is map)
+export const socketCellCutterF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
   annotation { "Name":  "Reference plane", "Filter":  QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks":  1 }
   definition.referencePlaneQ is Query;
@@ -49,18 +41,40 @@ precondition {
   // Angular position of the callout label's closest point to the socket center.
   annotation { "Name":  "Callout angle" }
   isAngle(definition.calloutAngle, {(degree) : [0, 0, 360]} as AngleBoundSpec);
+
+  annotation { "Name": "Cleanup sketches" }
+  definition.cleanupSketches is boolean;
 }
 {
+  socketCellCutter(context, id, definition);
+});
+// --
+
+/**
+ * Single socket cell cutter: bounding boxes, socket shape, callout text, and pocket extrusion.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Feature id prefix.
+ * @param definition {map} : Options for @see `socketCellParams`, plus:
+ *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
+ */
+export function socketCellCutter(context is Context, id is Id, definition is map) {
   const socketParams = socketCellParams(context, definition);
-  const ids = { bboxesSk: id + "bboxesSk", shapesSk: id + "shapesSk", labelsSk: id + "labelsSk", calloutsSk: id + "calloutsSk", extrudedCutout: id + "extrudedCutout" };
+  const ids = {
+    bboxesSk:       id + "bboxesSk",
+    shapesSk:       id + "shapesSk",
+    labelsSk:       id + "labelsSk",
+    calloutsSk:     id + "calloutsSk",
+    extrudedCutout: id + "extrudedCutout",
+    cleanup:        id + "cleanup",
+  };
 
   const sketches = {
-   bboxes:    newSketchOnPlane(context, ids.bboxesSk,    { "sketchPlane":  socketParams.basePlane }),
-   shapes:    newSketchOnPlane(context, ids.shapesSk,    { "sketchPlane":  socketParams.basePlane }),
-   labels:    newSketchOnPlane(context, ids.labelsSk,    { "sketchPlane":  socketParams.basePlane }),
-   // Callout sketch X axis is the CW tangent at calloutAngle (= radial rotated −90°),
-   // so text reads perpendicular to the ray and descends in Y when calloutAngle is 0.
-   callouts:  rotatedSketch(context, ids.calloutsSk, socketParams, socketParams.calloutAngle - 90 * degree),
+    bboxes:   newSketchOnPlane(context, ids.bboxesSk,   { "sketchPlane":  socketParams.basePlane }),
+    shapes:   newSketchOnPlane(context, ids.shapesSk,   { "sketchPlane":  socketParams.basePlane }),
+    labels:   newSketchOnPlane(context, ids.labelsSk,   { "sketchPlane":  socketParams.basePlane }),
+    // Callout sketch X axis is the CW tangent at calloutAngle (= radial rotated −90°),
+    // so text reads perpendicular to the ray and descends in Y when calloutAngle is 0.
+    callouts: rotatedSketch(context, ids.calloutsSk, socketParams, socketParams.calloutAngle - 90 * degree),
   };
 
   drawBoundingBoxes(context,   ids.bboxesSk, sketches.bboxes, socketParams);
@@ -71,8 +85,6 @@ precondition {
   radialText(sketches.callouts, socketParams, "Hi, Mom", 4 * mm);
   skSolve(sketches.callouts);
 
-//   drawAndMeasureText(context, ids.labelsSk, sketches.labels, "Hi, Mom", 5*mm, vector(1*mm, 3*mm));
-
   opExtrude(context, ids.extrudedCutout, {
     "entities":  shapesSkFacesQ,
     "direction": socketParams.basePlane.normal,
@@ -81,7 +93,13 @@ precondition {
   });
 
   setName(context, qCreatedBy(ids.extrudedCutout, EntityType.BODY), "Socket Cell Cutter");
-});
+
+  if (definition.cleanupSketches) {
+    opDeleteBodies(context, ids.cleanup, {
+      "entities": qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.WIRE),
+    });
+  }
+}
 // --
 
 // == [Radial Text] ==
@@ -526,6 +544,13 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "firstCorner":  vector(cx + cs.cellMinH, cy + cs.cellMinV),
     "secondCorner": vector(cx + cs.cellMaxH, cy + cs.cellMaxV),
   });
+  // Mount holes on the left border (cells at holder index 0 and 3)
+  if (opts.hasHoles) {
+    const holeR = 2.6 * mm / 2;
+    const holeX = cx + cs.cellMinH + opts.borderPadding / 2;
+    skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMinV + cs.cellHeight * 0.15), "radius": holeR });
+    skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + cs.cellHeight * 0.85), "radius": holeR });
+  }
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
 
@@ -711,8 +736,9 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
     const socketRecord = familyRef[ii];
     if (isIn(toString(ii), opts.omitSockets) || isIn(socketRecord.sizing, opts.omitSockets)) { continue; }
     // Id is index-based so part identities survive family changes.
-    const basePoint = vector(cursorX, zero);
-    const cs = socketCell(context, id + ("c" ~ toString(actualIdx)), socketRecord, opts, basePoint);
+    const basePoint  = vector(cursorX, zero);
+    const cellOpts   = mergeMaps(opts, { "hasHoles": (actualIdx == 0) || (actualIdx == 3) });
+    const cs = socketCell(context, id + ("c" ~ toString(actualIdx)), socketRecord, cellOpts, basePoint);
     cursorX   += cs.cellWidth;
     actualIdx += 1;
     lastCs = cs;
