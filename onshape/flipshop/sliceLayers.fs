@@ -1,115 +1,159 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-
-const hugeSizeVal = 1000000;
-const tinySizeVal = 0.001;
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
 
 /**
- * Feature: slices target bodies into parallel layers spaced `layer_depth` apart from a reference plane.
- * Produces up to `split_count + 1` named fragments per body.
- * Fragment names follow the pattern `<original> L<idx> H<dist>` where `idx` is the 0-based layer
- * index (closest-to-plane first) and `dist` is the fragment centroid's signed distance from the
- * reference plane along the cut direction, rounded to 0.1 mm.
- * @param definition {{
- *   @field splitPlane {Query} : Reference plane, face, or mate connector; defines cut origin and normal.
- *   @field layer_depth {ValueWithUnits} : Distance between consecutive cut planes.
- *   @field split_count {number} : Number of cuts; produces at most split_count + 1 fragments per body.
- *   @field targetBodies {Query} : Solid bodies to slice.
- *   @field flip_direction {boolean} : When true, cuts proceed against the plane normal.
- * }}
+ * Slices target bodies into even layers along a chosen plane/face,
+ * advancing in the plane's normal direction (or its opposite).
+ *
+ * @param splittingEntity  – A planar face or mate connector that defines the
+ *                           base cut plane.
+ * @param flipDirection    – When true the layers advance in the –normal direction.
+ * @param targets          – Bodies to slice.
+ * @param layerDepth       – Thickness of each layer (length value).
+ * @param maxCount         – Maximum number of cuts (upper safety guard).
  */
-annotation { "Feature Type Name": "Slice Layers" }
-export const sliceLayers = defineFeature(function(context is Context, id is Id, definition is map)
-precondition {
-  annotation { "Name": "Split plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  definition.splitPlane is Query;
+annotation { "Feature Type Name" : "Slice Layers" }
+export const sliceLayersFeature = defineFeature(function(context is Context, id is Id, definition is map)
+    precondition
+    {
+        // ── Splitting plane / face ──────────────────────────────────────────
+        annotation {
+            "Name"        : "Splitting plane or face",
+            "Filter"      : GeometryType.PLANE,
+            "MaxNumberOfPicks" : 1
+        }
+        definition.splittingEntity is Query;
 
-  annotation { "Name": "Layer depth", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.layer_depth, {(millimeter) : [tinySizeVal, 10, hugeSizeVal]} as LengthBoundSpec);
+        // ── Flip the advance direction ──────────────────────────────────────
+        annotation { "Name" : "Flip direction" }
+        definition.flipDirection is boolean;
 
-  annotation { "Name": "Split count", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isInteger(definition.split_count, {(unitless) : [1, 5, 100]} as IntegerBoundSpec);
+        // ── Target bodies ──────────────────────────────────────────────────
+        annotation {
+            "Name"   : "Target bodies",
+            "Filter" : EntityType.BODY && BodyType.SOLID,
+            "MaxNumberOfPicks" : 100
+        }
+        definition.targets is Query;
 
-  annotation { "Name": "Target bodies", "Filter": EntityType.BODY, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  definition.targetBodies is Query;
+        // ── Layer depth ────────────────────────────────────────────────────
+        annotation { "Name" : "Layer depth" }
+        isLength(definition.layerDepth, {(millimeter) : [tinySizeVal, 10, hugeSizeVal]} as LengthBoundSpec);
 
-  annotation { "Name": "Other direction", "UIHint": UIHint.OPPOSITE_DIRECTION }
-  definition.flip_direction is boolean;
-}
+        // ── Maximum cut count ──────────────────────────────────────────────
+        annotation { "Name" : "Max cut count" }
+        isInteger(definition.maxCount, { (unitless) : [1, 10, 200] } as IntegerBoundSpec);
+    }
+    {
+        // ── Resolve the plane from the selected entity ─────────────────────
+        const cuttingPlane is Plane = evPlane(context, { "face" : definition.splittingEntity });
+
+        // ── Build the validated definition map for sliceLayers ─────────────
+        const sliceDefinition = {
+            "layerDepth"        : definition.layerDepth,
+            "maxCount"          : definition.maxCount,
+            "oppositeDirection" : definition.flipDirection
+        };
+
+        sliceLayers(context, id, cuttingPlane, definition.targets, sliceDefinition);
+    });
+
+
+/**
+ * Core slicing logic.  Advances a cut plane in steps of `layerDepth` along
+ * (or against) the plane normal, cutting only the bodies that still extend
+ * beyond the current cut position.
+ *
+ * @param context           – Onshape context.
+ * @param id                – Feature id (sub-ids are derived from this).
+ * @param plane             – Base Plane; its normal defines the advance axis.
+ * @param bodiesQ           – Initial query for the bodies to slice.
+ * @param options           – map with keys:
+ *                              layerDepth        {ValueWithUnits}  cut spacing
+ *                              maxCount          {integer}         loop guard
+ *                              oppositeDirection {boolean}         flip normal
+ */
+export function sliceLayers(context is Context, id is Id, basePlane is Plane,
+                            bodiesQ is Query, options is map)
 {
-  const basePlane = evPlane(context, { "face": definition.splitPlane });
-  const cutDir    = definition.flip_direction ? -basePlane.normal : basePlane.normal;
+    const layerDepth        is ValueWithUnits = options.layerDepth;
+    const maxCount          is number         = options.maxCount;
 
-  const targetBodiesArr = evaluateQuery(context, definition.targetBodies);
+    // Normal that the cut advances along (flip when requested).
+    const advanceNormal is Vector = options.oppositeDirection ? -basePlane.normal : basePlane.normal;
 
-  for (var bi = 0; bi < size(targetBodiesArr); bi += 1) {
-    const bodyQ    = targetBodiesArr[bi];
-    const origNameResult = getName(context, bodyQ, "Part " ~ bi);
-    const origName = (origNameResult != undefined) ? origNameResult.val : ("Part " ~ bi);
+    // We track which bodies still have material ahead of each successive cut.
+    var currentTargetsQ is Query = bodiesQ;
 
-    // Successively split the topmost fragment (in cutDir) with each cut plane,
-    // accumulating lower fragments in order from the reference plane outward.
-    var allFrags   = [];
-    var currentTop = bodyQ;
+    for (var ii = 0; ii <= maxCount; ii += 1) {
+        // ── Position the cut plane for this iteration ──────────────────────
+        // The plane origin moves by ii * layerDepth along the advance direction.
+        const offset is ValueWithUnits = ii * layerDepth;
 
-    for (var ci = 0; ci < definition.split_count; ci += 1) {
-      const cutOffset = (ci + 1) * definition.layer_depth;
-      const cutOrigin = basePlane.origin + cutOffset * cutDir;
-      const cutPlane  = plane(cutOrigin, cutDir);
+        const cutPlane is Plane = plane(basePlane.origin + advanceNormal * offset, basePlane.normal);
 
-      // Only proceed if currentTop extends into the positive-cutDir half-space of this cut plane.
-      const topBox  = evBox3d(context, { "topology": currentTop, "tight": false });
-      const maxProj = dot(topBox.maxCorner - basePlane.origin, cutDir);
-      if (maxProj <= cutOffset) {
-        break;
-      }
+        // ~~ Find bodies that still have geometry in front of the cut (on or in front of); break if nothing's left
+        const bodiesAheadQ is Query = qInFrontOfOrIntersectingPlane(currentTargetsQ, cutPlane);
+        debug(context, ["sliceLayers", "query",  ii, bodiesAheadQ, currentTargetsQ, evaluateQuery(context, currentTargetsQ)], DebugColor.RED);
+        // If nothing remains ahead of this cut plane, we're done early.
+        if (isQueryEmpty(context, bodiesAheadQ)) { break; }
 
-      const planeId   = id + ("plane_b" ~ bi ~ "_c" ~ ci);
-      const splitId   = id + ("split_b" ~ bi ~ "_c" ~ ci);
+        // ~~ Split the bodies that straddle this cut plane
+        try {
+            opSplitPart(context, (id + "cut" + toString(ii)), {
+                "targets"   : currentTargetsQ->qIntersectsPlane(cutPlane),
+                "tool"      : cutPlane,
+                "keepTools" : false,
+            });
+        } catch {} // Tolerate cuts that don't intersect any body (edge case at extremes).
 
-      opPlane(context, planeId, {
-        "plane":  cutPlane,
-        "width":  1000 * millimeter,
-        "height": 1000 * millimeter,
-      });
-      const cutPlaneQ = qCreatedBy(planeId, EntityType.BODY);
+        // Label every surviving piece that already has a NAME attribute.
+        // "Surviving" here means in-front-of-or-intersecting the cut we just made,
+        // which corresponds to layer i (depth start = (i-1) * layerDepth).
+        const depthStr is string = toString(round(offset / mm, 0.1));
 
-      opSplitPart(context, splitId, {
-        "targets":   currentTop,
-        "tool":      cutPlaneQ,
-        "keepTools": false,
-      });
+        // ── Rebuild the "current targets" for the next iteration ───────────
+        // After the split, newly created bodies are tracked automatically via
+        // the original query because Onshape's query tracking follows splits.
+        // We have to leave the original bodiesQ in here in case they weren't sliced this time
+        // currentTargetsQ = qUnion([currentTargetsQ, qCreatedBy(id, EntityType.BODY)])->qInFrontOfOrIntersectingPlane(cutPlane);
 
-      // Determine which resulting piece is lower (accumulate) and which is the new top (continue cutting).
-      const newBodyQ  = qCreatedBy(splitId, EntityType.BODY);
-      const curBox    = evBox3d(context, { "topology": currentTop, "tight": false });
-      const newBox    = evBox3d(context, { "topology": newBodyQ,   "tight": false });
-      const curCtr    = (curBox.minCorner + curBox.maxCorner) / 2;
-      const newCtr    = (newBox.minCorner + newBox.maxCorner) / 2;
-      const curDist   = dot(curCtr - basePlane.origin, cutDir);
-      const newDist   = dot(newCtr - basePlane.origin, cutDir);
-
-      if (curDist <= newDist) {
-        // currentTop is the lower fragment; newBodyQ becomes the new top.
-        allFrags   = append(allFrags, currentTop);
-        currentTop = newBodyQ;
-      } else {
-        // newBodyQ is the lower fragment; currentTop remains the top.
-        allFrags = append(allFrags, newBodyQ);
-      }
+        for (var body in evaluateQuery(context, currentTargetsQ->qIntersectsPlane(cutPlane))) {
+            // const nameAttr = getAttributes(context, {
+            //     "entities" : body,
+            //     "name":      "name",
+            //     // "attributePattern" : attribute("NAME")
+            // });
+            const nameAttr = getNameOfBody(context, body, '');
+            debug(context, ["nameAttr", nameAttr]);
+            // // const nameAttr = getName(context, body, undefined);
+            if ((nameAttr == undefined) || (nameAttr == '')) { continue; }
+            // const originalName is string = nameAttr[0].value;
+            // const baseName is string = stripLayerLabel(nameAttr);
+            setName(context, body, stripLayerLabel(nameAttr) ~ " L:" ~ toString(ii) ~ " H:" ~ depthStr);
+        }
     }
+}
 
-    // Final top fragment (above all cut planes).
-    allFrags = append(allFrags, currentTop);
+// ── helper ────────────────────────────────────────────────────────────────
 
-    // Name each fragment: "<original> L<idx> H<dist_mm>"
-    for (var fi = 0; fi < size(allFrags); fi += 1) {
-      const fragQ     = allFrags[fi];
-      const fragBox   = evBox3d(context, { "topology": fragQ, "tight": false });
-      const fragCtr   = (fragBox.minCorner + fragBox.maxCorner) / 2;
-      const distMm    = dot(fragCtr - basePlane.origin, cutDir) / millimeter;
-      const roundedMm = round(distMm * 10) / 10;
-      setName(context, fragQ, origName ~ " L" ~ fi ~ " H" ~ roundedMm);
-    }
-  }
-});
+/**
+ * Strips any existing layer label suffix before re-labeling, so repeated
+ * previews or re-runs don't accumulate suffixes.
+ */
+function stripLayerLabel(name is string) returns string { return replace(name, " L:\\d+ H:.+$", ""); }
+
+/**
+ * Returns bodies from `q` that are either strictly in front of `plane`
+ * or straddle it (i.e. the bodies we actually need to cut or advance into).
+ */
+function qInFrontOfOrIntersectingPlane(q is Query, plane is Plane) returns Query
+{
+    return qUnion([
+        qInFrontOfPlane(q, plane),
+        qIntersectsPlane(q, plane)
+    ]);
+}
+
+
