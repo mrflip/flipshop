@@ -1,129 +1,15 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "5434ebe0d73f93454827045d");
-import(path : "4989999bb256f6d486ab7381", version : "5ee552a78fc587adfde7cbf5");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "4bd45ca6b91bcb8ef553d0f6");
+import(path : "4989999bb256f6d486ab7381", version : "458835b267927297884c8358");
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
 const callout1Angle = 132 * degree;
 const callout2Angle =  48 * degree;
 const socketCellPadding = { left: 4*mm, top: 3*mm };
-
-// == [Socket Cell Cutter] ==
-
-/**
- * Feature: cylindrical socket pocket cut into a body on the selected plane.
- * Pocket diameter = socket wrench-end diameter + 2 × insertion gap; depth = 2 × layer height.
- * @param definition {{
- *      @field referencePlaneQ {Query} : Sketch plane.
- *      @field socketPath {LookupTablePath} : Socket selection from `SocketWrenches3`.
- *      @field layerHeight {ValueWithUnits} : FDM layer height; pocket depth is 2 × this.
- *      @field insertionGap {ValueWithUnits} : Radial clearance around the socket body.
- *      @field calloutAngle {ValueWithUnits} : Callout label angle (0–360°) from socket center.
- * }}
- */
-annotation { "Feature Type Name": "Socket Cell Cutter" }
-export const socketCellCutterF = defineFeature(function(context is Context, id is Id, definition is map)
-precondition {
-  annotation { "Name":  "Reference plane", "Filter":  QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks":  1 }
-  definition.referencePlaneQ is Query;
-
-  annotation { "Name" : "Socket Selection", "Lookup Table" : SocketWrenches3 }
-  definition.socketPath is LookupTablePath;
-
-  annotation { "Name":  "Layer height" }
-  isLength(definition.layerHeight,   {(millimeter) : [tinySizeVal, 4.55, hugeSizeVal]} as LengthBoundSpec);
-
-  annotation { "Name":  "Insertion gap" }
-  isLength(definition.insertionGap, {(millimeter) : [0, 0.3, hugeSizeVal]} as LengthBoundSpec);
-
-  // Angular position of the callout label's closest point to the socket center.
-  annotation { "Name":  "Callout angle" }
-  isAngle(definition.calloutAngle, {(degree) : [0, 0, 360]} as AngleBoundSpec);
-
-  annotation { "Name": "Cleanup sketches" }
-  definition.cleanupSketches is boolean;
-}
-{
-  socketCellCutter(context, id, definition);
-});
-// --
-
-/**
- * Single socket cell cutter: bounding boxes, socket shape, callout text, and pocket extrusion.
- * @param context {Context} : Model context.
- * @param id {Id} : Feature id prefix.
- * @param definition {map} : Options for @see `socketCellParams`, plus:
- *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
- */
-export function socketCellCutter(context is Context, id is Id, definition is map) {
-  const socketParams = socketCellParams(context, definition);
-  const ids = {
-    bboxesSk:       id + "bboxesSk",
-    shapesSk:       id + "shapesSk",
-    labelsSk:       id + "labelsSk",
-    calloutsSk:     id + "calloutsSk",
-    extrudedCutout: id + "extrudedCutout",
-    cleanup:        id + "cleanup",
-  };
-
-  const sketches = {
-    bboxes:   newSketchOnPlane(context, ids.bboxesSk,   { "sketchPlane":  socketParams.basePlane }),
-    shapes:   newSketchOnPlane(context, ids.shapesSk,   { "sketchPlane":  socketParams.basePlane }),
-    labels:   newSketchOnPlane(context, ids.labelsSk,   { "sketchPlane":  socketParams.basePlane }),
-    // Callout sketch X axis is the CW tangent at calloutAngle (= radial rotated −90°),
-    // so text reads perpendicular to the ray and descends in Y when calloutAngle is 0.
-    callouts: rotatedSketch(context, ids.calloutsSk, socketParams, socketParams.calloutAngle - 90 * degree),
-  };
-
-  drawBoundingBoxes(context,   ids.bboxesSk, sketches.bboxes, socketParams);
-  drawSocketBaseShape(context, ids.shapesSk, sketches.shapes, socketParams.socket, socketParams);
-  skSolve(sketches.shapes);
-  const shapesSkFacesQ = qCreatedBy(ids.shapesSk, EntityType.FACE);
-
-  radialText(sketches.callouts, socketParams, "Hi, Mom", 4 * mm);
-  skSolve(sketches.callouts);
-
-  opExtrude(context, ids.extrudedCutout, {
-    "entities":  shapesSkFacesQ,
-    "direction": socketParams.basePlane.normal,
-    "endBound":  BoundingType.BLIND,
-    "endDepth":  socketParams.cutoutDepth,
-  });
-
-  setName(context, qCreatedBy(ids.extrudedCutout, EntityType.BODY), "Socket Cell Cutter");
-
-  if (definition.cleanupSketches) {
-    opDeleteBodies(context, ids.cleanup, {
-      "entities": qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.WIRE),
-    });
-  }
-}
-// --
-
-// == [Radial Text] ==
-
-/**
- * Callout label on `sketch` at `params.cutoutRadius`, centered on the H axis.
- * Sketch must be oriented with +V radially outward and +H as the CW tangent.
- * @param sketch {Sketch} : Target callout sketch.
- * @param params {map} : Socket cell params; uses `cutoutRadius`.
- * @param text {string} : Label text.
- * @param textHeight {ValueWithUnits} : Cap height.
- */
-function radialText(sketch is Sketch, params is map, text is string, textHeight is ValueWithUnits) {
-  const halfW       = textHeight * 0.65 * length(text);
-  const innerRadius = params.cutoutRadius;
-  skText(sketch, nextLabelId(params, "callout"), {
-    "fontName":     "OpenSans-Regular.ttf",
-    "firstCorner":  vector(-halfW,  innerRadius),
-    "secondCorner": vector( halfW,  innerRadius + textHeight),
-    "text":         text,
-  });
-}
-
-// --
+const defaultLayerDepth = 4.5;
 
 // == [Socket Data Helpers] ==
 
@@ -136,159 +22,15 @@ function getSocketFamilyRef(context is Context, keypath is LookupTablePath) {
   return SocketWrenches2.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant];
 }
 
-/**
- * Dimension record from `SocketWrenches3` for the specific size at `keypath`.
- * @param context {Context} : Model context.
- * @param keypath {LookupTablePath} : Full socket path including sizing tier.
- */
-function getSocketRef(context is Context, keypath is LookupTablePath) {
-  return SocketWrenches3.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant].entries[keypath.sizing];
-}
-// --
-
 // /**
-//  * 2D coordinate in a sketch frame whose X axis is rotated `angle` from the original.
-//  * @param coord {Vector} : 2D coordinate in the original frame.
-//  * @param angle {ValueWithUnits} : X-axis rotation of the target frame.
+//  * Dimension record from `SocketWrenches3` for the specific size at `keypath`.
+//  * @param context {Context} : Model context.
+//  * @param keypath {LookupTablePath} : Full socket path including sizing tier.
 //  */
-// function toRotatedSketchCoord(coord is Vector, angle is ValueWithUnits) returns Vector {
-//   const h = coord[0];
-//   const v = coord[1];
-//   return vector(
-//      h * cos(angle) + v * sin(angle),
-//     -h * sin(angle) + v * cos(angle)
-//   );
+// function getSocketRef(context is Context, keypath is LookupTablePath) {
+//   return SocketWrenches3.entries[keypath.socket_kind].entries[keypath.drive_kind].entries[keypath.unit_system].entries[keypath.sqdrive_size].entries[keypath.reach_kind].entries[keypath.socket_variant].entries[keypath.sizing];
 // }
-
-/**
- * Nominal (construction) and cutout (solid) bounding rectangles on `sketch`,
- * with midpoint dots on the top and right edges of each.
- * @param context {Context} : Model context.
- * @param id {Id} : Sketch feature id.
- * @param sketch {Sketch} : Target sketch.
- * @param params {map} : Socket cell params; uses `nomBounds` and `cutBounds`.
- */
-function drawBoundingBoxes(context is Context, id is Id, sketch is Sketch, params is map) returns builtin {
-  const nb = params.nomBounds;
-  const cb = params.cutBounds;
-
-  // Nominal body bounding box (construction, matches wrench-end diameter)
-  skRectangle(sketch, "nominalBounds", {
-    "firstCorner":  vector(nb.minH, nb.minV),
-    "secondCorner": vector(nb.maxH, nb.maxV),
-    "construction": true,
-  });
-  // Cutout bounding box (solid, includes insertion gap)
-  skRectangle(sketch, "cutoutBounds", {
-    "firstCorner":  vector(cb.minH, cb.minV),
-    "secondCorner": vector(cb.maxH, cb.maxV),
-    "construction": false,
-  });
-  // Midpoint dots on nominal bounds
-  skPoint(sketch, "nomTopMidDot",   { "position":  vector(nb.ctrH, nb.maxV) });
-  skPoint(sketch, "nomRightMidDot", { "position":  vector(nb.maxH, nb.ctrV) });
-  // Midpoint dots on cutout bounds
-  skPoint(sketch, "cutTopMidDot",   { "position":  vector(cb.ctrH, cb.maxV) });
-  skPoint(sketch, "cutRightMidDot", { "position":  vector(cb.maxH, cb.ctrV) });
-
-  skSolve(sketch);
-  return sketch;
-}
-
-// // Returns a 2-vector from center along rayAngle to the given distance.
-// function radialPoint(center is Vector, rayAngle, dist) returns Vector {
-//   return center + dist * vector(cos(rayAngle), sin(rayAngle));
-// }
-
-// // Draws a text label on sketch whose baseline is perpendicular to rayAngle,
-// // centered on the ray at (radius + offset) from center.
-// function radialText(context is Context, params, sketch is Sketch, entityId is string,
-//   text is string, center is Vector, rayAngle is ValueWithUnits, radius is ValueWithUnits, offset is ValueWithUnits, textHeight is ValueWithUnits) {
-//   const pt      = radialPoint(center, rayAngle, radius + offset);
-//   const perpDir = vector(-sin(rayAngle), cos(rayAngle));
-//   const rayDir  = vector( cos(rayAngle), sin(rayAngle));
-//   const halfW   = textHeight * 0.65 * length(text);
-//   skText(sketch, nextLabelId(entityId, "radialText"), {
-//     "fontName":      "OpenSans-Regular.ttf",
-//     "firstCorner":   pt - halfW * perpDir,
-//     "secondCorner":  pt + halfW * perpDir + textHeight * rayDir,
-//     "text":          text,
-//   });
-// }
-
-/**
- * Nominal wrench-end circle (construction) and cutout circle (solid) on `sketch`.
- * @param context {Context} : Model context.
- * @param id {Id} : Sketch feature id.
- * @param sketch {Sketch} : Target sketch.
- * @param socket {map} : Socket dimension record.
- * @param params {map} : Socket cell params; uses `nomBounds`, `bodyDiam`, `cutoutRadius`.
- */
-function drawSocketBaseShape(context is Context, id is Id, sketch is Sketch, socket is map, params is map) {
-  const center = vector(params.nomBounds.ctrH, params.nomBounds.ctrV);
-  // Nominal wrench-end circle (construction)
-  skCircle(sketch, "ratchetEndCircle", { "center": center, "radius": params.bodyDiam / 2, "construction": true,  });
-  // Cutout circle = wrench-end + insertion gap all around (real region)
-  skCircle(sketch, "cutoutCircle",    { "center": center, "radius": params.cutoutRadius });
-}
-
-/**
- * Base param map for a socket family: path, family record, gap, height, callout angle, and sketch plane.
- * @param context : Model context.
- * @param definition {map} : Raw feature definition.
- */
-function socketFamilyCellParams(context, definition is map) returns map {
-  // Look up the specific socket by sizing
-  const socketPath   = definition.socketPath;
-  const socketFamily = getSocketFamilyRef(context, socketPath);
-  // debug(context, [definition.socketPath]);
-  if (socketFamily == undefined) { throw regenError("Unknown socket family '" ~ socketPath); }
-  const basePlane = evPlane(context, { "face":  definition.referencePlaneQ });
-
-  return mergeMaps(socketPath, {
-    "socketPath":      socketPath,
-    "socketFamily":    socketFamily,
-    "insertionGap":    definition.insertionGap,
-    "layerHeight":     definition.layerHeight,
-    "calloutAngle":    definition.calloutAngle,
-    "basePlane":       basePlane,
-  });
-}
-
-/**
- * Full socket cell params, adding body diameter, cutout radius, cutout depth,
- * and bounding boxes to the family params.
- * @param context : Model context.
- * @param definition {map} : Raw feature definition.
- */
-function socketCellParams(context, definition is map) returns map {
-  const socketParams = socketFamilyCellParams(context, definition);
-
-  const socket       = getSocketRef(context, socketParams.socketPath);
-  const bodyDiam     = (socket.ratchet_end_diam != undefined) ? socket.ratchet_end_diam : socket.wx_overall;
-  const cutoutRadius = bodyDiam / 2 + socketParams.insertionGap;
-  const cutoutDepth  = 2 * socketParams.layerHeight;
-
-  // Bounding boxes centered at sketch origin
-  const nomR      = bodyDiam / 2;
-  const nomBounds = {
-    "minH":  -nomR,        "ctrH":  zero,  "maxH":  nomR,        "sizeH": bodyDiam,
-    "minV":  -nomR,        "ctrV":  zero,  "maxV":  nomR,        "sizeV": bodyDiam,
-  };
-  const cutBounds = {
-    "minH":  -cutoutRadius, "ctrH":  zero,  "maxH":  cutoutRadius, "sizeH": 2 * cutoutRadius,
-    "minV":  -cutoutRadius, "ctrV":  zero,  "maxV":  cutoutRadius, "sizeV": 2 * cutoutRadius,
-  };
-
-  return mergeMaps(socketParams, {
-    "socket":        socket,
-    "bodyDiam":      bodyDiam,
-    "cutoutRadius":  cutoutRadius,
-    "cutoutDepth":   cutoutDepth,
-    "nomBounds":     nomBounds,
-    "cutBounds":     cutBounds,
-  });
-}
+// --
 
 // == [Socket Cell Size] ==
 
@@ -792,16 +534,16 @@ precondition {
   definition.familyPath is LookupTablePath;
 
   annotation { "Name": "Holder depth", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.holderDepth, { (millimeter): [tinySizeVal, 10, hugeSizeVal] } as LengthBoundSpec);
+  isLength(definition.holderDepth, { (millimeter): [tinySizeVal, defaultLayerDepth*7, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Layer height", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.layerHeight, { (millimeter): [tinySizeVal, 0.2, hugeSizeVal] } as LengthBoundSpec);
+  isLength(definition.layerHeight, { (millimeter): [tinySizeVal, defaultLayerDepth, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Insertion gap", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.insertionGap, { (millimeter): [0, 0.3, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Cutout padding", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.cutoutPadding, { (millimeter): [0, 0.5, hugeSizeVal] } as LengthBoundSpec);
+  isLength(definition.cutoutPadding, { (millimeter): [0, 1, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Border padding", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.borderPadding, { (millimeter): [0, 1, hugeSizeVal] } as LengthBoundSpec);
@@ -813,7 +555,7 @@ precondition {
   isLength(definition.calloutHeight, { (millimeter): [tinySizeVal, 4, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Label height", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.labelHeight, { (millimeter): [tinySizeVal, 3, hugeSizeVal] } as LengthBoundSpec);
+  isLength(definition.labelHeight, { (millimeter): [tinySizeVal, 7, hugeSizeVal] } as LengthBoundSpec);
 
   annotation { "Name": "Omit sockets", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.omitSockets is string;

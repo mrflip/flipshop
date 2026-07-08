@@ -1,7 +1,7 @@
 FeatureScript 2909;
 // import(path : "onshape/std/common.fs", version : "2909.0");
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
 export enum ShapeType {
   annotation { "Name": "Circle" }
@@ -89,7 +89,7 @@ export function patternedShapes(context is Context, id is Id, definition is map)
     boundingBoxSk:   id + "boundingBoxSk",
     shapesSk:        id + "shapesSk",
     extrudedShapes:  id + "extrudedShapes",
-    patternedShapes: id + "patternedShapes",
+    patterned:       id + "patterned",
     cleanup:         id + "cleanup",
   };
 
@@ -107,7 +107,7 @@ export function patternedShapes(context is Context, id is Id, definition is map)
     "endDepth":  params.body_bounds.sizeD,
   });
 
-  extrude(context, ids.patternedShapes, {
+  extrude(context, ids.patterned, {
     "entities":          qCreatedBy(ids.boundingBoxSk, EntityType.FACE),
     "direction":         sketchPlane.normal,
     "endBound":          BoundingType.BLIND,

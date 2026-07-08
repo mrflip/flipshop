@@ -30,7 +30,7 @@ precondition {
   annotation { "Name": "Base points", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 10, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.basePoints is Query;
 
-  annotation { "Name": "Target bodies", "Filter": EntityType.BODY, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  annotation { "Name": "Target bodies", "Filter": EntityType.BODY && BodyType.SOLID, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.targetBodies is Query;
 
   annotation { "Name": "Length", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
