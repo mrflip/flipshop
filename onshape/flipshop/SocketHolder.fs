@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "4bd45ca6b91bcb8ef553d0f6");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "4c8249af0c7d9cbb721edda7");
 import(path : "4989999bb256f6d486ab7381", version : "458835b267927297884c8358");
 import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
@@ -8,7 +8,7 @@ import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 // (same Feature Studio document — no import needed)
 const callout1Angle = 132 * degree;
 const callout2Angle =  48 * degree;
-const socketCellPadding = { left: 4*mm, top: 3*mm };
+const baseCellPadding = { left: 4*mm, top: 3*mm };
 const defaultLayerDepth = 4.5;
 
 // == [Socket Data Helpers] ==
@@ -117,12 +117,14 @@ function calloutChipOpts(opts is map) returns map {
  *   - @field gridSize {ValueWithUnits} : Cell width/height snapped up to nearest multiple.
  *   - @field calloutHeight {ValueWithUnits} : Cap height of the callout chip text.
  *   - @field labelHeight {ValueWithUnits} : Cap height of the label chip text.
+ *   - @field sidePadding {ValueWithUnits} : Extra padding to insert to the left of cell.
  */
 function socketCellSize(context is Context, id is Id, socket is map, opts is map) returns map {
   const bodyDiam     = (socket.ratchet_end_diam != undefined) ? socket.ratchet_end_diam : socket.wx_overall;
   const bodyRadius   = bodyDiam / 2;
   const cutoutRadius = bodyRadius + opts.insertionGap;
   const paddedRadius = cutoutRadius + opts.cutoutPadding;
+  const cellPadding  = { left: baseCellPadding.left + opts.sidePadding / 2, top: baseCellPadding.top, right: opts.sidePadding / 2 };
 
   // Nose and target-end diameters, falling back to body diameter when absent
   const noseDiam      = (socket.nose_diam      != undefined) ? socket.nose_diam      : bodyDiam;
@@ -130,8 +132,8 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
 
   // Callout chips use targets.drives (chip 1 at 120°) and targets.fhcs_sz (chip 2 at 210°)
   const targets     = socket.targets;
-  const calloutText = ((targets != undefined) && (targets.drives  != undefined)) ? replace(targets.drives,  '(in|mm)$', '')  : "-";
-  const fhcsText    = ((targets != undefined) && (targets.fhcs_sz != undefined)) ? replace(targets.fhcs_sz, '(in|mm)$', '')  : "-";
+  const calloutText = ((targets != undefined) && (targets.drives  != undefined)) ? replace(targets.drives,  '(in|mm)$', '')  : "";
+  const fhcsText    = ((targets != undefined) && (targets.fhcs_sz != undefined)) ? replace(targets.fhcs_sz, '(in|mm)$', '')  : "";
   const labelText   = replace(socket.sizing, '(in|mm)$', '');
   //   debug(context, ["socketCellSize", calloutText, fhcsText, labelText, socket, targets]);
 
@@ -166,19 +168,18 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const labelMaxV  = -paddedRadius;
 
   // Tight bounding box over padded circle + callout chips + label chip +
-  //   socketCellPadding sentinel extents (body circle + its padding lines)
-  const bboxMinH = min(min(min(min(-paddedRadius, calloutCbMinH), fhcsCbMinH), labelMinH),
-                       -(bodyRadius + socketCellPadding.left));
-  const bboxMaxH = max(max(max( paddedRadius, calloutCbMaxH), fhcsCbMaxH), labelMaxH);
+  //   cellPadding sentinel extents (body circle + its padding lines)
+  const bboxMinH = min(min(min(min(-paddedRadius, calloutCbMinH), fhcsCbMinH), labelMinH), -(bodyRadius + cellPadding.left));
+  const bboxMaxH = max(max(max(max( paddedRadius, calloutCbMaxH), fhcsCbMaxH), labelMaxH),  (bodyRadius + cellPadding.right));
   const bboxMinV = min(min(min(-paddedRadius, calloutCbMinV), fhcsCbMinV), labelMinV);
   const bboxMaxV = max(max(max(max( paddedRadius, calloutCbMaxV), fhcsCbMaxV), labelMaxV),
-                       bodyRadius + socketCellPadding.top);
+                       bodyRadius + cellPadding.top);
 
   // Border = tight bounding box expanded by borderPadding on all sides
   const borderMinH = bboxMinH - opts.borderPadding;
   const borderMaxH = bboxMaxH + opts.borderPadding;
-  const borderMinV = bboxMinV - opts.borderPadding;
-  const borderMaxV = bboxMaxV + opts.borderPadding;
+  const borderMinV = bboxMinV - opts.borderPadding / 2 - 1 * mm;
+  const borderMaxV = bboxMaxV + opts.borderPadding / 2;
 
   // Snap up to nearest gridSize multiple.
   // Horizontal: center the extra space (split evenly left/right).
@@ -206,6 +207,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
     "cellMinH":      cellMinH,   "cellMaxH":   cellMaxH,
     "cellMinV":      cellMinV,   "cellMaxV":   cellMaxV,
     "cellWidth":     cellWidth,  "cellHeight": cellHeight,
+    "cellPadding":   cellPadding,
   };
 }
 // --
@@ -223,6 +225,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
  *   - @field basePlane {Plane} : Drawing plane; sketch origin is the coordinate origin.
  *   - @field layerHeight {ValueWithUnits} : Pocket depth = 2 × this.
  *   - @field holderDepth {ValueWithUnits} : Full cell body thickness.
+ *   - @field padLeft     {ValueWithUnits} : Extra padding to apply.
  * @param basePoint {Vector} : Bottom-left corner of the cell rectangle in `basePlane` local coords.
  *   The socket center is at `(-cs.cellMinH, -cs.cellMinV)` relative to this point.
  */
@@ -258,23 +261,28 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "radius":       cs.targetDiam / 2,
     "construction": true,
   });
-  skPoint(sketches.deco, "targetEndDot", { "position":  vector(cx, cy + cs.targetDiam / 2) });
+  skPoint(sketches.deco, "targetEndDot", {
+    "position":     vector(cx, cy + cs.targetDiam / 2),
+  });
   skCircle(sketches.deco, "noseCircle", {
     "center":       vector(cx, cy),
     "radius":       cs.noseDiam / 2,
     "construction": true,
   });
-  skPoint(sketches.deco, "noseDot", { "position":  vector(cx, cy - cs.noseDiam / 2) });
-  // socketCellPadding indicators: construction lines at 9 o'clock and 12 o'clock on the body circle
+  skPoint(sketches.deco, "noseDot", {
+      "position":   vector(cx, cy - cs.noseDiam / 2),
+  });
+
+  // cellPadding indicators: construction lines at 9 o'clock and 12 o'clock on the body circle
   const bodyRadius = cs.bodyDiam / 2;
   skLineSegment(sketches.deco, "padLeft", {
-    "start":        vector(cx - bodyRadius,                              cy),
-    "end":          vector(cx - bodyRadius - socketCellPadding.left,    cy),
+    "start":        vector(cx - bodyRadius,                       cy),
+    "end":          vector(cx - bodyRadius - cs.cellPadding.left, cy),
     "construction": true,
   });
   skLineSegment(sketches.deco, "padTop", {
     "start":        vector(cx, cy + bodyRadius),
-    "end":          vector(cx, cy + bodyRadius + socketCellPadding.top),
+    "end":          vector(cx, cy + bodyRadius + cs.cellPadding.top),
     "construction": true,
   });
   skRectangle(sketches.deco, "bbox", {
@@ -289,9 +297,9 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   // Mount holes on the left border (cells at holder index 0 and 3)
   if (opts.hasHoles) {
     const holeR = 2.6 * mm / 2;
-    const holeX = cx + cs.cellMinH + opts.borderPadding / 2;
-    skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMinV + cs.cellHeight * 0.15), "radius": holeR });
-    skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + cs.cellHeight * 0.85), "radius": holeR });
+    const holeX = cx + cs.cellMinH + opts.borderPadding + holeR * 2;
+    skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMinV + cs.cellHeight * 0.12), "radius": holeR });
+    skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + cs.cellHeight * 0.9  ), "radius": holeR });
   }
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
@@ -404,7 +412,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
  *   - @field headDiam {ValueWithUnits} : Diameter of the screw-head marking circles.
  */
 function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is ValueWithUnits, cellHeight is ValueWithUnits, carrierOpts is map) {
-  const tabW    = 6 * mm;
+  const tabW    = 5 * mm;
   const tabLeft = rightEdgeX - opts.borderPadding;
   const tabH    = cellHeight;
   const ids = {
@@ -430,7 +438,7 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
     "endDepth":  opts.holderDepth,
   });
 
-  const holeCtrX = tabLeft + tabW / 2;
+  const holeCtrX = tabLeft + tabW - 2.5 * mm;
 
   // Head mark circles (non-construction) for laser-cutter reference
   const headMarksSk = newSketchOnPlane(context, ids.headMarksSk, { "sketchPlane":  opts.basePlane });
@@ -453,6 +461,7 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
     "tools":          qCreatedBy(ids.holeTool, EntityType.BODY),
     "targets":        qCreatedBy(ids.plate,    EntityType.BODY),
     "operationType":  BooleanOperationType.SUBTRACTION,
+    "keepTools":      true,
   });
 }
 // --
@@ -478,8 +487,11 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
     const socketRecord = familyRef[ii];
     if (isIn(toString(ii), opts.omitSockets) || isIn(socketRecord.sizing, opts.omitSockets)) { continue; }
     // Id is index-based so part identities survive family changes.
-    const basePoint  = vector(cursorX, zero);
-    const cellOpts   = mergeMaps(opts, { "hasHoles": (actualIdx == 0) || (actualIdx == 3) });
+    const basePoint        = vector(cursorX, zero);
+    const hasHoles         = (actualIdx == 0) || (actualIdx == 3) || (actualIdx == 6);
+    const bumpSize         = (isIn(toString(ii), opts.bumpSizes) || isIn(socketRecord.sizing, opts.bumpSizes));
+    const sidePadding      = bumpSize ? 5 * mm : 0 * mm;
+    const cellOpts         = mergeMaps(opts, { "hasHoles": hasHoles, "sidePadding": sidePadding });
     const cs = socketCell(context, id + ("c" ~ toString(actualIdx)), socketRecord, cellOpts, basePoint);
     cursorX   += cs.cellWidth;
     actualIdx += 1;
@@ -488,8 +500,8 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
 
   if (lastCs != undefined) {
     holeCarrier(context, id + "hc", opts, cursorX, lastCs.cellHeight, {
-      "tapholeDiam":  2.6 * mm,
-      "headDiam":     5.0 * mm,
+      "tapholeDiam":   2.6 * mm,
+      "headDiam":      5.0 * mm,
     });
   }
 
@@ -560,6 +572,9 @@ precondition {
   annotation { "Name": "Omit sockets", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.omitSockets is string;
 
+  annotation { "Name": "Bump sizes", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  definition.bumpSizes is string;
+
   annotation { "Name": "Max total width", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.maxTotalWidth, { (millimeter): [0, 0, hugeSizeVal] } as LengthBoundSpec);
 
@@ -573,8 +588,9 @@ precondition {
   // debug(context, ["socketHolderPart", familyRef], DebugColor.MAGENTA);
   if (familyRef == undefined) { throw regenError("Unknown socket family"); }
 
-  const omitSockets   = (definition.omitSockets == "") ? [] : splitByRegexp(definition.omitSockets, ",\\s*");
-  const maxTotalWidth = (definition.maxTotalWidth < tinySizeVal * mm) ? hugeSizeVal * mm : definition.maxTotalWidth;
+  const omitSockets     = (definition.omitSockets == "") ? [] : splitByRegexp(definition.omitSockets, ",\\s*");
+  const bumpSizes       = (definition.bumpSizes   == "") ? [] : splitByRegexp(definition.bumpSizes,   ",\\s*");
+  const maxTotalWidth   = (definition.maxTotalWidth   < tinySizeVal * mm) ? hugeSizeVal * mm : definition.maxTotalWidth;
   // Family title: strip the sizing prefix from the first socket's title ("2mm Int Hex…" → "Int Hex…")
   const familyTitle   = replace(familyRef[0].title, "^" ~ familyRef[0].sizing ~ "\\s+", "");
   // Snap holder depth to ceiling multiple of layer height so all layers are full
@@ -592,6 +608,7 @@ precondition {
     "labelHeight":    definition.labelHeight,
     "omitSockets":    omitSockets,
     "maxTotalWidth":  maxTotalWidth,
+    "bumpSizes":      bumpSizes,
     "familyTitle":    familyTitle,
     "mergeCells":     definition.mergeCells,
   });

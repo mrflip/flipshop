@@ -98,15 +98,6 @@ export const ProportionalResizingPolicy = {
   "Maximize (proportionally grow to cover)":  ResizingPolicy.MAXIMIZE,
 };
 
-/** Returns true if `val` is a proportional `ResizingPolicy` (i.e. both axes scale uniformly). */
-export function resizingIPolicysProportional(val is ResizingPolicy) returns boolean {
-  return val == ResizingPolicy.CONTAIN  ||
-         val == ResizingPolicy.COVER    ||
-         val == ResizingPolicy.DOWNSCALE ||
-         val == ResizingPolicy.MAXIMIZE ||
-         val == ResizingPolicy.FOLLOW;
-}
-
 export const IndependentResizingPolicy = {
   "None (no resizing)":                       ResizingPolicy.NONE,
   "Fill (proportionally resize to fit)":      ResizingPolicy.STRETCH,

@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "d88efbe00cb82e247edbd41c");
+import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
 // == [Magnet Cavity Part Feature] ==
 
@@ -30,7 +30,7 @@ precondition {
   annotation { "Name": "Base points", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 10, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.basePoints is Query;
 
-  annotation { "Name": "Target bodies", "Filter": EntityType.BODY && BodyType.SOLID, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  annotation { "Name": "Target bodies", "Filter": EntityType.BODY, "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.targetBodies is Query;
 
   annotation { "Name": "Length", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
