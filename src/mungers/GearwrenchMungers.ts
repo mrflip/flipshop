@@ -110,6 +110,63 @@ export const fieldname_remap = {
 }
 // --
 
+const SizeOverrides = {
+  '7/16in 6-Point US 3/8Dr Regular': { "ratchet_end_diam": 18.623 },
+  '7/16in 6-Point US 3/8Dr Deep':    { "ratchet_end_diam": 18.623 },
+  '1/2in 6-Point US 3/8Dr Regular':  { "ratchet_end_diam": 18.923 },
+  '1/2in 6-Point US 3/8Dr Deep':     { "ratchet_end_diam": 18.923 },
+  '3/4in 6-Point US 3/8Dr Regular':  { "ratchet_end_diam": 25.708 },
+  '3/4in 6-Point US 3/8Dr Deep':     { "ratchet_end_diam": 25.708 },
+}
+
+export const AdditonalSizes = {
+  '4.5mm 6-Point MM 1/4Dr Deep': {
+    dir:               /impact-products/,
+    from:               "4mm 6-Point MM 1/4Dr Deep",
+    title:            "4.5mm 6-Point MM 1/4Dr Deep",
+    sizing:           "4.5mm",
+    sizing_mm:        4.5,
+    sizing_in:        0.1771654,
+    //
+    target_end_diam:  7.4,
+    target_dp:        3.5,
+    bolt_clr_diam:    4,
+    //
+    targets:          {},
+    sku:              "84138",
+    upc:              "099575841385",
+    url:              "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84138-14-drive-6-point-deep-impact-metric-socket-45mm",
+    img_url:          "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84138_IMG-MAIN.jpg",
+    gwtitle:          "1/4in Drive 6 Point Deep Impact Metric Socket 4.5mm",
+  },
+  '4.5mm 6-Point MM 1/4Dr Regular': {
+    dir:               /impact-products/,
+    from:               "4mm 6-Point MM 1/4Dr Regular",
+    title:            "4.5mm 6-Point MM 1/4Dr Regular",
+    sizing:           "4.5mm",
+    sizing_mm:        4.5,
+    sizing_in:        0.1771654,
+    //
+    target_end_diam:  7.4,
+    target_dp:        8.001,
+    bolt_clr_diam:    3.9878,
+    //
+    targets:          {},
+    sku:              "84112",
+    upc:              "099575841125",
+    url:              "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84112-14-drive-6-point-standard-impact-metric-socket-45mm",
+    img_url:          "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84112_IMG-MAIN.jpg",
+    gwtitle:          "1/4in Drive 6 Point Standard Impact Metric Socket 4.5mm",
+  },
+
+  "9/32in 6-Point US 3/8Dr Regular":  { from:  "1/4in 6-Point US 3/8Dr Regular", dir: /chrome-sockets/, title:  "9/32in 6-Point US 3/8Dr Regular", sizing:  "9/32in", sizing_mm: 7.14375, sizing_in: 0.28125, target_end_diam: 10.85, targets: {},                                                                  sku: "80108", upc: "099575801082", url: "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80108-14-drive-6-point-standard-sae-socket-932",  img_url: "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80108_IMG-MAIN.jpg" },
+  "11/32in 6-Point US 3/8Dr Regular": { from: "5/16in 6-Point US 3/8Dr Regular", dir: /chrome-sockets/, title: "11/32in 6-Point US 3/8Dr Regular", sizing: "11/32in", sizing_mm: 8.73125, sizing_in: 0.34375, target_end_diam: 12.75, targets: { drives:  "#8",  exthex_sz: "#8",  hhcs_sz:  "#8", hn_sz: "N#8"  }, sku: "80110", upc: "099575801105", url: "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80110-14-drive-6-point-standard-sae-socket-1132", img_url: "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80110_IMG-MAIN.jpg" },
+
+  "9/32in 6-Point US 3/8Dr Deep":     { from:  "1/4in 6-Point US 3/8Dr Deep",    dir: /chrome-sockets/, title:  "9/32in 6-Point US 3/8Dr Deep",    sizing:  "9/32in", sizing_mm: 7.14375, sizing_in: 0.28125, target_end_diam: 10.85, targets: {},                                                                  sku: "84129", upc: "099575841293", url: "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84129-14-drive-6-point-deep-impact-sae-socket-932",  img_url: "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84129_IMG-MAIN.jpg" },
+  "11/32in 6-Point US 3/8Dr Deep":    { from: "5/16in 6-Point US 3/8Dr Deep",    dir: /chrome-sockets/, title: "11/32in 6-Point US 3/8Dr Deep",    sizing: "11/32in", sizing_mm: 8.73125, sizing_in: 0.34375, target_end_diam: 12.75, targets: { drives:  "#8",  exthex_sz: "#8",  hhcs_sz:  "#8", hn_sz: "N#8"  }, sku: "84131", upc: "099575841316", url: "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84131-14-drive-6-point-deep-impact-sae-socket-1132", img_url: "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84131_IMG-MAIN.jpg" },
+
+} satisfies TY.Bag<Partial<GearwrenchSocketSk> & { from: string, dir: RegExp }>
+
 // == [Helpers] ==
 
 /** Tracks enum values for each field */
@@ -267,6 +324,7 @@ export function parseProductPage(filepath: TY.Anypath, textblob: string): Gearwr
   }
   const socket = gearwrenchSocket.cast(result as GearwrenchSocketSk, { filepath, specifications })
   socket.title = socket.sizing + " " + Sockets.SocketWrench.familyTitleFor(socket)
+  if (SizeOverrides[socket.title]) { _.merge(socket, SizeOverrides[socket.title]) }
   return socket
 }
 // --

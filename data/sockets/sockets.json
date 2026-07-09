@@ -702,7 +702,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.072575,
@@ -739,7 +738,9 @@
     "bit_ln": 125.0188,
     "bit_ln_total": 133.985,
     "nose_diam": 19.05,
-    "targets": {},
+    "targets": {
+      "sss_sz": "M16"
+    },
     "wt": 0.077111,
     "wt_lb": 0.17,
     "sku": "80447",
@@ -976,7 +977,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.095254,
@@ -1012,7 +1012,9 @@
     "ratchet_end_diam": 18.034,
     "bit_ln": 134.112,
     "nose_diam": 18.034,
-    "targets": {},
+    "targets": {
+      "sss_sz": "M16"
+    },
     "wt": 0.117934,
     "wt_lb": 0.26,
     "sku": "82552",
@@ -1289,7 +1291,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.058967,
@@ -1325,7 +1326,9 @@
     "ratchet_end_diam": 18.034,
     "bit_ln": 49.022,
     "nose_diam": 18.034,
-    "targets": {},
+    "targets": {
+      "sss_sz": "M16"
+    },
     "wt": 0.072575,
     "wt_lb": 0.16,
     "sku": "82544",
@@ -1566,7 +1569,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.058967,
@@ -1603,7 +1605,9 @@
     "bit_ln": 23.0124,
     "bit_ln_total": 29.9974,
     "nose_diam": 19.05,
-    "targets": {},
+    "targets": {
+      "sss_sz": "M16"
+    },
     "wt": 0.063503,
     "wt_lb": 0.14,
     "sku": "82505",
@@ -1822,7 +1826,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.072575,
@@ -1895,8 +1898,7 @@
       "shcs_sz": "M14",
       "fhcs_sz": "M20",
       "bhcs_sz": "M20",
-      "sss_sz": "M24",
-      "losock_sz": "M16"
+      "sss_sz": "M24"
     },
     "wt": 0.136078,
     "wt_lb": 0.3,
@@ -2222,7 +2224,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.063503,
@@ -2259,7 +2260,9 @@
     "bit_ln": 23.0124,
     "bit_ln_total": 29.9974,
     "nose_diam": 19.05,
-    "targets": {},
+    "targets": {
+      "sss_sz": "M16"
+    },
     "wt": 0.063503,
     "wt_lb": 0.14,
     "sku": "80430",
@@ -2375,8 +2378,7 @@
       "shcs_sz": "M14",
       "fhcs_sz": "M20",
       "bhcs_sz": "M20",
-      "sss_sz": "M24",
-      "losock_sz": "M16"
+      "sss_sz": "M24"
     },
     "wt": 0.063503,
     "wt_lb": 0.14,
@@ -2457,7 +2459,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.117934,
@@ -2538,8 +2539,7 @@
       "shcs_sz": "M14",
       "fhcs_sz": "M20",
       "bhcs_sz": "M20",
-      "sss_sz": "M24",
-      "losock_sz": "M16"
+      "sss_sz": "M24"
     },
     "wt": 0.217724,
     "wt_lb": 0.48,
@@ -2577,7 +2577,9 @@
     "targets": {
       "drives": "M16",
       "shcs_sz": "M16",
-      "losock_sz": "M20"
+      "fhcs_sz": "M24",
+      "bhcs_sz": "M24",
+      "losock_sz": "M16"
     },
     "wt": 0.308443,
     "wt_lb": 0.68,
@@ -2615,7 +2617,7 @@
     "targets": {
       "drives": "M20",
       "shcs_sz": "M20",
-      "losock_sz": "M24"
+      "losock_sz": "M20"
     },
     "wt": 0.421841,
     "wt_lb": 0.93,
@@ -2696,7 +2698,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.09979,
@@ -2777,8 +2778,7 @@
       "shcs_sz": "M14",
       "fhcs_sz": "M20",
       "bhcs_sz": "M20",
-      "sss_sz": "M24",
-      "losock_sz": "M16"
+      "sss_sz": "M24"
     },
     "wt": 0.158757,
     "wt_lb": 0.35,
@@ -2816,7 +2816,9 @@
     "targets": {
       "drives": "M16",
       "shcs_sz": "M16",
-      "losock_sz": "M20"
+      "fhcs_sz": "M24",
+      "bhcs_sz": "M24",
+      "losock_sz": "M16"
     },
     "wt": 0.195045,
     "wt_lb": 0.43,
@@ -2854,7 +2856,7 @@
     "targets": {
       "drives": "M20",
       "shcs_sz": "M20",
-      "losock_sz": "M24"
+      "losock_sz": "M20"
     },
     "wt": 0.267619,
     "wt_lb": 0.59,
@@ -2926,7 +2928,9 @@
     "bit_ln": 10.414,
     "shoulder_ln": 20.32,
     "nose_diam": 8.89,
-    "targets": {},
+    "targets": {
+      "sss_sz": "M16"
+    },
     "wt": 0.090718,
     "wt_lb": 0.2,
     "sku": "84626",
@@ -3033,8 +3037,7 @@
       "shcs_sz": "M14",
       "fhcs_sz": "M20",
       "bhcs_sz": "M20",
-      "sss_sz": "M24",
-      "losock_sz": "M16"
+      "sss_sz": "M24"
     },
     "wt": 0.12247,
     "wt_lb": 0.27,
@@ -3102,7 +3105,9 @@
     "targets": {
       "drives": "M16",
       "shcs_sz": "M16",
-      "losock_sz": "M20"
+      "fhcs_sz": "M24",
+      "bhcs_sz": "M24",
+      "losock_sz": "M16"
     },
     "wt": 0.140614,
     "wt_lb": 0.31,
@@ -3215,7 +3220,6 @@
       "shcs_sz": "M10",
       "fhcs_sz": "M12",
       "bhcs_sz": "M12",
-      "sss_sz": "M16",
       "losock_sz": "M12"
     },
     "wt": 0.104326,
@@ -3298,8 +3302,7 @@
       "shcs_sz": "M14",
       "fhcs_sz": "M20",
       "bhcs_sz": "M20",
-      "sss_sz": "M24",
-      "losock_sz": "M16"
+      "sss_sz": "M24"
     },
     "wt": 0.127006,
     "wt_lb": 0.28,
@@ -3338,7 +3341,9 @@
     "targets": {
       "drives": "M16",
       "shcs_sz": "M16",
-      "losock_sz": "M20"
+      "fhcs_sz": "M24",
+      "bhcs_sz": "M24",
+      "losock_sz": "M16"
     },
     "wt": 0.149685,
     "wt_lb": 0.33,
@@ -3377,7 +3382,7 @@
     "targets": {
       "drives": "M20",
       "shcs_sz": "M20",
-      "losock_sz": "M24"
+      "losock_sz": "M20"
     },
     "wt": 0.154221,
     "wt_lb": 0.34,
@@ -3452,10 +3457,10 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
     "targets": {
-      "drives": "#3",
-      "shcs_sz": "#3",
-      "fhcs_sz": "#2",
-      "bhcs_sz": "#2",
+      "drives": "#1",
+      "shcs_sz": "#1",
+      "fhcs_sz": "#4",
+      "bhcs_sz": "#4",
       "sss_sz": "#6"
     },
     "wt": 0.02268,
@@ -3493,10 +3498,10 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
     "targets": {
-      "drives": "#4",
-      "shcs_sz": "#4",
-      "fhcs_sz": "#4",
-      "bhcs_sz": "#4",
+      "drives": "#2",
+      "shcs_sz": "#2",
+      "fhcs_sz": "#6",
+      "bhcs_sz": "#6",
       "sss_sz": "#8"
     },
     "wt": 0.02268,
@@ -3534,10 +3539,10 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
     "targets": {
-      "drives": "#6",
-      "shcs_sz": "#6",
-      "fhcs_sz": "#6",
-      "bhcs_sz": "#6",
+      "drives": "#4",
+      "shcs_sz": "#4",
+      "fhcs_sz": "#8",
+      "bhcs_sz": "#8",
       "sss_sz": "#10"
     },
     "wt": 0.02268,
@@ -3575,8 +3580,8 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
     "targets": {
-      "fhcs_sz": "#8",
-      "bhcs_sz": "#8"
+      "drives": "#6",
+      "shcs_sz": "#6"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -3613,8 +3618,6 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
     "targets": {
-      "drives": "#8",
-      "shcs_sz": "#8",
       "fhcs_sz": "#10",
       "bhcs_sz": "#10",
       "sss_sz": "1/4in"
@@ -3653,7 +3656,10 @@
     "bit_ln": 16.764,
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
-    "targets": {},
+    "targets": {
+      "drives": "#8",
+      "shcs_sz": "#8"
+    },
     "wt": 0.02268,
     "wt_lb": 0.05,
     "sku": "80156",
@@ -3851,8 +3857,6 @@
     "bit_ln_total": 131.9784,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#8",
-      "shcs_sz": "#8",
       "fhcs_sz": "#10",
       "bhcs_sz": "#10",
       "sss_sz": "1/4in"
@@ -4135,8 +4139,6 @@
     "bit_ln": 134.874,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#8",
-      "shcs_sz": "#8",
       "fhcs_sz": "#10",
       "bhcs_sz": "#10",
       "sss_sz": "1/4in"
@@ -4413,8 +4415,6 @@
     "bit_ln": 50.038,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#8",
-      "shcs_sz": "#8",
       "fhcs_sz": "#10",
       "bhcs_sz": "#10",
       "sss_sz": "1/4in"
@@ -4452,7 +4452,10 @@
     "ratchet_end_diam": 17.018,
     "bit_ln": 50.038,
     "nose_diam": 14.986,
-    "targets": {},
+    "targets": {
+      "drives": "#8",
+      "shcs_sz": "#8"
+    },
     "wt": 0.045359,
     "wt_lb": 0.1,
     "sku": "82522",
@@ -4726,8 +4729,6 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#8",
-      "shcs_sz": "#8",
       "fhcs_sz": "#10",
       "bhcs_sz": "#10",
       "sss_sz": "1/4in"
@@ -5185,7 +5186,10 @@
     "wy_overall": 21.844,
     "ratchet_end_diam": 21.844,
     "bit_ln": 19.558,
-    "targets": {},
+    "targets": {
+      "drives": "9/16in",
+      "shcs_sz": "9/16in"
+    },
     "wt": 0.090718,
     "wt_lb": 0.2,
     "sku": "84402",
@@ -5255,10 +5259,10 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#3",
-      "shcs_sz": "#3",
-      "fhcs_sz": "#2",
-      "bhcs_sz": "#2",
+      "drives": "#1",
+      "shcs_sz": "#1",
+      "fhcs_sz": "#4",
+      "bhcs_sz": "#4",
       "sss_sz": "#6"
     },
     "wt": 0.040823,
@@ -5296,10 +5300,10 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#4",
-      "shcs_sz": "#4",
-      "fhcs_sz": "#4",
-      "bhcs_sz": "#4",
+      "drives": "#2",
+      "shcs_sz": "#2",
+      "fhcs_sz": "#6",
+      "bhcs_sz": "#6",
       "sss_sz": "#8"
     },
     "wt": 0.049895,
@@ -5337,10 +5341,10 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#6",
-      "shcs_sz": "#6",
-      "fhcs_sz": "#6",
-      "bhcs_sz": "#6",
+      "drives": "#4",
+      "shcs_sz": "#4",
+      "fhcs_sz": "#8",
+      "bhcs_sz": "#8",
       "sss_sz": "#10"
     },
     "wt": 0.058967,
@@ -5378,8 +5382,8 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
-      "fhcs_sz": "#8",
-      "bhcs_sz": "#8"
+      "drives": "#6",
+      "shcs_sz": "#6"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -5416,8 +5420,6 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
-      "drives": "#8",
-      "shcs_sz": "#8",
       "fhcs_sz": "#10",
       "bhcs_sz": "#10",
       "sss_sz": "1/4in"
@@ -5456,7 +5458,10 @@
     "bit_ln": 15.0114,
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
-    "targets": {},
+    "targets": {
+      "drives": "#8",
+      "shcs_sz": "#8"
+    },
     "wt": 0.063503,
     "wt_lb": 0.14,
     "sku": "80415D",
@@ -6091,7 +6096,10 @@
     "ratchet_end_diam": 23.876,
     "bit_ln": 55.118,
     "nose_diam": 19.05,
-    "targets": {},
+    "targets": {
+      "drives": "9/16in",
+      "shcs_sz": "9/16in"
+    },
     "wt": 0.136078,
     "wt_lb": 0.3,
     "sku": "82558",
@@ -6317,7 +6325,10 @@
     "bit_ln": 12.954,
     "shoulder_ln": 19.812,
     "nose_diam": 11.176,
-    "targets": {},
+    "targets": {
+      "drives": "9/16in",
+      "shcs_sz": "9/16in"
+    },
     "wt": 0.117934,
     "wt_lb": 0.26,
     "sku": "84635",
@@ -6610,7 +6621,10 @@
     "bit_ln": 27.8638,
     "bit_ln_total": 37.846,
     "nose_diam": 18.9992,
-    "targets": {},
+    "targets": {
+      "drives": "9/16in",
+      "shcs_sz": "9/16in"
+    },
     "wt": 0.108862,
     "wt_lb": 0.24,
     "sku": "80653",
@@ -9955,11 +9969,11 @@
     "target_dp": 6.096,
     "bolt_clr_diam": 8.3058,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -9994,11 +10008,11 @@
     "target_dp": 6.731,
     "bolt_clr_diam": 8.3058,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.077111,
     "wt_lb": 0.17,
@@ -10065,13 +10079,7 @@
     "shoulder_ln": 49.9872,
     "target_dp": 7.493,
     "bolt_clr_diam": 10.3378,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.086183,
     "wt_lb": 0.19,
     "sku": "84150D",
@@ -10118,6 +10126,41 @@
     "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80138-14-drive-6-point-deep-metric-socket-4mm",
     "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80138_IMG-MAIN.jpg",
     "gwtitle": "1/4in Drive 6 Point Deep Metric Socket 4mm",
+    "is_knurled": false,
+    "is_magnetic": false,
+    "is_prop65": true,
+    "material": "Alloy Steel",
+    "surf_finish": "Full Polish Chrome",
+    "ansi_stdz": "Meets or Exceeds",
+    "asme_stdz": "B107.5M"
+  },
+  {
+    "title": "4.5mm 6-Point MM 1/4Dr Deep",
+    "socket_kind": "socket_exthex",
+    "drive_kind": "exthex",
+    "unit_system": "metric",
+    "sqdrive_size": "isq_0250in",
+    "reach_kind": "deep",
+    "socket_variant": "std",
+    "sizing": "4.5mm",
+    "sizing_mm": 4.5,
+    "sizing_in": 0.1771654,
+    "ln_overall": 48.9966,
+    "wx_overall": 11.9126,
+    "wy_overall": 11.9126,
+    "target_end_diam": 7.4,
+    "ratchet_end_diam": 11.9126,
+    "shoulder_ln": 21.9964,
+    "target_dp": 3.5,
+    "bolt_clr_diam": 4,
+    "targets": {},
+    "wt": 0.013608,
+    "wt_lb": 0.03,
+    "sku": "84138",
+    "upc": "099575841385",
+    "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84138-14-drive-6-point-deep-impact-metric-socket-45mm",
+    "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84138_IMG-MAIN.jpg",
+    "gwtitle": "1/4in Drive 6 Point Deep Impact Metric Socket 4.5mm",
     "is_knurled": false,
     "is_magnetic": false,
     "is_prop65": true,
@@ -10456,11 +10499,11 @@
     "target_dp": 7.0104,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -10497,11 +10540,11 @@
     "target_dp": 7.6962,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -10572,13 +10615,7 @@
     "shoulder_ln": 21.9964,
     "target_dp": 8.89,
     "bolt_clr_diam": 5.5118,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.068039,
     "wt_lb": 0.15,
     "sku": "80150",
@@ -10960,11 +10997,11 @@
     "target_dp": 14.478,
     "bolt_clr_diam": 9.906,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -11033,13 +11070,7 @@
     "ratchet_end_diam": 20.066,
     "target_dp": 14.478,
     "bolt_clr_diam": 12.954,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.054431,
     "wt_lb": 0.12,
     "sku": "80150S-06",
@@ -11441,11 +11472,11 @@
     "target_dp": 6.096,
     "bolt_clr_diam": 8.3058,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.031751,
     "wt_lb": 0.07,
@@ -11480,11 +11511,11 @@
     "target_dp": 6.731,
     "bolt_clr_diam": 8.3058,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.036287,
     "wt_lb": 0.08,
@@ -11551,13 +11582,7 @@
     "shoulder_ln": 22.987,
     "target_dp": 7.493,
     "bolt_clr_diam": 10.3378,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.049895,
     "wt_lb": 0.11,
     "sku": "84124",
@@ -11604,6 +11629,41 @@
     "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80125-14-drive-6-point-standard-metric-socket-4mm",
     "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80125_IMG-MAIN.jpg",
     "gwtitle": "1/4in Drive 6 Point Standard Metric Socket 4mm",
+    "is_knurled": false,
+    "is_magnetic": false,
+    "is_prop65": true,
+    "material": "Alloy Steel",
+    "surf_finish": "Full Polish Chrome",
+    "ansi_stdz": "Meets or Exceeds",
+    "asme_stdz": "B107.5M"
+  },
+  {
+    "title": "4.5mm 6-Point MM 1/4Dr Regular",
+    "socket_kind": "socket_exthex",
+    "drive_kind": "exthex",
+    "unit_system": "metric",
+    "sqdrive_size": "isq_0250in",
+    "reach_kind": "reg",
+    "socket_variant": "std",
+    "sizing": "4.5mm",
+    "sizing_mm": 4.5,
+    "sizing_in": 0.1771654,
+    "ln_overall": 24.511,
+    "wx_overall": 11.811,
+    "wy_overall": 11.811,
+    "target_end_diam": 7.4,
+    "ratchet_end_diam": 11.811,
+    "shoulder_ln": 11.5062,
+    "target_dp": 8.001,
+    "bolt_clr_diam": 3.9878,
+    "targets": {},
+    "wt": 0.01134,
+    "wt_lb": 0.025,
+    "sku": "84112",
+    "upc": "099575841125",
+    "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84112-14-drive-6-point-standard-impact-metric-socket-45mm",
+    "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84112_IMG-MAIN.jpg",
+    "gwtitle": "1/4in Drive 6 Point Standard Impact Metric Socket 4.5mm",
     "is_knurled": false,
     "is_magnetic": false,
     "is_prop65": true,
@@ -11942,11 +12002,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -11983,11 +12043,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -12058,13 +12118,7 @@
     "shoulder_ln": 11.5062,
     "target_dp": 14.5034,
     "bolt_clr_diam": 5.588,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.031751,
     "wt_lb": 0.07,
     "sku": "80137",
@@ -12384,11 +12438,11 @@
     "ratchet_end_diam": 13.9954,
     "target_dp": 8.128,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -12422,11 +12476,11 @@
     "ratchet_end_diam": 13.9954,
     "target_dp": 8.128,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -12491,13 +12545,7 @@
     "target_end_diam": 20.2946,
     "ratchet_end_diam": 13.9954,
     "target_dp": 10.16,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.031751,
     "wt_lb": 0.07,
     "sku": "80261",
@@ -12676,11 +12724,11 @@
     "target_dp": 23.0124,
     "bolt_clr_diam": 9.4996,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.086183,
     "wt_lb": 0.19,
@@ -12715,11 +12763,11 @@
     "target_dp": 23.0124,
     "bolt_clr_diam": 9.4996,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.095254,
     "wt_lb": 0.21,
@@ -12786,13 +12834,7 @@
     "shoulder_ln": 62.992,
     "target_dp": 23.0124,
     "bolt_clr_diam": 10.9982,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.108862,
     "wt_lb": 0.24,
     "sku": "84338N",
@@ -12864,7 +12906,13 @@
     "shoulder_ln": 62.992,
     "target_dp": 23.0124,
     "bolt_clr_diam": 12.3952,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.149685,
     "wt_lb": 0.33,
     "sku": "84340N",
@@ -12898,11 +12946,11 @@
     "target_dp": 23.0124,
     "bolt_clr_diam": 12.3952,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.167829,
     "wt_lb": 0.37,
@@ -12937,11 +12985,11 @@
     "target_dp": 23.0124,
     "bolt_clr_diam": 15.0114,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.167829,
     "wt_lb": 0.37,
@@ -12976,11 +13024,11 @@
     "target_dp": 23.0124,
     "bolt_clr_diam": 16.002,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.217724,
     "wt_lb": 0.48,
@@ -13015,11 +13063,11 @@
     "target_dp": 23.0124,
     "bolt_clr_diam": 16.9926,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.263084,
     "wt_lb": 0.58,
@@ -13282,11 +13330,11 @@
     "target_dp": 6.604,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.063503,
     "wt_lb": 0.14,
@@ -13323,11 +13371,11 @@
     "target_dp": 7.2898,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.072575,
     "wt_lb": 0.16,
@@ -13398,13 +13446,7 @@
     "shoulder_ln": 29.0068,
     "target_dp": 8.89,
     "bolt_clr_diam": 8.509,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.077111,
     "wt_lb": 0.17,
     "sku": "80397",
@@ -13480,7 +13522,13 @@
     "shoulder_ln": 29.0068,
     "target_dp": 10.1092,
     "bolt_clr_diam": 8.509,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.086183,
     "wt_lb": 0.19,
     "sku": "80399",
@@ -13516,11 +13564,11 @@
     "target_dp": 10.6934,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.108862,
     "wt_lb": 0.24,
@@ -13557,11 +13605,11 @@
     "target_dp": 11.6078,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -13633,11 +13681,11 @@
     "target_dp": 12.192,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.117934,
     "wt_lb": 0.26,
@@ -13674,11 +13722,11 @@
     "target_dp": 13.208,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.12247,
     "wt_lb": 0.27,
@@ -13977,11 +14025,11 @@
     "target_dp": 21.082,
     "bolt_clr_diam": 9.906,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -14016,11 +14064,11 @@
     "target_dp": 21.082,
     "bolt_clr_diam": 10.922,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -14087,13 +14135,7 @@
     "ratchet_end_diam": 20.574,
     "target_dp": 21.082,
     "bolt_clr_diam": 12.954,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.072575,
     "wt_lb": 0.16,
     "sku": "80397S-06",
@@ -14165,7 +14207,13 @@
     "ratchet_end_diam": 22.098,
     "target_dp": 21.082,
     "bolt_clr_diam": 14.986,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.086183,
     "wt_lb": 0.19,
     "sku": "80399S-06",
@@ -14199,11 +14247,11 @@
     "target_dp": 21.082,
     "bolt_clr_diam": 16.002,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.095254,
     "wt_lb": 0.21,
@@ -14238,11 +14286,11 @@
     "target_dp": 21.082,
     "bolt_clr_diam": 17.018,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.09979,
     "wt_lb": 0.22,
@@ -14422,11 +14470,11 @@
     "target_dp": 8.9916,
     "bolt_clr_diam": 8.7884,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.036287,
     "wt_lb": 0.08,
@@ -14461,11 +14509,11 @@
     "target_dp": 10.9982,
     "bolt_clr_diam": 8.7884,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.040823,
     "wt_lb": 0.09,
@@ -14532,13 +14580,7 @@
     "shoulder_ln": 29.9974,
     "target_dp": 10.9982,
     "bolt_clr_diam": 11.9888,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.054431,
     "wt_lb": 0.12,
     "sku": "84316N",
@@ -14610,7 +14652,13 @@
     "shoulder_ln": 29.9974,
     "target_dp": 10.9982,
     "bolt_clr_diam": 13.9954,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.072575,
     "wt_lb": 0.16,
     "sku": "84318N",
@@ -14645,11 +14693,11 @@
     "target_dp": 11.9888,
     "bolt_clr_diam": 13.9954,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.077111,
     "wt_lb": 0.17,
@@ -14684,11 +14732,11 @@
     "target_dp": 11.9888,
     "bolt_clr_diam": 18.3896,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.081647,
     "wt_lb": 0.18,
@@ -14723,11 +14771,11 @@
     "target_dp": 11.9888,
     "bolt_clr_diam": 19.9898,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.104326,
     "wt_lb": 0.23,
@@ -14762,11 +14810,11 @@
     "target_dp": 13.0048,
     "bolt_clr_diam": 19.9898,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.12247,
     "wt_lb": 0.27,
@@ -15029,11 +15077,11 @@
     "target_dp": 8.001,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -15070,11 +15118,11 @@
     "target_dp": 8.001,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -15145,13 +15193,7 @@
     "shoulder_ln": 11.5062,
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.031751,
     "wt_lb": 0.07,
     "sku": "80383",
@@ -15227,7 +15269,13 @@
     "shoulder_ln": 11.5062,
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.049895,
     "wt_lb": 0.11,
     "sku": "80385",
@@ -15263,11 +15311,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -15304,11 +15352,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -15380,11 +15428,11 @@
     "target_dp": 15.0114,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.086183,
     "wt_lb": 0.19,
@@ -15421,11 +15469,11 @@
     "target_dp": 15.0114,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.09979,
     "wt_lb": 0.22,
@@ -15556,11 +15604,11 @@
     "male_drive_size": "isq_0375in",
     "female_drive_size": "isq_0375in",
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.30935,
     "wt_lb": 0.682,
@@ -15591,11 +15639,11 @@
     "male_drive_size": "isq_0375in",
     "female_drive_size": "isq_0375in",
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.30935,
     "wt_lb": 0.682,
@@ -15654,13 +15702,7 @@
     "ln_overall": 228.6,
     "male_drive_size": "isq_0375in",
     "female_drive_size": "isq_0375in",
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.30935,
     "wt_lb": 0.682,
     "sku": "84495",
@@ -15805,11 +15847,11 @@
     "shoulder_ln": 15.5194,
     "target_dp": 12.8016,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -15844,11 +15886,11 @@
     "shoulder_ln": 15.4432,
     "target_dp": 12.8016,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -15915,13 +15957,7 @@
     "ratchet_end_diam": 25.0952,
     "shoulder_ln": 16.4846,
     "target_dp": 12.8016,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.131542,
     "wt_lb": 0.29,
     "sku": "84465",
@@ -15993,7 +16029,13 @@
     "ratchet_end_diam": 25.0952,
     "shoulder_ln": 16.1544,
     "target_dp": 12.8016,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.131542,
     "wt_lb": 0.29,
     "sku": "84467",
@@ -16027,11 +16069,11 @@
     "shoulder_ln": 16.1544,
     "target_dp": 12.8016,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.127006,
     "wt_lb": 0.28,
@@ -16066,11 +16108,11 @@
     "shoulder_ln": 16.2306,
     "target_dp": 12.8016,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.131542,
     "wt_lb": 0.29,
@@ -16105,11 +16147,11 @@
     "shoulder_ln": 16.4084,
     "target_dp": 12.8016,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.140614,
     "wt_lb": 0.31,
@@ -16144,11 +16186,11 @@
     "shoulder_ln": 16.5862,
     "target_dp": 12.8016,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.154221,
     "wt_lb": 0.34,
@@ -16287,11 +16329,11 @@
     "ratchet_end_diam": 18.9992,
     "target_dp": 8.128,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -16323,11 +16365,11 @@
     "ratchet_end_diam": 18.9992,
     "target_dp": 7.366,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -16388,13 +16430,7 @@
     "target_end_diam": 12.7,
     "ratchet_end_diam": 18.9992,
     "target_dp": 9.398,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.058967,
     "wt_lb": 0.13,
     "sku": "80338",
@@ -16460,7 +16496,13 @@
     "target_end_diam": 15.1892,
     "ratchet_end_diam": 18.9992,
     "target_dp": 10.16,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.072575,
     "wt_lb": 0.16,
     "sku": "80340",
@@ -16491,11 +16533,11 @@
     "ratchet_end_diam": 18.9992,
     "target_dp": 10.16,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.072575,
     "wt_lb": 0.16,
@@ -16527,11 +16569,11 @@
     "ratchet_end_diam": 18.9992,
     "target_dp": 11.43,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.072575,
     "wt_lb": 0.16,
@@ -16709,11 +16751,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 11.4046,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.167829,
     "wt_lb": 0.37,
@@ -16748,11 +16790,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 12.4968,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.163293,
     "wt_lb": 0.36,
@@ -16819,13 +16861,7 @@
     "shoulder_ln": 81.9912,
     "target_dp": 16.9926,
     "bolt_clr_diam": 13.4874,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.195045,
     "wt_lb": 0.43,
     "sku": "84573N",
@@ -16897,7 +16933,13 @@
     "shoulder_ln": 81.9912,
     "target_dp": 16.9926,
     "bolt_clr_diam": 13.4874,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.204117,
     "wt_lb": 0.45,
     "sku": "84575N",
@@ -16931,11 +16973,11 @@
     "target_dp": 16.9926,
     "bolt_clr_diam": 13.4874,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.249476,
     "wt_lb": 0.55,
@@ -16970,11 +17012,11 @@
     "target_dp": 18.9992,
     "bolt_clr_diam": 13.9954,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.299371,
     "wt_lb": 0.66,
@@ -17042,11 +17084,11 @@
     "target_dp": 24.003,
     "bolt_clr_diam": 15.494,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.34473,
     "wt_lb": 0.76,
@@ -17081,11 +17123,11 @@
     "target_dp": 24.003,
     "bolt_clr_diam": 15.494,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.331122,
     "wt_lb": 0.73,
@@ -17688,11 +17730,11 @@
     "target_dp": 6.604,
     "bolt_clr_diam": 10.9982,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.108862,
     "wt_lb": 0.24,
@@ -17729,11 +17771,11 @@
     "target_dp": 7.2898,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -17804,13 +17846,7 @@
     "shoulder_ln": 37.9984,
     "target_dp": 8.89,
     "bolt_clr_diam": 11.5062,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.113398,
     "wt_lb": 0.25,
     "sku": "80642",
@@ -17886,7 +17922,13 @@
     "shoulder_ln": 37.9984,
     "target_dp": 10.1092,
     "bolt_clr_diam": 11.5062,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.136078,
     "wt_lb": 0.3,
     "sku": "80644",
@@ -17922,11 +17964,11 @@
     "target_dp": 10.6934,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.149685,
     "wt_lb": 0.33,
@@ -17963,11 +18005,11 @@
     "target_dp": 11.6078,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.154221,
     "wt_lb": 0.34,
@@ -18004,11 +18046,11 @@
     "target_dp": 14.5,
     "bolt_clr_diam": 20,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.163293,
     "wt_lb": 0.36,
@@ -18187,11 +18229,11 @@
     "target_dp": 8.9916,
     "bolt_clr_diam": 10.0076,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.072575,
     "wt_lb": 0.16,
@@ -18226,11 +18268,11 @@
     "target_dp": 10.0076,
     "bolt_clr_diam": 10.0076,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.077111,
     "wt_lb": 0.17,
@@ -18297,13 +18339,7 @@
     "shoulder_ln": 37.9984,
     "target_dp": 10.9982,
     "bolt_clr_diam": 11.9888,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.090718,
     "wt_lb": 0.2,
     "sku": "84527N",
@@ -18375,7 +18411,13 @@
     "shoulder_ln": 37.9984,
     "target_dp": 11.9888,
     "bolt_clr_diam": 11.9888,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.095254,
     "wt_lb": 0.21,
     "sku": "84529N",
@@ -18409,11 +18451,11 @@
     "target_dp": 13.0048,
     "bolt_clr_diam": 14.5034,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -18448,11 +18490,11 @@
     "target_dp": 13.0048,
     "bolt_clr_diam": 14.5034,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.149685,
     "wt_lb": 0.33,
@@ -18520,11 +18562,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 15.494,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.172365,
     "wt_lb": 0.38,
@@ -18559,11 +18601,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 16.9926,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.167829,
     "wt_lb": 0.37,
@@ -19061,11 +19103,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -19102,11 +19144,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 10.6934,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -19177,13 +19219,7 @@
     "shoulder_ln": 18.9992,
     "target_dp": 14.5034,
     "bolt_clr_diam": 10.6934,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.054431,
     "wt_lb": 0.12,
     "sku": "80627",
@@ -19259,7 +19295,13 @@
     "shoulder_ln": 18.9992,
     "target_dp": 15.0114,
     "bolt_clr_diam": 11.9888,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.068039,
     "wt_lb": 0.15,
     "sku": "80629",
@@ -19295,11 +19337,11 @@
     "target_dp": 15.0114,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.077111,
     "wt_lb": 0.17,
@@ -19336,11 +19378,11 @@
     "target_dp": 19.5072,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.081647,
     "wt_lb": 0.18,
@@ -19412,11 +19454,11 @@
     "target_dp": 19.5072,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.081647,
     "wt_lb": 0.18,
@@ -19453,11 +19495,11 @@
     "target_dp": 19.5072,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.09979,
     "wt_lb": 0.22,
@@ -19569,11 +19611,11 @@
     "shoulder_ln": 15.367,
     "target_dp": 19.9898,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.231332,
     "wt_lb": 0.51,
@@ -19640,13 +19682,7 @@
     "ratchet_end_diam": 25.0952,
     "shoulder_ln": 13.5128,
     "target_dp": 19.9898,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.231332,
     "wt_lb": 0.51,
     "sku": "84725",
@@ -19718,7 +19754,13 @@
     "ratchet_end_diam": 31.1912,
     "shoulder_ln": 26.6954,
     "target_dp": 21.9964,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.24494,
     "wt_lb": 0.54,
     "sku": "84727",
@@ -19752,11 +19794,11 @@
     "shoulder_ln": 26.7716,
     "target_dp": 24.9936,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.263084,
     "wt_lb": 0.58,
@@ -19791,11 +19833,11 @@
     "shoulder_ln": 27.432,
     "target_dp": 24.9936,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.267619,
     "wt_lb": 0.59,
@@ -19830,11 +19872,11 @@
     "shoulder_ln": 25.654,
     "target_dp": 24.9936,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.299371,
     "wt_lb": 0.66,
@@ -19869,11 +19911,11 @@
     "shoulder_ln": 25.8064,
     "target_dp": 24.9936,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.247208,
     "wt_lb": 0.545,
@@ -19985,11 +20027,11 @@
     "target_dp": 11.0998,
     "bolt_clr_diam": 13.4874,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.557919,
     "wt_lb": 1.23,
@@ -20024,11 +20066,11 @@
     "target_dp": 11.7094,
     "bolt_clr_diam": 15.0114,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.580598,
     "wt_lb": 1.28,
@@ -20063,11 +20105,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 15.0114,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.607814,
     "wt_lb": 1.34,
@@ -20773,7 +20815,13 @@
     "shoulder_ln": 23.0124,
     "target_dp": 9.6012,
     "bolt_clr_diam": 12.3952,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.346998,
     "wt_lb": 0.765,
     "sku": "84829",
@@ -20807,11 +20855,11 @@
     "target_dp": 11.0998,
     "bolt_clr_diam": 13.4874,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.353802,
     "wt_lb": 0.78,
@@ -20879,11 +20927,11 @@
     "target_dp": 11.684,
     "bolt_clr_diam": 14.986,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.358338,
     "wt_lb": 0.79,
@@ -20918,11 +20966,11 @@
     "target_dp": 12.446,
     "bolt_clr_diam": 14.986,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.36741,
     "wt_lb": 0.81,
@@ -21929,11 +21977,11 @@
     "target_dp": 11.0998,
     "bolt_clr_diam": 13.4874,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.56699,
     "wt_lb": 1.25,
@@ -21968,11 +22016,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 15.0114,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.56699,
     "wt_lb": 1.25,
@@ -22495,7 +22543,12 @@
     "shoulder_ln": 22.987,
     "target_dp": 2.794,
     "bolt_clr_diam": 3.302,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.031751,
     "wt_lb": 0.07,
     "sku": "84126",
@@ -22633,10 +22686,10 @@
     "target_dp": 3.175,
     "bolt_clr_diam": 4.3434,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.036287,
     "wt_lb": 0.08,
@@ -22671,10 +22724,10 @@
     "target_dp": 4.318,
     "bolt_clr_diam": 5.1562,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.036287,
     "wt_lb": 0.08,
@@ -22709,10 +22762,10 @@
     "target_dp": 5.5626,
     "bolt_clr_diam": 7.1374,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.045359,
     "wt_lb": 0.1,
@@ -22862,7 +22915,12 @@
     "shoulder_ln": 21.9964,
     "target_dp": 3.5052,
     "bolt_clr_diam": 4.4958,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.019958,
     "wt_lb": 0.044,
     "sku": "80115",
@@ -23012,10 +23070,10 @@
     "target_dp": 5.0038,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -23053,10 +23111,10 @@
     "target_dp": 5.0038,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -23094,10 +23152,10 @@
     "target_dp": 5.1054,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.036287,
     "wt_lb": 0.08,
@@ -23259,7 +23317,12 @@
     "shoulder_ln": 16.256,
     "target_dp": 7.874,
     "bolt_clr_diam": 3.048,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.013608,
     "wt_lb": 0.03,
     "sku": "80115S-06",
@@ -23404,10 +23467,10 @@
     "target_dp": 13.462,
     "bolt_clr_diam": 5.08,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -23443,10 +23506,10 @@
     "target_dp": 13.462,
     "bolt_clr_diam": 6.096,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -23482,10 +23545,10 @@
     "target_dp": 13.462,
     "bolt_clr_diam": 7.62,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -23640,7 +23703,12 @@
     "shoulder_ln": 9.9822,
     "target_dp": 2.794,
     "bolt_clr_diam": 3.302,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.009072,
     "wt_lb": 0.02,
     "sku": "84100",
@@ -23778,10 +23846,10 @@
     "target_dp": 3.175,
     "bolt_clr_diam": 4.3434,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -23816,10 +23884,10 @@
     "target_dp": 4.318,
     "bolt_clr_diam": 5.1562,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -23854,10 +23922,10 @@
     "target_dp": 5.5626,
     "bolt_clr_diam": 7.1374,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -24042,7 +24110,12 @@
     "shoulder_ln": 11.5062,
     "target_dp": 8.001,
     "bolt_clr_diam": 3.9878,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.009072,
     "wt_lb": 0.02,
     "sku": "80105",
@@ -24192,10 +24265,10 @@
     "target_dp": 10.4902,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.009072,
     "wt_lb": 0.02,
@@ -24233,10 +24306,10 @@
     "target_dp": 10.4902,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -24274,10 +24347,10 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.009072,
     "wt_lb": 0.02,
@@ -24437,7 +24510,12 @@
     "target_end_diam": 9.6012,
     "ratchet_end_diam": 13.9954,
     "target_dp": 6.096,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.018144,
     "wt_lb": 0.04,
     "sku": "80262",
@@ -24507,10 +24585,10 @@
     "ratchet_end_diam": 13.9954,
     "target_dp": 6.096,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -24544,10 +24622,10 @@
     "ratchet_end_diam": 13.9954,
     "target_dp": 7.62,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -24696,10 +24774,10 @@
     "target_dp": 11.9888,
     "bolt_clr_diam": 7.0104,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -24734,10 +24812,10 @@
     "target_dp": 18.9992,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.068039,
     "wt_lb": 0.15,
@@ -25170,6 +25248,42 @@
     "usfed_stdz": "GGG-W-641E"
   },
   {
+    "title": "9/32in 6-Point US 3/8Dr Deep",
+    "socket_kind": "socket_exthex",
+    "drive_kind": "exthex",
+    "unit_system": "us",
+    "sqdrive_size": "isq_0375in",
+    "reach_kind": "deep",
+    "socket_variant": "std",
+    "sizing": "9/32in",
+    "sizing_mm": 7.14375,
+    "sizing_in": 0.28125,
+    "ln_overall": 63.5,
+    "wx_overall": 16.7894,
+    "wy_overall": 16.7894,
+    "target_end_diam": 10.85,
+    "ratchet_end_diam": 16.7894,
+    "shoulder_ln": 29.0068,
+    "target_dp": 3.9878,
+    "bolt_clr_diam": 5.5118,
+    "targets": {},
+    "wt": 0.049895,
+    "wt_lb": 0.11,
+    "sku": "84129",
+    "upc": "099575841293",
+    "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84129-14-drive-6-point-deep-impact-sae-socket-932",
+    "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84129_IMG-MAIN.jpg",
+    "gwtitle": "3/8in Drive 6 Point Deep SAE Socket 1/4in",
+    "is_knurled": false,
+    "is_magnetic": false,
+    "is_prop65": true,
+    "material": "Alloy Steel",
+    "surf_finish": "Full Polish Chrome",
+    "ansi_stdz": "Meets or Exceeds",
+    "asme_stdz": "B107.1",
+    "usfed_stdz": "GGG-W-641E"
+  },
+  {
     "title": "5/16in 6-Point US 3/8Dr Deep",
     "socket_kind": "socket_exthex",
     "drive_kind": "exthex",
@@ -25189,10 +25303,10 @@
     "target_dp": 5.0038,
     "bolt_clr_diam": 7.0104,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -25200,6 +25314,47 @@
     "upc": "099575803642",
     "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80364-38-drive-6-point-deep-sae-socket-516",
     "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80364_IMG-MAIN.jpg",
+    "gwtitle": "3/8in Drive 6 Point Deep SAE Socket 5/16in",
+    "is_knurled": false,
+    "is_magnetic": false,
+    "is_prop65": true,
+    "material": "Alloy Steel",
+    "surf_finish": "Full Polish Chrome",
+    "ansi_stdz": "Meets or Exceeds",
+    "asme_stdz": "B107.1",
+    "usfed_stdz": "GGG-W-641E"
+  },
+  {
+    "title": "11/32in 6-Point US 3/8Dr Deep",
+    "socket_kind": "socket_exthex",
+    "drive_kind": "exthex",
+    "unit_system": "us",
+    "sqdrive_size": "isq_0375in",
+    "reach_kind": "deep",
+    "socket_variant": "std",
+    "sizing": "11/32in",
+    "sizing_mm": 8.73125,
+    "sizing_in": 0.34375,
+    "ln_overall": 63.5,
+    "wx_overall": 16.7894,
+    "wy_overall": 16.7894,
+    "target_end_diam": 12.75,
+    "ratchet_end_diam": 16.7894,
+    "shoulder_ln": 29.0068,
+    "target_dp": 5.0038,
+    "bolt_clr_diam": 7.0104,
+    "targets": {
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
+    },
+    "wt": 0.049895,
+    "wt_lb": 0.11,
+    "sku": "84131",
+    "upc": "099575841316",
+    "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/impact-products/84131-14-drive-6-point-deep-impact-sae-socket-1132",
+    "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_84131_IMG-MAIN.jpg",
     "gwtitle": "3/8in Drive 6 Point Deep SAE Socket 5/16in",
     "is_knurled": false,
     "is_magnetic": false,
@@ -25230,10 +25385,10 @@
     "target_dp": 5.1054,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -25266,7 +25421,7 @@
     "wx_overall": 16.7894,
     "wy_overall": 16.7894,
     "target_end_diam": 16.002,
-    "ratchet_end_diam": 16.7894,
+    "ratchet_end_diam": 18.623,
     "shoulder_ln": 29.0068,
     "target_dp": 5.9944,
     "bolt_clr_diam": 8.509,
@@ -25307,7 +25462,7 @@
     "wx_overall": 18.288,
     "wy_overall": 18.288,
     "target_end_diam": 17.399,
-    "ratchet_end_diam": 18.288,
+    "ratchet_end_diam": 18.923,
     "shoulder_ln": 29.0068,
     "target_dp": 7.2898,
     "bolt_clr_diam": 8.509,
@@ -25472,7 +25627,7 @@
     "wx_overall": 25.8064,
     "wy_overall": 25.8064,
     "target_end_diam": 25.8064,
-    "ratchet_end_diam": 25.8064,
+    "ratchet_end_diam": 25.708,
     "shoulder_ln": 29.0068,
     "target_dp": 11.6078,
     "bolt_clr_diam": 8.509,
@@ -25716,10 +25871,10 @@
     "target_dp": 12.954,
     "bolt_clr_diam": 5.08,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.031751,
     "wt_lb": 0.07,
@@ -25755,10 +25910,10 @@
     "target_dp": 16.002,
     "bolt_clr_diam": 7.62,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.036287,
     "wt_lb": 0.08,
@@ -26100,10 +26255,10 @@
     "target_dp": 5.9944,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.031751,
     "wt_lb": 0.07,
@@ -26138,10 +26293,10 @@
     "target_dp": 7.0104,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.031751,
     "wt_lb": 0.07,
@@ -26575,6 +26730,42 @@
     "usfed_stdz": "GGG-W-641E"
   },
   {
+    "title": "9/32in 6-Point US 3/8Dr Regular",
+    "socket_kind": "socket_exthex",
+    "drive_kind": "exthex",
+    "unit_system": "us",
+    "sqdrive_size": "isq_0375in",
+    "reach_kind": "reg",
+    "socket_variant": "std",
+    "sizing": "9/32in",
+    "sizing_mm": 7.14375,
+    "sizing_in": 0.28125,
+    "ln_overall": 24.9936,
+    "wx_overall": 17.1958,
+    "wy_overall": 17.1958,
+    "target_end_diam": 10.85,
+    "ratchet_end_diam": 17.1958,
+    "shoulder_ln": 11.5062,
+    "target_dp": 7.493,
+    "bolt_clr_diam": 5.0038,
+    "targets": {},
+    "wt": 0.018144,
+    "wt_lb": 0.04,
+    "sku": "80108",
+    "upc": "099575801082",
+    "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80108-14-drive-6-point-standard-sae-socket-932",
+    "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80108_IMG-MAIN.jpg",
+    "gwtitle": "3/8in Drive 6 Point Standard SAE Socket 1/4in",
+    "is_knurled": false,
+    "is_magnetic": false,
+    "is_prop65": true,
+    "material": "Alloy Steel",
+    "surf_finish": "Full Polish Chrome",
+    "ansi_stdz": "Meets or Exceeds",
+    "asme_stdz": "B107.1",
+    "usfed_stdz": "GGG-W-641E"
+  },
+  {
     "title": "5/16in 6-Point US 3/8Dr Regular",
     "socket_kind": "socket_exthex",
     "drive_kind": "exthex",
@@ -26594,10 +26785,10 @@
     "target_dp": 7.493,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -26605,6 +26796,47 @@
     "upc": "099575803512",
     "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80351-38-drive-6-point-standard-sae-socket-516",
     "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80351_IMG-MAIN_01.jpg",
+    "gwtitle": "3/8in Drive 6 Point Standard SAE Socket 5/16in",
+    "is_knurled": false,
+    "is_magnetic": false,
+    "is_prop65": true,
+    "material": "Alloy Steel",
+    "surf_finish": "Full Polish Chrome",
+    "ansi_stdz": "Meets or Exceeds",
+    "asme_stdz": "B107.1",
+    "usfed_stdz": "GGG-W-641E"
+  },
+  {
+    "title": "11/32in 6-Point US 3/8Dr Regular",
+    "socket_kind": "socket_exthex",
+    "drive_kind": "exthex",
+    "unit_system": "us",
+    "sqdrive_size": "isq_0375in",
+    "reach_kind": "reg",
+    "socket_variant": "std",
+    "sizing": "11/32in",
+    "sizing_mm": 8.73125,
+    "sizing_in": 0.34375,
+    "ln_overall": 24.9936,
+    "wx_overall": 17.1958,
+    "wy_overall": 17.1958,
+    "target_end_diam": 12.75,
+    "ratchet_end_diam": 17.1958,
+    "shoulder_ln": 11.5062,
+    "target_dp": 7.493,
+    "bolt_clr_diam": 7.1882,
+    "targets": {
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
+    },
+    "wt": 0.018144,
+    "wt_lb": 0.04,
+    "sku": "80110",
+    "upc": "099575801105",
+    "url": "https://www.gearwrench.com/all-tools/ratchets-sockets/chrome-sockets/80110-14-drive-6-point-standard-sae-socket-1132",
+    "img_url": "https://www.gearwrench.com/sites/gearwrench/files/styles/large/public/pim_images/GW_80110_IMG-MAIN.jpg",
     "gwtitle": "3/8in Drive 6 Point Standard SAE Socket 5/16in",
     "is_knurled": false,
     "is_magnetic": false,
@@ -26635,10 +26867,10 @@
     "target_dp": 7.493,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -26671,7 +26903,7 @@
     "wx_overall": 17.1958,
     "wy_overall": 17.1958,
     "target_end_diam": 16.002,
-    "ratchet_end_diam": 17.1958,
+    "ratchet_end_diam": 18.623,
     "shoulder_ln": 11.5062,
     "target_dp": 7.493,
     "bolt_clr_diam": 8.9916,
@@ -26712,7 +26944,7 @@
     "wx_overall": 17.907,
     "wy_overall": 17.907,
     "target_end_diam": 17.399,
-    "ratchet_end_diam": 17.907,
+    "ratchet_end_diam": 18.923,
     "shoulder_ln": 11.5062,
     "target_dp": 7.493,
     "bolt_clr_diam": 8.9916,
@@ -26877,7 +27109,7 @@
     "wx_overall": 25.908,
     "wy_overall": 25.908,
     "target_end_diam": 25.908,
-    "ratchet_end_diam": 25.908,
+    "ratchet_end_diam": 25.708,
     "shoulder_ln": 11.5062,
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
@@ -27081,10 +27313,10 @@
     "shoulder_ln": 17.4244,
     "target_dp": 9.906,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.108862,
     "wt_lb": 0.24,
@@ -27348,10 +27580,10 @@
     "ratchet_end_diam": 18.9992,
     "target_dp": 5.588,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -27597,10 +27829,10 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 9.4996,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.163293,
     "wt_lb": 0.36,
@@ -28863,10 +29095,10 @@
     "target_dp": 8.001,
     "bolt_clr_diam": 8.001,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.072575,
     "wt_lb": 0.16,
@@ -29567,10 +29799,10 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.052163,
     "wt_lb": 0.115,
@@ -35701,11 +35933,11 @@
     "target_dp": 7.0104,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -35742,11 +35974,11 @@
     "target_dp": 7.6962,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -35817,13 +36049,7 @@
     "shoulder_ln": 21.9964,
     "target_dp": 8.89,
     "bolt_clr_diam": 5.5118,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.068039,
     "wt_lb": 0.15,
     "sku": "80242",
@@ -36210,11 +36436,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -36251,11 +36477,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -36326,13 +36552,7 @@
     "shoulder_ln": 11.5062,
     "target_dp": 14.5034,
     "bolt_clr_diam": 5.588,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.031751,
     "wt_lb": 0.07,
     "sku": "80209",
@@ -36596,11 +36816,11 @@
     "target_dp": 6.604,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.063503,
     "wt_lb": 0.14,
@@ -36637,11 +36857,11 @@
     "target_dp": 7.2898,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.072575,
     "wt_lb": 0.16,
@@ -36712,13 +36932,7 @@
     "shoulder_ln": 29.0068,
     "target_dp": 8.89,
     "bolt_clr_diam": 8.509,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.077111,
     "wt_lb": 0.17,
     "sku": "80529",
@@ -36794,7 +37008,13 @@
     "shoulder_ln": 29.0068,
     "target_dp": 10.1092,
     "bolt_clr_diam": 8.509,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.086183,
     "wt_lb": 0.19,
     "sku": "80531",
@@ -36830,11 +37050,11 @@
     "target_dp": 10.6934,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.108862,
     "wt_lb": 0.24,
@@ -36871,11 +37091,11 @@
     "target_dp": 11.6078,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -37140,11 +37360,11 @@
     "target_dp": 8.001,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -37181,11 +37401,11 @@
     "target_dp": 8.001,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -37256,13 +37476,7 @@
     "shoulder_ln": 11.5062,
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.031751,
     "wt_lb": 0.07,
     "sku": "80491",
@@ -37338,7 +37552,13 @@
     "shoulder_ln": 11.5062,
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.049895,
     "wt_lb": 0.11,
     "sku": "80493",
@@ -37374,11 +37594,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -37415,11 +37635,11 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -37491,11 +37711,11 @@
     "target_dp": 15.0114,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.086183,
     "wt_lb": 0.19,
@@ -37532,11 +37752,11 @@
     "target_dp": 15.0114,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.09979,
     "wt_lb": 0.22,
@@ -37649,11 +37869,11 @@
     "target_dp": 6.604,
     "bolt_clr_diam": 10.9982,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.108862,
     "wt_lb": 0.24,
@@ -37690,11 +37910,11 @@
     "target_dp": 7.2898,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.113398,
     "wt_lb": 0.25,
@@ -37765,13 +37985,7 @@
     "shoulder_ln": 37.9984,
     "target_dp": 8.89,
     "bolt_clr_diam": 11.5062,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.113398,
     "wt_lb": 0.25,
     "sku": "80786",
@@ -37847,7 +38061,13 @@
     "shoulder_ln": 37.9984,
     "target_dp": 10.1092,
     "bolt_clr_diam": 11.5062,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.136078,
     "wt_lb": 0.3,
     "sku": "80788",
@@ -37883,11 +38103,11 @@
     "target_dp": 10.6934,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.149685,
     "wt_lb": 0.33,
@@ -37924,11 +38144,11 @@
     "target_dp": 11.6078,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.154221,
     "wt_lb": 0.34,
@@ -38000,11 +38220,11 @@
     "target_dp": 12.192,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.195045,
     "wt_lb": 0.43,
@@ -38041,11 +38261,11 @@
     "target_dp": 13.208,
     "bolt_clr_diam": 11.5062,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.204117,
     "wt_lb": 0.45,
@@ -38392,11 +38612,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 8.9916,
     "targets": {
-      "drives": "M8",
-      "exthex_sz": "M8",
-      "hhcs_sz": "M8",
-      "hn_sz": "NM8",
-      "hhn_sz": "HNM8"
+      "drives": "D8",
+      "exthex_sz": "D8",
+      "hhcs_sz": "D8",
+      "hn_sz": "ND8",
+      "hhn_sz": "HND8"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -38433,11 +38653,11 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 10.6934,
     "targets": {
-      "drives": "D8",
-      "exthex_sz": "D8",
-      "hhcs_sz": "D8",
-      "hn_sz": "ND8",
-      "hhn_sz": "HND8"
+      "drives": "M8",
+      "exthex_sz": "M8",
+      "hhcs_sz": "M8",
+      "hn_sz": "NM8",
+      "hhn_sz": "HNM8"
     },
     "wt": 0.058967,
     "wt_lb": 0.13,
@@ -38508,13 +38728,7 @@
     "shoulder_ln": 18.9992,
     "target_dp": 14.5034,
     "bolt_clr_diam": 10.6934,
-    "targets": {
-      "drives": "M10",
-      "exthex_sz": "M10",
-      "hhcs_sz": "M10",
-      "hn_sz": "NM10",
-      "hhn_sz": "HNM10"
-    },
+    "targets": {},
     "wt": 0.058967,
     "wt_lb": 0.13,
     "sku": "80750",
@@ -38590,7 +38804,13 @@
     "shoulder_ln": 18.9992,
     "target_dp": 15.0114,
     "bolt_clr_diam": 11.9888,
-    "targets": {},
+    "targets": {
+      "drives": "M10",
+      "exthex_sz": "M10",
+      "hhcs_sz": "M10",
+      "hn_sz": "NM10",
+      "hhn_sz": "HNM10"
+    },
     "wt": 0.077111,
     "wt_lb": 0.17,
     "sku": "80752",
@@ -38626,11 +38846,11 @@
     "target_dp": 15.0114,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "M12",
-      "exthex_sz": "M12",
-      "hhcs_sz": "M12",
-      "hn_sz": "NM12",
-      "hhn_sz": "HNM12"
+      "drives": "D12",
+      "exthex_sz": "D12",
+      "hhcs_sz": "D12",
+      "hn_sz": "ND12",
+      "hhn_sz": "HND12"
     },
     "wt": 0.081647,
     "wt_lb": 0.18,
@@ -38667,11 +38887,11 @@
     "target_dp": 19.5072,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "D12",
-      "exthex_sz": "D12",
-      "hhcs_sz": "D12",
-      "hn_sz": "ND12",
-      "hhn_sz": "HND12"
+      "drives": "M12",
+      "exthex_sz": "M12",
+      "hhcs_sz": "M12",
+      "hn_sz": "NM12",
+      "hhn_sz": "HNM12"
     },
     "wt": 0.090718,
     "wt_lb": 0.2,
@@ -38743,11 +38963,11 @@
     "target_dp": 19.5072,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "M14",
-      "exthex_sz": "M14",
-      "hhcs_sz": "M14",
-      "hn_sz": "NM14",
-      "hhn_sz": "HNM14"
+      "drives": "D14",
+      "exthex_sz": "D14",
+      "hhcs_sz": "D14",
+      "hn_sz": "ND14",
+      "hhn_sz": "HND14"
     },
     "wt": 0.09979,
     "wt_lb": 0.22,
@@ -38784,11 +39004,11 @@
     "target_dp": 19.5072,
     "bolt_clr_diam": 11.9888,
     "targets": {
-      "drives": "D14",
-      "exthex_sz": "D14",
-      "hhcs_sz": "D14",
-      "hn_sz": "ND14",
-      "hhn_sz": "HND14"
+      "drives": "M14",
+      "exthex_sz": "M14",
+      "hhcs_sz": "M14",
+      "hn_sz": "NM14",
+      "hhn_sz": "HNM14"
     },
     "wt": 0.117934,
     "wt_lb": 0.26,
@@ -39594,7 +39814,12 @@
     "shoulder_ln": 21.9964,
     "target_dp": 3.5052,
     "bolt_clr_diam": 4.4958,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.018144,
     "wt_lb": 0.04,
     "sku": "80220",
@@ -39744,10 +39969,10 @@
     "target_dp": 5.0038,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -39785,10 +40010,10 @@
     "target_dp": 5.0038,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -39826,10 +40051,10 @@
     "target_dp": 5.1054,
     "bolt_clr_diam": 5.5118,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.027216,
     "wt_lb": 0.06,
@@ -40027,7 +40252,12 @@
     "shoulder_ln": 11.5062,
     "target_dp": 8.001,
     "bolt_clr_diam": 3.9878,
-    "targets": {},
+    "targets": {
+      "drives": "#2",
+      "exthex_sz": "#2",
+      "hhcs_sz": "#2",
+      "hn_sz": "N#2"
+    },
     "wt": 0.009072,
     "wt_lb": 0.02,
     "sku": "80210",
@@ -40177,10 +40407,10 @@
     "target_dp": 10.4902,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.009072,
     "wt_lb": 0.02,
@@ -40218,10 +40448,10 @@
     "target_dp": 10.4902,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "#10",
-      "exthex_sz": "#10",
-      "hhcs_sz": "#10",
-      "hn_sz": "N#10"
+      "drives": "#8",
+      "exthex_sz": "#8",
+      "hhcs_sz": "#8",
+      "hn_sz": "N#8"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -40259,10 +40489,10 @@
     "target_dp": 12.4968,
     "bolt_clr_diam": 5.588,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.013608,
     "wt_lb": 0.03,
@@ -40466,10 +40696,10 @@
     "target_dp": 5.0038,
     "bolt_clr_diam": 7.0104,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.049895,
     "wt_lb": 0.11,
@@ -40507,10 +40737,10 @@
     "target_dp": 5.1054,
     "bolt_clr_diam": 8.509,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.054431,
     "wt_lb": 0.12,
@@ -40995,10 +41225,10 @@
     "target_dp": 7.493,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#8",
-      "exthex_sz": "#8",
-      "hhcs_sz": "#8",
-      "hn_sz": "N#8"
+      "drives": "#6",
+      "exthex_sz": "#6",
+      "hhcs_sz": "#6",
+      "hn_sz": "N#6"
     },
     "wt": 0.018144,
     "wt_lb": 0.04,
@@ -41036,10 +41266,10 @@
     "target_dp": 7.493,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.02268,
     "wt_lb": 0.05,
@@ -42050,10 +42280,10 @@
     "target_dp": 13.9954,
     "bolt_clr_diam": 7.1882,
     "targets": {
-      "drives": "#12",
-      "exthex_sz": "#12",
-      "hhcs_sz": "#12",
-      "hn_sz": "N#12"
+      "drives": "#10",
+      "exthex_sz": "#10",
+      "hhcs_sz": "#10",
+      "hn_sz": "N#10"
     },
     "wt": 0.063049,
     "wt_lb": 0.139,

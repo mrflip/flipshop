@@ -164,29 +164,29 @@ export const   fastener_sizing = CK.obj({
   /** Bore hole size to pass through: close, regular, loose; For metric, follows ISO 273 (metric) or ASME B18.2.8 (US) */
   thruhole,
   /** Hex nut details. For US sizes, uses the Finished Hex Nut or Machine Nut according to common practice */
-  hexnut:       nut.optional(),
+  hexnut:       nut.partial().optional(),
   /** Square nut details. These are not perfectly standardized */
-  sqnut:        nut.optional(),
+  sqnut:       nut.partial().optional(),
   /** Hex bolt (Hex-Head Cap Screw) details, according to ASME B18.2.1 (US) and ISO 262 (metric) */
-  hhcs:        hhcs.optional(),
+  hhcs:        hhcs.partial().optional(),
   /** Socket head cap screw (SHCS, aka "inthex Head") details, according to ASME B18.3 / ASTM F835 (US) and ISO 4753 (metric) */
-  shcs:        shcs.optional(),
+  shcs:        shcs.partial().optional(),
   /** Button head cap screw (BHCS, aka "Button Head") details */
-  bhcs:         bhcs.optional(),
+  bhcs:         bhcs.partial().optional(),
   /** Flat head cap screw (FHCS, aka "Flat Head") details */
-  fhcs:         fhcs.optional(),
+  fhcs:         fhcs.partial().optional(),
   /** Low-profile socket head cap screw details */
-  losock:       losock.optional(),
+  losock:       losock.partial().optional(),
   /** Torx head cap screw details */
-  torx:         torx.optional(),
+  torx:         torx.partial().optional(),
   /** Socket-set screw (SSS, aka "Set Screw" or "Grub Screw") details */
   sss:          sss.partial().optional(),
   /** Small washer details */
-  fw_sm:        washer.optional(),
+  fw_sm:        washer.partial().optional(),
   /** Regular washer details */
-  fw_reg:       washer.optional(),
+  fw_reg:       washer.partial().optional(),
   /** Large (aka "Fender") washer details */
-  fw_lg:        washer.optional(),
+  fw_lg:        washer.partial().optional(),
 })
 
 export interface FastenerSizingSk extends CK.Zsketch<typeof fastener_sizing> {}

@@ -11,6 +11,8 @@ import      * as Flipshop                         from '@flipshop/flipshop'
 
 // == [Main] ==
 
+const { AdditonalSizes } = Flipshop.Mungers.GearwrenchMungers
+
 const freals = true
 const dirs = freals ? [
   Filer.__relname(import.meta.url, '..', '..', 'tmp', 'www.gearwrench.com', 'all-tools', 'ratchets-sockets', 'chrome-sockets'),
@@ -33,6 +35,13 @@ for (const ripdDir of dirs) {
     .map((filename) => join(ripdDir, filename))
 
   const products = _.compact(await Promise.all(files.map(parseProductFile)))
+  _.each(AdditonalSizes, ({ from, dir, ...override }, handle) => {
+    if (! dir.test(ripdDir)) { return }
+    const orig = _.find(_.concat(products, SocketWrenchProducts), { title: from })
+    if (! orig) { console.warn(`Could not find original product ${from}`, ripdDir); return }
+    console.warn(`Adding additional size ${override.title} from ${orig.title}`, ripdDir.slice(-28))
+    products.push(Flipshop.Mungers.GearwrenchMungers.gearwrenchSocket.cast({ ...orig, ...override }, { handle }))
+  })
   SocketWrenchProducts.push(...products)
   console.warn(`Parsed ${products.length} / ${files.length} products from ${ripdDir}.`)
 }
