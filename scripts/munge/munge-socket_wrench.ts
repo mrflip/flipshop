@@ -4,7 +4,7 @@ import type * as _ZMP                             from './ZodMonkeypunch.ts'
 import      { readdirSync }                       from 'fs'
 import      { join }                              from 'path'
 import type * as TY                               from '@freeword/meta'
-import      { Filer }                             from '@freeword/meta'
+import      { Filer, CK }                         from '@freeword/meta'
 import      * as Flipshop                         from '@flipshop/flipshop'
 
 // mkdir -p tmp/data/sockets; ./scripts/munge/munge-socket_wrench.ts > tmp/data/sockets/sockets.json  && cp tmp/data/sockets/sockets.json data/sockets/sockets.json
@@ -39,8 +39,10 @@ for (const ripdDir of dirs) {
     if (! dir.test(ripdDir)) { return }
     const orig = _.find(_.concat(products, SocketWrenchProducts), { title: from })
     if (! orig) { console.warn(`Could not find original product ${from}`, ripdDir); return }
+    if (orig.title === override.title) { console.warn(`Replacing existing product ${override.title}, this is probably a mistake`) }
+    if ((orig as any).copied)          { console.warn(`Replacing already-duplicated product ${override.title}, this is probably a mistake`) }
     console.warn(`Adding additional size ${override.title} from ${orig.title}`, ripdDir.slice(-28))
-    products.push(Flipshop.Mungers.GearwrenchMungers.gearwrenchSocket.cast({ ...orig, ...override }, { handle }))
+    products.push(Flipshop.Mungers.GearwrenchMungers.gearwrenchSocket.extend({ copied: CK.bool }).cast({ ...orig, ...override, copied: true }, { handle }))
   })
   SocketWrenchProducts.push(...products)
   console.warn(`Parsed ${products.length} / ${files.length} products from ${ripdDir}.`)

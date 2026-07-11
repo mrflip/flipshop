@@ -107,59 +107,59 @@ export const IndependentResizingPolicy = {
 };
 
 export enum FontName {
-  annotation { "Name": "Open Sans Regular" }
+  annotation { "Name": "Open Sans Regular (sans)" }
   OPEN_SANS_REGULAR,
-  annotation {"Name": "Open Sans Bold" }
+  annotation {"Name": "Open Sans Bold (sans)" }
   OPEN_SANS_BOLD,
-  annotation {"Name": "Open Sans Italic" }
+  annotation {"Name": "Open Sans Italic (sans)" }
   OPEN_SANS_ITALIC,
-  annotation { "Name": "Allerta" }
+  annotation { "Name": "Allerta (sans)" }
   ALLERTA,
-  annotation { "Name": "Allerta Stencil" }
+  annotation { "Name": "Allerta Stencil (sans)" }
   ALLERTA_STENCIL,
-  annotation { "Name": "Arimo (sans-serif)" }
+  annotation { "Name": "Arimo (sans)" }
   ARIMO,
-  annotation { "Name": "Arimo Bold" }
+  annotation { "Name": "Arimo Bold (sans)" }
   ARIMO_BOLD,
-  annotation { "Name": "Arimo Italic" }
+  annotation { "Name": "Arimo Italic (sans)" }
   ARIMO_ITALIC,
   annotation { "Name": "Balthazar (classical serif)" }
   BALTHAZAR,
   annotation { "Name": "Baumans (cheeky sans)" }
   BAUMANS,
-  annotation { "Name": "Bebas Neue (compact ss caps)" }
+  annotation { "Name": "Bebas Neue (compact sans caps)" }
   BEBAS_NEUE,
-  annotation { "Name": "Comic Neue" }
+  annotation { "Name": "Comic Neue (sans)" }
   COMIC_NEUE,
-  annotation { "Name": "Comic Neue Bold" }
+  annotation { "Name": "Comic Neue Bold (sans)" }
   COMIC_NEUE_BOLD,
-  annotation { "Name": "Comic Neue Italic" }
+  annotation { "Name": "Comic Neue Italic (sans)" }
   COMIC_NEUE_ITALIC,
   annotation { "Name": "Courier Prime (monospaced)" }
   COURIER_PRIME,
-  annotation { "Name": "Courier Prime Bold" }
+  annotation { "Name": "Courier Prime Bold (mono)" }
   COURIER_PRIME_BOLD,
-  annotation { "Name": "Courier Prime Italic" }
+  annotation { "Name": "Courier Prime Italic (mono)" }
   COURIER_PRIME_ITALIC,
   annotation { "Name": "Didact Gothic" }
   DIDACT_GOTHIC,
-  annotation { "Name": "Droid Sans Mono (monospaced sans-serif)" }
+  annotation { "Name": "Droid Sans Mono (mono sans)" }
   DROID_SANS_MONO,
-  annotation { "Name": "Inconsolata (monospaced sans-serif)" }
+  annotation { "Name": "Inconsolata (mono sans)" }
   INCONSOLATA,
   annotation { "Name": "Inconsolata Bold" }
   INCONSOLATA_BOLD,
-  annotation { "Name": "Inter (sans-serif)" }
+  annotation { "Name": "Inter (sans)" }
   INTER,
-  annotation { "Name": "Inter Bold" }
+  annotation { "Name": "Inter Bold (sans)" }
   INTER_BOLD,
-  annotation { "Name": "Michroma (sans-serif)" }
+  annotation { "Name": "Michroma (sans)" }
   MICHROMA,
-  annotation { "Name": "MPLUSRounded1c (sans-serif)" }
+  annotation { "Name": "MPLUSRounded1c (sans)" }
   MPLUSRounded1c,
-  annotation { "Name": "MPLUSRounded1c Bold" }
+  annotation { "Name": "MPLUSRounded1c Bold (sans)" }
   MPLUSRounded1c_BOLD,
-  annotation { "Name": "Noto Sans (sans-serif)" }
+  annotation { "Name": "Noto Sans" }
   NOTO_SANS,
   annotation { "Name": "Noto Sans Bold" }
   NOTO_SANS_BOLD,
@@ -181,57 +181,57 @@ export enum FontName {
   NOTO_SANS_CJK_TC,
   annotation { "Name": "Noto Sans CJK TC Bold" }
   NOTO_SANS_CJK_TC_BOLD,
-  annotation { "Name": "Noto Serif (serif)" }
+  annotation { "Name": "Noto Serif" }
   NOTO_SERIF,
   annotation { "Name": "Noto Serif Bold" }
   NOTO_SERIF_BOLD,
   annotation { "Name": "Noto Serif Italic" }
   NOTO_SERIF_ITALIC,
-  annotation { "Name": "Orbitron (tron sans-serif)" }
+  annotation { "Name": "Orbitron (tron sans)" }
   ORBITRON,
-  annotation { "Name": "Orbitron Bold" }
+  annotation { "Name": "Orbitron Bold (tron sans)" }
   ORBITRON_BOLD,
-  annotation { "Name": "Oswald (skinny sans-serif)" }
+  annotation { "Name": "Oswald (skinny sans)" }
   OSWALD,
-  annotation { "Name": "Oswald Bold" }
+  annotation { "Name": "Oswald Bold (skinny sans)" }
   OSWALD_BOLD,
-  annotation { "Name": "Poppins (sans-serif)" }
+  annotation { "Name": "Poppins (sans)" }
   POPPINS,
-  annotation { "Name": "Poppins Bold" }
+  annotation { "Name": "Poppins Bold (sans)" }
   POPPINS_BOLD,
-  annotation { "Name": "Poppins Italic" }
+  annotation { "Name": "Poppins Italic (sans)" }
   POPPINS_ITALIC,
-  annotation { "Name": "PTSans (sans-serif)" }
+  annotation { "Name": "PTSans (sans)" }
   PTSANS,
-  annotation { "Name": "PTSans Bold" }
+  annotation { "Name": "PTSans Bold (sans)" }
   PTSANS_BOLD,
-  annotation { "Name": "PTSans Italic" }
+  annotation { "Name": "PTSans Italic (sans)" }
   PTSANS_ITALIC,
-  annotation { "Name": "Rajdhani (sans-serif)" }
+  annotation { "Name": "Rajdhani (sans)" }
   RAJDHANI,
-  annotation { "Name": "Rajdhani Bold" }
+  annotation { "Name": "Rajdhani Bold (sans)" }
   RAJDHANI_BOLD,
-  annotation { "Name": "Roboto (sans-serif)" }
+  annotation { "Name": "Roboto (sans)" }
   ROBOTO,
-  annotation { "Name": "Roboto Bold" }
+  annotation { "Name": "Roboto Bold (sans)" }
   ROBOTO_BOLD,
-  annotation { "Name": "Roboto Italic" }
+  annotation { "Name": "Roboto Italic (sans)" }
   ROBOTO_ITALIC,
-  annotation { "Name": "Roboto Slab (sans-serif)" }
+  annotation { "Name": "Roboto Slab (sans)" }
   ROBOTO_SLAB,
-  annotation { "Name": "Roboto Slab Bold" }
+  annotation { "Name": "Roboto Slab Bold (sans)" }
   ROBOTO_SLAB_BOLD,
-  annotation { "Name": "Ropa Sans (sans-serif)" }
+  annotation { "Name": "Ropa Sans" }
   ROPA_SANS,
   annotation { "Name": "Ropa Sans Italic" }
   ROPA_SANS_ITALIC,
-  annotation { "Name": "Sofia Sans (sans-serif)" }
+  annotation { "Name": "Sofia Sans" }
   SOFIA_SANS,
   annotation { "Name": "Sofia Sans Bold" }
   SOFIA_SANS_BOLD,
   annotation { "Name": "Sofia Sans Italic" }
   SOFIA_SANS_ITALIC,
-  annotation { "Name": "Source Sans Pro (sans-serif)" }
+  annotation { "Name": "Source Sans Pro" }
   SOURCE_SANS_PRO,
   annotation { "Name": "Source Sans Pro Bold" }
   SOURCE_SANS_PRO_BOLD,
@@ -239,9 +239,9 @@ export enum FontName {
   SOURCE_SANS_PRO_ITALIC,
   annotation { "Name": "Tinos (serif)" }
   TINOS,
-  annotation { "Name": "Tinos Bold" }
+  annotation { "Name": "Tinos Bold (serif)" }
   TINOS_BOLD,
-  annotation { "Name": "Tinos Italic" }
+  annotation { "Name": "Tinos Italic (serif)" }
   TINOS_ITALIC,
  }
 
