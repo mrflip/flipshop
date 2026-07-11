@@ -1,15 +1,17 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "6d97e856578b9af5ecb58b78");
-import(path : "4989999bb256f6d486ab7381", version : "5c32ef726804eb51ce21a12a");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "986233d6c8acabd83e5ccae6");
+import(path : "4989999bb256f6d486ab7381", version : "23dbfebe8157b79b1826e1ae");
 import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
-const callout1Angle = 132 * degree;
-const callout2Angle =  48 * degree;
-const baseCellPadding = { left: 4*mm, top: 3*mm };
+const callout1Angle     = 132 * degree;
+const callout2Angle     =  48 * degree;
+const baseCellPadding   = { left: 4*mm, top: 3*mm };
 const defaultLayerDepth = 4.5;
+const stackScrewDiam    = 2.75 * mm;
+const stackScrewInset   = 5.1 * mm;
 
 // == [Socket Data Helpers] ==
 
@@ -98,11 +100,23 @@ function rotatedPlaneAt(basePlane is Plane, center is Vector, angle is ValueWith
  * Pass directly to @see `textBounds`; merge with alignment options for @see `skTextAt`.
  * @param opts {map} : Socket cell opts; uses `calloutHeight`.
  */
-function calloutChipOpts(opts is map) returns map {
-  return {
+function calloutChipOpts(opts is map, overrides is map) returns map {
+  return mergeMaps(mergeMaps({
     "baselineHeight":  opts.calloutHeight,
     "fontName":        FontName.BEBAS_NEUE,
-  };
+  }, opts), overrides);
+}
+
+/**
+ * Shared text options for callout chips: font and baseline height.
+ * Pass directly to @see `textBounds`; merge with alignment options for @see `skTextAt`.
+ * @param opts {map} : Socket cell opts; uses `calloutHeight`.
+ */
+function labelChipOpts(opts is map, overrides is map) returns map {
+  return mergeMaps(mergeMaps({
+    "fontName":        FontName.TINOS_BOLD,
+    "baselineHeight":  opts.labelHeight,
+  }, opts), overrides);
 }
 
 /**
@@ -141,7 +155,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   // Callout chip 1 at 120° (60° above left horizon)
   var calloutCbMinH = zero; var calloutCbMaxH = zero; var calloutCbMinV = zero; var calloutCbMaxV = zero;
   if (calloutText != "") {
-    const calloutTc = textBounds(context, id + "calloutTC", calloutText, mergeMaps({ "cleanupSketches": true }, calloutChipOpts(opts)));
+    const calloutTc = textBounds(context, id + "calloutTC", calloutText, calloutChipOpts(opts, { "cleanupSketches": true }));
     const calloutCb = calloutChipBounds(calloutTc, paddedRadius, callout1Angle);
     calloutCbMinH = calloutCb.minH;
     calloutCbMaxH = calloutCb.maxH;
@@ -151,7 +165,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   // Callout chip 2 at 210° (30° below left horizon)
   var fhcsCbMinH = zero; var fhcsCbMaxH = zero; var fhcsCbMinV = zero; var fhcsCbMaxV = zero;
   if (fhcsText != "") {
-    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, mergeMaps({ "cleanupSketches": true }, calloutChipOpts(opts)));
+    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, calloutChipOpts(opts, { "cleanupSketches": true }));
     const fhcsCb = calloutChipBounds(fhcsTc, paddedRadius, callout2Angle);
     fhcsCbMinH = fhcsCb.minH;
     fhcsCbMaxH = fhcsCb.maxH;
@@ -161,7 +175,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
 
   const labelScaleH = (labelText == "11/32") ? 0.9 : 1.0;
   const labelHeight = opts.labelHeight;
-  const labelTc     = textBounds(context, id + "labelTC", labelText, { "baselineHeight":  labelHeight, "cleanupSketches": true });
+  const labelTc     = textBounds(context, id + "labelTC", labelText, labelChipOpts(opts, { "cleanupSketches": true }));
   // Label chip: TOP_EXTENT at y=-paddedRadius (6 o'clock), horizontally centered at x=0
   const labelHalfW  = labelTc.actualWidth * labelScaleH / 2;
   const labelMinH   = -labelHalfW * labelScaleH;
@@ -301,11 +315,11 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   });
   // Mount holes on the left border (cells at holder index 0 and 3)
   if (opts.hasHoles) {
-    const holeR = 2.6 * mm / 2;
+    const holeR = stackScrewDiam / 2;
     // const holeX = cx + cs.cellMinH + holeR * 2 - (cs.ii == 0 ? 0*mm : holeR);
-    const holeX = cx + cs.cellMinH + holeR * 1.1 + (cs.ii == 0 ? holeR : 0*mm);
-    skCircle(sketches.deco, "mountHole1", { "center": vector(holeX,          cy + cs.cellMinV + cs.cellHeight * 0.12), "radius": holeR });
-    skCircle(sketches.deco, "mountHole2", { "center": vector(holeX + 0.5*mm, cy + cs.cellMinV + cs.cellHeight * 0.9  ), "radius": holeR });
+    const holeX = cx + cs.cellMinH + (cs.ii == 0 ? stackScrewInset : 1.1 * holeR);
+    skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMaxV - stackScrewInset), "radius": holeR });
+    skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + stackScrewInset), "radius": holeR });
   }
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
@@ -314,7 +328,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   if (cs.calloutText != "") {
     skTextAt(context, id + "calloutTxt1", "callout1", sketches.callout1, cs.calloutText,
       vector(0 * mm, cs.paddedRadius),
-      cs.calloutHeight, mergeMaps(calloutChipOpts(opts), {
+      cs.calloutHeight, calloutChipOpts(opts, {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
@@ -325,21 +339,21 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   if (cs.fhcsText != "") {
     skTextAt(context, id + "calloutTxt2", "callout2", sketches.callout2, cs.fhcsText,
       vector(0 * mm, cs.paddedRadius),
-      cs.calloutHeight, mergeMaps(calloutChipOpts(opts), {
+      cs.calloutHeight, calloutChipOpts(opts, {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
   }
   skSolve(sketches.callout2);
 
-  // Label sketch — sizing text; TOP_EXTENT tangent to padded circle at 6 o'clock, centered
-  skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
-    vector(cx, cy + cs.labelMaxV),
-    cs.labelHeight, {
-      "horizontalAlign":    HorizontalAlignment.CENTER,
-      "verticalAlign":      VerticalAlignment.TOP_EXTENT,
-  });
-  skSolve(sketches.label);
+    //   // Label sketch — sizing text; TOP_EXTENT tangent to padded circle at 6 o'clock, centered
+    //   skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
+    //     vector(cx, cy + cs.labelMaxV),
+    //     cs.labelHeight, {
+    //       "horizontalAlign":    HorizontalAlignment.CENTER,
+    //       "verticalAlign":      VerticalAlignment.TOP_EXTENT,
+    //   });
+    //   skSolve(sketches.label);
 
   // Extrude cell body downward from the top sketch plane
   opExtrude(context, ids.plate, {
@@ -370,18 +384,18 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   const debossDepth = min(2 * mm, 0.8 * opts.layerHeight);
   embossText(context, id + "labelDeboss",
     opts.basePlane, vector(cx, cy + cs.labelMaxV), plateBodiesQ,
-    cs.labelText, EmbossType.DEBOSS, cs.labelHeight, {
+    cs.labelText, EmbossType.DEBOSS, cs.labelHeight, labelChipOpts(opts, {
       "endDepth":         debossDepth,
       "horizontalAlign":  HorizontalAlignment.CENTER,
       "verticalAlign":    VerticalAlignment.TOP_EXTENT,
-      "cleanupSketches":  true,
-    });
+      "cleanupSketches":  false,
+    }));
   if (cs.calloutText != "") {
     embossText(context, id + "callout1Deboss",
       rotatedPlaneAt(opts.basePlane, vector(cx, cy), callout1Angle - 90 * degree),
       vector(0 * mm, cs.paddedRadius), plateBodiesQ,
       cs.calloutText, EmbossType.DEBOSS, cs.calloutHeight,
-      mergeMaps(calloutChipOpts(opts), {
+      calloutChipOpts(opts, {
         "endDepth":         debossDepth,
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
@@ -392,7 +406,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
       rotatedPlaneAt(opts.basePlane, vector(cx, cy), callout2Angle - 90 * degree),
       vector(0 * mm, cs.paddedRadius), plateBodiesQ,
       cs.fhcsText, EmbossType.DEBOSS, cs.calloutHeight,
-      mergeMaps(calloutChipOpts(opts), {
+      calloutChipOpts(opts, {
         "endDepth":         debossDepth,
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
@@ -419,9 +433,12 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
  *   - @field headDiam {ValueWithUnits} : Diameter of the screw-head marking circles.
  */
 function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is ValueWithUnits, cellHeight is ValueWithUnits, carrierOpts is map) {
-  const tabW    = 5 * mm;
-  const tabLeft = rightEdgeX - opts.borderPadding;
-  const tabH    = cellHeight;
+  const tabW      = 5 * mm;
+  const tabLeft   = rightEdgeX - opts.borderPadding;
+  const tabTop    = cellHeight;
+  const tabRight  = tabLeft + tabW + opts.borderPadding;
+  const holeCtrX  = tabRight - stackScrewInset;
+//   const holeCtrX = tabLeft + tabW - 2.5 * mm;
   const ids = {
     "carrierSk":   id + "carrierSk",
     "headMarksSk": id + "headMarksSk",
@@ -434,8 +451,8 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
   // Carrier plate rectangle, extruded downward
   const carrierSk = newSketchOnPlane(context, ids.carrierSk, { "sketchPlane":  opts.basePlane });
   skRectangle(carrierSk, "carrier", {
-    "firstCorner":  vector(tabLeft,                             zero),
-    "secondCorner": vector(tabLeft + tabW + opts.borderPadding, tabH),
+    "firstCorner":  vector(tabLeft,  zero),
+    "secondCorner": vector(tabRight, tabTop),
   });
   skSolve(carrierSk);
   opExtrude(context, ids.plate, {
@@ -445,18 +462,16 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
     "endDepth":  opts.holderDepth,
   });
 
-  const holeCtrX = tabLeft + tabW - 2.5 * mm;
-
   // Head mark circles (non-construction) for laser-cutter reference
   const headMarksSk = newSketchOnPlane(context, ids.headMarksSk, { "sketchPlane":  opts.basePlane });
-  skCircle(headMarksSk, "head1", { "center":  vector(holeCtrX, tabH * 0.15), "radius":  carrierOpts.headDiam / 2 });
-  skCircle(headMarksSk, "head2", { "center":  vector(holeCtrX, tabH * 0.85), "radius":  carrierOpts.headDiam / 2 });
+  skCircle(headMarksSk, "head1", { "center":  vector(holeCtrX,          stackScrewInset), "radius":  carrierOpts.headDiam / 2 });
+  skCircle(headMarksSk, "head2", { "center":  vector(holeCtrX, tabTop - stackScrewInset), "radius":  carrierOpts.headDiam / 2 });
   skSolve(headMarksSk);
 
   // Taphole circles in a separate sketch — only these are extruded and subtracted
   const tapSk = newSketchOnPlane(context, ids.tapSk, { "sketchPlane":  opts.basePlane });
-  skCircle(tapSk, "tap1", { "center":  vector(holeCtrX, tabH * 0.15), "radius":  carrierOpts.tapholeDiam / 2 });
-  skCircle(tapSk, "tap2", { "center":  vector(holeCtrX, tabH * 0.85), "radius":  carrierOpts.tapholeDiam / 2 });
+  skCircle(tapSk, "tap1", { "center":  vector(holeCtrX,          stackScrewInset), "radius":  carrierOpts.tapholeDiam / 2 });
+  skCircle(tapSk, "tap2", { "center":  vector(holeCtrX, tabTop - stackScrewInset), "radius":  carrierOpts.tapholeDiam / 2 });
   skSolve(tapSk);
   opExtrude(context, ids.holeTool, {
     "entities":  qCreatedBy(ids.tapSk, EntityType.FACE),
@@ -487,34 +502,31 @@ function holeCarrier(context is Context, id is Id, opts is map, rightEdgeX is Va
 function socketHolder(context is Context, id is Id, familyRef is array, opts is map) {
   var cursorX = zero;
   var lastCs = undefined;
-  var actualIdx = 0;
-  var actualTileCt = 0;
+  var actualTiles = [];
+  // pick the actual tiles we will use
   for (var ii = 0; ii < size(familyRef); ii += 1) {
-    if (! (isIn(toString(ii), opts.omitSockets) || isIn(familyRef[ii].sizing, opts.omitSockets))) { actualTileCt += 1; }
+    if (isIn(toString(ii), opts.omitSockets) || isIn(familyRef[ii].sizing, opts.omitSockets)) { continue; }
+    actualTiles = append(actualTiles, familyRef[ii]);
   }
-  const hole1Idx =  ceil((1/3) * actualTileCt);
-  const hole2Idx = floor((2/3) * actualTileCt);
 
-  for (var ii = 0; ii < size(familyRef); ii += 1) {
+  // Id is index-based so part identities survive family / omit changes.
+  for (var ii = 0; ii < size(actualTiles); ii += 1) {
     if (cursorX >= opts.maxTotalWidth) { break; }
-    const socketRecord = familyRef[ii];
-    if (isIn(toString(ii), opts.omitSockets) || isIn(socketRecord.sizing, opts.omitSockets)) { continue; }
-    // Id is index-based so part identities survive family changes.
-    const basePoint        = vector(cursorX, zero);
-    const hasHoles         = (actualIdx == 0) || (actualIdx == hole1Idx) || (actualIdx == hole2Idx);
-    const bumpSize         = (isIn(toString(ii), opts.bumpSizes) || isIn(socketRecord.sizing, opts.bumpSizes));
-    const sidePadding      = bumpSize ? 5 * mm : 0 * mm;
-    const cellOpts         = mergeMaps(opts, { "hasHoles": hasHoles, "sidePadding": sidePadding, "ii": ii });
-    const cs = socketCell(context, id + ("c" ~ toString(actualIdx)), socketRecord, cellOpts, basePoint);
-    cursorX   += cs.cellWidth;
-    actualIdx += 1;
-    lastCs = cs;
+    const tile        = actualTiles[ii];
+    const hasHoles    = (isIn(toString(ii), opts.stackHoles) || isIn(tile.sizing, opts.stackHoles));
+    const bumpSize    = (isIn(toString(ii), opts.bumpSizes)  || isIn(tile.sizing, opts.bumpSizes));
+    const basePoint   = vector(cursorX, zero);
+    const sidePadding = bumpSize ? 5 * mm : 0 * mm;
+    const cellOpts    = mergeMaps(opts, { "hasHoles": hasHoles, "sidePadding": sidePadding, "ii": ii });
+    const cs          = socketCell(context, id + ("c" ~ toString(ii)), tile, cellOpts, basePoint);
+    cursorX          += cs.cellWidth;
+    lastCs            = cs;
   }
 
   if (lastCs != undefined) {
     holeCarrier(context, id + "hc", opts, cursorX, lastCs.cellHeight, mergeMaps(lastCs, {
-      "tapholeDiam":   2.6 * mm,
-      "headDiam":      5.0 * mm,
+      "tapholeDiam":   stackScrewDiam,
+      "headDiam":      7.8 * mm,
     }));
   }
 
@@ -588,6 +600,9 @@ precondition {
   annotation { "Name": "Bump sizes", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.bumpSizes is string;
 
+  annotation { "Name": "StackHoles", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  definition.stackHoles is string;
+
   annotation { "Name": "Max total width", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.maxTotalWidth, { (millimeter): [0, 0, hugeSizeVal] } as LengthBoundSpec);
 
@@ -603,6 +618,7 @@ precondition {
 
   const omitSockets     = (definition.omitSockets == "") ? [] : splitByRegexp(definition.omitSockets, ",\\s*");
   const bumpSizes       = (definition.bumpSizes   == "") ? [] : splitByRegexp(definition.bumpSizes,   ",\\s*");
+  const stackHoles      = (definition.stackHoles  == "") ? [] : splitByRegexp(definition.stackHoles,  ",\\s*");
   const maxTotalWidth   = (definition.maxTotalWidth   < tinySizeVal * mm) ? hugeSizeVal * mm : definition.maxTotalWidth;
   // Family title: strip the sizing prefix from the first socket's title ("2mm Int Hex…" → "Int Hex…")
   const familyTitle   = replace(familyRef[0].title, "^" ~ familyRef[0].sizing ~ "\\s+", "");
@@ -622,6 +638,7 @@ precondition {
     "omitSockets":    omitSockets,
     "maxTotalWidth":  maxTotalWidth,
     "bumpSizes":      bumpSizes,
+    "stackHoles":     stackHoles,
     "familyTitle":    familyTitle,
     "mergeCells":     definition.mergeCells,
   });

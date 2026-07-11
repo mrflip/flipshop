@@ -1,7 +1,7 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
 export import(path : "8fa2dd9caf18bedfb6b0eda2/2427f262f8e5525a71e20081/7683b6ccf9499ff664904299", version : "8d62d0d3921f7b515fea74b7");
-export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "147ab80c285e6c2d15e1347b");
+export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "399a7ada99c04da7c5824417");
 import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
 import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
@@ -143,6 +143,7 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
     "resizing1":       definition.resizing1,
     "horizontalAlign": definition.horizontalAlign,
     "verticalAlign":   definition.verticalAlign,
+    "cleanupSketches": false,
   });
   skSolve(sketches.text);
   const textSkRegionQ = qSketchRegion(ids.textSk, true);
@@ -172,10 +173,10 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
   setName(context, qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]), partName);
 
-  if (definition.cleanupSketches) {
-    opDeleteBodies(context, ids.cleanup, {
-      "entities": qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.WIRE),
-    });
+  const cleanupSketches = definition.cleanupSketches == undefined ? false : definition.cleanupSketches;
+
+  if (cleanupSketches == true) {
+    opDeleteBodies(context, ids.cleanup, { "entities": qCreatedBy(ids.textSk, EntityType.BODY) });
   }
 }
 
@@ -215,7 +216,7 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
     "verticalAlign":   VerticalAlignment.BOTTOM_EXTENT,
   }, options);
   // Measure natural text geometry at the nominal baselineHeight
-  const tc        = textBounds(context, id, text, opts);
+  const tc        = textBounds(context, id + "textBounds", text, opts);
   const origSize  = vector(tc.actualWidth, tc.capHeight);
   // text renders uniformly: all metrics (x and y) scale with baselineHeight, i.e. sf[1]
   const bounds    = opts.bounds == undefined ? origSize : opts.bounds;
@@ -323,12 +324,14 @@ export function foo(context is Context, id is Id, text is string, definition is 
  *      - @field [fontName=FontName.OPEN_SANS_REGULAR] {FontName} : Font filename.
  *      - @field [baselineHeight=10mm] {ValueWithUnits} : Nominal cap height.
  *      - @field [keepTools=false] {boolean} : Retain the temporary sketch body.
+ *      - @field [position=vector(0 * mm, 0 * mm)] { Vector } : origin point
  */
 export function textBounds(context is Context, id is Id, text is string, options is map) returns map {
   const opts = mergeMaps({
       "fontName":       FontName.OPEN_SANS_REGULAR,
       "baselineHeight": 10*mm,
       "keepTools":      false,
+      "position":       vector(0 * mm, 0 * mm),
   }, options);
   const prefix = id + nextLabelId(opts, "tempSketch" ~ text);
   const ids = { textSk: prefix + "text", maxSk: prefix + "max", minSk: prefix + "min", deleteText: id + "deleteSketch", deleteMax: id + "deleteMax", deleteMin: id + "deleteMin" };
@@ -338,9 +341,9 @@ export function textBounds(context is Context, id is Id, text is string, options
     "min":  newSketchOnPlane(context, ids.minSk,  { "sketchPlane": PL_TOP }),
   };
   // Draw the text
-  skBasicTextAt(context, "textBounds", sketches.text, text,                                    vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
-  skBasicTextAt(context, "maxBounds",  sketches.max,  "'[}lLTQZ96|^$§`" ~ text ~ "gjpqyQ;,", vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
-  skBasicTextAt(context, "minBounds",  sketches.min,  "x",                                    vector(0 * mm, 0 * mm), opts.baselineHeight, opts);
+  skBasicTextAt(context, "textBounds", sketches.text, text,                                  opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "maxBounds",  sketches.max,  "'[}lLTQZ96|^$§`" ~ text ~ "gjpqyQ;,", opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "minBounds",  sketches.min,  "x",                                   opts.position, opts.baselineHeight, opts);
   skSolve(sketches.text);
   const textSkBodiesQ  = qCreatedBy(ids.textSk, EntityType.BODY);
   const textSkRegionQ  = qSketchRegion(ids.textSk, true);
@@ -399,9 +402,10 @@ export function textBounds(context is Context, id is Id, text is string, options
     "descenderFrac":    (actualHeight - overflowHeight - opts.baselineHeight) / actualHeight,
     "overflowFrac":     overflowHeight / actualHeight,
   };
-  opDeleteBodies(context, ids.deleteText, { "entities": textSkBodiesQ });
-  opDeleteBodies(context, ids.deleteMax,  { "entities": qCreatedBy(ids.maxSk, EntityType.BODY) });
-  opDeleteBodies(context, ids.deleteMin,  { "entities": qCreatedBy(ids.minSk, EntityType.BODY) });
+//   opDeleteBodies(context, ids.deleteText, { "entities": textSkBodiesQ });
+//   opDeleteBodies(context, ids.deleteMax,  { "entities": qCreatedBy(ids.maxSk,  EntityType.BODY) });
+//   opDeleteBodies(context, ids.deleteMin,  { "entities": qCreatedBy(ids.minSk,  EntityType.BODY) });
+  opDeleteBodies(context, id + "cleanup", { "entities": qSketchFilter(qCreatedBy(id), SketchObject.YES) });
   //   debug(context, ["textBounds tbox", text, boxMag(tbox, 1*mm)]);
   //   debug(context, ["textBounds wbox", text, boxMag(wbox, 1*mm)]);
   //   debug(context, ["textBounds bbox", text, boxMag(bbox, 1*mm)]);
@@ -566,6 +570,7 @@ export enum EmbossType {
  *   - @field [fontName=FontName.OPEN_SANS_REGULAR] {FontName} : Font filename.
  *   - @field [horizontalAlign=HorizontalAlignment.CENTER] {HorizontalAlignment}
  *   - @field [verticalAlign=VerticalAlignment.BOTTOM_BASELINE] {VerticalAlignment}
+ *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  */
 export function embossText(context is Context, id is Id, sketchPlane is Plane,
   position is Vector, targets is Query, text is string, embossType is EmbossType,
@@ -598,6 +603,7 @@ export function embossText(context is Context, id is Id, sketchPlane is Plane,
       "keepTools":      false,
     });
   }
+  if (options.cleanupSketches == true) { opDeleteBodies(context, id + "cleanup",  { "entities": qCreatedBy(ids.textSk,  EntityType.BODY) }); }
 }
 // --
 // --
