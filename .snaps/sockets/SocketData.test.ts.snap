@@ -415,6 +415,7 @@ SocketWrench {
   "targets": {
     "bhcs_sz": "M16",
     "drives": "M12",
+    "drives_alt": "M16",
     "fhcs_sz": "M16",
     "shcs_sz": "M12",
     "sss_sz": "M20",

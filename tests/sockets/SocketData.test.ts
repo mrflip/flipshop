@@ -16,7 +16,7 @@ const SomeSocketWrenches = {} as typeof SocketWrenches
 
 function makeSocket(partial: Partial<SocketWrenchT>): SocketWrench {
   return SocketWrench.live({
-    title: 'Test Socket', sizing: '10mm', sizing_mm: 10, sizing_in: 0.394,
+    title: 'Test Socket', sizing: 'H10mm', sizing_mm: 10, sizing_in: 0.394,
     sku: 'TEST123', upc: '000000000000', url: 'https://example.com', img_url: 'https://example.com/img.jpg',
     socket_kind: 'socket_exthex', drive_kind: 'exthex', unit_system: 'metric',
     sqdrive_size: 'isq_0375in', socket_variant: 'std', reach_kind: 'reg',

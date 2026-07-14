@@ -162,7 +162,7 @@ export const MetricHexkeySizingVals = [
 export const USHexkeySizingVals     = [
   "H0.028in",    "H0.035in",    "H0.050in",    "H1/16in",     "H5/64in",     "H3/32in",     "H7/64in",     "H1/8in",
   "H9/64in",     "H5/32in",     "H3/16in",     "H7/32in",     "H1/4in",      "H5/16in",     "H3/8in",      "H7/16in",
-  "H1/2in",       "H9/16in",    "H5/8in",      "H11/16in",    "H3/4in",      "H7/8in",      "H1in",
+  "H1/2in",      "H9/16in",     "H5/8in",      "H11/16in",    "H3/4in",      "H7/8in",      "H1in",
 ] as const
 export const TorxkeySizingVals      = [
   "T1",          "T2",          "T3",          "T4",
@@ -182,6 +182,7 @@ export const ExtstarDriveSizingVals = [
 export const RatchetDriveSizingVals = [
   "Dr1/4in",     "Dr3/8in",     "Dr1/2in",     "Dr3/4in",     "Dr1in",
 ]
+export const TripleSquareDriveSizingVals = ["Tsq6mm", "Tsq8mm", "Tsq10mm", "Tsq12mm"] as const
 export const PhillipsDriveSizingVals = ["Ph00", "Ph0", "Ph1", "Ph2", "Ph3", "Ph4"] as const
 export const PozidrivDriveSizingVals = ["Pz2", "Pz3", "Pz4"] as const
 export const SlottedDriveSizingVals  = ["Sl0", "Sl1", "Sl2", "Sl3", "Sl4", "Sl5", "Sl6"] as const
@@ -189,6 +190,7 @@ export const DriverSizingVals        = [
   ...MetricWrenchSizingVals, ...USWrenchSizingVals,
   ...MetricHexkeySizingVals, ...USHexkeySizingVals,
   ...TorxkeySizingVals,      ...TorxpkeySizingVals,
+  ...TripleSquareDriveSizingVals,
   ...RatchetDriveSizingVals,
   ...PhillipsDriveSizingVals,
   ...PozidrivDriveSizingVals,
@@ -212,13 +214,13 @@ export type FastenerSizingPref = typeof FastenerSizingPrefVals[number]; const Fa
 export type ThreadingPref      = typeof ThreadingPrefVals[number];      const ThreadingPrefVals      = ['a', 'b', 'c']                      as const; export const thread_pref       = CK.oneof(ThreadingPrefVals)
 export type FastenerPref       = typeof FastenerPrefVals[number];       const FastenerPrefVals       = ['Aa', 'Ab', 'Ac', 'Ba', 'Bb', 'Bc'] as const; export const fastener_pref        = CK.oneof(FastenerPrefVals)
 
-export const USFastenerSizingVals     = ["#0",  "#1",  "#2",  "#3",  "#4", "#5", "#6",  "#8",  "#10",  "#12",  "1/4in",  "5/16in",  "3/8in",  "7/16in",  "1/2in",  "9/16in",  "5/8in",  "3/4in",  "7/8in",  "1in",  "1+1/8in",  "1+1/4in",  "1+3/8in",  "1+1/2in",  "1+3/4in",  "2in",  "2+1/4in",  "2+1/2in",  "2+3/4in",  "3in"] as const
-export const USNutSizingVals          = ["N#0",  "N#2",  "N#3",  "N#4",  "N#6",  "N#8",  "N#10",  "N#12",  "N1/4in",  "N5/16in",  "N3/8in",  "N7/16in",  "N1/2in",  "N9/16in",  "N5/8in",  "N3/4in",  "N7/8in",  "N1in",  "N1+1/8in",  "N1+1/4in",  "N1+3/8in",  "N1+1/2in",  "N1+3/4in",  "N2in",  "N2+1/4in",  "N2+1/2in",  "N2+3/4in",  "N3in"] as const
-export const USHeavyNutSizingVals     = ["HN#0", "HN#2", "HN#3", "HN#4", "HN#6", "HN#8", "HN#10", "HN#12", "HN1/4in", "HN5/16in", "HN3/8in", "HN7/16in", "HN1/2in", "HN9/16in", "HN5/8in", "HN3/4in", "HN7/8in", "HN1in", "HN1+1/8in", "HN1+1/4in", "HN1+3/8in", "HN1+1/2in", "HN1+3/4in", "HN2in", "HN2+1/4in", "HN2+1/2in", "HN2+3/4in", "HN3in"] as const
-export const MetricFastenerSizingVals = ["M1.4",   "M1.6",   "M2",   "M2.5",   "M3",   "M4",   "M5",   "M6",   "M8",   "M10",   "M12",   "M14",   "M16",   "M18",   "M20",   "M22",   "M24",   "M27",   "M30",   "M33",   "M36",   "M39",   "M42"] as const
-export const MetricNutSizingVals      = ["NM1.4",  "NM1.6",  "NM2",  "NM2.5",  "NM3",  "NM4",  "NM5",  "NM6",  "NM8",  "NM10",  "NM12",  "NM14",  "NM16",  "NM18",  "NM20",  "NM22",  "NM24",  "NM27",  "NM30",  "NM33",  "NM36",  "NM39",  "NM42"] as const
-export const MetricHeavyNutSizingVals = ["HNM1.4", "HNM1.6", "HNM2", "HNM2.5", "HNM3", "HNM4", "HNM5", "HNM6", "HNM8", "HNM10", "HNM12", "HNM14", "HNM16", "HNM18", "HNM20", "HNM22", "HNM24", "HNM27", "HNM30", "HNM33", "HNM36", "HNM39", "HNM42"] as const
-export const WeirdFastenerSizingVals  = ["D8", "D10", "D12", "D14", "ND8", "ND10", "ND12", "ND14", "HND8", "HND10", "HND12", "HND14", "HN3/8in", "HN1/2in", "HN3/4in", "HN7/8in", "HN1in", "HN1+1/8in", "HN1+1/4in", "HN1+3/8in", "HN1+1/2in", "HN1+3/4in", "HN2in", "HN2+1/4in", "HN2+1/2in", "HN2+3/4in", "HN3in"] as const
+export const USFastenerSizingVals     = ["#0",     "#1",     "#2",     "#3",     "#4",     "#5",     "#6",     "#8",    "#10",     "#12",      "1/4in",   "5/16in",   "3/8in",   "7/16in",   "1/2in",   "9/16in",  "5/8in",   "3/4in",     "7/8in",     "1in",       "1+1/8in",   "1+1/4in",   "1+3/8in",        "1+1/2in",   "1+3/4in",   "2in",       "2+1/4in",        "2+1/2in",        "2+3/4in",       "3in"] as const
+export const USNutSizingVals          = ["N#0",    "N#2",    "N#3",    "N#4",    "N#6",    "N#8",    "N#10",   "N#12",  "N1/4in",  "N5/16in",  "N3/8in",  "N7/16in",  "N1/2in",  "N9/16in",  "N5/8in",  "N3/4in",  "N7/8in",  "N1in",      "N1+1/8in",  "N1+1/4in",  "N1+3/8in",  "N1+1/2in",  "N1+3/4in",       "N2in",      "N2+1/4in",  "N2+1/2in",  "N2+3/4in",       "N3in"] as const
+export const USHeavyNutSizingVals     = ["HN#0",   "HN#2",   "HN#3",   "HN#4",   "HN#6",   "HN#8",   "HN#10",  "HN#12", "HN1/4in", "HN5/16in", "HN3/8in", "HN7/16in", "HN1/2in", "HN9/16in", "HN5/8in", "HN3/4in", "HN7/8in", "HN1in",     "HN1+1/8in", "HN1+1/4in", "HN1+3/8in", "HN1+1/2in", "HN1+3/4in",      "HN2in",     "HN2+1/4in", "HN2+1/2in", "HN2+3/4in",      "HN3in"] as const
+export const MetricFastenerSizingVals = ["M1.2",    "M1.4",   "M1.6",   "M2",     "M2.2",   "M2.5",   "M2.6",   "M3",    "M3.5",    "M4",       "M4.5",    "M5",       "M6",      "M7",       "M8",      "M10",     "M12",     "M14",       "M16",       "M18",       "M20",       "M22",       "M24",            "M27",       "M30",      "M33",       "M36",            "M39",            "M42"] as const
+export const MetricNutSizingVals      = ["NM1.2",  "NM1.4",  "NM1.6",  "NM2",    "NM2.2",  "NM2.5",  "NM2.6",  "NM3",   "NM3.5",   "NM4",      "NM4.5",   "NM5",      "NM6",     "NM7",      "NM8",     "NM10",    "NM12",    "NM14",      "NM16",      "NM18",      "NM20",      "NM22",      "NM24",           "NM27",      "NM30",      "NM33",      "NM36",           "NM39",           "NM42"] as const
+export const MetricHeavyNutSizingVals = ["HNM1.2", "HNM1.4", "HNM1.6", "HNM2",   "HNM2.2", "HNM2.5", "HNM2.6", "HNM3",  "HNM3.5",  "HNM4",     "HNM4.5",  "HNM5",     "HNM6",    "HNM7",     "HNM8",    "HNM10",   "HNM12",    "HNM14",    "HNM16",    "HNM18",     "HNM20",     "HNM22",     "HNM24",           "HNM27",     "HNM30",     "HNM33",      "HNM36",           "HNM39",           "HNM42"] as const
+export const WeirdFastenerSizingVals  = ["D8",     "D10",    "D12",    "D14",    "ND8",    "ND10",   "ND12",   "ND14",  "HND8",    "HND10",    "HND12",   "HND14",    "HN3/8in", "HN1/2in",  "HN3/4in", "HN7/8in", "HN1in",   "HN1+1/8in", "HN1+1/4in", "HN1+3/8in", "HN1+1/2in", "HN1+3/4in", "HN2in",          "HN2+1/4in", "HN2+1/2in", "HN2+3/4in", "HN3in"] as const
 export const FastenerSizingVals       = [...USFastenerSizingVals, ...MetricFastenerSizingVals] as const
 export const usFastenerSizing         = CK.oneof(USFastenerSizingVals)
 export const metricFastenerSizing     = CK.oneof(MetricFastenerSizingVals)

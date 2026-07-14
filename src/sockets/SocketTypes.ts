@@ -22,7 +22,7 @@ export const socketWrench = CK.obj({
   /** type of bit (internal drive sockets); should equal drive_kind */
   bit_kind:             CK.oneof(FE.InternalDriveVals).optional(),
   /** text giving the nominal size of the socket (e.g. "1/4 in", "2 mm", "T10", "E14", "Ph1", "Ph00") */
-  sizing:               CK.str.regex(/^(?:((?:\d+\+)?[\/\d]+in|[\d\.]+mm)|T\d+|E\d+|Sl\d+|P[hz](?:[01234]|00|000)|.+in - .+in)$/),
+  sizing:               CK.str.regex(/^H?(?:((?:\d+\+)?[\/\d]+in|[\d\.]+mm)|T\d+|E\d+|Sl\d+|P[hz](?:[01234]|00|000)|.+in - .+in)$/),
   /** drive size of the tool in millimeters */
   sizing_mm:            mm_lte_2000,
   /** sizing_mm rounded to one decimal place with trailing zeros removed (e.g. "9.5", "12.7") */

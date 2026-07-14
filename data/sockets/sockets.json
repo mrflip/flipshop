@@ -7272,7 +7272,10 @@
     "bit_ln": 129.667,
     "bit_ln_total": 136.9822,
     "nose_diam": 12.9032,
-    "targets": {},
+    "targets": {
+      "drives": "M3.5",
+      "drives_alt": "#6"
+    },
     "wt": 0.068039,
     "wt_lb": 0.15,
     "sku": "82512",
@@ -7346,6 +7349,7 @@
     "bit_ln_total": 136.9822,
     "nose_diam": 12.9032,
     "targets": {
+      "drives": "M4.5",
       "drives_alt": "#10"
     },
     "wt": 0.068039,
@@ -7534,7 +7538,10 @@
     "bit_ln": 17.4752,
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
-    "targets": {},
+    "targets": {
+      "drives": "M3.5",
+      "drives_alt": "#6"
+    },
     "wt": 0.02268,
     "wt_lb": 0.05,
     "sku": "80173",
@@ -7608,6 +7615,7 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 12.9032,
     "targets": {
+      "drives": "M4.5",
       "drives_alt": "#10"
     },
     "wt": 0.02268,
@@ -7761,6 +7769,7 @@
     "nose_diam": 14.986,
     "bolt_clr_diam": 131.9784,
     "targets": {
+      "drives": "M8",
       "drives_alt": "3/8in"
     },
     "wt": 0.217724,
@@ -7836,7 +7845,10 @@
     "bit_ln": 20.0152,
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
-    "targets": {},
+    "targets": {
+      "drives": "M3.5",
+      "drives_alt": "#6"
+    },
     "wt": 0.054431,
     "wt_lb": 0.12,
     "sku": "80534",
@@ -7910,6 +7922,7 @@
     "bit_ln_total": 24.9936,
     "nose_diam": 14.986,
     "targets": {
+      "drives": "M4.5",
       "drives_alt": "#10"
     },
     "wt": 0.063503,
@@ -8061,6 +8074,7 @@
     "bit_ln_total": 29.9974,
     "nose_diam": 14.986,
     "targets": {
+      "drives": "M8",
       "drives_alt": "3/8in"
     },
     "wt": 0.081647,
