@@ -1,13 +1,13 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "986233d6c8acabd83e5ccae6");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "e2be2cf5f0c7d4246877c1e5");
 import(path : "4989999bb256f6d486ab7381", version : "23dbfebe8157b79b1826e1ae");
 import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
 // SocketWrenches and SocketWrenchesByFamily are defined in SocketWrenches.fs
 // (same Feature Studio document — no import needed)
-const callout1Angle     = 132 * degree;
-const callout2Angle     =  48 * degree;
+const lCalloutAngle     = 132 * degree;
+const rCalloutAngle     =  48 * degree;
 const baseCellPadding   = { left: 4*mm, top: 3*mm };
 const defaultLayerDepth = 4.5;
 const stackScrewDiam    = 2.75 * mm;
@@ -132,9 +132,11 @@ function labelChipOpts(opts is map, overrides is map) returns map {
  *   - @field calloutHeight {ValueWithUnits} : Cap height of the callout chip text.
  *   - @field labelHeight {ValueWithUnits} : Cap height of the label chip text.
  *   - @field sidePadding {ValueWithUnits} : Extra padding to insert to the left of cell.
+ *   - @field bumpDiam {boolean} : if true, ratchet size is enlarged 10%
  */
 function socketCellSize(context is Context, id is Id, socket is map, opts is map) returns map {
-  const bodyDiam     = (socket.ratchet_end_diam != undefined) ? socket.ratchet_end_diam : socket.wx_overall;
+  const diamScale    = opts.bumpDiam ? 1.04 : 1.0;
+  const bodyDiam     = diamScale * ((socket.ratchet_end_diam != undefined) ? socket.ratchet_end_diam : socket.wx_overall);
   const bodyRadius   = bodyDiam / 2;
   const cutoutRadius = bodyRadius + opts.insertionGap;
   const paddedRadius = cutoutRadius + opts.cutoutPadding;
@@ -144,51 +146,52 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const noseDiam      = (socket.nose_diam      != undefined) ? socket.nose_diam      : bodyDiam;
   const targetDiam    = (socket.target_end_diam != undefined) ? socket.target_end_diam : bodyDiam;
 
-  // Callout chips use targets.drives (chip 1 at 120°) and targets.fhcs_sz (chip 2 at 210°)
+  // Callout chips use targets.drives (chip 1 at 120°) and targets.drives_alt (chip 2 at 210°)
   const targets     = socket.targets;
-  const calloutText = ((targets != undefined) && (targets.drives  != undefined)) ? replace(targets.drives,  '(in|mm)$', '')  : "";
-  const fhcsText    = ((targets != undefined) && (targets.fhcs_sz != undefined)) ? replace(targets.fhcs_sz, '(in|mm)$', '')  : "";
+  const lCalloutText = ((targets != undefined) && (targets.drives  != undefined)) ? replace(targets.drives,  '(in|mm)$', '')  : "";
+  const rCalloutText = ((targets != undefined) && (targets.drives_alt != undefined)) ? replace(targets.drives_alt, '(in|mm)$', '')  : "";
   const labelText   = replace(socket.sizing, '(in|mm)$', '');
-  //   debug(context, ["socketCellSize", calloutText, fhcsText, labelText, socket, targets]);
+  //   debug(context, ["socketCellSize", lCalloutText, rCalloutText, labelText, socket, targets]);
 
 
   // Callout chip 1 at 120° (60° above left horizon)
-  var calloutCbMinH = zero; var calloutCbMaxH = zero; var calloutCbMinV = zero; var calloutCbMaxV = zero;
-  if (calloutText != "") {
-    const calloutTc = textBounds(context, id + "calloutTC", calloutText, calloutChipOpts(opts, { "cleanupSketches": true }));
-    const calloutCb = calloutChipBounds(calloutTc, paddedRadius, callout1Angle);
-    calloutCbMinH = calloutCb.minH;
-    calloutCbMaxH = calloutCb.maxH;
-    calloutCbMinV = calloutCb.minV;
-    calloutCbMaxV = calloutCb.maxV;
+  var lCalloutCbMinH = zero; var lCalloutCbMaxH = zero; var lCalloutCbMinV = zero; var lCalloutCbMaxV = zero;
+  if (lCalloutText != "") {
+    const lCalloutTc = textBounds(context, id + "calloutTC", lCalloutText, calloutChipOpts(opts, { "cleanupSketches": true }));
+    const lCalloutCb = calloutChipBounds(lCalloutTc, paddedRadius, lCalloutAngle);
+    lCalloutCbMinH = lCalloutCb.minH;
+    lCalloutCbMaxH = lCalloutCb.maxH;
+    lCalloutCbMinV = lCalloutCb.minV;
+    lCalloutCbMaxV = lCalloutCb.maxV;
   }
   // Callout chip 2 at 210° (30° below left horizon)
-  var fhcsCbMinH = zero; var fhcsCbMaxH = zero; var fhcsCbMinV = zero; var fhcsCbMaxV = zero;
-  if (fhcsText != "") {
-    const fhcsTc = textBounds(context, id + "fhcsTC", fhcsText, calloutChipOpts(opts, { "cleanupSketches": true }));
-    const fhcsCb = calloutChipBounds(fhcsTc, paddedRadius, callout2Angle);
-    fhcsCbMinH = fhcsCb.minH;
-    fhcsCbMaxH = fhcsCb.maxH;
-    fhcsCbMinV = fhcsCb.minV;
-    fhcsCbMaxV = fhcsCb.maxV;
+  var rCalloutCbMinH = zero; var rCalloutCbMaxH = zero; var rCalloutCbMinV = zero; var rCalloutCbMaxV = zero;
+  if (rCalloutText != "") {
+    const rCalloutTc = textBounds(context, id + "rCalloutTC", rCalloutText, calloutChipOpts(opts, { "cleanupSketches": true }));
+    const rCalloutCb = calloutChipBounds(rCalloutTc, paddedRadius, rCalloutAngle);
+    rCalloutCbMinH = rCalloutCb.minH;
+    rCalloutCbMaxH = rCalloutCb.maxH;
+    rCalloutCbMinV = rCalloutCb.minV;
+    rCalloutCbMaxV = rCalloutCb.maxV;
   }
 
   const labelScaleH = (labelText == "11/32") ? 0.9 : 1.0;
   const labelHeight = opts.labelHeight;
+  const labelShiftV = cutoutRadius > 11*mm ? 0.2*mm : 0.5*mm;
   const labelTc     = textBounds(context, id + "labelTC", labelText, labelChipOpts(opts, { "cleanupSketches": true }));
   // Label chip: TOP_EXTENT at y=-paddedRadius (6 o'clock), horizontally centered at x=0
   const labelHalfW  = labelTc.actualWidth * labelScaleH / 2;
   const labelMinH   = -labelHalfW * labelScaleH;
   const labelMaxH   =  labelHalfW * labelScaleH;
-  const labelMaxV   = -paddedRadius - 0.5*mm;
+  const labelMaxV   = -paddedRadius - labelShiftV;
   const labelMinV   = labelMaxV - labelTc.actualHeight;
 
   // Tight bounding box over padded circle + callout chips + label chip +
   //   cellPadding sentinel extents (body circle + its padding lines)
-  const bboxMinH = min(min(min(min(-paddedRadius, calloutCbMinH), fhcsCbMinH), labelMinH), -(bodyRadius + cellPadding.left));
-  const bboxMaxH = max(max(max(max( paddedRadius, calloutCbMaxH), fhcsCbMaxH), labelMaxH),  (bodyRadius + cellPadding.right));
-  const bboxMinV =     min(min(min(-paddedRadius, calloutCbMinV), fhcsCbMinV), labelMinV);
-  const bboxMaxV = max(max(max(max( paddedRadius, calloutCbMaxV), fhcsCbMaxV), labelMaxV),  (bodyRadius + cellPadding.top));
+  const bboxMinH = min(min(min(min(-paddedRadius, lCalloutCbMinH), rCalloutCbMinH), labelMinH), -(bodyRadius + cellPadding.left));
+  const bboxMaxH = max(max(max(max( paddedRadius, lCalloutCbMaxH), rCalloutCbMaxH), labelMaxH),  (bodyRadius + cellPadding.right));
+  const bboxMinV =     min(min(min(-paddedRadius, lCalloutCbMinV), rCalloutCbMinV), labelMinV);
+  const bboxMaxV = max(max(max(max( paddedRadius, lCalloutCbMaxV), rCalloutCbMaxV), labelMaxV),  (bodyRadius + cellPadding.top));
 
   // Border = tight bounding box expanded by borderPadding on all sides
   const borderMinH = bboxMinH - opts.borderPadding;
@@ -214,8 +217,8 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
     "paddedRadius":  paddedRadius,
     "noseDiam":      noseDiam,
     "targetDiam":    targetDiam,
-    "calloutText":   calloutText,
-    "fhcsText":      fhcsText,
+    "lCalloutText":  lCalloutText,
+    "rCalloutText":  rCalloutText,
     "labelText":     labelText,
     "labelScaleH":   labelScaleH,
     "labelHeight":   labelHeight,
@@ -258,8 +261,8 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     cutout:   newSketchOnPlane(context, ids.cutoutSk,  { "sketchPlane":  opts.basePlane }),
     deco:     newSketchOnPlane(context, ids.decoSk,    { "sketchPlane":  opts.basePlane }),
     // Rotated callout sketches: V axis points radially outward, so text at (0, paddedRadius) is tangent to padded circle
-    callout1: rotatedSketchAt(context, ids.calloutSk1, opts.basePlane, vector(cx, cy), callout1Angle - 90 * degree),
-    callout2: rotatedSketchAt(context, ids.calloutSk2, opts.basePlane, vector(cx, cy), callout2Angle - 90 * degree),
+    lCallout: rotatedSketchAt(context, ids.calloutSk1, opts.basePlane, vector(cx, cy), lCalloutAngle - 90 * degree),
+    rCallout: rotatedSketchAt(context, ids.calloutSk2, opts.basePlane, vector(cx, cy), rCalloutAngle - 90 * degree),
     label:    newSketchOnPlane(context, ids.labelSk,   { "sketchPlane":  opts.basePlane }),
   };
 
@@ -314,37 +317,35 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
     "secondCorner": vector(cx + cs.cellMaxH, cy + cs.cellMaxV),
   });
   // Mount holes on the left border (cells at holder index 0 and 3)
-  if (opts.hasHoles) {
-    const holeR = stackScrewDiam / 2;
-    // const holeX = cx + cs.cellMinH + holeR * 2 - (cs.ii == 0 ? 0*mm : holeR);
-    const holeX = cx + cs.cellMinH + (cs.ii == 0 ? stackScrewInset : 1.1 * holeR);
-    skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMaxV - stackScrewInset), "radius": holeR });
-    skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + stackScrewInset), "radius": holeR });
-  }
+  const holeR = stackScrewDiam / 2;
+  // const holeX = cx + cs.cellMinH + holeR * 2 - (cs.ii == 0 ? 0*mm : holeR);
+  const holeX = cx + cs.cellMinH + (cs.ii == 0 ? stackScrewInset : 1.1 * holeR);
+  skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMaxV - stackScrewInset), "radius": holeR });
+  skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + stackScrewInset), "radius": holeR });
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
 
   // Callout sketch 1 — targets.drives; baseline tangent to padded circle at 120° (60° above left horizon)
-  if (cs.calloutText != "") {
-    skTextAt(context, id + "calloutTxt1", "callout1", sketches.callout1, cs.calloutText,
+  if (cs.lCalloutText != "") {
+    skTextAt(context, id + "lCalloutTxt", "lCallout", sketches.lCallout, cs.lCalloutText,
       vector(0 * mm, cs.paddedRadius),
       cs.calloutHeight, calloutChipOpts(opts, {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
   }
-  skSolve(sketches.callout1);
+  skSolve(sketches.lCallout);
 
-  // Callout sketch 2 — targets.fhcs_sz; baseline tangent to padded circle at 210° (30° below left horizon)
-  if (cs.fhcsText != "") {
-    skTextAt(context, id + "calloutTxt2", "callout2", sketches.callout2, cs.fhcsText,
+  // Callout sketch 2 — targets.drives_alt; baseline tangent to padded circle at 210° (30° below left horizon)
+  if (cs.rCalloutText != "") {
+    skTextAt(context, id + "rCalloutTxt", "rCallout", sketches.rCallout, cs.rCalloutText,
       vector(0 * mm, cs.paddedRadius),
       cs.calloutHeight, calloutChipOpts(opts, {
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
   }
-  skSolve(sketches.callout2);
+  skSolve(sketches.rCallout);
 
     //   // Label sketch — sizing text; TOP_EXTENT tangent to padded circle at 6 o'clock, centered
     //   skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
@@ -390,22 +391,22 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
       "verticalAlign":    VerticalAlignment.TOP_EXTENT,
       "cleanupSketches":  false,
     }));
-  if (cs.calloutText != "") {
-    embossText(context, id + "callout1Deboss",
-      rotatedPlaneAt(opts.basePlane, vector(cx, cy), callout1Angle - 90 * degree),
+  if (cs.lCalloutText != "") {
+    embossText(context, id + "lCalloutDeboss",
+      rotatedPlaneAt(opts.basePlane, vector(cx, cy), lCalloutAngle - 90 * degree),
       vector(0 * mm, cs.paddedRadius), plateBodiesQ,
-      cs.calloutText, EmbossType.DEBOSS, cs.calloutHeight,
+      cs.lCalloutText, EmbossType.DEBOSS, cs.calloutHeight,
       calloutChipOpts(opts, {
         "endDepth":         debossDepth,
         "horizontalAlign":  HorizontalAlignment.CENTER,
         "verticalAlign":    VerticalAlignment.BOTTOM_BASELINE,
       }));
   }
-  if (cs.fhcsText != "") {
-    embossText(context, id + "callout2Deboss",
-      rotatedPlaneAt(opts.basePlane, vector(cx, cy), callout2Angle - 90 * degree),
+  if (cs.rCalloutText != "") {
+    embossText(context, id + "rCalloutDeboss",
+      rotatedPlaneAt(opts.basePlane, vector(cx, cy), rCalloutAngle - 90 * degree),
       vector(0 * mm, cs.paddedRadius), plateBodiesQ,
-      cs.fhcsText, EmbossType.DEBOSS, cs.calloutHeight,
+      cs.rCalloutText, EmbossType.DEBOSS, cs.calloutHeight,
       calloutChipOpts(opts, {
         "endDepth":         debossDepth,
         "horizontalAlign":  HorizontalAlignment.CENTER,
@@ -513,11 +514,11 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
   for (var ii = 0; ii < size(actualTiles); ii += 1) {
     if (cursorX >= opts.maxTotalWidth) { break; }
     const tile        = actualTiles[ii];
-    const hasHoles    = (isIn(toString(ii), opts.stackHoles) || isIn(tile.sizing, opts.stackHoles));
     const bumpSize    = (isIn(toString(ii), opts.bumpSizes)  || isIn(tile.sizing, opts.bumpSizes));
+    const bumpDiam    = (isIn(toString(ii), opts.bumpDiams)  || isIn(tile.sizing, opts.bumpDiams));
     const basePoint   = vector(cursorX, zero);
     const sidePadding = bumpSize ? 5 * mm : 0 * mm;
-    const cellOpts    = mergeMaps(opts, { "hasHoles": hasHoles, "sidePadding": sidePadding, "ii": ii });
+    const cellOpts    = mergeMaps(opts, { "sidePadding": sidePadding, "ii": ii, "bumpDiam": bumpDiam, "bumpSize": bumpSize });
     const cs          = socketCell(context, id + ("c" ~ toString(ii)), tile, cellOpts, basePoint);
     cursorX          += cs.cellWidth;
     lastCs            = cs;
@@ -597,11 +598,11 @@ precondition {
   annotation { "Name": "Omit sockets", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.omitSockets is string;
 
-  annotation { "Name": "Bump sizes", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  annotation { "Name": "Bump padding", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.bumpSizes is string;
 
-  annotation { "Name": "StackHoles", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
-  definition.stackHoles is string;
+  annotation { "Name": "Bump diameters", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
+  definition.bumpDiams is string;
 
   annotation { "Name": "Max total width", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.maxTotalWidth, { (millimeter): [0, 0, hugeSizeVal] } as LengthBoundSpec);
@@ -618,7 +619,7 @@ precondition {
 
   const omitSockets     = (definition.omitSockets == "") ? [] : splitByRegexp(definition.omitSockets, ",\\s*");
   const bumpSizes       = (definition.bumpSizes   == "") ? [] : splitByRegexp(definition.bumpSizes,   ",\\s*");
-  const stackHoles      = (definition.stackHoles  == "") ? [] : splitByRegexp(definition.stackHoles,  ",\\s*");
+  const bumpDiams       = (definition.bumpDiams   == "") ? [] : splitByRegexp(definition.bumpDiams,   ",\\s*");
   const maxTotalWidth   = (definition.maxTotalWidth   < tinySizeVal * mm) ? hugeSizeVal * mm : definition.maxTotalWidth;
   // Family title: strip the sizing prefix from the first socket's title ("2mm Int Hex…" → "Int Hex…")
   const familyTitle   = replace(familyRef[0].title, "^" ~ familyRef[0].sizing ~ "\\s+", "");
@@ -638,7 +639,7 @@ precondition {
     "omitSockets":    omitSockets,
     "maxTotalWidth":  maxTotalWidth,
     "bumpSizes":      bumpSizes,
-    "stackHoles":     stackHoles,
+    "bumpDiams":      bumpDiams,
     "familyTitle":    familyTitle,
     "mergeCells":     definition.mergeCells,
   });

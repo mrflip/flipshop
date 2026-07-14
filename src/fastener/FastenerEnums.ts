@@ -165,12 +165,15 @@ export const USHexkeySizingVals     = [
   "H1/2in",       "H9/16in",    "H5/8in",      "H11/16in",    "H3/4in",      "H7/8in",      "H1in",
 ] as const
 export const TorxkeySizingVals      = [
-  "T5",          "T6",          "T7",          "T8",         "T9",           "T10",         "T15",         "T20",
-  "T25",         "T27",         "T30",         "T40",        "T45",          "T47",         "T50",         "T55",         "T60",
+  "T1",          "T2",          "T3",          "T4",
+  "T5",          "T6",          "T7",          "T8",         "T9",           "T10",         "T15",         "T20",         "T25",
+  "T27",         "T30",         "T35",         "T40",        "T45",          "T47",         "T50",         "T55",         "T60",
+  "T70",         "T80",         "T90",         "T100",
 ] as const
 export const TorxpkeySizingVals      = [
-  "TP5",         "TP6",         "TP7",         "TP8",         "TP9",         "TP10",        "TP15",        "TP20",
-  "TP25",        "TP27",        "TP30",        "TP40",        "TP45",        "TP47",        "TP50",        "TP55",        "TP60",
+  "TP5",         "TP6",         "TP7",         "TP8",         "TP9",         "TP10",        "TP15",        "TP20",        "TP25",
+  "TP27",        "TP30",        "TP35",        "TP40",        "TP45",        "TP47",        "TP50",        "TP55",        "TP60",
+  "TP70",        "TP80",        "TP90",        "TP100",
 ] as const
 export const ExtstarDriveSizingVals = [
   "E4",         "E5",         "E6",         "E7",         "E8",         "E10",        "E11",       "E12",
@@ -209,7 +212,7 @@ export type FastenerSizingPref = typeof FastenerSizingPrefVals[number]; const Fa
 export type ThreadingPref      = typeof ThreadingPrefVals[number];      const ThreadingPrefVals      = ['a', 'b', 'c']                      as const; export const thread_pref       = CK.oneof(ThreadingPrefVals)
 export type FastenerPref       = typeof FastenerPrefVals[number];       const FastenerPrefVals       = ['Aa', 'Ab', 'Ac', 'Ba', 'Bb', 'Bc'] as const; export const fastener_pref        = CK.oneof(FastenerPrefVals)
 
-export const USFastenerSizingVals     = ["#0",  "#1",  "#2",  "#3",  "#4",  "#6",  "#8",  "#10",  "#12",  "1/4in",  "5/16in",  "3/8in",  "7/16in",  "1/2in",  "9/16in",  "5/8in",  "3/4in",  "7/8in",  "1in",  "1+1/8in",  "1+1/4in",  "1+3/8in",  "1+1/2in",  "1+3/4in",  "2in",  "2+1/4in",  "2+1/2in",  "2+3/4in",  "3in"] as const
+export const USFastenerSizingVals     = ["#0",  "#1",  "#2",  "#3",  "#4", "#5", "#6",  "#8",  "#10",  "#12",  "1/4in",  "5/16in",  "3/8in",  "7/16in",  "1/2in",  "9/16in",  "5/8in",  "3/4in",  "7/8in",  "1in",  "1+1/8in",  "1+1/4in",  "1+3/8in",  "1+1/2in",  "1+3/4in",  "2in",  "2+1/4in",  "2+1/2in",  "2+3/4in",  "3in"] as const
 export const USNutSizingVals          = ["N#0",  "N#2",  "N#3",  "N#4",  "N#6",  "N#8",  "N#10",  "N#12",  "N1/4in",  "N5/16in",  "N3/8in",  "N7/16in",  "N1/2in",  "N9/16in",  "N5/8in",  "N3/4in",  "N7/8in",  "N1in",  "N1+1/8in",  "N1+1/4in",  "N1+3/8in",  "N1+1/2in",  "N1+3/4in",  "N2in",  "N2+1/4in",  "N2+1/2in",  "N2+3/4in",  "N3in"] as const
 export const USHeavyNutSizingVals     = ["HN#0", "HN#2", "HN#3", "HN#4", "HN#6", "HN#8", "HN#10", "HN#12", "HN1/4in", "HN5/16in", "HN3/8in", "HN7/16in", "HN1/2in", "HN9/16in", "HN5/8in", "HN3/4in", "HN7/8in", "HN1in", "HN1+1/8in", "HN1+1/4in", "HN1+3/8in", "HN1+1/2in", "HN1+3/4in", "HN2in", "HN2+1/4in", "HN2+1/2in", "HN2+3/4in", "HN3in"] as const
 export const MetricFastenerSizingVals = ["M1.4",   "M1.6",   "M2",   "M2.5",   "M3",   "M4",   "M5",   "M6",   "M8",   "M10",   "M12",   "M14",   "M16",   "M18",   "M20",   "M22",   "M24",   "M27",   "M30",   "M33",   "M36",   "M39",   "M42"] as const
