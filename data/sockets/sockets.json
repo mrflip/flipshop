@@ -224,7 +224,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "2mm Int Hex MM 1/4Dr Regular",
+    "title": "H2mm Int Hex MM 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -232,7 +232,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "2mm",
+    "sizing": "H2mm",
     "sizing_mm": 2,
     "sizing_in": 0.0787402,
     "ln_overall": 38.862,
@@ -267,7 +267,7 @@
     "asme_stdz": "B107.5M"
   },
   {
-    "title": "2.5mm Int Hex MM 1/4Dr Regular",
+    "title": "H2.5mm Int Hex MM 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -275,7 +275,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "2.5mm",
+    "sizing": "H2.5mm",
     "sizing_mm": 2.5,
     "sizing_in": 0.0984252,
     "ln_overall": 38.862,
@@ -310,7 +310,7 @@
     "asme_stdz": "B107.5M"
   },
   {
-    "title": "3mm Int Hex MM 1/4Dr Regular",
+    "title": "H3mm Int Hex MM 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -318,7 +318,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3mm",
+    "sizing": "H3mm",
     "sizing_mm": 3,
     "sizing_in": 0.1181102,
     "ln_overall": 38.862,
@@ -353,7 +353,7 @@
     "asme_stdz": "B107.5M"
   },
   {
-    "title": "4mm Int Hex MM 1/4Dr Regular",
+    "title": "H4mm Int Hex MM 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -361,7 +361,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 38.862,
@@ -396,7 +396,7 @@
     "asme_stdz": "B107.5M"
   },
   {
-    "title": "5mm Int Hex MM 1/4Dr Regular",
+    "title": "H5mm Int Hex MM 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -404,7 +404,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 38.862,
@@ -439,7 +439,7 @@
     "asme_stdz": "B107.5M"
   },
   {
-    "title": "6mm Int Hex MM 1/4Dr Regular",
+    "title": "H6mm Int Hex MM 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -447,7 +447,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 38.862,
@@ -482,7 +482,7 @@
     "asme_stdz": "B107.5M"
   },
   {
-    "title": "3mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H3mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -490,7 +490,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "3mm",
+    "sizing": "H3mm",
     "sizing_mm": 3,
     "sizing_in": 0.1181102,
     "ln_overall": 151.9936,
@@ -525,7 +525,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "4mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H4mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -533,7 +533,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 151.9936,
@@ -568,7 +568,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H5mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -576,7 +576,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 151.9936,
@@ -611,7 +611,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H6mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -619,7 +619,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 151.9936,
@@ -654,7 +654,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H7mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -662,7 +662,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "7mm",
+    "sizing": "H7mm",
     "sizing_mm": 7,
     "sizing_in": 0.2755906,
     "ln_overall": 151.9936,
@@ -689,7 +689,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H8mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -697,7 +697,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 151.9936,
@@ -731,7 +731,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H9mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -739,7 +739,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "9mm",
+    "sizing": "H9mm",
     "sizing_mm": 9,
     "sizing_in": 0.3543307,
     "ln_overall": 151.9936,
@@ -768,7 +768,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 3/8Dr Long Ball End",
+    "title": "H10mm Int Hex MM 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -776,7 +776,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 151.9936,
@@ -810,7 +810,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "4mm Int Hex MM 3/8Dr Long",
+    "title": "H4mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -818,7 +818,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 155.956,
@@ -852,7 +852,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5mm Int Hex MM 3/8Dr Long",
+    "title": "H5mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -860,7 +860,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 155.956,
@@ -894,7 +894,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 3/8Dr Long",
+    "title": "H6mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -902,7 +902,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 155.956,
@@ -936,7 +936,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7mm Int Hex MM 3/8Dr Long",
+    "title": "H7mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -944,7 +944,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7mm",
+    "sizing": "H7mm",
     "sizing_mm": 7,
     "sizing_in": 0.2755906,
     "ln_overall": 155.956,
@@ -970,7 +970,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 3/8Dr Long",
+    "title": "H8mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -978,7 +978,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 155.956,
@@ -1011,7 +1011,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9mm Int Hex MM 3/8Dr Long",
+    "title": "H9mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1019,7 +1019,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9mm",
+    "sizing": "H9mm",
     "sizing_mm": 9,
     "sizing_in": 0.3543307,
     "ln_overall": 155.956,
@@ -1047,7 +1047,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 3/8Dr Long",
+    "title": "H10mm Int Hex MM 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1055,7 +1055,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 155.956,
@@ -1088,7 +1088,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3mm Int Hex MM 3/8Dr Medium",
+    "title": "H3mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1096,7 +1096,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3mm",
+    "sizing": "H3mm",
     "sizing_mm": 3,
     "sizing_in": 0.1181102,
     "ln_overall": 71.12,
@@ -1130,7 +1130,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "4mm Int Hex MM 3/8Dr Medium",
+    "title": "H4mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1138,7 +1138,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 71.12,
@@ -1172,7 +1172,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5mm Int Hex MM 3/8Dr Medium",
+    "title": "H5mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1180,7 +1180,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 71.12,
@@ -1214,7 +1214,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 3/8Dr Medium",
+    "title": "H6mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1222,7 +1222,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 71.12,
@@ -1256,7 +1256,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7mm Int Hex MM 3/8Dr Medium",
+    "title": "H7mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1264,7 +1264,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7mm",
+    "sizing": "H7mm",
     "sizing_mm": 7,
     "sizing_in": 0.2755906,
     "ln_overall": 71.12,
@@ -1290,7 +1290,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 3/8Dr Medium",
+    "title": "H8mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1298,7 +1298,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 71.12,
@@ -1331,7 +1331,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9mm Int Hex MM 3/8Dr Medium",
+    "title": "H9mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1339,7 +1339,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9mm",
+    "sizing": "H9mm",
     "sizing_mm": 9,
     "sizing_in": 0.3543307,
     "ln_overall": 71.12,
@@ -1367,7 +1367,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 3/8Dr Medium",
+    "title": "H10mm Int Hex MM 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1375,7 +1375,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 71.12,
@@ -1408,7 +1408,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "4mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H4mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1416,7 +1416,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 42.0116,
@@ -1451,7 +1451,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H5mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1459,7 +1459,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 42.0116,
@@ -1494,7 +1494,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H6mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1502,7 +1502,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 42.0116,
@@ -1537,7 +1537,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H7mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1545,7 +1545,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "7mm",
+    "sizing": "H7mm",
     "sizing_mm": 7,
     "sizing_in": 0.2755906,
     "ln_overall": 46.99,
@@ -1572,7 +1572,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H8mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1580,7 +1580,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 46.99,
@@ -1614,7 +1614,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H9mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1622,7 +1622,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "9mm",
+    "sizing": "H9mm",
     "sizing_mm": 9,
     "sizing_in": 0.3543307,
     "ln_overall": 49.9872,
@@ -1651,7 +1651,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 3/8Dr Regular Ball End",
+    "title": "H10mm Int Hex MM 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1659,7 +1659,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 49.9872,
@@ -1693,14 +1693,14 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "4mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H4mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 59.944,
@@ -1731,14 +1731,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "5mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H5mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 59.944,
@@ -1769,14 +1769,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "6mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H6mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 59.944,
@@ -1807,14 +1807,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "7mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H7mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "7mm",
+    "sizing": "H7mm",
     "sizing_mm": 7,
     "sizing_in": 0.2755906,
     "ln_overall": 59.944,
@@ -1837,14 +1837,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "8mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H8mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 59.944,
@@ -1874,14 +1874,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "10mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H10mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 59.944,
@@ -1911,14 +1911,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "12mm Int Hex MM 3/8Dr Regular Impact",
+    "title": "H12mm Int Hex MM 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "12mm",
+    "sizing": "H12mm",
     "sizing_mm": 12,
     "sizing_in": 0.4724409,
     "ln_overall": 59.944,
@@ -1948,7 +1948,7 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "2mm Int Hex MM 3/8Dr Regular",
+    "title": "H2mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1956,7 +1956,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "2mm",
+    "sizing": "H2mm",
     "sizing_mm": 2,
     "sizing_in": 0.0787402,
     "ln_overall": 41.9862,
@@ -1991,7 +1991,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "2.5mm Int Hex MM 3/8Dr Regular",
+    "title": "H2.5mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -1999,7 +1999,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "2.5mm",
+    "sizing": "H2.5mm",
     "sizing_mm": 2.5,
     "sizing_in": 0.0984252,
     "ln_overall": 41.9862,
@@ -2034,7 +2034,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3mm Int Hex MM 3/8Dr Regular",
+    "title": "H3mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2042,7 +2042,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3mm",
+    "sizing": "H3mm",
     "sizing_mm": 3,
     "sizing_in": 0.1181102,
     "ln_overall": 41.9862,
@@ -2077,7 +2077,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "4mm Int Hex MM 3/8Dr Regular",
+    "title": "H4mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2085,7 +2085,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "4mm",
+    "sizing": "H4mm",
     "sizing_mm": 4,
     "sizing_in": 0.1574803,
     "ln_overall": 41.9862,
@@ -2120,7 +2120,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5mm Int Hex MM 3/8Dr Regular",
+    "title": "H5mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2128,7 +2128,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5mm",
+    "sizing": "H5mm",
     "sizing_mm": 5,
     "sizing_in": 0.1968504,
     "ln_overall": 41.9862,
@@ -2163,7 +2163,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 3/8Dr Regular",
+    "title": "H6mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2171,7 +2171,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 41.9862,
@@ -2206,7 +2206,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7mm Int Hex MM 3/8Dr Regular",
+    "title": "H7mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2214,7 +2214,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7mm",
+    "sizing": "H7mm",
     "sizing_mm": 7,
     "sizing_in": 0.2755906,
     "ln_overall": 46.99,
@@ -2241,7 +2241,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 3/8Dr Regular",
+    "title": "H8mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2249,7 +2249,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 46.99,
@@ -2283,7 +2283,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9mm Int Hex MM 3/8Dr Regular",
+    "title": "H9mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2291,7 +2291,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9mm",
+    "sizing": "H9mm",
     "sizing_mm": 9,
     "sizing_in": 0.3543307,
     "ln_overall": 49.9872,
@@ -2320,7 +2320,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 3/8Dr Regular",
+    "title": "H10mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2328,7 +2328,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 49.9872,
@@ -2362,7 +2362,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "11mm Int Hex MM 3/8Dr Regular",
+    "title": "H11mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2370,7 +2370,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "11mm",
+    "sizing": "H11mm",
     "sizing_mm": 11,
     "sizing_in": 0.4330709,
     "ln_overall": 49.9872,
@@ -2397,7 +2397,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "12mm Int Hex MM 3/8Dr Regular",
+    "title": "H12mm Int Hex MM 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2405,7 +2405,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "12mm",
+    "sizing": "H12mm",
     "sizing_mm": 12,
     "sizing_in": 0.4724409,
     "ln_overall": 49.9872,
@@ -2439,7 +2439,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 1/2Dr Long",
+    "title": "H6mm Int Hex MM 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2447,7 +2447,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 119.126,
@@ -2481,7 +2481,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 1/2Dr Long",
+    "title": "H8mm Int Hex MM 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2489,7 +2489,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 119.126,
@@ -2522,7 +2522,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 1/2Dr Long",
+    "title": "H10mm Int Hex MM 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2530,7 +2530,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 151.892,
@@ -2563,7 +2563,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "12mm Int Hex MM 1/2Dr Long",
+    "title": "H12mm Int Hex MM 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2571,7 +2571,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "12mm",
+    "sizing": "H12mm",
     "sizing_mm": 12,
     "sizing_in": 0.4724409,
     "ln_overall": 151.892,
@@ -2604,7 +2604,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "14mm Int Hex MM 1/2Dr Long",
+    "title": "H14mm Int Hex MM 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2612,7 +2612,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "14mm",
+    "sizing": "H14mm",
     "sizing_mm": 14,
     "sizing_in": 0.5511811,
     "ln_overall": 178.054,
@@ -2645,7 +2645,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "17mm Int Hex MM 1/2Dr Long",
+    "title": "H17mm Int Hex MM 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2653,7 +2653,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "17mm",
+    "sizing": "H17mm",
     "sizing_mm": 17,
     "sizing_in": 0.6692913,
     "ln_overall": 178.054,
@@ -2683,7 +2683,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "6mm Int Hex MM 1/2Dr Medium",
+    "title": "H6mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2691,7 +2691,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 81.026,
@@ -2725,7 +2725,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 1/2Dr Medium",
+    "title": "H8mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2733,7 +2733,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 81.026,
@@ -2766,7 +2766,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 1/2Dr Medium",
+    "title": "H10mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2774,7 +2774,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 81.026,
@@ -2807,7 +2807,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "12mm Int Hex MM 1/2Dr Medium",
+    "title": "H12mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2815,7 +2815,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "12mm",
+    "sizing": "H12mm",
     "sizing_mm": 12,
     "sizing_in": 0.4724409,
     "ln_overall": 92.964,
@@ -2848,7 +2848,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "14mm Int Hex MM 1/2Dr Medium",
+    "title": "H14mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2856,7 +2856,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "14mm",
+    "sizing": "H14mm",
     "sizing_mm": 14,
     "sizing_in": 0.5511811,
     "ln_overall": 92.964,
@@ -2889,7 +2889,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "17mm Int Hex MM 1/2Dr Medium",
+    "title": "H17mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2897,7 +2897,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "17mm",
+    "sizing": "H17mm",
     "sizing_mm": 17,
     "sizing_in": 0.6692913,
     "ln_overall": 101.092,
@@ -2927,7 +2927,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "19mm Int Hex MM 1/2Dr Medium",
+    "title": "H19mm Int Hex MM 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -2935,7 +2935,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "19mm",
+    "sizing": "H19mm",
     "sizing_mm": 19,
     "sizing_in": 0.7480315,
     "ln_overall": 101.092,
@@ -2964,14 +2964,14 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H9mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "9mm",
+    "sizing": "H9mm",
     "sizing_mm": 9,
     "sizing_in": 0.3543307,
     "ln_overall": 77.978,
@@ -2998,14 +2998,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "10mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H10mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 77.978,
@@ -3037,14 +3037,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "11mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H11mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "11mm",
+    "sizing": "H11mm",
     "sizing_mm": 11,
     "sizing_in": 0.4330709,
     "ln_overall": 77.978,
@@ -3069,14 +3069,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "12mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H12mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "12mm",
+    "sizing": "H12mm",
     "sizing_mm": 12,
     "sizing_in": 0.4724409,
     "ln_overall": 77.978,
@@ -3108,14 +3108,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "13mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H13mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "13mm",
+    "sizing": "H13mm",
     "sizing_mm": 13,
     "sizing_in": 0.511811,
     "ln_overall": 77.978,
@@ -3140,14 +3140,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "14mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H14mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "14mm",
+    "sizing": "H14mm",
     "sizing_mm": 14,
     "sizing_in": 0.5511811,
     "ln_overall": 77.978,
@@ -3179,14 +3179,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "15mm Int Hex MM 1/2Dr Regular Impact",
+    "title": "H15mm Int Hex MM 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "15mm",
+    "sizing": "H15mm",
     "sizing_mm": 15,
     "sizing_in": 0.5905512,
     "ln_overall": 77.978,
@@ -3211,7 +3211,7 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "6mm Int Hex MM 1/2Dr Regular",
+    "title": "H6mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3219,7 +3219,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "6mm",
+    "sizing": "H6mm",
     "sizing_mm": 6,
     "sizing_in": 0.2362205,
     "ln_overall": 62.992,
@@ -3254,7 +3254,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "8mm Int Hex MM 1/2Dr Regular",
+    "title": "H8mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3262,7 +3262,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "8mm",
+    "sizing": "H8mm",
     "sizing_mm": 8,
     "sizing_in": 0.3149606,
     "ln_overall": 62.992,
@@ -3296,7 +3296,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "10mm Int Hex MM 1/2Dr Regular",
+    "title": "H10mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3304,7 +3304,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "10mm",
+    "sizing": "H10mm",
     "sizing_mm": 10,
     "sizing_in": 0.3937008,
     "ln_overall": 62.992,
@@ -3338,7 +3338,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "12mm Int Hex MM 1/2Dr Regular",
+    "title": "H12mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3346,7 +3346,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "12mm",
+    "sizing": "H12mm",
     "sizing_mm": 12,
     "sizing_in": 0.4724409,
     "ln_overall": 62.992,
@@ -3380,7 +3380,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "14mm Int Hex MM 1/2Dr Regular",
+    "title": "H14mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3388,7 +3388,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "14mm",
+    "sizing": "H14mm",
     "sizing_mm": 14,
     "sizing_in": 0.5511811,
     "ln_overall": 62.992,
@@ -3422,7 +3422,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "17mm Int Hex MM 1/2Dr Regular",
+    "title": "H17mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3430,7 +3430,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "17mm",
+    "sizing": "H17mm",
     "sizing_mm": 17,
     "sizing_in": 0.6692913,
     "ln_overall": 62.992,
@@ -3461,7 +3461,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "19mm Int Hex MM 1/2Dr Regular",
+    "title": "H19mm Int Hex MM 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "metric",
@@ -3469,7 +3469,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "19mm",
+    "sizing": "H19mm",
     "sizing_mm": 19,
     "sizing_in": 0.7480315,
     "ln_overall": 62.992,
@@ -3499,7 +3499,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/16in Int Hex US 1/4Dr Regular",
+    "title": "H1/16in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3507,7 +3507,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/16in",
+    "sizing": "H1/16in",
     "sizing_mm": 1.5875,
     "sizing_in": 0.0625,
     "ln_overall": 38.862,
@@ -3541,7 +3541,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "5/64in Int Hex US 1/4Dr Regular",
+    "title": "H5/64in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3549,7 +3549,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/64in",
+    "sizing": "H5/64in",
     "sizing_mm": 1.9844,
     "sizing_in": 0.078126,
     "ln_overall": 38.862,
@@ -3583,7 +3583,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "3/32in Int Hex US 1/4Dr Regular",
+    "title": "H3/32in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3591,7 +3591,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/32in",
+    "sizing": "H3/32in",
     "sizing_mm": 2.3812,
     "sizing_in": 0.093748,
     "ln_overall": 38.862,
@@ -3625,7 +3625,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "7/64in Int Hex US 1/4Dr Regular",
+    "title": "H7/64in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3633,7 +3633,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/64in",
+    "sizing": "H7/64in",
     "sizing_mm": 2.7781,
     "sizing_in": 0.109374,
     "ln_overall": 38.862,
@@ -3663,7 +3663,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "1/8in Int Hex US 1/4Dr Regular",
+    "title": "H1/8in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3671,7 +3671,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/8in",
+    "sizing": "H1/8in",
     "sizing_mm": 3.175,
     "sizing_in": 0.125,
     "ln_overall": 38.862,
@@ -3703,7 +3703,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "9/64in Int Hex US 1/4Dr Regular",
+    "title": "H9/64in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3711,7 +3711,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9/64in",
+    "sizing": "H9/64in",
     "sizing_mm": 3.5719,
     "sizing_in": 0.140626,
     "ln_overall": 38.862,
@@ -3741,7 +3741,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "5/32in Int Hex US 1/4Dr Regular",
+    "title": "H5/32in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3749,7 +3749,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/32in",
+    "sizing": "H5/32in",
     "sizing_mm": 3.9688,
     "sizing_in": 0.156252,
     "ln_overall": 38.862,
@@ -3783,7 +3783,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "3/16in Int Hex US 1/4Dr Regular",
+    "title": "H3/16in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3791,7 +3791,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 38.862,
@@ -3825,7 +3825,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "7/32in Int Hex US 1/4Dr Regular",
+    "title": "H7/32in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3833,7 +3833,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 38.862,
@@ -3865,7 +3865,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "1/4in Int Hex US 1/4Dr Regular",
+    "title": "H1/4in Int Hex US 1/4Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3873,7 +3873,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 38.862,
@@ -3907,7 +3907,7 @@
     "asme_stdz": "B107.1"
   },
   {
-    "title": "1/8in Int Hex US 3/8Dr Long Ball End",
+    "title": "H1/8in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3915,7 +3915,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "1/8in",
+    "sizing": "H1/8in",
     "sizing_mm": 3.175,
     "sizing_in": 0.125,
     "ln_overall": 151.9936,
@@ -3947,7 +3947,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/32in Int Hex US 3/8Dr Long Ball End",
+    "title": "H5/32in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3955,7 +3955,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "5/32in",
+    "sizing": "H5/32in",
     "sizing_mm": 3.9688,
     "sizing_in": 0.156252,
     "ln_overall": 151.9936,
@@ -3989,7 +3989,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/16in Int Hex US 3/8Dr Long Ball End",
+    "title": "H3/16in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -3997,7 +3997,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 151.9936,
@@ -4031,7 +4031,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/32in Int Hex US 3/8Dr Long Ball End",
+    "title": "H7/32in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4039,7 +4039,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 151.9936,
@@ -4071,7 +4071,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 3/8Dr Long Ball End",
+    "title": "H1/4in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4079,7 +4079,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 151.9936,
@@ -4113,7 +4113,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 3/8Dr Long Ball End",
+    "title": "H5/16in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4121,7 +4121,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 151.9936,
@@ -4155,7 +4155,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 3/8Dr Long Ball End",
+    "title": "H3/8in Int Hex US 3/8Dr Long Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4163,7 +4163,7 @@
     "reach_kind": "long",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 151.9936,
@@ -4197,7 +4197,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/8in Int Hex US 3/8Dr Long",
+    "title": "H1/8in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4205,7 +4205,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/8in",
+    "sizing": "H1/8in",
     "sizing_mm": 3.175,
     "sizing_in": 0.125,
     "ln_overall": 155.956,
@@ -4236,7 +4236,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/32in Int Hex US 3/8Dr Long",
+    "title": "H5/32in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4244,7 +4244,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/32in",
+    "sizing": "H5/32in",
     "sizing_mm": 3.9688,
     "sizing_in": 0.156252,
     "ln_overall": 155.956,
@@ -4277,7 +4277,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/16in Int Hex US 3/8Dr Long",
+    "title": "H3/16in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4285,7 +4285,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 155.956,
@@ -4318,7 +4318,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/32in Int Hex US 3/8Dr Long",
+    "title": "H7/32in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4326,7 +4326,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 155.956,
@@ -4357,7 +4357,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 3/8Dr Long",
+    "title": "H1/4in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4365,7 +4365,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 155.956,
@@ -4398,7 +4398,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 3/8Dr Long",
+    "title": "H5/16in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4406,7 +4406,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 155.956,
@@ -4439,7 +4439,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 3/8Dr Long",
+    "title": "H3/8in Int Hex US 3/8Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4447,7 +4447,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 155.956,
@@ -4480,7 +4480,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/8in Int Hex US 3/8Dr Medium",
+    "title": "H1/8in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4488,7 +4488,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/8in",
+    "sizing": "H1/8in",
     "sizing_mm": 3.175,
     "sizing_in": 0.125,
     "ln_overall": 71.12,
@@ -4519,7 +4519,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9/64in Int Hex US 3/8Dr Medium",
+    "title": "H9/64in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4527,7 +4527,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9/64in",
+    "sizing": "H9/64in",
     "sizing_mm": 3.5719,
     "sizing_in": 0.140626,
     "ln_overall": 71.12,
@@ -4556,7 +4556,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/32in Int Hex US 3/8Dr Medium",
+    "title": "H5/32in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4564,7 +4564,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/32in",
+    "sizing": "H5/32in",
     "sizing_mm": 3.9688,
     "sizing_in": 0.156252,
     "ln_overall": 71.12,
@@ -4597,7 +4597,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/16in Int Hex US 3/8Dr Medium",
+    "title": "H3/16in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4605,7 +4605,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 71.12,
@@ -4638,7 +4638,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/32in Int Hex US 3/8Dr Medium",
+    "title": "H7/32in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4646,7 +4646,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 71.12,
@@ -4677,7 +4677,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 3/8Dr Medium",
+    "title": "H1/4in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4685,7 +4685,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 71.12,
@@ -4718,7 +4718,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 3/8Dr Medium",
+    "title": "H5/16in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4726,7 +4726,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 71.12,
@@ -4759,7 +4759,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 3/8Dr Medium",
+    "title": "H3/8in Int Hex US 3/8Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4767,7 +4767,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 71.12,
@@ -4800,7 +4800,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/8in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H1/8in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4808,7 +4808,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "1/8in",
+    "sizing": "H1/8in",
     "sizing_mm": 3.175,
     "sizing_in": 0.125,
     "ln_overall": 41.9862,
@@ -4840,7 +4840,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/32in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H5/32in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4848,7 +4848,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "5/32in",
+    "sizing": "H5/32in",
     "sizing_mm": 3.9688,
     "sizing_in": 0.156252,
     "ln_overall": 41.9862,
@@ -4882,7 +4882,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/16in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H3/16in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4890,7 +4890,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 41.9862,
@@ -4924,7 +4924,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/32in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H7/32in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4932,7 +4932,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 41.9862,
@@ -4964,7 +4964,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H1/4in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -4972,7 +4972,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 41.9862,
@@ -5006,7 +5006,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H5/16in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5014,7 +5014,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 41.9862,
@@ -5048,7 +5048,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 3/8Dr Regular Ball End",
+    "title": "H3/8in Int Hex US 3/8Dr Regular Ball End",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5056,7 +5056,7 @@
     "reach_kind": "reg",
     "socket_variant": "ball",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 49.9872,
@@ -5090,14 +5090,14 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/16in Int Hex US 3/8Dr Regular Impact",
+    "title": "H3/16in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 59.944,
@@ -5127,14 +5127,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "7/32in Int Hex US 3/8Dr Regular Impact",
+    "title": "H7/32in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 59.944,
@@ -5162,14 +5162,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "1/4in Int Hex US 3/8Dr Regular Impact",
+    "title": "H1/4in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 59.944,
@@ -5199,14 +5199,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "5/16in Int Hex US 3/8Dr Regular Impact",
+    "title": "H5/16in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 59.944,
@@ -5236,14 +5236,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "3/8in Int Hex US 3/8Dr Regular Impact",
+    "title": "H3/8in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 59.944,
@@ -5273,14 +5273,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "7/16in Int Hex US 3/8Dr Regular Impact",
+    "title": "H7/16in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "7/16in",
+    "sizing": "H7/16in",
     "sizing_mm": 11.1125,
     "sizing_in": 0.4375,
     "ln_overall": 59.944,
@@ -5306,14 +5306,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "1/2in Int Hex US 3/8Dr Regular Impact",
+    "title": "H1/2in Int Hex US 3/8Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0375in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "1/2in",
+    "sizing": "H1/2in",
     "sizing_mm": 12.7,
     "sizing_in": 0.5,
     "ln_overall": 59.944,
@@ -5343,7 +5343,7 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "1/16in Int Hex US 3/8Dr Regular",
+    "title": "H1/16in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5351,7 +5351,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/16in",
+    "sizing": "H1/16in",
     "sizing_mm": 1.5875,
     "sizing_in": 0.0625,
     "ln_overall": 41.9862,
@@ -5385,7 +5385,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/64in Int Hex US 3/8Dr Regular",
+    "title": "H5/64in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5393,7 +5393,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/64in",
+    "sizing": "H5/64in",
     "sizing_mm": 1.9844,
     "sizing_in": 0.078126,
     "ln_overall": 41.9862,
@@ -5427,7 +5427,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/32in Int Hex US 3/8Dr Regular",
+    "title": "H3/32in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5435,7 +5435,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/32in",
+    "sizing": "H3/32in",
     "sizing_mm": 2.3812,
     "sizing_in": 0.093748,
     "ln_overall": 41.9862,
@@ -5469,7 +5469,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/64in Int Hex US 3/8Dr Regular",
+    "title": "H7/64in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5477,7 +5477,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/64in",
+    "sizing": "H7/64in",
     "sizing_mm": 2.7781,
     "sizing_in": 0.109374,
     "ln_overall": 41.9862,
@@ -5507,7 +5507,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/8in Int Hex US 3/8Dr Regular",
+    "title": "H1/8in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5515,7 +5515,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/8in",
+    "sizing": "H1/8in",
     "sizing_mm": 3.175,
     "sizing_in": 0.125,
     "ln_overall": 41.9862,
@@ -5547,7 +5547,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9/64in Int Hex US 3/8Dr Regular",
+    "title": "H9/64in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5555,7 +5555,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9/64in",
+    "sizing": "H9/64in",
     "sizing_mm": 3.5719,
     "sizing_in": 0.140626,
     "ln_overall": 41.9862,
@@ -5585,7 +5585,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/32in Int Hex US 3/8Dr Regular",
+    "title": "H5/32in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5593,7 +5593,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/32in",
+    "sizing": "H5/32in",
     "sizing_mm": 3.9688,
     "sizing_in": 0.156252,
     "ln_overall": 41.9862,
@@ -5627,7 +5627,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/16in Int Hex US 3/8Dr Regular",
+    "title": "H3/16in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5635,7 +5635,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/16in",
+    "sizing": "H3/16in",
     "sizing_mm": 4.7625,
     "sizing_in": 0.1875,
     "ln_overall": 41.9862,
@@ -5669,7 +5669,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/32in Int Hex US 3/8Dr Regular",
+    "title": "H7/32in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5677,7 +5677,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/32in",
+    "sizing": "H7/32in",
     "sizing_mm": 5.5562,
     "sizing_in": 0.218748,
     "ln_overall": 41.9862,
@@ -5709,7 +5709,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 3/8Dr Regular",
+    "title": "H1/4in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5717,7 +5717,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 41.9862,
@@ -5751,7 +5751,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 3/8Dr Regular",
+    "title": "H5/16in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5759,7 +5759,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 46.99,
@@ -5793,7 +5793,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 3/8Dr Regular",
+    "title": "H3/8in Int Hex US 3/8Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5801,7 +5801,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 46.99,
@@ -5835,7 +5835,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 1/2Dr Long",
+    "title": "H1/4in Int Hex US 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5843,7 +5843,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 127,
@@ -5876,7 +5876,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 1/2Dr Long",
+    "title": "H5/16in Int Hex US 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5884,7 +5884,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 127,
@@ -5917,7 +5917,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 1/2Dr Long",
+    "title": "H3/8in Int Hex US 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5925,7 +5925,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 151.892,
@@ -5958,7 +5958,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/2in Int Hex US 1/2Dr Long",
+    "title": "H1/2in Int Hex US 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -5966,7 +5966,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/2in",
+    "sizing": "H1/2in",
     "sizing_mm": 12.7,
     "sizing_in": 0.5,
     "ln_overall": 151.892,
@@ -5999,7 +5999,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9/16in Int Hex US 1/2Dr Long",
+    "title": "H9/16in Int Hex US 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6007,7 +6007,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9/16in",
+    "sizing": "H9/16in",
     "sizing_mm": 14.2875,
     "sizing_in": 0.5625,
     "ln_overall": 178.054,
@@ -6038,7 +6038,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/8in Int Hex US 1/2Dr Long",
+    "title": "H5/8in Int Hex US 1/2Dr Long",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6046,7 +6046,7 @@
     "reach_kind": "long",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/8in",
+    "sizing": "H5/8in",
     "sizing_mm": 15.875,
     "sizing_in": 0.625,
     "ln_overall": 178.054,
@@ -6078,7 +6078,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/4in Int Hex US 1/2Dr Medium",
+    "title": "H1/4in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6086,7 +6086,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/4in",
+    "sizing": "H1/4in",
     "sizing_mm": 6.35,
     "sizing_in": 0.25,
     "ln_overall": 83.058,
@@ -6119,7 +6119,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/16in Int Hex US 1/2Dr Medium",
+    "title": "H5/16in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6127,7 +6127,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 83.058,
@@ -6160,7 +6160,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 1/2Dr Medium",
+    "title": "H3/8in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6168,7 +6168,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 83.058,
@@ -6201,7 +6201,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/16in Int Hex US 1/2Dr Medium",
+    "title": "H7/16in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6209,7 +6209,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/16in",
+    "sizing": "H7/16in",
     "sizing_mm": 11.1125,
     "sizing_in": 0.4375,
     "ln_overall": 83.058,
@@ -6238,7 +6238,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/2in Int Hex US 1/2Dr Medium",
+    "title": "H1/2in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6246,7 +6246,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/2in",
+    "sizing": "H1/2in",
     "sizing_mm": 12.7,
     "sizing_in": 0.5,
     "ln_overall": 93.98,
@@ -6279,7 +6279,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9/16in Int Hex US 1/2Dr Medium",
+    "title": "H9/16in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6287,7 +6287,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9/16in",
+    "sizing": "H9/16in",
     "sizing_mm": 14.2875,
     "sizing_in": 0.5625,
     "ln_overall": 93.98,
@@ -6318,7 +6318,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/8in Int Hex US 1/2Dr Medium",
+    "title": "H5/8in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6326,7 +6326,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/8in",
+    "sizing": "H5/8in",
     "sizing_mm": 15.875,
     "sizing_in": 0.625,
     "ln_overall": 101.092,
@@ -6358,7 +6358,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/4in Int Hex US 1/2Dr Medium",
+    "title": "H3/4in Int Hex US 1/2Dr Medium",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6366,7 +6366,7 @@
     "reach_kind": "midlen",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/4in",
+    "sizing": "H3/4in",
     "sizing_mm": 19.05,
     "sizing_in": 0.75,
     "ln_overall": 101.092,
@@ -6395,14 +6395,14 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 1/2Dr Regular Impact",
+    "title": "H3/8in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 77.978,
@@ -6434,14 +6434,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "7/16in Int Hex US 1/2Dr Regular Impact",
+    "title": "H7/16in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "7/16in",
+    "sizing": "H7/16in",
     "sizing_mm": 11.1125,
     "sizing_in": 0.4375,
     "ln_overall": 77.978,
@@ -6469,14 +6469,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "1/2in Int Hex US 1/2Dr Regular Impact",
+    "title": "H1/2in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "1/2in",
+    "sizing": "H1/2in",
     "sizing_mm": 12.7,
     "sizing_in": 0.5,
     "ln_overall": 77.978,
@@ -6508,14 +6508,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "9/16in Int Hex US 1/2Dr Regular Impact",
+    "title": "H9/16in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "9/16in",
+    "sizing": "H9/16in",
     "sizing_mm": 14.2875,
     "sizing_in": 0.5625,
     "ln_overall": 77.978,
@@ -6545,14 +6545,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "5/8in Int Hex US 1/2Dr Regular Impact",
+    "title": "H5/8in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "5/8in",
+    "sizing": "H5/8in",
     "sizing_mm": 15.875,
     "sizing_in": 0.625,
     "ln_overall": 77.978,
@@ -6583,14 +6583,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "11/16in Int Hex US 1/2Dr Regular Impact",
+    "title": "H11/16in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "11/16in",
+    "sizing": "H11/16in",
     "sizing_mm": 17.4625,
     "sizing_in": 0.6875,
     "ln_overall": 77.978,
@@ -6615,14 +6615,14 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "3/4in Int Hex US 1/2Dr Regular Impact",
+    "title": "H3/4in Int Hex US 1/2Dr Regular Impact",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
     "sqdrive_size": "isq_0500in",
     "reach_kind": "reg",
     "socket_variant": "impact",
-    "sizing": "3/4in",
+    "sizing": "H3/4in",
     "sizing_mm": 19.05,
     "sizing_in": 0.75,
     "ln_overall": 77.978,
@@ -6650,7 +6650,7 @@
     "asme_stdz": "B107.33"
   },
   {
-    "title": "5/16in Int Hex US 1/2Dr Regular",
+    "title": "H5/16in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6658,7 +6658,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/16in",
+    "sizing": "H5/16in",
     "sizing_mm": 7.9375,
     "sizing_in": 0.3125,
     "ln_overall": 62.992,
@@ -6692,7 +6692,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/8in Int Hex US 1/2Dr Regular",
+    "title": "H3/8in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6700,7 +6700,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/8in",
+    "sizing": "H3/8in",
     "sizing_mm": 9.525,
     "sizing_in": 0.375,
     "ln_overall": 62.992,
@@ -6734,7 +6734,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "7/16in Int Hex US 1/2Dr Regular",
+    "title": "H7/16in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6742,7 +6742,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "7/16in",
+    "sizing": "H7/16in",
     "sizing_mm": 11.1125,
     "sizing_in": 0.4375,
     "ln_overall": 62.992,
@@ -6772,7 +6772,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "1/2in Int Hex US 1/2Dr Regular",
+    "title": "H1/2in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6780,7 +6780,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "1/2in",
+    "sizing": "H1/2in",
     "sizing_mm": 12.7,
     "sizing_in": 0.5,
     "ln_overall": 62.992,
@@ -6814,7 +6814,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "9/16in Int Hex US 1/2Dr Regular",
+    "title": "H9/16in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6822,7 +6822,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "9/16in",
+    "sizing": "H9/16in",
     "sizing_mm": 14.2875,
     "sizing_in": 0.5625,
     "ln_overall": 62.992,
@@ -6854,7 +6854,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "5/8in Int Hex US 1/2Dr Regular",
+    "title": "H5/8in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6862,7 +6862,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "5/8in",
+    "sizing": "H5/8in",
     "sizing_mm": 15.875,
     "sizing_in": 0.625,
     "ln_overall": 62.992,
@@ -6895,7 +6895,7 @@
     "asme_stdz": "Meets or Exceeds"
   },
   {
-    "title": "3/4in Int Hex US 1/2Dr Regular",
+    "title": "H3/4in Int Hex US 1/2Dr Regular",
     "socket_kind": "socket_bit",
     "drive_kind": "inthex",
     "unit_system": "us",
@@ -6903,7 +6903,7 @@
     "reach_kind": "reg",
     "socket_variant": "std",
     "bit_kind": "inthex",
-    "sizing": "3/4in",
+    "sizing": "H3/4in",
     "sizing_mm": 19.05,
     "sizing_in": 0.75,
     "ln_overall": 62.992,
