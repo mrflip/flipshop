@@ -405,7 +405,7 @@ SocketWrench {
   "nose_diam": 19.05,
   "ratchet_end_diam": 19.05,
   "reach_kind": "long",
-  "sizing": "10mm",
+  "sizing": "H10mm",
   "sizing_in": 0.3937008,
   "sizing_mm": 10,
   "sku": "80448",

@@ -1,6 +1,6 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "daa2f7d60ba23b30cdfc9d62", version : "e2be2cf5f0c7d4246877c1e5");
+export import(path : "daa2f7d60ba23b30cdfc9d62", version : "66516cbdf2973553bf4cb4b9");
 import(path : "4989999bb256f6d486ab7381", version : "23dbfebe8157b79b1826e1ae");
 import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
 
@@ -11,7 +11,7 @@ const rCalloutAngle     =  48 * degree;
 const baseCellPadding   = { left: 4*mm, top: 3*mm };
 const defaultLayerDepth = 4.5;
 const stackScrewDiam    = 2.75 * mm;
-const stackScrewInset   = 5.1 * mm;
+const stackScrewInset   = 5 * mm;
 
 // == [Socket Data Helpers] ==
 
@@ -125,13 +125,14 @@ function labelChipOpts(opts is map, overrides is map) returns map {
  * @param id {Id} : Id prefix for temporary text-measurement operations.
  * @param socket {map} : Socket dimension record from SocketWrenches3.
  * @param opts {map} :
- *   - @field insertionGap {ValueWithUnits} : Radial clearance between socket and cutout edge.
+ *   - @field insertionGap {ValueWithUnits} :  Radial clearance between socket and cutout edge.
  *   - @field cutoutPadding {ValueWithUnits} : Gap from cutout edge to padded circle.
  *   - @field borderPadding {ValueWithUnits} : Gap from tight bounding box to cell border rectangle.
- *   - @field gridSize {ValueWithUnits} : Cell width/height snapped up to nearest multiple.
+ *   - @field gridSize {ValueWithUnits} :      Cell width/height snapped up to nearest multiple.
+ *   - @field minCellHeight {ValueWithUnits} : Force cell to have at least this vertical extent
  *   - @field calloutHeight {ValueWithUnits} : Cap height of the callout chip text.
- *   - @field labelHeight {ValueWithUnits} : Cap height of the label chip text.
- *   - @field sidePadding {ValueWithUnits} : Extra padding to insert to the left of cell.
+ *   - @field labelHeight {ValueWithUnits} :   Cap height of the label chip text.
+ *   - @field sidePadding {ValueWithUnits} :   Extra padding to insert to the left of cell.
  *   - @field bumpDiam {boolean} : if true, ratchet size is enlarged 10%
  */
 function socketCellSize(context is Context, id is Id, socket is map, opts is map) returns map {
@@ -150,7 +151,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const targets     = socket.targets;
   const lCalloutText = ((targets != undefined) && (targets.drives  != undefined)) ? replace(targets.drives,  '(in|mm)$', '')  : "";
   const rCalloutText = ((targets != undefined) && (targets.drives_alt != undefined)) ? replace(targets.drives_alt, '(in|mm)$', '')  : "";
-  const labelText   = replace(socket.sizing, '(in|mm)$', '');
+  const labelText   = replace(replace(socket.sizing, '^H?(.*)in$', '$1'), 'mm$', '');
   //   debug(context, ["socketCellSize", lCalloutText, rCalloutText, labelText, socket, targets]);
 
 
@@ -205,7 +206,7 @@ function socketCellSize(context is Context, id is Id, socket is map, opts is map
   const rawWidth   = borderMaxH - borderMinH;
   const rawHeight  = borderMaxV - borderMinV;
   const cellWidth  = ceil(rawWidth  / opts.gridSize) * opts.gridSize;
-  const cellHeight = ceil(rawHeight / opts.gridSize) * opts.gridSize;
+  const cellHeight = max(ceil(rawHeight / opts.gridSize) * opts.gridSize, opts.minCellHeight);
   const cellMinH   = borderMinH - (cellWidth  - rawWidth)  / 2;
   const cellMaxH   = borderMaxH + (cellWidth  - rawWidth)  / 2;
   const cellMinV   = borderMinV;
@@ -322,6 +323,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
   const holeX = cx + cs.cellMinH + (cs.ii == 0 ? stackScrewInset : 1.1 * holeR);
   skCircle(sketches.deco, "mountHole1", { "center": vector(holeX, cy + cs.cellMaxV - stackScrewInset), "radius": holeR });
   skCircle(sketches.deco, "mountHole2", { "center": vector(holeX, cy + cs.cellMinV + stackScrewInset), "radius": holeR });
+  skCircle(sketches.deco, "mountHoleCT", { "center": vector(cx,    cy + cs.cellMaxV - stackScrewInset), "radius": holeR });
   skSolve(sketches.deco);
   const decoSkFacesQ = qCreatedBy(ids.decoSk, EntityType.FACE);
 
@@ -346,15 +348,6 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
       }));
   }
   skSolve(sketches.rCallout);
-
-    //   // Label sketch — sizing text; TOP_EXTENT tangent to padded circle at 6 o'clock, centered
-    //   skTextAt(context, id + "labelTxt", "label", sketches.label, cs.labelText,
-    //     vector(cx, cy + cs.labelMaxV),
-    //     cs.labelHeight, {
-    //       "horizontalAlign":    HorizontalAlignment.CENTER,
-    //       "verticalAlign":      VerticalAlignment.TOP_EXTENT,
-    //   });
-    //   skSolve(sketches.label);
 
   // Extrude cell body downward from the top sketch plane
   opExtrude(context, ids.plate, {
@@ -381,7 +374,7 @@ function socketCell(context is Context, id is Id, socket is map, opts is map, ba
 
   setName(context, qCreatedBy(ids.plate, EntityType.BODY), socket.title);
 
-  // Deboss text into the top face of the cell body
+  // Deboss text into the top face of the cell body. The sketches are preserved
   const debossDepth = min(2 * mm, 0.8 * opts.layerHeight);
   embossText(context, id + "labelDeboss",
     opts.basePlane, vector(cx, cy + cs.labelMaxV), plateBodiesQ,
@@ -504,6 +497,7 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
   var cursorX = zero;
   var lastCs = undefined;
   var actualTiles = [];
+  var minCellHeight = 0*mm;
   // pick the actual tiles we will use
   for (var ii = 0; ii < size(familyRef); ii += 1) {
     if (isIn(toString(ii), opts.omitSockets) || isIn(familyRef[ii].sizing, opts.omitSockets)) { continue; }
@@ -518,10 +512,11 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
     const bumpDiam    = (isIn(toString(ii), opts.bumpDiams)  || isIn(tile.sizing, opts.bumpDiams));
     const basePoint   = vector(cursorX, zero);
     const sidePadding = bumpSize ? 5 * mm : 0 * mm;
-    const cellOpts    = mergeMaps(opts, { "sidePadding": sidePadding, "ii": ii, "bumpDiam": bumpDiam, "bumpSize": bumpSize });
+    const cellOpts    = mergeMaps(opts, { "sidePadding": sidePadding, "ii": ii, "bumpDiam": bumpDiam, "bumpSize": bumpSize, "minCellHeight": minCellHeight });
     const cs          = socketCell(context, id + ("c" ~ toString(ii)), tile, cellOpts, basePoint);
     cursorX          += cs.cellWidth;
     lastCs            = cs;
+    minCellHeight     = max(minCellHeight, lastCs.cellHeight);
   }
 
   if (lastCs != undefined) {
@@ -537,7 +532,7 @@ function socketHolder(context is Context, id is Id, familyRef is array, opts is 
       "tools":          allCellsQ,
       "operationType":  BooleanOperationType.UNION,
     });
-    setName(context, allCellsQ, opts.familyTitle);
+    setName(context, allCellsQ, opts.familyTitle ~ (opts.titlingInfo == "" ? "" : opts.titlingInfo));
   }
 }
 // --
@@ -609,6 +604,9 @@ precondition {
 
   annotation { "Name": "Merge cells", "Default": true }
   definition.mergeCells is boolean;
+
+  annotation { "Name": "Titling Info", "Default": "" }
+  definition.titlingInfo is string;
 }
 {
   const basePlane = evPlane(context, { "face":  definition.referencePlaneQ });
@@ -642,6 +640,7 @@ precondition {
     "bumpDiams":      bumpDiams,
     "familyTitle":    familyTitle,
     "mergeCells":     definition.mergeCells,
+    "titlingInfo":    definition.titlingInfo,
   });
 });
 // --
