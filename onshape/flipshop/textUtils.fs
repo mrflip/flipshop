@@ -1,9 +1,8 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "8fa2dd9caf18bedfb6b0eda2/2427f262f8e5525a71e20081/7683b6ccf9499ff664904299", version : "8d62d0d3921f7b515fea74b7");
-export import(path : "6e0ac0fa6b326158d8c0c3f2", version : "399a7ada99c04da7c5824417");
-import(path : "e814a17c4e5c208c3325bba8", version : "31bdc2a06c1e490fdcc264b5");
-import(path : "e0ff2cae11eb84dfd2b7b6b3", version : "0af8fc719b47a95c5023defd");
+export import(path : "19a276cbe441b4dcf19aaca1", version : "f2b74f49a1aac39b8fbf1834");
+import(path : "c50e2363725f9cf513e36928", version : "906b813fb990c112d679b90b");
+import(path : "075be6354063579d5fedb3b7", version : "b59a457165ed53b2ec7d71d6");
 
 // == [Render Text] ==
 
@@ -104,14 +103,16 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
   const basePlane = evPlane(context, { "face": planeEnt });
   const ids = {
     textSk:       id + "textSk",
-    boundsSk:     id + "boundsSk",
+    plateSk:      id + "plateSk",
+    extentSk:     id + "extentSk",
     extrudeText:  id + "extrudeText",
     extrudePlate: id + "extrudePlate",
     cleanup:      id + "cleanup",
   };
   const sketches = {
-    text:   rotatedSketch(context, ids.textSk,   { "basePlane": basePlane }, definition.textAngle),
-    bounds: rotatedSketch(context, ids.boundsSk, { "basePlane": basePlane }, definition.textAngle),
+    text:       rotatedSketch(context, ids.textSk,   { "basePlane": basePlane }, definition.textAngle),
+    plate:      rotatedSketch(context, ids.plateSk,  { "basePlane": basePlane }, definition.textAngle),
+    extent:     rotatedSketch(context, ids.extentSk, { "basePlane": basePlane }, definition.textAngle),
   };
   // Anchor offset: how far into the bounds box the text anchor sits (in sketch coords)
   var anchorX = 0 * mm;
@@ -128,15 +129,15 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
   }
 
   // Carrier plate: bounds rectangle with the anchor at the sketch origin
-  skRectangle(sketches.bounds, "plate", {
+  skRectangle(sketches.plate, "plate", {
     "firstCorner":  vector(-anchorX,                         -anchorY),
     "secondCorner": vector(definition.boundsWidth - anchorX, definition.boundsHeight - anchorY),
   });
-  skSolve(sketches.bounds);
-  const boundsSkFacesQ = qCreatedBy(ids.boundsSk, EntityType.FACE);
+  skSolve(sketches.plate);
+  const plateSkFacesQ = qCreatedBy(ids.plateSk, EntityType.FACE);
 
   // Text: sized and aligned within the bounds at the sketch origin
-  skTextAt(context, id, "text", sketches.text, definition.text, vector(0 * mm, 0 * mm), definition.baselineHeight, {
+  const scaledParams = skTextAt(context, id, "text", sketches.text, definition.text, vector(0 * mm, 0 * mm), definition.baselineHeight, {
     "fontName":        definition.fontName,
     "bounds":          vector(definition.boundsWidth, definition.boundsHeight),
     "resizing0":       definition.resizing0,
@@ -147,6 +148,17 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
   });
   skSolve(sketches.text);
   const textSkRegionQ = qSketchRegion(ids.textSk, true);
+
+  // Text Carrier: actual extent of text glyphs
+  skRectangle(sketches.extent, "extent", {
+    "firstCorner":  vector(-anchorX,                         -anchorY),
+    "secondCorner": vector(-anchorX + scaledParams.textCoords.left + scaledParams.textCoords.actualWidth, - anchorY + scaledParams.textCoords.actualHeight),
+  });
+  boxmRectangle(context, sketches.extent, "paddedBox", scaledParams.textCoords.paddedBox);
+  boxmRectangle(context, sketches.extent, "actualBox", scaledParams.textCoords.actualBox);
+//   boxmRectangle(context, sketches.extent, "actualBox", scaledParams.textCoords.actualBox);
+  skSolve(sketches.extent);
+//   const extentSkFacesQ = qCreatedBy(ids.extentSk, EntityType.FACE);
 
   // Extrude text lettering
   opExtrude(context, ids.extrudeText, {
@@ -159,7 +171,7 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
 
   // Extrude carrier plate, merging with the text bodies
   extrude(context, ids.extrudePlate, {
-    "entities":          boundsSkFacesQ,
+    "entities":          plateSkFacesQ,
     "direction":         basePlane.normal,
     "endBound":          BoundingType.BLIND,
     "depth":             definition.plateDepth,
@@ -173,9 +185,8 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
   setName(context, qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]), partName);
 
-  const cleanupSketches = definition.cleanupSketches == undefined ? false : definition.cleanupSketches;
-
-  if (cleanupSketches == true) {
+  // const cleanupSketches = definition.cleanupSketches == undefined ? false : definition.cleanupSketches;
+  if ((definition.cleanupSketches != undefined) && (definition.cleanupSketches == true)) {
     opDeleteBodies(context, ids.cleanup, { "entities": qCreatedBy(ids.textSk, EntityType.BODY) });
   }
 }
@@ -216,11 +227,12 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
     "verticalAlign":   VerticalAlignment.BOTTOM_EXTENT,
   }, options);
   // Measure natural text geometry at the nominal baselineHeight
-  const tc        = textBounds(context, id + "textBounds", text, opts);
-  const origSize  = vector(tc.actualWidth, tc.capHeight);
+  const textCoords = textBounds(context, id + "textBounds", text, opts);
+  //
+//   const origSize  = vector(textCoords.actualWidth, textCoords.capHeight);
   // text renders uniformly: all metrics (x and y) scale with baselineHeight, i.e. sf[1]
-  const bounds    = opts.bounds == undefined ? origSize : opts.bounds;
-  const factors   = resizingFactors(origSize, bounds, { "resizing0": opts.resizing0, "resizing1": opts.resizing1 });
+  const bounds    = opts.bounds == undefined ? textCoords.origBox.sizevec : opts.bounds;
+  const factors   = resizingFactors(textCoords.origBox.sizevec, bounds, { "resizing0": opts.resizing0, "resizing1": opts.resizing1 });
   const sf        = factors.scaleFactor;
   const newHeight = opts.baselineHeight * sf[1];
   const xScale = sf[0];
@@ -228,36 +240,36 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
   // Horizontal offset: position the named x-anchor of the scaled text at position[0]
   var xOffset = 0 * mm;
   if (opts.horizontalAlign == HorizontalAlignment.MIN) {
-    xOffset = -tc.minLeft;
+    xOffset = -textCoords.minLeft;
   } else if (opts.horizontalAlign == HorizontalAlignment.LEFT) {
-    xOffset = -tc.left;
+    xOffset = -textCoords.left;
   } else if (opts.horizontalAlign == HorizontalAlignment.CENTER) {
-    xOffset = -(tc.left + tc.right) / 2;
+    xOffset = -(textCoords.left + textCoords.right) / 2;
   } else if (opts.horizontalAlign == HorizontalAlignment.CENTER_NOMINAL) {
-    xOffset = -(tc.minLeft + tc.maxRight) / 2;
+    xOffset = -(textCoords.minLeft + textCoords.maxRight) / 2;
   } else if (opts.horizontalAlign == HorizontalAlignment.RIGHT) {
-    xOffset = -tc.right;
+    xOffset = -textCoords.right;
   } else if (opts.horizontalAlign == HorizontalAlignment.MAX) {
-    xOffset = -tc.maxRight;
+    xOffset = -textCoords.maxRight;
   }
   xOffset = xOffset * xScale;
 
   // Vertical offset: position the named y-anchor of the scaled text at position[1]
   var yOffset = 0 * mm;
   if (opts.verticalAlign == VerticalAlignment.MAX) {
-    yOffset = -tc.maxHeight;
+    yOffset = -textCoords.maxHeight;
   } else if (opts.verticalAlign == VerticalAlignment.TOP_EXTENT) {
-    yOffset = -tc.bbox.maxCorner[1];
+    yOffset = -textCoords.bbox.maxCorner[1];
   } else if (opts.verticalAlign == VerticalAlignment.TOP_BASELINE) {
-    yOffset = -tc.capHeight;
+    yOffset = -textCoords.capHeight;
   } else if (opts.verticalAlign == VerticalAlignment.MIDDLE) {
-    yOffset = -(tc.bbox.maxCorner[1] + tc.bbox.minCorner[1]) / 2;
+    yOffset = -(textCoords.bbox.maxCorner[1] + textCoords.bbox.minCorner[1]) / 2;
   } else if (opts.verticalAlign == VerticalAlignment.BOTTOM_BASELINE) {
-    yOffset = -tc.baselineHeight;
+    yOffset = -textCoords.baselineHeight;
   } else if (opts.verticalAlign == VerticalAlignment.BOTTOM_EXTENT) {
-    yOffset = -tc.bbox.minCorner[1];
+    yOffset = -textCoords.bbox.minCorner[1];
   } else if (opts.verticalAlign == VerticalAlignment.MIN) {
-    yOffset = -tc.minHeight;
+    yOffset = -textCoords.minHeight;
   }
   yOffset = yOffset * yScale;
 
@@ -266,8 +278,10 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
   return {
     "firstCorner":    firstCorner,
     "baselineHeight": newHeight,
+    "xOffset":        xOffset,
+    "yOffset":        yOffset,
     "scaleFactor":    sf,
-    "textCoords":     tc,
+    "textCoords":     textCoords,
   };
 }
 
@@ -290,29 +304,75 @@ export function skBasicTextAt(context is Context, entityId is string, sketch is 
   });
 }
 
-export function foo(context is Context, id is Id, text is string, definition is map) {
-  const params =  {
-    baseline:       definition.baseline,
-    surface:        definition.surface,
-    alignment:      Alignment.JUSTIFY,
-    useExpression:  false,
-    textLiteral:    text,
-    font:           FontFace.AllertaStencil,
-    invertTextDirection:    false,
-    invertExtrudeDirection: false,
-    thickness:        2*mm,
-    spacing:          0*mm,
-    kerning:          "",
-    vertialAlignment: VAlignment.MIDDLE,
-    baselineOffset:   0*mm,
-    letterType:       LetterType.RAISED_NEW,
-    filletLetters:    false,
-    height:           10*mm,
-  };
-}
 // --
 
 // == [Measure Text] ==
+
+export function boxmRectangle(context is Context, sketch is Sketch, sketchLabel is string, boxm is map) returns map {
+  skRectangle(sketch, sketchLabel, {
+    "firstCorner":  vector2(boxm.minvec),
+    "secondCorner": vector2(boxm.maxvec),
+  });
+  return boxm;
+}
+
+export function boxmCoords(boxm is map) returns array {
+    return [boxm.min0, boxm.max0, boxm.min1, boxm.max1, boxm.min2, boxm.max2];
+}
+
+export function boxmSimply(boxm is map, units is ValueWithUnits) returns array {
+    const coords = boxmCoords(boxm);
+    return [coords[0] / units, coords[1] / units, coords[2] / units, coords[3] / units, coords[4] / units, coords[5] / units];
+}
+export function boxmSimply(boxm is map) returns map { return boxmSimply(boxm, 1 * mm); }
+export function boxmPretty(boxm is map, units is ValueWithUnits) returns map {
+  return {
+    // minvec: bbox.minCorner, maxvec: bbox.maxCorner,
+    min0:  boxm.min0 / units,   max0: boxm.max0 / units,
+    min1:  boxm.min1 / units,   max1: boxm.max1 / units,
+    min2:  boxm.min2 / units,   max2: boxm.max2 / units,
+    size0: boxm.size0 / units,
+    size1: boxm.size1 / units,
+    size2: boxm.size2 / units,
+  };
+}
+export function boxmPretty(boxm is map) returns map { return boxmPretty(boxm, 1 * mm); }
+export function placeBoxm(boxm is map, opts is map) returns map {
+    const shift0 = (opts.shift0 == undefined) ? zero : opts.shift0;
+    const shift1 = (opts.shift1 == undefined) ? zero : opts.shift1;
+    const shift2 = (opts.shift1 == undefined) ? zero : opts.shift2;
+    const scale0 = (opts.scale0 == undefined) ? 1    : opts.scale0;
+    const scale1 = (opts.scale1 == undefined) ? 1    : opts.scale1;
+    const scale2 = (opts.scale2 == undefined) ? 1    : opts.scale2;
+    const min0 = boxm.min0 + shift0;           const min1 = boxm.min1 + shift1;           const min2 = boxm.min2 + shift2;
+    const max0 = min0 + (boxm.size0 * scale0); const max1 = min1 + (boxm.size1 * scale1); const max2 = min2 + (boxm.size2 * scale2);
+    return boxmForXYZ(min0, max0, min1, max1, min2, max2);
+}
+
+
+export function boxmForBbox(bbox is Box3d) returns map {
+  return boxmForXYZ(
+    bbox.minCorner[0], bbox.maxCorner[0],
+    bbox.minCorner[1], bbox.maxCorner[1],
+    bbox.minCorner[2], bbox.maxCorner[2]
+  );
+}
+
+export function boxmForXYZ(min0 is ValueWithUnits, max0 is ValueWithUnits, min1 is ValueWithUnits, max1 is ValueWithUnits, min2 is ValueWithUnits, max2 is ValueWithUnits) returns map {
+    return {
+        "min0": min0, "max0": max0, "min1": min1, "max1": max1, "min2": min2, "max2": max2,
+        "size0": max0 - min0,
+        "size1": max1 - min1,
+        "size2": max2 - min2,
+        minvec:  vector(min0, min1, min2),
+        maxvec:  vector(max0, max1, max2),
+        midvec:  vector((min0 + max0) / 2, (min1 + max1) / 2, (min2 + max2) / 2),
+        sizevec: vector(max0 - min0, max1 - min1, max2 - min2)
+    };
+}
+export function boxmForXYZ(min0 is ValueWithUnits, max0 is ValueWithUnits, min1 is ValueWithUnits, max1 is ValueWithUnits) returns map {
+    return boxmForXYZ(min0, max0, min1, max1, zero, zero);
+}
 
 /**
  * Text metrics for `text`: tight bounding boxes (`tbox`, `bbox`, `wbox`), padded and
@@ -325,6 +385,7 @@ export function foo(context is Context, id is Id, text is string, definition is 
  *      - @field [baselineHeight=10mm] {ValueWithUnits} : Nominal cap height.
  *      - @field [keepTools=false] {boolean} : Retain the temporary sketch body.
  *      - @field [position=vector(0 * mm, 0 * mm)] { Vector } : origin point
+ *      - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  */
 export function textBounds(context is Context, id is Id, text is string, options is map) returns map {
   const opts = mergeMaps({
@@ -334,16 +395,16 @@ export function textBounds(context is Context, id is Id, text is string, options
       "position":       vector(0 * mm, 0 * mm),
   }, options);
   const prefix = id + nextLabelId(opts, "tempSketch" ~ text);
-  const ids = { textSk: prefix + "text", maxSk: prefix + "max", minSk: prefix + "min", deleteText: id + "deleteSketch", deleteMax: id + "deleteMax", deleteMin: id + "deleteMin" };
+  const ids = { textSk: prefix + "text", maxSk: prefix + "max", minSk: prefix + "min", deleteText: id + "deleteSketch", deleteMax: id + "deleteMax", deleteMin: id + "deleteMin", cleanup: prefix + "cleanup" };
   const sketches = {
     "text": newSketchOnPlane(context, ids.textSk, { "sketchPlane": PL_TOP }),
     "max":  newSketchOnPlane(context, ids.maxSk,  { "sketchPlane": PL_TOP }),
     "min":  newSketchOnPlane(context, ids.minSk,  { "sketchPlane": PL_TOP }),
   };
   // Draw the text
-  skBasicTextAt(context, "textBounds", sketches.text, text,                                  opts.position, opts.baselineHeight, opts);
-  skBasicTextAt(context, "maxBounds",  sketches.max,  "'[}lLTQZ96|^$§`" ~ text ~ "gjpqyQ;,", opts.position, opts.baselineHeight, opts);
-  skBasicTextAt(context, "minBounds",  sketches.min,  "x",                                   opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "textBounds", sketches.text, text,             opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "maxBounds",  sketches.max,  text ~ "(ÂÅ|q);", opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "minBounds",  sketches.min,  "x",              opts.position, opts.baselineHeight, opts);
   skSolve(sketches.text);
   const textSkBodiesQ  = qCreatedBy(ids.textSk, EntityType.BODY);
   const textSkRegionQ  = qSketchRegion(ids.textSk, true);
@@ -362,6 +423,23 @@ export function textBounds(context is Context, id is Id, text is string, options
   const ylMeasurer       = evBox3d(context, { "topology": maxSkRegionQ,   "tight": true });
   // Min box (tight against the actual text region using only "x")
   const xMeasurer        = evBox3d(context, { "topology": minSkRegionQ,   "tight": true });
+
+  // Padded Box (width includes horizontal padding, height spans actual extent of text)
+  const paddedBox        = boxmForBbox(evBox3d(context, { "topology": textSkBodiesQ,  "tight": true }));
+  // Original Sketch Text Box (includes horizontal padding; extends from baseline to cap height)
+  const origBox          = boxmForXYZ(zero, paddedBox.max0, zero, opts.baselineHeight);
+  // Actual Bounding box (tight against the actual text region as rendered)
+  const actualBox        = boxmForBbox(evBox3d(context, { "topology": textSkRegionQ,   "tight": true }));
+  // Max box (actual width of text, and height of tallest/lowest letters in font (l,|,Å, etc // {,},j,y, etc)
+  const minVertBox       = boxmForXYZ(actualBox.min0, actualBox.max0, ylMeasurer.minCorner[1], ylMeasurer.maxCorner[1]);
+  // Min box (actual width of text, and baseline-to-x-height of a rendered "x")
+  const maxVertBox       = boxmForXYZ(actualBox.min0, actualBox.max0, xMeasurer.minCorner[1], xMeasurer.maxCorner[1]);
+
+  debug(context, boxmPretty(paddedBox));
+  debug(context, boxmPretty(origBox));
+  debug(context, ["actualBox",  boxmPretty(actualBox)]);
+  debug(context, ["maxVertBox", boxmPretty(maxVertBox)]);
+  debug(context, ["minVertBox", boxmPretty(minVertBox)]);
   // Calculate the text metrics
   const minLeft          = wbox.minCorner[0];
   const left             = bbox.minCorner[0];
@@ -401,16 +479,11 @@ export function textBounds(context is Context, id is Id, text is string, options
     "aspectRatio":      actualWidth / actualHeight,
     "descenderFrac":    (actualHeight - overflowHeight - opts.baselineHeight) / actualHeight,
     "overflowFrac":     overflowHeight / actualHeight,
+    "origBox": origBox, "actualBox": actualBox, "paddedBox": paddedBox, "maxVertBox": maxVertBox, "minVertBox": minVertBox,
   };
-//   opDeleteBodies(context, ids.deleteText, { "entities": textSkBodiesQ });
-//   opDeleteBodies(context, ids.deleteMax,  { "entities": qCreatedBy(ids.maxSk,  EntityType.BODY) });
-//   opDeleteBodies(context, ids.deleteMin,  { "entities": qCreatedBy(ids.minSk,  EntityType.BODY) });
-  opDeleteBodies(context, id + "cleanup", { "entities": qSketchFilter(qCreatedBy(id), SketchObject.YES) });
-  //   debug(context, ["textBounds tbox", text, boxMag(tbox, 1*mm)]);
-  //   debug(context, ["textBounds wbox", text, boxMag(wbox, 1*mm)]);
-  //   debug(context, ["textBounds bbox", text, boxMag(bbox, 1*mm)]);
-  //   debug(context, ["textBounds  min",  text, boxMag(minBbox, 1*mm)]);
-  //   debug(context, ["textBounds  max",  text, boxMag(maxBbox, 1*mm)]);
+  // if ((opts.cleanupSketches != undefined) && (opts.cleanupSketches != false)) {
+    opDeleteBodies(context, ids.cleanup, { "entities": qSketchFilter(qCreatedBy(id), SketchObject.YES) });
+  // }
   return result;
 }
 

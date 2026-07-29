@@ -15,9 +15,9 @@ export const SizeOverrides = {
 }
 
 export const AdditonalSizes = {
-  "T6 Torx 1/4Dr Regular":                      { from: "T8 Torx 1/4Dr Regular", dir: /chrome-sockets/, title: "T6 Torx 1/4Dr Regular", sizing: "T6", sizing_mm: 8, targets: { drives: "M2", drives_alt: "#2" } },
-  "T7 Torx 1/4Dr Regular":                      { from: "T8 Torx 1/4Dr Regular", dir: /chrome-sockets/, title: "T7 Torx 1/4Dr Regular", sizing: "T7", sizing_mm: 8, targets: { drives: "M2.5", drives_alt: "#3" } },
-  "T9 Torx 1/4Dr Regular":                      { from: "T8 Torx 1/4Dr Regular", dir: /chrome-sockets/, title: "T9 Torx 1/4Dr Regular", sizing: "T9", sizing_mm: 8, targets: { drives: "M3", drives_alt: "#5" } },
+  "T6 Torx 1/4Dr Regular":                      { from: "T8 Torx 1/4Dr Regular", dir: /chrome-sockets/, title: "T6 Torx 1/4Dr Regular", sizing: "T6", sizing_mm: 6, targets: { drives: "M2", drives_alt: "#2" } },
+  "T7 Torx 1/4Dr Regular":                      { from: "T8 Torx 1/4Dr Regular", dir: /chrome-sockets/, title: "T7 Torx 1/4Dr Regular", sizing: "T7", sizing_mm: 7, targets: { drives: "M2.5", drives_alt: "#3" } },
+  "T9 Torx 1/4Dr Regular":                      { from: "T8 Torx 1/4Dr Regular", dir: /chrome-sockets/, title: "T9 Torx 1/4Dr Regular", sizing: "T9", sizing_mm: 9, targets: { drives: "M3", drives_alt: "#5" } },
 
   "4mm 6-Point MM 1/4Dr U-Joint Regular":       { from:     "4mm 6-Point MM 1/4Dr Regular",          dir: /chrome-sockets/,   title:      "4mm 6-Point MM 1/4Dr U-Joint Regular",  reach_kind: "uj_reg", socket_variant: "std",    /* sizing:        "4mm", sizing_mm:  4.0,     sizing_in: 0.1574803, */ /* ln_overall: 24.511,  wx_overall: 11.811,  wy_overall: 11.811,  target_end_diam: 6.7056,   ratchet_end_diam: 11.811,  shoulder_ln: 11.5062, target_dp: 8.001,     bolt_clr_diam: 3.4036, targets: { drives:"M2",      exthex_sz:"M2",      hhcs_sz:"M2",    hn_sz:"NM2",    hhn_sz: "HNM2"     } */ },
   '4.5mm 6-Point MM 1/4Dr Deep':                { from:     "4mm 6-Point MM 1/4Dr Deep",             dir: /impact-products/,  title:    "4.5mm 6-Point MM 1/4Dr Deep",             reach_kind: "deep",   socket_variant: "std",       sizing:      "4.5mm", sizing_mm: 4.5,      sizing_in: 0.1771654,    ln_overall: 48.9966, wx_overall: 11.9126, wy_overall: 11.9126, target_end_diam:  7.4,     ratchet_end_diam: 11.9126, shoulder_ln: 21.9964, target_dp: 3.5,       bolt_clr_diam: 4.0,    targets: {                                                                                            } },

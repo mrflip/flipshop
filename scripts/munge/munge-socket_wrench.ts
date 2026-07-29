@@ -12,6 +12,7 @@ import      * as Flipshop                         from '@flipshop/flipshop'
 // == [Main] ==
 
 const { AdditonalSizes } = Flipshop.Mungers.GearwrenchMungers
+const { MM_IN }          = Flipshop.Fastener
 
 const freals = true
 const dirs = freals ? [
@@ -42,7 +43,11 @@ for (const ripdDir of dirs) {
     if (orig.title === override.title) { console.warn(`Replacing existing product ${override.title}, this is probably a mistake`) }
     if ((orig as any).copied)          { console.warn(`Replacing already-duplicated product ${override.title}, this is probably a mistake`) }
     console.warn(`Adding additional size ${override.title} from ${orig.title}`, ripdDir.slice(-28))
-    products.push(Flipshop.Mungers.GearwrenchMungers.gearwrenchSocket.extend({ copied: CK.bool }).cast({ ...orig, ...override, copied: true }, { handle }))
+    const newSocket = {
+      ...orig, ...override, copied: true, sku: null, upc: null, url: null, // keep the img_url, but remove the sku, upc, url
+    }
+    if (newSocket.sizing_mm !== orig.sizing_mm) { newSocket.sizing_in = newSocket.sizing_mm / MM_IN }
+    products.push(Flipshop.Mungers.GearwrenchMungers.gearwrenchSocket.extend({ copied: CK.bool }).cast(newSocket, { handle }))
   })
   SocketWrenchProducts.push(...products)
   console.warn(`Parsed ${products.length} / ${files.length} products from ${ripdDir}.`)

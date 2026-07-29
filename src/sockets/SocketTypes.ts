@@ -63,13 +63,13 @@ export const socketWrench = CK.obj({
   /** weight of the socket in pounds */
   wt_lb:                mm_lte_100.optional(),
   /** alphanumeric SKU of an exemplar socket */
-  sku:                  CK.extkeyish,
+  sku:                  CK.extkeyish.nullable(),
   /** alphanumeric UPC of an exemplar socket */
-  upc:                  CK.unumstr,
+  upc:                  CK.unumstr.nullable(),
   /** URL of an exemplar product page */
-  url:                  CK.urlstr,
+  url:                  CK.urlstr.nullable(),
   /** URL of an exemplar image */
-  img_url:              CK.urlstr,
+  img_url:              CK.urlstr.nullable(),
 })
 export interface SocketWrenchT   extends CK.Zcasted<typeof socketWrench> {}
 export interface SocketWrenchSk  extends CK.Zsketch<typeof socketWrench> {}

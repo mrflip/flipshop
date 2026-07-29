@@ -205,9 +205,9 @@ export const DistanceLookup = {
   'H11/16in':               (11/16)    * MM_IN,
   'H3/4in':                 (3/4)     * MM_IN,
   //
-  "H0.7mm":                 0.7,
-  "H0.9mm":                 0.9,
-  "H1.25mm":                1.25,
+  "H0.7mm":                 0.71,  // defined to be identical to its US equivalend (0.028)
+  "H0.9mm":                 0.89,  // defined to be identical to its US equivalend (0.035)
+  "H1.3mm":                 1.27,  // defined to be identical to its US equivalend (0.050)
   "H1.5mm":                 1.5,
   "H2mm":                   2,
   "H2.5mm":                 2.5,
