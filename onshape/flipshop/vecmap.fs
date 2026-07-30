@@ -1,5 +1,5 @@
-FeatureScript 2909;
-import(path : "onshape/std/common.fs", version : "2909.0");
+FeatureScript 3029;
+import(path : "onshape/std/common.fs", version : "3029.0");
 
 const mm          = millimeter;
 const zero        = 0 * mm;
@@ -8,17 +8,67 @@ export function vector2(vec is Vector) {
     return vector(vec[0], vec[1]);
 }
 
-export function boxmRectangle(context is Context, sketch is Sketch, sketchLabel is string, boxm is map, construction is boolean) returns map {
+export function skBoxmRectangle(context is Context, sketch is Sketch, sketchLabel is string, boxm is map, construction is boolean) {
   skRectangle(sketch, sketchLabel, {
     "firstCorner":  vector2(boxm.minvec),
     "secondCorner": vector2(boxm.maxvec),
     "construction": ifNil(construction, false),
   });
-  return boxm;
 }
-export function boxmRectangle(context is Context, sketch is Sketch, sketchLabel is string, boxm is map) returns map {
-  return boxmRectangle(context, sketch, sketchLabel, boxm, false);
+export function skBoxmRectangle(context is Context, sketch is Sketch, sketchLabel is string, boxm is map) {
+  skBoxmRectangle(context, sketch, sketchLabel, boxm, false);
 }
+
+export function skBoxmMidline0(context is Context, sketch is Sketch, sketchLabel is string, boxm is map, isConstruction is boolean) {
+  skSimpleLine(context, sketch, sketchLabel, boxmLftMid(boxm), boxmRgtMid(boxm), isConstruction);
+}
+export function skBoxmMidline0(context is Context, sketch is Sketch, sketchLabel is string, boxm is map) { skBoxmMidline0(context, sketch, sketchLabel, boxm, false); }
+
+export function skBoxmMidline1(context is Context, sketch is Sketch, sketchLabel is string, boxm is map, isConstruction is boolean) {
+  skSimpleLine(context, sketch, sketchLabel, boxmCtrBtm(boxm), boxmCtrTop(boxm), isConstruction);
+}
+export function skBoxmMidline1(context is Context, sketch is Sketch, sketchLabel is string, boxm is map) { skBoxmMidline0(context, sketch, sketchLabel, boxm, false); }
+
+export function skSimpleLine(context is Context, sketch is Sketch, sketchLabel is string, begvec is Vector, endvec is Vector, isConstruction is boolean) {
+  skLineSegment(sketch, sketchLabel, { start: begvec, end: endvec, construction: isConstruction });
+}
+export function skSimpleLine(context is Context, sketch is Sketch, sketchLabel is string, begvec is Vector, endvec is Vector) {
+  skSimpleLine(context, sketch, sketchLabel, begvec, endvec, false);
+}
+
+export function skSimplePoint(context is Context, sketch is Sketch, sketchLabel is string, position is Vector) {
+  skPoint(sketch, sketchLabel, { "position": position });
+}
+export function skSimplePoint(context is Context, sketch is Sketch, sketchLabel is string, xpos is ValueWithUnits, ypos is ValueWithUnits) {
+  skSimplePoint(context, sketch, sketchLabel, vector(xpos, ypos));
+}
+
+export function skSimpleCircle(context is Context, sketch is Sketch, sketchLabel is string, center is Vector, radius is ValueWithUnits, isConstruction is boolean) {
+  skCircle(sketch, sketchLabel, { "center" : center, "radius" : radius, construction: isConstruction });
+}
+export function skSimpleCircle(context is Context, sketch is Sketch, sketchLabel is string, center is Vector, radius is ValueWithUnits) {
+  skSimpleCircle(context, sketch, sketchLabel, center, radius, false);
+}
+export function skSimpleCircle(context is Context, sketch is Sketch, sketchLabel is string, xpos is ValueWithUnits, ypos is ValueWithUnits, radius is ValueWithUnits, isConstruction is boolean) {
+  skSimpleCircle(context, sketch, sketchLabel, vector(xpos, ypos), radius, isConstruction);
+}
+export function skSimpleCircle(context is Context, sketch is Sketch, sketchLabel is string, xpos is ValueWithUnits, ypos is ValueWithUnits, radius is ValueWithUnits) {
+  skSimpleCircle(context, sketch, sketchLabel, vector(xpos, ypos), radius, false);
+}
+
+
+export function boxmLftBtm(boxm is map) returns Vector { return vector(boxm.min0,      boxm.min1); }
+export function boxmLftMid(boxm is map) returns Vector { return vector(boxm.min0,      boxm.midvec[1]); }
+export function boxmLftTop(boxm is map) returns Vector { return vector(boxm.min0,      boxm.max1); }
+export function boxmCtrBtm(boxm is map) returns Vector { return vector(boxm.midvec[0], boxm.min1); }
+export function boxmCtrMid(boxm is map) returns Vector { return vector(boxm.midvec[0], boxm.midvec[1]); }
+export function boxmCtrTop(boxm is map) returns Vector { return vector(boxm.midvec[0], boxm.max1); }
+export function boxmRgtBtm(boxm is map) returns Vector { return vector(boxm.max0,      boxm.min1); }
+export function boxmRgtMid(boxm is map) returns Vector { return vector(boxm.max0,      boxm.midvec[1]); }
+export function boxmRgtTop(boxm is map) returns Vector { return vector(boxm.max0,      boxm.max1); }
+
+export function boxmMinSize01(boxm is map) returns ValueWithUnits { return (boxm.size0 < boxm.size1) ? boxm.size0 : boxm.size1; }
+export function boxmMaxSize01(boxm is map) returns ValueWithUnits { return (boxm.size0 > boxm.size1) ? boxm.size0 : boxm.size1; }
 
 export function boxmCoords(boxm is map) returns array {
     return [boxm.min0, boxm.max0, boxm.min1, boxm.max1, boxm.min2, boxm.max2];
@@ -96,3 +146,10 @@ export function boxmForXYZ(min0 is ValueWithUnits, max0 is ValueWithUnits, min1 
 }
 
 export function ifNil(val, fallback) { if (val == undefined) { return fallback; } return val; }
+
+export function arrayIncludes(arr is array, target) returns boolean {
+  for (var item in arr) {
+    if (item == target) { return true; }
+  }
+  return false;
+}

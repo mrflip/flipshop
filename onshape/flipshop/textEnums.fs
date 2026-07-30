@@ -1,49 +1,48 @@
 FeatureScript 2909;
-import(path : "onshape/std/common.fs", version : "2909.0");
+import(path : "onshape/std/common.fs", version : "3029.0");
 
 export enum VerticalAlignment {
-  annotation { "Name": "Baseline" }
-  BASELINE,
-  annotation { "Name": "Nominal cap height" }
-  CAPHEIGHT,
-  annotation { "Name": "Actual Extent Top" }
-  ACTUAL_TOP,
-  annotation { "Name": "Actual Extent Middle" }
-  ACTUAL_MID,
-  annotation { "Name": "Actual Extent Bottom" }
-  ACTUAL_BTM,
-  annotation { "Name": "Stable Top for Any Text (jy to Alf)" }
-  STABLE_TOP,
-  annotation { "Name": "Stable Middle for Any Text (jy to Alf)" }
-  STABLE_MID,
   annotation { "Name": "Stable Bottom for Any Text (jy to Alf)" }
   STABLE_BTM,
+  annotation { "Name": "Stable Middle for Any Text (jy to Alf)" }
+  STABLE_MID,
+  annotation { "Name": "Stable Top for Any Text (jy to Alf)" }
+  STABLE_TOP,
+  annotation { "Name": "Nominal cap height" }
+  CAPHEIGHT,
+  annotation { "Name": "Actual Bottom Extent" }
+  ACTUAL_BTM,
+  annotation { "Name": "Actual Middle Extent" }
+  ACTUAL_MID,
+  annotation { "Name": "Actual Top Extent" }
+  ACTUAL_TOP,
+  annotation { "Name": "Baseline" }
+  BASELINE,
 }
 
 export enum HorizontalAlignment {
-  annotation { "Name": "Left of rendered letters" }
-  ACTUAL_LEFT,
-  annotation { "Name": "Center of rendered letters" }
-  ACTUAL_CENTER,
-  annotation { "Name": "Right of rendered letters" }
-  ACTUAL_RIGHT,
   annotation { "Name": "Left, including padding" }
   PADDED_LEFT,
   annotation { "Name": "Center, including padding" }
   PADDED_CENTER,
   annotation { "Name": "Right, including padding" }
   PADDED_RIGHT,
-  // JUSTIFY is not supported yet
+  annotation { "Name": "Left of rendered letters" }
+  ACTUAL_LEFT,
+  annotation { "Name": "Center of rendered letters" }
+  ACTUAL_CENTER,
+  annotation { "Name": "Right of rendered letters" }
+  ACTUAL_RIGHT,
 }
 
-export enum HSizingExtent {
+export enum HSizingDriver {
   annotation { "Name": "Full width, including padding" }
   PADDED,
   annotation { "Name": "Actual rendered width (no padding)" }
   RENDERED,
 }
 
-export enum VSizingExtent {
+export enum VSizingDriver {
   /** Resizing will be the same regardless of the text content. */
   annotation { "Name": "Stable (Lowest descender to tallest ascender: y-height to l-height)" }
   STABLE,
@@ -93,20 +92,56 @@ export enum ResizingPolicy {
   FOLLOW,
 }
 
-export const ProportionalResizingPolicy = {
-  "Contained (proportionally resize to fit)":                          ResizingPolicy.CONTAINED,
-  "Cover (proportionally resize to cover)":                            ResizingPolicy.COVERS,
-  "Downscale (proportionally shrink until contained, but never grow)": ResizingPolicy.DOWNSCALE,
-  "UPSCALE (proportionally grow to cover, but never shrink)":          ResizingPolicy.UPSCALE,
-};
+  // Dimension-independent policies: can mix and match these
+export enum StretchingPolicy {
+  /** Preserve original dimensions; no resizing. */
+  annotation { "Name": "Free (no resizing)" }
+  FREE,
+  /** Stretch to fill the bounds exactly, ignoring aspect ratio. */
+  annotation { "Name": "Grow/shrink to match exactly" }
+  FORCE,
+  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
+  annotation { "Name": "Grow to match (if smaller) -- but never shrink" }
+  GROW,
+  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
+  annotation { "Name": "Shrink to match (if outside bounds) -- but never grow" }
+  SHRINK,
+  /** Scale proportionally to match the scaling factor of the other dimension. Maintains aspect ratio (e.g., height follows width changes). */
+  annotation { "Name": "Follow (scale with other dimension)" }
+  FOLLOW,
+}
 
-export const IndependentResizingPolicy = {
-  "Free (no resizing)":                                    ResizingPolicy.FREE,
-  "Stretch, or shrink, to match exactly":                  ResizingPolicy.FORCE,
-  "Shrink to match (if outside bounds) -- but never grow": ResizingPolicy.SHRINK,
-  "Grow to match (if smaller) -- but never shrink":        ResizingPolicy.GROW,
-  "Follow (scale with other dimension)":                   ResizingPolicy.FOLLOW,
-};
+// export const ProportionalResizingPolicies = [
+//     ResizingPolicy.CONTAINED, ResizingPolicy.COVERS, ResizingPolicy.DOWNSCALE, ResizingPolicy.UPSCALE,
+// ];
+
+// export const IndependentResizingPolicies = [
+//     ResizingPolicy.FREE, ResizingPolicy.FORCE, ResizingPolicy.SHRINK, ResizingPolicy.GROW, ResizingPolicy.FOLLOW,
+// ];
+
+// export const ProportionalResizingPolicy = {
+//   "Contained (proportionally resize to fit)":                          ResizingPolicy.CONTAINED,
+//   "Cover (proportionally resize to cover)":                            ResizingPolicy.COVERS,
+//   "Downscale (proportionally shrink until contained, but never grow)": ResizingPolicy.DOWNSCALE,
+//   "UPSCALE (proportionally grow to cover, but never shrink)":          ResizingPolicy.UPSCALE,
+// };
+
+// export const IndependentResizingPolicy = {
+//   "Free (no resizing)":                                    ResizingPolicy.FREE,
+//   "Stretch, or shrink, to match exactly":                  ResizingPolicy.FORCE,
+//   "Shrink to match (if outside bounds) -- but never grow": ResizingPolicy.SHRINK,
+//   "Grow to match (if smaller) -- but never shrink":        ResizingPolicy.GROW,
+//   "Follow (scale with other dimension)":                   ResizingPolicy.FOLLOW,
+// };
+
+export enum FSBooleanOpType {
+  annotation { "Name": "Union (combine parts)" }
+  UNION,
+  annotation { "Name": "Subtract (carve tools from part)" }
+  SUBTRACTION,
+  annotation { "Name": "Embed (reduce tool to intersection, remove tool from part)" }
+  EMBEDDING,
+}
 
 export enum EmbossOpType {
   annotation { "Name": "Emboss (add raised text to part)" }
