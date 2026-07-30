@@ -62,51 +62,60 @@ export enum ResizingPolicy {
   // Dimension-dependent policies: resizing1 must be undefined or equal to resizing0
 
   /** Resize proportionally to fit entirely within bounds, with at least one dimension fitting exactly. May shrink or expand. */
-  annotation { "Name": "Grow/Shrink proportionally to fit inside bounds" }
-  CONTAIN,
+  annotation { "Name": "Contained: Match one bound (contained in both) by growing/shrinking proportionally" }
+  CONTAINED,
   /** Resize proportionally to fill bounds, with at least one dimension fitting exactly. May shrink or expand. */
-  annotation { "Name": "Grow/Shrink proportionally to cover bounds completely" }
-  COVER,
+  annotation { "Name": "Covers: Match one bound (covering both) by growing/shrinking proportionally" }
+  COVERS,
   /** Shrink proportionally to fit within bounds, but never expand. */
-  annotation { "Name": "Shrink until both fit (but never enlarge)" }
+  annotation { "Name": "Downscale: Shrink proportionally to be contained, but never expand" }
   DOWNSCALE,
   /** Grow proportionally to fill bounds, but never shrink */
-  annotation { "Name": "Grow until both fit (but never shrink)" }
-  MAXIMIZE,
+  annotation { "Name": "Upscale: Grow proportionally to cover bounds, but never shrink" }
+  UPSCALE,
 
   // Dimension-independent policies: can mix and match these
 
   /** Preserve original dimensions; no resizing. */
-  annotation { "Name": "No resizing (preserve original)" }
-  NONE,
-  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
-  annotation { "Name": "Shrink to size or smaller" }
-  LIMIT,
-  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
-  annotation { "Name": "Grow to size or larger" }
-  EMBIGGEN,
+  annotation { "Name": "Free (no resizing)" }
+  FREE,
   /** Stretch to fill the bounds exactly, ignoring aspect ratio. */
-  annotation { "Name": "Stretch independently to fill" }
-  STRETCH,
+  annotation { "Name": "Grow/shrink to match exactly" }
+  FORCE,
+  /** Expand to fill the available space if smaller, but never shrink. Affects only this dimension (not proportional). */
+  annotation { "Name": "Grow to match (if smaller) -- but never shrink" }
+  GROW,
+  /** Shrink to fit the available space if larger, but never expand. Affects only this dimension (not proportional). */
+  annotation { "Name": "Shrink to match (if outside bounds) -- but never grow" }
+  SHRINK,
   /** Scale proportionally to match the scaling factor of the other dimension. Maintains aspect ratio (e.g., height follows width changes). */
-  annotation { "Name": "Scale with other dimension proportionally" }
+  annotation { "Name": "Follow (scale with other dimension)" }
   FOLLOW,
 }
 
 export const ProportionalResizingPolicy = {
-  "Contain (proportionally resize to fit)":   ResizingPolicy.CONTAIN,
-  "Downscale (proportionally shrink to fit)": ResizingPolicy.DOWNSCALE,
-  "Cover (proportionally resize to cover)":   ResizingPolicy.COVER,
-  "Maximize (proportionally grow to cover)":  ResizingPolicy.MAXIMIZE,
+  "Contained (proportionally resize to fit)":                          ResizingPolicy.CONTAINED,
+  "Cover (proportionally resize to cover)":                            ResizingPolicy.COVERS,
+  "Downscale (proportionally shrink until contained, but never grow)": ResizingPolicy.DOWNSCALE,
+  "UPSCALE (proportionally grow to cover, but never shrink)":          ResizingPolicy.UPSCALE,
 };
 
 export const IndependentResizingPolicy = {
-  "None (no resizing)":                       ResizingPolicy.NONE,
-  "Fill (proportionally resize to fit)":      ResizingPolicy.STRETCH,
-  "Limit (proportionally shrink to fit)":     ResizingPolicy.LIMIT,
-  "Embiggen (proportionally grow to fill)":   ResizingPolicy.EMBIGGEN,
-  "Follow (scale with other dimension)":      ResizingPolicy.FOLLOW,
+  "Free (no resizing)":                                    ResizingPolicy.FREE,
+  "Stretch, or shrink, to match exactly":                  ResizingPolicy.FORCE,
+  "Shrink to match (if outside bounds) -- but never grow": ResizingPolicy.SHRINK,
+  "Grow to match (if smaller) -- but never shrink":        ResizingPolicy.GROW,
+  "Follow (scale with other dimension)":                   ResizingPolicy.FOLLOW,
 };
+
+export enum EmbossOpType {
+  annotation { "Name": "Emboss (add raised text to part)" }
+  EMBOSS,
+  annotation { "Name": "Deboss (carve text into part)" }
+  DEBOSS,
+  annotation { "Name": "Embed (intersect part with text, remove text from part)" }
+  EMBED,
+}
 
 export enum FontName {
   annotation { "Name": "Open Sans Regular (sans)" }

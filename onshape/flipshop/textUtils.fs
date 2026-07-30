@@ -1,8 +1,9 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "19a276cbe441b4dcf19aaca1", version : "3ac042f5e318aa3e166249f3");
+export import(path : "19a276cbe441b4dcf19aaca1", version : "3deb58ea28a9ee59dae96b6f");
 import(path : "c50e2363725f9cf513e36928", version : "e884fcdda7e510b60c718d44");
 import(path : "075be6354063579d5fedb3b7", version : "b59a457165ed53b2ec7d71d6");
+export import(path : "onshape/std/booleanoperationtype.gen.fs", version: "2909.0");
 
 // == [Text Chip] ==
 
@@ -31,6 +32,8 @@ export const textChipF = defineFeature(function(context is Context, id is Id, de
 precondition {
   annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 10 }
   definition.sketchPlaneQ is Query;
+  annotation { "Name" : "Opposite direction", "UIHint" : UIHint.OPPOSITE_DIRECTION }
+  definition.oppositeDirection is boolean;
   annotation { "Name": "Text", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
   definition.text is string;
   annotation { "Name": "Font Name", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
@@ -62,6 +65,71 @@ precondition {
   textChip(context, id, definition);
 });
 
+
+// == [Imprint Text] ==
+
+/**
+ * Part feature: extrudes `text` sized and aligned within a bounding plate at each selected plane.
+ * Delegates all geometry to @see `textChip`.
+ * @param definition {{
+ *      @field sketchPlaneQ {Query} : One or more sketch planes; a separate text body is created at each.
+ *      @field text {string} : Text to render.
+ *      @field fontName {FontName} : Font filename.
+ *      @field baselineHeight {ValueWithUnits} : Nominal cap height (before resizing).
+ *      @field boundsWidth {ValueWithUnits} : Carrier plate width.
+ *      @field boundsHeight {ValueWithUnits} : Carrier plate height.
+ *      @field resizing0 {ResizingPolicy} : Resizing policy for X.
+ *      @field resizing1 {ResizingPolicy} : Resizing policy for Y.
+ *      @field horizontalAlign {HorizontalAlignment} : X anchor within the plate.
+ *      @field verticalAlign {VerticalAlignment} : Y anchor within the plate.
+ *      @field textAngle {ValueWithUnits} : In-plane rotation angle.
+ *      @field textDepth {ValueWithUnits} : Extrusion depth of the text lettering.
+ *      @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
+ *      @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
+ * }}
+ */
+annotation { "Feature Type Name": "Imprint Text" }
+export const imprintText = defineFeature(function(context is Context, id is Id, definition is map)
+precondition {
+  annotation { "Name": "Sketch Planes", "Filter": QueryFilterCompound.ALLOWS_PLANE }
+  definition.sketchPlaneQ is Query;
+  annotation { "Name": "Parts", "Filter": EntityType.BODY && BodyType.SOLID, "UIHint" : [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.partQ is Query;
+  annotation { "Name" : "Opposite direction", "UIHint" : UIHint.OPPOSITE_DIRECTION }
+  definition.oppositeDirection is boolean;
+  annotation { "Name": "Text", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+  definition.text is string;
+  annotation { "Name": "Font Name", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.fontName is FontName;
+  annotation { "Name": "Baseline Height", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+  isLength(definition.baselineHeight, { (millimeter): [0.001, 10, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Bounds Width", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+  isLength(definition.boundsWidth, { (millimeter): [0.001, 50, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Bounds Height", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+  isLength(definition.boundsHeight, { (millimeter): [0.001, 10, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Horizontal Alignment", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.horizontalAlign is HorizontalAlignment;
+  annotation { "Name": "Vertical Alignment", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.verticalAlign is VerticalAlignment;
+  annotation { "Name": "Horizontal Resizing", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.resizing0 is ResizingPolicy;
+  annotation { "Name": "Vertical Resizing", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.resizing1 is ResizingPolicy;
+  annotation { "Name": "Text Angle" }
+  isAngle(definition.textAngle, { (degree): [0, 0, 360] } as AngleBoundSpec);
+  annotation { "Name": "Text Depth" }
+  isLength(definition.textDepth, { (millimeter): [0.001, 1, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Plate Depth" }
+  isLength(definition.plateDepth, { (millimeter): [0.001, 0.5, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Emboss", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  definition.operationType is EmbossOpType;
+  annotation { "Name": "Cleanup sketches" }
+  definition.cleanupSketches is boolean;
+}
+{
+  embossTextFaces(context, id, definition);
+});
+
 // --
 
 /**
@@ -78,6 +146,22 @@ export function textChip(context is Context, id is Id, definition is map) {
     ptIdx += 1;
   }
 }
+
+/**
+ * Extrudes `definition.text` at each plane in `definition.sketchPlaneQ`.
+ * Calls @see `textChipAt` for each evaluated plane.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param definition {map} : Options for @see `renderTextAt`, plus `sketchPlaneQ`.
+ */
+export function embossTextFaces(context is Context, id is Id, definition is map) {
+  var ptIdx = 0;
+  for (var planeEnt in evaluateQuery(context, definition.sketchPlaneQ)) {
+    embossText(context, id + ("p" ~ toString(ptIdx)), planeEnt, definition.partQ, definition);
+    ptIdx += 1;
+  }
+}
+
 
 /**
  * Extrudes `definition.text` sized and aligned within a bounding plate at a single plane.
@@ -99,11 +183,66 @@ export function textChip(context is Context, id is Id, definition is map) {
  *   - @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
  *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  */
-function textChipAt(context is Context, id is Id, planeEnt is Query, definition is map) {
+export function textChipAt(context is Context, id is Id, planeEnt is Query, opts is map) {
+  const basePlane = evPlane(context, { "face": planeEnt });
+  const polarity = ifNil(opts.oppositeDirection, false) ? -1 : 1;
+  const ids = { plateSk: id + "plateSk", extrudePlate:  id + "extrudePlate",  emboss: id + "embossText",  cleanup: id + "cleanup" };
+  const plateSk = rotatedSketch(context, ids.plateSk,  { "basePlane": basePlane }, opts.textAngle);
+  // Anchor offset: how far into the bounds box the text anchor sits (in sketch coords)
+  var anchorX = opts.boundsWidth  * horizAlignmentShift(opts.horizontalAlign);
+  var anchorY = opts.boundsHeight * vertAlignmentShift(opts.verticalAlign);
+
+  // Carrier plate: bounds rectangle with the anchor at the sketch origin
+  skRectangle(plateSk, "plate", {
+    "firstCorner":  vector(-anchorX,                         -anchorY),
+    "secondCorner": vector(opts.boundsWidth - anchorX, opts.boundsHeight - anchorY),
+  });
+  skSolve(plateSk);
+
+  // Extrude target plate
+  opExtrude(context, ids.extrudePlate, {
+    "entities":    qCreatedBy(ids.plateSk, EntityType.FACE),
+    "direction":   -polarity * basePlane.normal,
+    "endBound":    BoundingType.BLIND,
+    "endDepth":    opts.plateDepth,
+  });
+  const plateBodiesQ = qCreatedBy(ids.extrudePlate, EntityType.BODY);
+
+  const scaledParams = embossText(context, ids.emboss, planeEnt, plateBodiesQ, opts);
+
+  // const cleanupSketches = definition.cleanupSketches == undefined ? false : definition.cleanupSketches;
+  if (ifNil(opts.cleanupSketches, true)) {
+    opDeleteBodies(context, ids.cleanup, { "entities": qCreatedBy(ids.plateSk, EntityType.BODY) });
+  }
+
+  return scaledParams;
+}
+
+/**
+ * Extrudes `definition.text` sized and aligned within a bounding plate at a single plane.
+ * @param context {Context} : Model context.
+ * @param id {Id} : Base feature id.
+ * @param planeEnt {Query} : Single sketch plane entity.
+ * @param definition {map} : Keyword options.
+ *   - @field text {string} : Text to render.
+ *   - @field fontName {FontName} : Font filename.
+ *   - @field baselineHeight {ValueWithUnits} : Nominal cap height (before resizing).
+ *   - @field boundsWidth {ValueWithUnits} : Carrier plate width.
+ *   - @field boundsHeight {ValueWithUnits} : Carrier plate height.
+ *   - @field resizing0 {ResizingPolicy} : Resizing policy for X.
+ *   - @field resizing1 {ResizingPolicy} : Resizing policy for Y.
+ *   - @field horizontalAlign {HorizontalAlignment} : X anchor within the plate.
+ *   - @field verticalAlign {VerticalAlignment} : Y anchor within the plate.
+ *   - @field textAngle {ValueWithUnits} : In-plane rotation angle.
+ *   - @field textDepth {ValueWithUnits} : Extrusion depth of the text lettering.
+ *   - @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
+ *   - @field oppositeDirection {boolean} : Text extrudes opposite face normal
+ *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
+ */
+export function embossText(context is Context, id is Id, planeEnt is Query, partQ is Query, opts is map) {
   const basePlane = evPlane(context, { "face": planeEnt });
   const ids = {
     textSk:        id + "textSk",
-    plateSk:       id + "plateSk",
     extentSk:      id + "extentSk",
     extrudeText:   id + "extrudeText",
     extrudePlate:  id + "extrudePlate",
@@ -112,120 +251,126 @@ function textChipAt(context is Context, id is Id, planeEnt is Query, definition 
     cleanup:       id + "cleanup",
   };
   const sketches = {
-    text:       rotatedSketch(context, ids.textSk,   { "basePlane": basePlane }, definition.textAngle),
-    plate:      rotatedSketch(context, ids.plateSk,  { "basePlane": basePlane }, definition.textAngle),
-    extent:     rotatedSketch(context, ids.extentSk, { "basePlane": basePlane }, definition.textAngle),
+    text:       rotatedSketch(context, ids.textSk,   { "basePlane": basePlane }, opts.textAngle),
+    extent:     rotatedSketch(context, ids.extentSk, { "basePlane": basePlane }, opts.textAngle),
   };
-  // Anchor offset: how far into the bounds box the text anchor sits (in sketch coords)
-  var anchorX = 0 * mm;
-  if        (definition.horizontalAlign == HorizontalAlignment.ACTUAL_CENTER || definition.horizontalAlign == HorizontalAlignment.PADDED_CENTER) {
-    anchorX = definition.boundsWidth / 2;
-  } else if (definition.horizontalAlign == HorizontalAlignment.ACTUAL_RIGHT || definition.horizontalAlign == HorizontalAlignment.PADDED_RIGHT) {
-    anchorX = definition.boundsWidth;
-  }
-  var anchorY = 0 * mm;
-  if (definition.verticalAlign == VerticalAlignment.ACTUAL_MID) {
-    anchorY = definition.boundsHeight / 2;
-  } else if (definition.verticalAlign == VerticalAlignment.ACTUAL_TOP || definition.verticalAlign == VerticalAlignment.CAPHEIGHT || definition.verticalAlign == VerticalAlignment.STABLE_TOP) {
-    anchorY = definition.boundsHeight;
-  }
-
-  // Carrier plate: bounds rectangle with the anchor at the sketch origin
-  skRectangle(sketches.plate, "plate", {
-    "firstCorner":  vector(-anchorX,                         -anchorY),
-    "secondCorner": vector(definition.boundsWidth - anchorX, definition.boundsHeight - anchorY),
-  });
-  skSolve(sketches.plate);
-  const plateSkFacesQ = qCreatedBy(ids.plateSk, EntityType.FACE);
+  const polarity = ifNil(opts.oppositeDirection, false) ? -1 : 1;
 
   // Text: sized and aligned within the bounds at the sketch origin
-  const scaledParams = skTextAt(context, id, "text", sketches.text, definition.text, vector(0 * mm, 0 * mm), definition.baselineHeight, {
-    "fontName":        definition.fontName,
-    "bounds":          vector(definition.boundsWidth, definition.boundsHeight),
-    "resizing0":       definition.resizing0,
-    "resizing1":       definition.resizing1,
-    "horizontalAlign": definition.horizontalAlign,
-    "verticalAlign":   definition.verticalAlign,
+  const scaledParams = skTextAt(context, id, "text", sketches.text, opts.text, vector(0 * mm, 0 * mm), opts.baselineHeight, {
+    "fontName":        opts.fontName,
+    "bounds":          vector(opts.boundsWidth, opts.boundsHeight),
+    "resizing0":       opts.resizing0,
+    "resizing1":       opts.resizing1,
+    "horizontalAlign": opts.horizontalAlign,
+    "verticalAlign":   opts.verticalAlign,
     "cleanupSketches": false,
   });
   skSolve(sketches.text);
   const textSkRegionQ = qSketchRegion(ids.textSk, true);
 
-  // Text Carrier: actual extent of text glyphs
-//   skRectangle(sketches.extent, "extent", {
-//     "firstCorner":  vector(-anchorX,                         -anchorY),
-//     "secondCorner": vector(-anchorX + scaledParams.textCoords.left + scaledParams.textCoords.actualWidth, - anchorY + scaledParams.textCoords.actualHeight),
-//   });
-
-  const shift0 = scaledParams.scaling.shift0; const shift1 = scaledParams.scaling.shift1; const scale0 = scaledParams.scaling.scale0; const scale1 = scaledParams.scaling.scale1;
-  const rawScaling = mergeMaps(scaledParams.scaling, { "scale0": scale1 }); // "scale0": scale1, "shift0": shift0 * scale0 / scale1 });
-  const actualPlaced = boxmRescale(scaledParams.textCoords.actualBox, rawScaling);
-  debug(context, ["actualBox",     boxmPretty(scaledParams.textCoords.actualBox)]);
-  debug(context, ["actualPlaced",  boxmPretty(actualPlaced)]);
-  debug(context, ["actualPlaceds", boxmPretty(boxmRescale(scaledParams.textCoords.actualBox, scaledParams.scaling))]);
-  debug(context, ["rawPlacement",  rawScaling]);
-  boxmRectangle(context, sketches.extent, "actualBox", actualPlaced);
-  boxmRectangle(context, sketches.extent, "paddedBox", placeBoxm(scaledParams.textCoords.paddedBox, rawScaling), true);
-//   boxmRectangle(context, sketches.extent, "stableBox", placeBoxm(scaledParams.textCoords.stableBox, rawPlacement), true);
+  const rawScaling = mergeMaps(scaledParams.scaling, { "scale0": scaledParams.scaling.scale1 });
+  boxmRectangle(context, sketches.extent, "actualBox", boxmRescale(scaledParams.textCoords.actualBox, rawScaling));
+  boxmRectangle(context, sketches.extent, "paddedBox", boxmRescale(scaledParams.textCoords.paddedBox, rawScaling), true);
+  boxmRectangle(context, sketches.extent, "stableBox", boxmRescale(scaledParams.textCoords.stableBox, rawScaling), true);
   skSolve(sketches.extent);
   const extentSkFacesQ = qSketchRegion(ids.extentSk, true);
 
-//   // Extrude text lettering
-//   opExtrude(context, ids.extrudeText, {
-//     "entities":  textSkRegionQ,
-//     "direction": basePlane.normal,
+  // Extrude text extent
+//   opExtrude(context, ids.extrudeExtent, {
+//     "entities":  extentSkFacesQ,
+//     "direction": -polarity * basePlane.normal,
 //     "endBound":  BoundingType.BLIND,
-//     "endDepth":  definition.textDepth,
+//     "endDepth":  opts.plateDepth,
 //   });
-//   const textBodiesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
+//   const extentBodiesQ = qCreatedBy(ids.extrudeExtent, EntityType.BODY);
+  const extentPlateQ = simpleExtrude(context, ids.extrudeExtent, -polarity * basePlane.normal, extentSkFacesQ, { depth: opts.plateDepth });
 
-  // Extrude text lettering
-  opExtrude(context, ids.extrudeExtent, {
-    "entities":  extentSkFacesQ,
-    "direction": -basePlane.normal,
-    "endBound":  BoundingType.BLIND,
-    "endDepth":  definition.plateDepth,
-  });
-  const extentBodiesQ = qCreatedBy(ids.extrudeExtent, EntityType.BODY);
-
-  // Extrude target plate
-  opExtrude(context, ids.extrudePlate, {
-    "entities":    plateSkFacesQ,
-    "direction":   -basePlane.normal,
-    "endBound":    BoundingType.BLIND,
-    "endDepth":    definition.plateDepth,
-    // "oppositeDirection": true,
-  });
-  //   const plateSkFacesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
-
-  // Extrude carrier covering text extent for scaling, merging with the text bodies
-  extrude(context, ids.extrudeText, {
+  // Extrude actual text, merging onto the carrier
+  extrude(context, ids.extrudeText, mergeMaps(opts, {
     "entities":          textSkRegionQ,
-    "direction":         basePlane.normal,
+    "direction":         polarity * basePlane.normal,
     "endBound":          BoundingType.BLIND,
-    "depth":             definition.textDepth,
+    "depth":             opts.textDepth,
     "operationType":     NewBodyOperationType.ADD,
     "bodyType":          ExtendedToolBodyType.SOLID,
     "defaultScope":      false,
-    "oppositeDirection": false,
-    "booleanScope":      extentBodiesQ,
-  });
+    "oppositeDirection": ifNil(opts.oppositeDirection, false),
+    "booleanScope":      extentPlateQ,
+  }));
   const textBodiesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
-  const textChipPartQ = qUnion([textBodiesQ, extentBodiesQ]);
-  const scrubbed = replace(definition.text, "[\\s]+", " ");
+  const textChipPartQ = qUnion([textBodiesQ, extentPlateQ]);
+  const scrubbed = replace(opts.text, "[\\s]+", " ");
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
   setName(context, textChipPartQ, partName);
-  setName(context, qCreatedBy(ids.extrudePlate, EntityType.BODY), "target");
+  // setName(context, qCreatedBy(ids.extrudePlate, EntityType.BODY), "target");
 
   opTransform(context, ids.scale, {
-      "bodies" :  textChipPartQ,
-      "transform" : scaleNonuniformly(scale0 / scale1, 1.0, 1.0)
+    "bodies" :  textChipPartQ,
+    "transform" : scaleNonuniformly(scaledParams.scaling.scale0 / scaledParams.scaling.scale1, 1.0, 1.0)
   });
+  debug(context, ["hi", textChipPartQ, partQ]);
+  if (opts.operationType == EmbossOpType.DEBOSS) {
+    opBoolean(context, id + "boolean1", {
+      "tools" :         textChipPartQ,
+      "targets":        qEntityFilter(partQ, EntityType.BODY),
+      "operationType" : BooleanOperationType.SUBTRACTION,
+      "keepTools":      true,
+    });
+  } else if (opts.operationType == EmbossOpType.EMBED) {
+    const copyOfText        = copyBodies(context, id + "copyTextChip", textChipPartQ);
+    const copyOfExtentPlate = simpleExtrude(context, id + "copyOfExtentPlate", -polarity * basePlane.normal, extentSkFacesQ, { depth: opts.plateDepth });
+    opBoolean(context, id + "boolean1", {
+      "tools" :         qUnion([partQ, copyOfExtentPlate]),
+      "targets":        textChipPartQ,
+      "operationType" : BooleanOperationType.SUBTRACT_COMPLEMENT,
+      "keepTools":      true,
+    });
+    opDeleteBodies(context, id + "deleteCopyOfExtentPlate", { "entities" : copyOfExtentPlate });
+    opBoolean(context, id + "debossText", {
+      "tools" :         copyOfText,
+      "targets":        qEntityFilter(partQ, EntityType.BODY),
+      "operationType" : BooleanOperationType.SUBTRACTION,
+      "keepTools":      false,
+    });
+
+  } else {
+    opBoolean(context, id + "boolean1", {
+      "tools" :         qUnion([textChipPartQ, partQ]),
+      "operationType" : ifNil(opts.operationType, BooleanOperationType.UNION),
+    });
+  }
 
   // const cleanupSketches = definition.cleanupSketches == undefined ? false : definition.cleanupSketches;
-  if (ifNil(definition.cleanupSketches, true)) {
-    opDeleteBodies(context, ids.cleanup, { "entities": qCreatedBy(ids.textSk, EntityType.BODY) });
+  if (ifNil(opts.cleanupSketches, true)) {
+    opDeleteBodies(context, ids.cleanup, { "entities": qUnion([qCreatedBy(ids.textSk, EntityType.BODY), qCreatedBy(ids.extentSk, EntityType.BODY)]) });
   }
+
+  return scaledParams;
+}
+
+function simpleExtrude(context is Context, id is Id, direction is Vector, entities is Query, options is map) returns Query {
+  const opts = mergeMaps({
+    oppositeDirection: false, endBound: BoundingType.BLIND,
+  }, options);
+  const polarity = opts.oppositeDirection ? -1 : 1;
+  opExtrude(context, id, {
+    "entities":  entities,
+    "direction": polarity * direction,
+    "endBound":  opts.endBound,
+    "endDepth":  opts.depth,
+  });
+  return qCreatedBy(id, EntityType.BODY);
+}
+
+function copyBodies(context is Context, id is Id, bodies is Query) returns Query {
+    const copyId = id + "bodyCopy";
+    opPattern(context, copyId, {
+                "entities" : bodies,
+                "transforms" : [identityTransform()],
+                "instanceNames" : ["copy"]
+            });
+    return qCreatedBy(copyId, EntityType.BODY);
 }
 
 // --
@@ -382,8 +527,8 @@ export function textBounds(context is Context, id is Id, text is string, options
     "stable": newSketchOnPlane(context, ids.stableSk,  { "sketchPlane": PL_TOP }),
   };
   // Draw the text
-  skBasicTextAt(context, "actualBounds", sketches.actual,  text,             opts.position, opts.baselineHeight, opts);
-  skBasicTextAt(context, "stableBounds", sketches.stable,  text ~ "(ÂÅ|q);", opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "actualBounds", sketches.actual,  text,                opts.position, opts.baselineHeight, opts);
+  skBasicTextAt(context, "stableBounds", sketches.stable,  text ~ "∑qÚÅ|(Á)?;", opts.position, opts.baselineHeight, opts);
   skSolve(sketches.actual);
   skSolve(sketches.stable);
   const actualSkBodiesQ  = qCreatedBy(ids.actualSk, EntityType.BODY);
@@ -499,6 +644,24 @@ function vSizingExtentFor(verticalAlignment is VerticalAlignment) returns VSizin
         return VSizingExtent.STABLE;
     }
     return VSizingExtent.STABLE;
+}
+
+function horizAlignmentShift(horizontalAlign is HorizontalAlignment) returns number {
+  if        (horizontalAlign == HorizontalAlignment.ACTUAL_CENTER || horizontalAlign == HorizontalAlignment.PADDED_CENTER) {
+    return (1/2);
+  } else if (horizontalAlign == HorizontalAlignment.ACTUAL_RIGHT || horizontalAlign == HorizontalAlignment.PADDED_RIGHT) {
+    return 1.0;
+  }
+  return 0;
+}
+
+function vertAlignmentShift(verticalAlign is VerticalAlignment) returns number {
+  if (verticalAlign == VerticalAlignment.ACTUAL_MID) {
+    return (1/2);
+  } else if (verticalAlign == VerticalAlignment.ACTUAL_TOP || verticalAlign == VerticalAlignment.CAPHEIGHT || verticalAlign == VerticalAlignment.STABLE_TOP) {
+    return 1.0;
+  }
+  return 0;
 }
 
 // --
