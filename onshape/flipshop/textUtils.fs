@@ -1,14 +1,14 @@
 FeatureScript 2909;
 import(path : "onshape/std/geometry.fs", version : "2909.0");
-export import(path : "19a276cbe441b4dcf19aaca1", version : "1c6f0e614ce5f953f7d789c7");
-import(path : "c50e2363725f9cf513e36928", version : "ff83aaeeedfda1e288c80060");
+export import(path : "19a276cbe441b4dcf19aaca1", version : "3ac042f5e318aa3e166249f3");
+import(path : "c50e2363725f9cf513e36928", version : "e884fcdda7e510b60c718d44");
 import(path : "075be6354063579d5fedb3b7", version : "b59a457165ed53b2ec7d71d6");
 
-// == [Render Text] ==
+// == [Text Chip] ==
 
 /**
  * Part feature: extrudes `text` sized and aligned within a bounding plate at each selected plane.
- * Delegates all geometry to @see `renderText`.
+ * Delegates all geometry to @see `textChip`.
  * @param definition {{
  *      @field sketchPlaneQ {Query} : One or more sketch planes; a separate text body is created at each.
  *      @field text {string} : Text to render.
@@ -26,8 +26,8 @@ import(path : "075be6354063579d5fedb3b7", version : "b59a457165ed53b2ec7d71d6");
  *      @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  * }}
  */
-annotation { "Feature Type Name": "Render Text" }
-export const renderTextF = defineFeature(function(context is Context, id is Id, definition is map)
+annotation { "Feature Type Name": "Text Chip" }
+export const textChipF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
   annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 10 }
   definition.sketchPlaneQ is Query;
@@ -59,22 +59,22 @@ precondition {
   definition.cleanupSketches is boolean;
 }
 {
-  renderText(context, id, definition);
+  textChip(context, id, definition);
 });
 
 // --
 
 /**
  * Extrudes `definition.text` at each plane in `definition.sketchPlaneQ`.
- * Calls @see `renderTextAt` for each evaluated plane.
+ * Calls @see `textChipAt` for each evaluated plane.
  * @param context {Context} : Model context.
  * @param id {Id} : Base feature id.
  * @param definition {map} : Options for @see `renderTextAt`, plus `sketchPlaneQ`.
  */
-export function renderText(context is Context, id is Id, definition is map) {
+export function textChip(context is Context, id is Id, definition is map) {
   var ptIdx = 0;
   for (var planeEnt in evaluateQuery(context, definition.sketchPlaneQ)) {
-    renderTextAt(context, id + ("p" ~ toString(ptIdx)), planeEnt, definition);
+    textChipAt(context, id + ("p" ~ toString(ptIdx)), planeEnt, definition);
     ptIdx += 1;
   }
 }
@@ -99,7 +99,7 @@ export function renderText(context is Context, id is Id, definition is map) {
  *   - @field plateDepth {ValueWithUnits} : Extrusion depth of the carrier plate.
  *   - @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  */
-function renderTextAt(context is Context, id is Id, planeEnt is Query, definition is map) {
+function textChipAt(context is Context, id is Id, planeEnt is Query, definition is map) {
   const basePlane = evPlane(context, { "face": planeEnt });
   const ids = {
     textSk:        id + "textSk",
@@ -108,6 +108,7 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
     extrudeText:   id + "extrudeText",
     extrudePlate:  id + "extrudePlate",
     extrudeExtent: id + "extrudeExtent",
+    scale:         id + "Scale",
     cleanup:       id + "cleanup",
   };
   const sketches = {
@@ -117,7 +118,7 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
   };
   // Anchor offset: how far into the bounds box the text anchor sits (in sketch coords)
   var anchorX = 0 * mm;
-  if (definition.horizontalAlign == HorizontalAlignment.ACTUAL_CENTER || definition.horizontalAlign == HorizontalAlignment.PADDED_CENTER) {
+  if        (definition.horizontalAlign == HorizontalAlignment.ACTUAL_CENTER || definition.horizontalAlign == HorizontalAlignment.PADDED_CENTER) {
     anchorX = definition.boundsWidth / 2;
   } else if (definition.horizontalAlign == HorizontalAlignment.ACTUAL_RIGHT || definition.horizontalAlign == HorizontalAlignment.PADDED_RIGHT) {
     anchorX = definition.boundsWidth;
@@ -156,50 +157,73 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
 //     "secondCorner": vector(-anchorX + scaledParams.textCoords.left + scaledParams.textCoords.actualWidth, - anchorY + scaledParams.textCoords.actualHeight),
 //   });
 
-  boxmRectangle(context, sketches.extent, "actualBox", placeBoxm(scaledParams.textCoords.actualBox, scaledParams.placement));
-  boxmRectangle(context, sketches.extent, "paddedBox", placeBoxm(scaledParams.textCoords.paddedBox, scaledParams.placement), true);
-//   boxmRectangle(context, sketches.extent, "actualBox", scaledParams.textCoords.actualBox);
+  const shift0 = scaledParams.scaling.shift0; const shift1 = scaledParams.scaling.shift1; const scale0 = scaledParams.scaling.scale0; const scale1 = scaledParams.scaling.scale1;
+  const rawScaling = mergeMaps(scaledParams.scaling, { "scale0": scale1 }); // "scale0": scale1, "shift0": shift0 * scale0 / scale1 });
+  const actualPlaced = boxmRescale(scaledParams.textCoords.actualBox, rawScaling);
+  debug(context, ["actualBox",     boxmPretty(scaledParams.textCoords.actualBox)]);
+  debug(context, ["actualPlaced",  boxmPretty(actualPlaced)]);
+  debug(context, ["actualPlaceds", boxmPretty(boxmRescale(scaledParams.textCoords.actualBox, scaledParams.scaling))]);
+  debug(context, ["rawPlacement",  rawScaling]);
+  boxmRectangle(context, sketches.extent, "actualBox", actualPlaced);
+  boxmRectangle(context, sketches.extent, "paddedBox", placeBoxm(scaledParams.textCoords.paddedBox, rawScaling), true);
+//   boxmRectangle(context, sketches.extent, "stableBox", placeBoxm(scaledParams.textCoords.stableBox, rawPlacement), true);
   skSolve(sketches.extent);
   const extentSkFacesQ = qSketchRegion(ids.extentSk, true);
-//   const extentSkFacesQ = qCreatedBy(ids.extentSk, EntityType.FACE);
+
+//   // Extrude text lettering
+//   opExtrude(context, ids.extrudeText, {
+//     "entities":  textSkRegionQ,
+//     "direction": basePlane.normal,
+//     "endBound":  BoundingType.BLIND,
+//     "endDepth":  definition.textDepth,
+//   });
+//   const textBodiesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
 
   // Extrude text lettering
-  opExtrude(context, ids.extrudeText, {
-    "entities":  textSkRegionQ,
-    "direction": basePlane.normal,
+  opExtrude(context, ids.extrudeExtent, {
+    "entities":  extentSkFacesQ,
+    "direction": -basePlane.normal,
     "endBound":  BoundingType.BLIND,
-    "endDepth":  definition.textDepth,
+    "endDepth":  definition.plateDepth,
   });
-  const textBodiesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
+  const extentBodiesQ = qCreatedBy(ids.extrudeExtent, EntityType.BODY);
 
   // Extrude target plate
   opExtrude(context, ids.extrudePlate, {
-    "entities":  plateSkFacesQ,
-    "direction": - basePlane.normal,
-    "endBound":  BoundingType.BLIND,
-    "endDepth":  definition.plateDepth,
+    "entities":    plateSkFacesQ,
+    "direction":   -basePlane.normal,
+    "endBound":    BoundingType.BLIND,
+    "endDepth":    definition.plateDepth,
     // "oppositeDirection": true,
   });
-//   const plateSkFacesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
+  //   const plateSkFacesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
 
   // Extrude carrier covering text extent for scaling, merging with the text bodies
-  extrude(context, ids.extrudeExtent, {
-    "entities":          qUnion([extentSkFacesQ]),
+  extrude(context, ids.extrudeText, {
+    "entities":          textSkRegionQ,
     "direction":         basePlane.normal,
     "endBound":          BoundingType.BLIND,
-    "depth":             definition.plateDepth,
+    "depth":             definition.textDepth,
     "operationType":     NewBodyOperationType.ADD,
     "bodyType":          ExtendedToolBodyType.SOLID,
     "defaultScope":      false,
-    "oppositeDirection": true,
-    "booleanScope":      textBodiesQ,
+    "oppositeDirection": false,
+    "booleanScope":      extentBodiesQ,
   });
+  const textBodiesQ = qCreatedBy(ids.extrudeText, EntityType.BODY);
+  const textChipPartQ = qUnion([textBodiesQ, extentBodiesQ]);
   const scrubbed = replace(definition.text, "[\\s]+", " ");
   const partName = "T:" ~ substring(scrubbed, 0, min(20, length(scrubbed)));
-  setName(context, qUnion([textBodiesQ, qCreatedBy(ids.extrudePlate, EntityType.BODY)]), partName);
+  setName(context, textChipPartQ, partName);
+  setName(context, qCreatedBy(ids.extrudePlate, EntityType.BODY), "target");
+
+  opTransform(context, ids.scale, {
+      "bodies" :  textChipPartQ,
+      "transform" : scaleNonuniformly(scale0 / scale1, 1.0, 1.0)
+  });
 
   // const cleanupSketches = definition.cleanupSketches == undefined ? false : definition.cleanupSketches;
-  if ((definition.cleanupSketches != undefined) && (definition.cleanupSketches == true)) {
+  if (ifNil(definition.cleanupSketches, true)) {
     opDeleteBodies(context, ids.cleanup, { "entities": qCreatedBy(ids.textSk, EntityType.BODY) });
   }
 }
@@ -244,8 +268,14 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
   //
 //   const rawSize  = vector(textCoords.actualWidth, textCoords.capHeight);
   // text renders uniformly: all metrics (x and y) scale with baselineHeight, i.e. sf[1]
-  const rawSize    = textCoords.actualBox.sizevec;
-  const targetSize = opts.bounds == undefined ? rawSize : opts.bounds;
+  const vSizingExtent  = vSizingExtentFor(opts.verticalAlign);
+  const rawSize = (
+      (vSizingExtent == VSizingExtent.ACTUAL)     ? textCoords.actualBox.sizevec
+    : ((vSizingExtent == VSizingExtent.STABLE)    ? textCoords.stableBox.sizevec
+    : ((vSizingExtent == VSizingExtent.CAPHEIGHT) ? textCoords.layoutBox.sizevec
+    : textCoords.paddedBox.sizevec))
+  );
+  const targetSize = ifNil(opts.bounds, rawSize);
   const factors    = resizingFactors(rawSize, targetSize, { "resizing0": opts.resizing0, "resizing1": opts.resizing1 });
   const scale0     = factors.scale0;
   const scale1     = factors.scale1;
@@ -265,9 +295,9 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
   } else if (opts.horizontalAlign == HorizontalAlignment.ACTUAL_CENTER) {
     shift0 = -textCoords.actualBox.midvec[0];
   } else if (opts.horizontalAlign == HorizontalAlignment.ACTUAL_RIGHT) {
-    shift0 = -textCoords.actualBox.min0;
+    shift0 = -textCoords.actualBox.max0;
   }
-  shift0 = shift0 * scale0;
+  shift0 = shift0 * scale1;
 
   // Vertical offset: position the named y-anchor of the scaled text at position[1]
   var shift1 = 0 * mm;
@@ -292,10 +322,15 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
 
   const firstCorner = position + vector(shift0, shift1);
   skBasicTextAt(context, entityId, sketch, text, firstCorner, inputHeight, opts);
+
+  debug(context, [boxmSimply(targetSize), boxmSimply(rawSize), opts.resizing0, opts.resizing1]);
+  debug(context, [shift0/mm, shift1/mm, scale0, scale1]);
+  debug(context, ['textAt', boxmSimply(firstCorner), inputHeight/mm, opts]);
+
   return {
     "firstCorner":    firstCorner,
     "baselineHeight": inputHeight,
-    "placement":      { "shift0": shift0, "shift1": shift1, "scale0": scale0, "scale1": scale1 },
+    "scaling":        { "shift0": shift0, "shift1": shift1, "scale0": scale0, "scale1": scale1 },
     "textCoords":     textCoords,
   };
 }
@@ -311,11 +346,10 @@ export function skTextAt(context is Context, id is Id, entityId is string, sketc
  * @param options {map} : keyword options
  *   - @field [fontName="OpenSans-Regular.ttf"] {FontName} : Font filename.
  */
-export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, options is map) {
-  const opts = mergeMaps({ "fontName": FontName.OPEN_SANS_REGULAR }, options);
-  //   debug(context, [opts.fontName, FontName.ARIMO, FontNameString[opts.fontName]]);
+export function skBasicTextAt(context is Context, entityId is string, sketch is Sketch, text is string, firstCorner is Vector, baselineHeight is ValueWithUnits, opts is map) {
+  const fontNameKey = ifNil(opts.fontName, FontName.OPEN_SANS_REGULAR);
   skText(sketch, entityId, {
-    "text": text, fontName: FontNameString[opts.fontName], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
+    "text": text, fontName: FontNameString[fontNameKey], "firstCorner": firstCorner, secondCorner: firstCorner + vector(1*mm, baselineHeight),
   });
 }
 
@@ -373,7 +407,10 @@ export function textBounds(context is Context, id is Id, text is string, options
     //   debug(context, ["stableBox", boxmPretty(stableBox)]);
 
   const result = {
-    "layoutBox": layoutBox, "actualBox": actualBox, "paddedBox": paddedBox, "stableBox": stableBox,
+    "layoutBox": layoutBox,
+    "paddedBox": paddedBox,
+    "actualBox": actualBox,
+    "stableBox": stableBox,
   };
   opDeleteBodies(context, ids.cleanup, { "entities": qSketchFilter(qCreatedBy(id), SketchObject.YES) });
   return result;
@@ -400,10 +437,10 @@ export function resizingRatios(rawSize is Vector, targetSize is Vector) returns 
 
 /* Per-axis scale factor for a single independent ResizingPolicy. FOLLOW resolved by caller. */
 function scaleForPolicy(policy is ResizingPolicy, ratio is number) returns number {
-  if (policy == ResizingPolicy.NONE)     { return 1.0; }
-  if (policy == ResizingPolicy.STRETCH)  { return 1.0 / ratio; }
-  if (policy == ResizingPolicy.LIMIT)    { return min(1.0, 1.0 / ratio); }
-  if (policy == ResizingPolicy.EMBIGGEN) { return max(1.0, 1.0 / ratio); }
+  if (policy == ResizingPolicy.FREE)     { return 1.0; }
+  if (policy == ResizingPolicy.FORCE)  { return 1.0 / ratio; }
+  if (policy == ResizingPolicy.GROW) { return max(1.0, 1.0 / ratio); }
+  if (policy == ResizingPolicy.SHRINK)    { return min(1.0, 1.0 / ratio); }
   return 1.0;
 }
 
@@ -421,10 +458,10 @@ export function resizingFactorsFor(baseFactors is map, resizing0 is ResizingPoli
   const lr = baseFactors.largestRatio;
   const sr = baseFactors.smallestRatio;
   // Dimension-coupled policies — both axes share the same uniform factor
-  if (resizing0 == ResizingPolicy.CONTAIN)   { return vector(    1.0 / lr,         1.0 / lr);     }
-  if (resizing0 == ResizingPolicy.COVER)     { return vector(    1.0 / sr,         1.0 / sr);     }
+  if (resizing0 == ResizingPolicy.CONTAINED) { return vector(    1.0 / lr,         1.0 / lr);     }
+  if (resizing0 == ResizingPolicy.COVERS)    { return vector(    1.0 / sr,         1.0 / sr);     }
   if (resizing0 == ResizingPolicy.DOWNSCALE) { return vector(min(1.0 / lr, 1), min(1.0 / lr, 1)); }
-  if (resizing0 == ResizingPolicy.MAXIMIZE)  { return vector(max(1.0 / sr, 1), max(1.0 / sr, 1)); }
+  if (resizing0 == ResizingPolicy.UPSCALE)   { return vector(max(1.0 / sr, 1), max(1.0 / sr, 1)); }
   // Per-axis independent policies; resolve FOLLOW after computing the other axis
   var sf0 = scaleForPolicy(resizing0, r0);
   var sf1 = scaleForPolicy(resizing1, r1);
@@ -451,6 +488,17 @@ export function resizingFactors(rawSize is Vector, targetSize is Vector, policie
     "scale0":      scaleFactor[0],
     "scale1":      scaleFactor[1],
   };
+}
+
+function vSizingExtentFor(verticalAlignment is VerticalAlignment) returns VSizingExtent {
+    if        ((verticalAlignment == VerticalAlignment.ACTUAL_TOP) || (verticalAlignment == VerticalAlignment.ACTUAL_MID)  || (verticalAlignment == VerticalAlignment.ACTUAL_BTM)) {
+        return VSizingExtent.ACTUAL;
+    } else if ((verticalAlignment == VerticalAlignment.STABLE_TOP) || (verticalAlignment == VerticalAlignment.STABLE_MID)  || (verticalAlignment == VerticalAlignment.STABLE_BTM)) {
+        return VSizingExtent.STABLE;
+    } else if ((VerticalAlignment == VerticalAlignment.CAPHEIGHT)) {
+        return VSizingExtent.STABLE;
+    }
+    return VSizingExtent.STABLE;
 }
 
 // --
