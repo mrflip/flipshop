@@ -2,58 +2,60 @@ FeatureScript 2909;
 import(path : "onshape/std/common.fs", version : "2909.0");
 
 export enum VerticalAlignment {
-  annotation { "Name": "Top of tallest renderable (ll-height)" }
-  MAX,
-  annotation { "Name": "Top, as rendered" }
-  TOP_EXTENT,
-  annotation { "Name": "Nominal cap height" }
-  TOP_BASELINE,
-  annotation { "Name": "Midline, as rendered" }
-  MIDDLE,
   annotation { "Name": "Baseline" }
-  BOTTOM_BASELINE,
-  annotation { "Name": "Bottom, as rendered" }
-  BOTTOM_EXTENT,
-  annotation { "Name": "Bottom of the lowest renderable (y-height)" }
-  MIN,
+  BASELINE,
+  annotation { "Name": "Nominal cap height" }
+  CAPHEIGHT,
+  annotation { "Name": "Actual Extent Top" }
+  ACTUAL_TOP,
+  annotation { "Name": "Actual Extent Middle" }
+  ACTUAL_MID,
+  annotation { "Name": "Actual Extent Bottom" }
+  ACTUAL_BTM,
+  annotation { "Name": "Stable Top for Any Text (jy to Alf)" }
+  STABLE_TOP,
+  annotation { "Name": "Stable Middle for Any Text (jy to Alf)" }
+  STABLE_MID,
+  annotation { "Name": "Stable Bottom for Any Text (jy to Alf)" }
+  STABLE_BTM,
 }
 
 export enum HorizontalAlignment {
+  annotation { "Name": "Left of rendered letters" }
+  ACTUAL_LEFT,
+  annotation { "Name": "Center of rendered letters" }
+  ACTUAL_CENTER,
+  annotation { "Name": "Right of rendered letters" }
+  ACTUAL_RIGHT,
   annotation { "Name": "Left, including padding" }
-  MIN,
-  annotation { "Name": "Left, as rendered" }
-  LEFT,
-  annotation { "Name": "Center, as rendered" }
-  CENTER,
+  PADDED_LEFT,
   annotation { "Name": "Center, including padding" }
-  CENTER_NOMINAL,
-  annotation { "Name": "Right, as rendered" }
-  RIGHT,
+  PADDED_CENTER,
   annotation { "Name": "Right, including padding" }
-  MAX
+  PADDED_RIGHT,
   // JUSTIFY is not supported yet
 }
 
 export enum HSizingExtent {
   annotation { "Name": "Full width, including padding" }
   PADDED,
-  annotation { "Name": "Real width (no padding)" }
-  REAL
+  annotation { "Name": "Actual rendered width (no padding)" }
+  RENDERED,
 }
 
 export enum VSizingExtent {
-  /** Size will be the same regardless of the text content. */
-  annotation { "Name": "Lowest to tallest renderable (y-height to l-height)" }
-  MIN_MAX,
-  /** Size will be the same regardless of the text content. */
+  /** Resizing will be the same regardless of the text content. */
+  annotation { "Name": "Stable (Lowest descender to tallest ascender: y-height to l-height)" }
+  STABLE,
+  /** Resizing will be the same regardless of the text content. */
   annotation { "Name": "Baseline to tallest renderable (l-height)" }
-  BASELINE_MAX,
-  /** Size will be the same regardless of the text content. */
+  STABLE_BASELINE,
+  /** Resizing will be the same regardless of the text content. */
   annotation { "Name": "Baseline-to-cap height" }
-  NOMINAL,
+  CAPHEIGHT,
   /** Size (and perhaps position) will vary on content: `axe` vs `Y0l0!` vs `eggy;` vs `jiggy` vs 'yolo!' */
   annotation { "Name": "Actual rendered height" }
-  ACTUAL
+  ACTUAL,
 }
 
 export enum ResizingPolicy {
