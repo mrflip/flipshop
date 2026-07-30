@@ -154,7 +154,7 @@ function renderTextAt(context is Context, id is Id, planeEnt is Query, definitio
     "firstCorner":  vector(-anchorX,                         -anchorY),
     "secondCorner": vector(-anchorX + scaledParams.textCoords.left + scaledParams.textCoords.actualWidth, - anchorY + scaledParams.textCoords.actualHeight),
   });
-  boxmRectangle(context, sketches.extent, "paddedBox", scaledParams.textCoords.paddedBox);
+  boxmRectangle(context, sketches.extent, "paddedBox", scaledParams.textCoords.paddedBox, { "construction": true });
   boxmRectangle(context, sketches.extent, "actualBox", scaledParams.textCoords.actualBox);
 //   boxmRectangle(context, sketches.extent, "actualBox", scaledParams.textCoords.actualBox);
   skSolve(sketches.extent);
