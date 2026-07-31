@@ -1,10 +1,10 @@
 FeatureScript 3029;
-import(path : "onshape/std/common.fs", version : "3029.0");
-// export import(path : "onshape/std/booleanoperationtype.gen.fs", version: "2909.0");
-export import(path : "dff50ab3ba4ca6e98b25b414", version : "1e02aaf91d316044c9860d3e");
-IconNamespace::import(path : "6f86e45900dd425ab5907742", version : "6af6fe9704e3d2b0184a4da4");
+import(path : "onshape/std/geometry.fs", version : "3029.0");
+import(path : "b496c26424acaeef92a4fd5f", version : "52f21cd35a6702085706f15a");
+export import(path : "19a276cbe441b4dcf19aaca1", version : "f65e96bb9819bc0fe6817767");
+IconNamespace::import(path : "476f292746334f9ccc9aa08c", version : "ed7e2d8b30026af72161db6f");
 
-// == [Imprint Text] ==
+// == [Text Chip] ==
 
 /**
  * Part feature: extrudes `text` sized and aligned within a bounding plate at each selected plane.
@@ -26,13 +26,11 @@ IconNamespace::import(path : "6f86e45900dd425ab5907742", version : "6af6fe9704e3
  *      @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  * }}
  */
-annotation { "Feature Type Name": "Imprint Text", "Icon": IconNamespace::BLOB_DATA }
-export const imprintTextF = defineFeature(function(context is Context, id is Id, definition is map)
+annotation { "Feature Type Name": "Text Chip", "Icon": IconNamespace::BLOB_DATA, "Feature Type Description": "A thin plate with scaled and aligned text", "Feature Name Template" : "Text Chip #text" }
+export const textChipF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
-  annotation { "Name": "Sketch Planes", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 20 }
+  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 20 }
   definition.sketchPlaneQ is Query;
-  annotation { "Name": "Parts", "UIHint" : [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE], "Filter": EntityType.BODY && BodyType.SOLID, "MaxNumberOfPicks": 20 }
-  definition.partQ is Query;
   annotation { "Name" : "Opposite direction",        "UIHint" : UIHint.OPPOSITE_DIRECTION }
   definition.oppositeDirection is boolean;
   annotation { "Name": "Text",                       "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
@@ -47,9 +45,9 @@ precondition {
   isLength(definition.boundsHeight, { (millimeter):   [0.001, 16, 1000000] } as LengthBoundSpec);
   annotation { "Name": "Text Angle" }
   isAngle(definition.textAngle, { (degree): [0, 0, 360] } as AngleBoundSpec);
-  annotation { "Name": "Text Depth", "UIHint": [UIHint.REMEMBER_PREVIOUS_VALUE] }
+  annotation { "Name": "Text Depth" }
   isLength(definition.textDepth, { (millimeter): [0.001, 2, 1000000] } as LengthBoundSpec);
-  annotation { "Name": "Plate Depth", "UIHint": [UIHint.REMEMBER_PREVIOUS_VALUE] }
+  annotation { "Name": "Plate Depth" }
   isLength(definition.plateDepth, { (millimeter): [0.001, 0.02, 1000000] } as LengthBoundSpec);
   annotation { "Name": "Horizontal Alignment", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.horizontalAlign is HorizontalAlignment;
@@ -57,24 +55,16 @@ precondition {
   definition.verticalAlign is VerticalAlignment;
   annotation { "Name": "Horizontal Resizing",   "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.horizontalResizing is ResizingPolicy;
-  annotation { "Name": "Vertical Resizing",     "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   if ( (definition.horizontalResizing == ResizingPolicy.FREE)   ||  (definition.horizontalResizing == ResizingPolicy.FORCE)
     || (definition.horizontalResizing == ResizingPolicy.SHRINK) ||  (definition.horizontalResizing == ResizingPolicy.GROW)
     || (definition.horizontalResizing == ResizingPolicy.FOLLOW)) {
     annotation { "Name": "Vertical Resizing",     "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
     definition.verticalResizing is StretchingPolicy;
   }
-  definition.operationType is EmbossOpType;
-  if (definition.operationType == EmbossOpType.DEBOSS) {
-    annotation { "Name": "Keep Text", "Default" : true, "UIHint": [UIHint.REMEMBER_PREVIOUS_VALUE] }
-    definition.keepText is boolean;
-  }
   annotation { "Name": "Cleanup sketches", "Default" : true, "UIHint": [UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.cleanupSketches is boolean;
 }
 {
   definition.verticalResizing = definition.verticalResizing as ResizingPolicy;
-  embossTextFaces(context, id, definition);
+  textChip(context, id, definition);
 });
-
-// --
