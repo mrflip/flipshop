@@ -1,6 +1,6 @@
 FeatureScript 3029;
 import(path : "onshape/std/common.fs", version : "3029.0");
-import(path : "58963520be3fe612d10b6d2e", version : "367c6e05048da3074180d270");
+import(path : "58963520be3fe612d10b6d2e", version : "a3fca0f70c41654575775503");
 
 export function copyBodies(context is Context, id is Id, bodies is Query) returns Query {
     const copyId = id + "bodyCopy";
@@ -73,9 +73,9 @@ export function embedBodies(context is Context, id is Id, tools is Query, target
       "operationType" : BooleanOperationType.SUBTRACT_COMPLEMENT,
       "keepTools":      true,
     });
-    // if (isPresent(splitBboxQ)) {
-    //     opDeleteBodies(context, id + "deleteSplitBboxQ", { "entities" : splitBboxQ });
-    // }
+    if (isPresent(splitBboxQ)) {
+        opDeleteBodies(context, id + "deleteSplitBboxQ", { "entities" : splitBboxQ });
+    }
     opBoolean(context, id + "embedSubtract", {
       "tools" :         tools,
       "targets":        targets,

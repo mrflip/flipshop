@@ -1,5 +1,7 @@
 FeatureScript 3029;
 import(path : "onshape/std/geometry.fs", version : "3029.0");
+import(path : "58963520be3fe612d10b6d2e", version : "a3fca0f70c41654575775503");
+
 
 // Shorthand aliases used throughout for readability.
 export const mm          = millimeter;
@@ -44,13 +46,12 @@ export function setName(context is Context, entities is Query, nameText is strin
  */
 export function setReadableName(context is Context, entities is Query, nameText is string, maxLength is number) {
   const onelineName  = replace(nameText, "[\\s]+", " ");
-  const readableName = substring(onelineName, 0, min(maxLength, length(onelineName)));
+  const readableName = strTake(onelineName, maxLength);
   setName(context, entities, readableName);
 }
 export function setReadableName(context is Context, entities is Query, nameText is string) {
   return setReadableName(context, entities, nameText, 20);
 }
-
 
 /**
  * Returns an array of `{ thing, attrName, val }` for each entity in `query`.

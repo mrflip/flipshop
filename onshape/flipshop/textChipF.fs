@@ -1,6 +1,6 @@
 FeatureScript 3029;
 import(path : "onshape/std/geometry.fs", version : "3029.0");
-import(path : "b496c26424acaeef92a4fd5f", version : "52f21cd35a6702085706f15a");
+import(path : "b496c26424acaeef92a4fd5f", version : "defda46bba6738e5b4396086");
 export import(path : "19a276cbe441b4dcf19aaca1", version : "f65e96bb9819bc0fe6817767");
 IconNamespace::import(path : "476f292746334f9ccc9aa08c", version : "ed7e2d8b30026af72161db6f");
 
@@ -26,30 +26,30 @@ IconNamespace::import(path : "476f292746334f9ccc9aa08c", version : "ed7e2d8b3002
  *      @field [cleanupSketches=false] {boolean} : When true, deletes sketch bodies after generation.
  * }}
  */
-annotation { "Feature Type Name": "Text Chip", "Icon": IconNamespace::BLOB_DATA, "Feature Type Description": "A thin plate with scaled and aligned text", "Feature Name Template" : "Text Chip #text" }
+annotation { "Feature Type Name": "Text Chip", "Icon": IconNamespace::BLOB_DATA, "Feature Type Description": "A thin plate with scaled and aligned text" }
 export const textChipF = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
-  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 20 }
+  annotation { "Name": "Sketch Plane", "Filter": QueryFilterCompound.ALLOWS_PLANE, "MaxNumberOfPicks": 20, "UIHint" : [UIHint.INITIAL_FOCUS] }
   definition.sketchPlaneQ is Query;
   annotation { "Name" : "Opposite direction",        "UIHint" : UIHint.OPPOSITE_DIRECTION }
   definition.oppositeDirection is boolean;
-  annotation { "Name": "Text",                       "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+  annotation { "Name": "Text",                       "UIHint" : [UIHint.REMEMBER_PREVIOUS_VALUE, UIHint.INITIAL_FOCUS_ON_EDIT] }
   definition.text is string;
   annotation { "Name": "Font Name",                  "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.fontName is FontName;
-  annotation { "Name": "Baseline Height",             "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+  annotation { "Name": "Width",                      "UIHint" : [UIHint.REMEMBER_PREVIOUS_VALUE] }
+  isLength(definition.boundsWidth,    { (millimeter): [0.001, 24, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Height",                     "UIHint" : [UIHint.REMEMBER_PREVIOUS_VALUE] }
+  isLength(definition.boundsHeight,   { (millimeter): [0.001, 16, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Raw Text Height",            "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
   isLength(definition.baselineHeight, { (millimeter): [0.001, 18, 1000000] } as LengthBoundSpec);
-  annotation { "Name": "Bounds Width",              "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.boundsWidth, { (millimeter):    [0.001, 24, 1000000] } as LengthBoundSpec);
-  annotation { "Name": "Bounds Height", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
-  isLength(definition.boundsHeight, { (millimeter):   [0.001, 16, 1000000] } as LengthBoundSpec);
   annotation { "Name": "Text Angle" }
-  isAngle(definition.textAngle, { (degree): [0, 0, 360] } as AngleBoundSpec);
+  isAngle(definition.textAngle,       { (degree):     [0, 0, 360] } as AngleBoundSpec);
   annotation { "Name": "Text Depth" }
-  isLength(definition.textDepth, { (millimeter): [0.001, 2, 1000000] } as LengthBoundSpec);
+  isLength(definition.textDepth,      { (millimeter): [0.001, 2, 1000000] } as LengthBoundSpec);
   annotation { "Name": "Plate Depth" }
-  isLength(definition.plateDepth, { (millimeter): [0.001, 0.02, 1000000] } as LengthBoundSpec);
-  annotation { "Name": "Horizontal Alignment", "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
+  isLength(definition.plateDepth,     { (millimeter): [0.001, 0.02, 1000000] } as LengthBoundSpec);
+  annotation { "Name": "Horizontal Alignment",  "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.horizontalAlign is HorizontalAlignment;
   annotation { "Name": "Vertical Alignment",    "UIHint": [UIHint.SHOW_LABEL, UIHint.REMEMBER_PREVIOUS_VALUE] }
   definition.verticalAlign is VerticalAlignment;
