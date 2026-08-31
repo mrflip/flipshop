@@ -4,7 +4,7 @@ import(path : "onshape/std/geometry.fs", version : "2837.0");
 // Import Hole Tools
 BasicHole::import(path : "42452d0d1f5d09a3406f73ac", version : "c49bb9e8c205683f91a7bf7a");
 SelfTapping::import(path : "ca0f63acd016b867f9c2aa8b", version : "b4e38e23c37449b507c62026");
-TearHole::import(path : "a76776f84ec6cffe1563a34a", version : "51f22b8d7dd01ec71b95d5a0");
+TearHole::import(path : "a76776f84ec6cffe1563a34a", version : "e2daa6529b9008c213b50120");
 IconNamespace::import(path : "bc5e3a00dc2e900fd9de64f9", version : "3aed6b7999f0466af80794c5");
 
 
@@ -66,20 +66,18 @@ annotation { "Feature Type Name" : "3D Printing Hole", "Feature Type Description
 export const FDMHoleFeature = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
-        annotation { "Name" : "Hole Method" }
-        definition.method is HoleType;
 
         annotation { "Name" : "Plane", "Filter" : EntityType.FACE, "MaxNumberOfPicks" : 1 }
         definition.plane is Query;
         annotation { "Name" : "Opposite direction", "UIHint" : "OPPOSITE_DIRECTION" }
         definition.flipDir is boolean;
-
         annotation { "Name" : "Sketch Points", "Filter" : EntityType.VERTEX }
         definition.skPoints is Query;
-
         annotation { "Name" : "Target Bodies", "Filter" : EntityType.BODY }
         definition.targetBody is Query;
 
+        annotation { "Name" : "Hole Method" }
+        definition.method is HoleType;
 
         if (definition.method == HoleType.SIMPLE || definition.method == HoleType.SPLIT || definition.method == HoleType.TEAR)
         {
@@ -144,7 +142,7 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                 definition.bottomTear is boolean;
 
                 annotation { "Name" : "Chamfer Distance" }
-                isLength(definition.chamferDist, { (millimeter) : [0.001, 0.6, 1000] } as LengthBoundSpec);
+                isLength(definition.chamferDist, { (millimeter) : [0, 0.6, 1000] } as LengthBoundSpec);
             }
 
 
@@ -344,30 +342,30 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                             "angle" : definition.angle,
                             "layerHeight": definition.layerHeight,
                             "chamferDist": definition.chamferDist,
-                            "bottomTear": definition.bottomTear,
+                            "bottomTear": (definition.bottomTear == undefined ? true : definition.bottomTear),
 
                         };
                 }
 
                 var firstQuery = addInstance(instantiator, METHOD, {
                         "configuration" : CONFIG,
-                        "transform" : transformMatrix
+                        "transform" : transformMatrix,
                     });
 
                 instantiate(context, instantiator);
 
                 opTransform(context, id + "transform1", {
                             "bodies" : firstQuery,
-                            "transform" : rotationAround(line(anchorPoint, faceNormal), definition.rotation)
+                            "transform" : rotationAround(line(anchorPoint, faceNormal), definition.rotation),
                         });
 
-
-                opBoolean(context, id + "boolean1", {
+                try {
+                    opBoolean(context, id + "boolean1", {
                             "tools" : firstQuery,
                             "targets" : definition.targetBody,
                             "operationType" : BooleanOperationType.SUBTRACTION
                         });
-
+                } catch (err) { debug(context, err); }
             });
 
     });
