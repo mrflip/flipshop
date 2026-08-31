@@ -21,7 +21,7 @@ const CONFIG = {
 
   // Accept #FFF and #AABBCC as well as strict lowercase
   allowShorthand: false,
-  requireLowercase: true,
+  requireLowercase: true
 }
 
 // Colour maths — normalizeHexcolor, rgbForHexcolor, textColorForHexcolor and
@@ -30,6 +30,7 @@ const CONFIG = {
 
 const DEFAULT_BACKGROUND = '#ffffff'   // what Sheets reports for an unstyled cell
 const DEFAULT_FONT_COLOR = '#000000'
+
 
 /**
  * Simple trigger. Fires on manual edits only.

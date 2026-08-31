@@ -10,6 +10,13 @@ import(path : "c50e2363725f9cf513e36928", version : "f7420b370e103a85d2d29de4");
 IconNamespace::import(path : "476f292746334f9ccc9aa08c", version : "ed7e2d8b30026af72161db6f");
 
 export const TEXT_STABILIZER = "∑qÚÅ|(Á)?;";
+export const CHARS = {
+  thin_space: " ",
+  no_break_space: " ",
+  space: " ",
+  hidot: "˙",
+  x: "a•a·a˙a a a"
+}
 
 /**
  * Extrudes `definition.text` at each plane in `definition.sketchPlaneQ`.
