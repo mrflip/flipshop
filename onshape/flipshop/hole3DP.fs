@@ -1,16 +1,17 @@
-FeatureScript 2837;
-import(path : "onshape/std/geometry.fs", version : "2837.0");
+FeatureScript 3044;
+import(path : "onshape/std/common.fs", version : "3044.0");
+// Utils
+import(path : "14a20c5c0c7e0354a621f347/3a1e5c5e492768208bbb5694/8c588debec029dab0d734198", version : "3cc43cf8c59a339d5ce548d2");
+import(path : "14a20c5c0c7e0354a621f347/3a1e5c5e492768208bbb5694/4ebdc64943b566160ea5cc28", version : "aa1e3063ddbe9d05678234b7");
+import(path : "14a20c5c0c7e0354a621f347/3a1e5c5e492768208bbb5694/9935c9eba0658e8e5d6b672b", version : "3f735e5f0e03a21a2b73182f");
 
 // Import Hole Tools
-BasicHole::import(path : "42452d0d1f5d09a3406f73ac", version : "c49bb9e8c205683f91a7bf7a");
+BasicHole::import(path : "42452d0d1f5d09a3406f73ac", version : "35bdde628945bd5114060e99");
 SelfTapping::import(path : "ca0f63acd016b867f9c2aa8b", version : "b4e38e23c37449b507c62026");
-TearHole::import(path : "a76776f84ec6cffe1563a34a", version : "e2daa6529b9008c213b50120");
+TearHole::import(path : "a76776f84ec6cffe1563a34a", version : "32323d1ce06ad2ed580fbf34");
+Wings::import(path : "526e2eb84c79796c0543822d", version : "b33866b6811b0b073b114b58");
 IconNamespace::import(path : "bc5e3a00dc2e900fd9de64f9", version : "3aed6b7999f0466af80794c5");
 
-
-// Define Variables
-//const mm = millimeter;
-//const deg = degree;
 
 export enum FDMHoleEndStyle
 {
@@ -23,6 +24,7 @@ export enum FDMHoleEndStyle
     annotation { "Name" : "Through all" }
     THROUGH
 }
+const FDMHoleEndStyleTitles = { FDMHoleEndStyle.BLIND: "blind", FDMHoleEndStyle.UP_TO_NEXT: "⇒X", FDMHoleEndStyle.UP_TO_ENTITY: "⇒Y", FDMHoleEndStyle.THROUGH: "thru" };
 
 
 /**
@@ -43,6 +45,7 @@ export enum HoleType
     annotation { "Name" : "Tear Shaped" }
     TEAR
 }
+const HoleTypeTitles = { HoleType.SIMPLE: "Hole", HoleType.TEAR: "Tear", HoleType.THREAD: "Thread", HoleType.SPLIT: "Split" };
 
 /**
  * Defines thread sizes available for the THREAD HoleType
@@ -61,31 +64,51 @@ export enum ThreadType
     M5
 }
 
-//, "Icon" : IconNamespace::BLOB_DATA
-annotation { "Feature Type Name" : "3D Printing Hole", "Feature Type Description" : "Create Custom Holes designed for 3D Printing", "Icon" : IconNamespace::BLOB_DATA }
+/**
+ * Applies the optional "offset from tip" to a raycast distance.
+ */
+function applyTipOffset(definition is map, distance is ValueWithUnits) returns ValueWithUnits
+{
+    if (definition.offset != true)
+    {
+        return distance;
+    }
+    if (definition.oppositeOffsetDirection)
+    {
+        return distance - definition.offsetDistance;
+    }
+    return distance + definition.offsetDistance;
+}
+
+annotation {
+    "Feature Type Name" : "3D Printing Hole",
+    "Feature Type Description" : "Create Custom Holes designed for 3D Printing, located and oriented by mate connectors",
+    "Icon" : IconNamespace::BLOB_DATA,
+    "Feature Name Template": "#displayTitle",
+    "Editing Logic Function" : "fdmHoleFeatureEditLogic"
+}
 export const FDMHoleFeature = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
+        annotation { "Name" : "Mate connectors", "Filter" : BodyType.MATE_CONNECTOR }
+        definition.mateConnectors is Query;
 
-        annotation { "Name" : "Plane", "Filter" : EntityType.FACE, "MaxNumberOfPicks" : 1 }
-        definition.plane is Query;
         annotation { "Name" : "Opposite direction", "UIHint" : "OPPOSITE_DIRECTION" }
         definition.flipDir is boolean;
-        annotation { "Name" : "Sketch Points", "Filter" : EntityType.VERTEX }
-        definition.skPoints is Query;
-        annotation { "Name" : "Target Bodies", "Filter" : EntityType.BODY }
+
+        annotation { "Name" : "Target Bodies", "Filter" : EntityType.BODY && BodyType.SOLID }
         definition.targetBody is Query;
 
         annotation { "Name" : "Hole Method" }
         definition.method is HoleType;
 
+        annotation { "Name" : "Feature Display Title", "UIHint" : [UIHint.ALWAYS_HIDDEN] } // UIHint.READ_ONLY
+        definition.displayTitle is string;
+
         if (definition.method == HoleType.SIMPLE || definition.method == HoleType.SPLIT || definition.method == HoleType.TEAR)
         {
             annotation { "Name" : "diameter" }
             isLength(definition.diameter, { (millimeter) : [0.001, 5, 1000] } as LengthBoundSpec);
-
-            //annotation { "Name" : "Blind" }
-            //isLength(definition.depth, { (millimeter) : [0.001, 25, 1000] } as LengthBoundSpec);
 
             annotation { "Name" : "Termination", "UIHint" : ["REMEMBER_PREVIOUS_VALUE", "SHOW_LABEL"] }
             definition.endStyle is FDMHoleEndStyle;
@@ -117,21 +140,16 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
             {
                 annotation { "Name" : "Distance" }
                 isLength(definition.depth, ZERO_INCLUSIVE_OFFSET_BOUNDS);
-
             }
 
 
             if (definition.method == HoleType.SPLIT)
             {
-
                 annotation { "Name" : "Split Height" }
                 isLength(definition.split_height, { (millimeter) : [0.001, 0.5, 1000] } as LengthBoundSpec);
-
-
             }
             else if (definition.method == HoleType.TEAR)
             {
-
                 annotation { "Name" : "layerHeight" }
                 isLength(definition.layerHeight, { (millimeter) : [0.001, 0.2, 1000] } as LengthBoundSpec);
 
@@ -140,12 +158,7 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
 
                 annotation { "Name" : "Bottom Teardrop" }
                 definition.bottomTear is boolean;
-
-                annotation { "Name" : "Chamfer Distance" }
-                isLength(definition.chamferDist, { (millimeter) : [0, 0.6, 1000] } as LengthBoundSpec);
             }
-
-
         }
         else if (definition.method == HoleType.THREAD)
         {
@@ -157,29 +170,64 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
 
             annotation { "Name" : "Count" }
             isInteger(definition.thread_count, { (unitless) : [2, 3, 6] } as IntegerBoundSpec);
-
         }
-        annotation { "Name" : "Hole Rotation" }
-        isAngle(definition.rotation, { (degree) : [-360, 0, 360] } as AngleBoundSpec);
+        annotation { "Name" : "Chamfer Distance" }
+        isLength(definition.chamferDist, { (millimeter) : [0, 0, 1000] } as LengthBoundSpec);
+        annotation { "Name": "Prefill", "Default" : false }
+        definition.prefill is boolean;
+        if (definition.prefill)
+        {
+            annotation { "Name": "Prefill Diameter" }
+            isLength(definition.prefillDiam,  { (millimeter) : [0, 0, 1000] } as LengthBoundSpec);
+            annotation { "Name": "Prefill Depth" }
+            isLength(definition.prefillDepth, { (millimeter) : [0, 0, 1000] } as LengthBoundSpec);
+        }
 
+
+        annotation { "Name": "Add Wings", "Default" : false }
+        definition.hasWings is boolean;
+        if (definition.hasWings)
+        {
+            annotation { "Name": "Wing Diameter Outset" }
+            isLength(definition.wingMidDiamOutset,  { (millimeter) : [0.01, 1.6, 1000] } as LengthBoundSpec);
+            annotation { "Name": "Wing Gap Thickness" }
+            isLength(definition.wingGapThk,  { (millimeter) : [0.01, 0.1, 1000] } as LengthBoundSpec);
+            annotation { "Name": "Wings Face Inset" }
+            isLength(definition.wingFaceInset,  { (millimeter) : [0, 0.4, 1000] } as LengthBoundSpec);
+            annotation { "Name": "Wings End Depth" }
+            isLength(definition.wingEndDepth, { (millimeter) : [0, 0, 1000] } as LengthBoundSpec);
+            annotation { "Name" : "Wing Spread Angle" }
+            isAngle(definition.wingSpread, { (degree) : [2, 120, 179] } as AngleBoundSpec);
+        }
+
+        annotation { "Name": "Color Hole", "Default" : false, "UIHint" : ["REMEMBER_PREVIOUS_VALUE"] }
+        definition.hasColor is boolean;
+        if (definition.hasColor)
+        {
+            annotation { "Name": "Hole Color Spec", "Default": "#fcd899", "UIHint" : ["REMEMBER_PREVIOUS_VALUE"] }
+            definition.holeColor is string;
+        }
+
+        annotation { "Name": "Highlight While Editing", "Default" : false, "UIHint" : ["REMEMBER_PREVIOUS_VALUE"] }
+        definition.debugMe is boolean;
     }
     {
         // Specify what the feature does when regenerating
-        forEachEntity(context, id + "operation", definition.skPoints, function(entity is Query, id is Id)
+        forEachEntity(context, id + "operation", definition.mateConnectors, function(entity is Query, id is Id)
             {
-                // Get Target Coordinate System
-                var anchorPoint = evVertexPoint(context, { "vertex" : entity });
+                // The mate connector supplies origin, hole axis, and clocking in one shot
+                var mateCsys = evMateConnector(context, { "mateConnector" : entity });
 
-                var facePlane = evPlane(context, { "face" : definition.plane });
-                var faceNormal = facePlane.normal;
-                faceNormal = definition.flipDir ? -faceNormal : faceNormal;
+                if (definition.flipDir)
+                {
+                    // Reverse Z while keeping the user's X direction, so the CSYS stays right handed
+                    mateCsys = coordSystem(mateCsys.origin, mateCsys.xAxis, -mateCsys.zAxis);
+                }
 
-                var targetPlane = plane(anchorPoint, faceNormal);
-                var targetCSYS = coordSystem(targetPlane);
+                var anchorPoint = mateCsys.origin;
+                var holeAxis = mateCsys.zAxis;
 
-                var sourceCSYS = WORLD_COORD_SYSTEM;
-
-                var transformMatrix = toWorld(targetCSYS) * fromWorld(sourceCSYS);
+                var transformMatrix = toWorld(mateCsys);
 
 
                 // --- Calculate Dynamic Depth Based on End Style ---
@@ -199,34 +247,34 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                     {
                         // Raycast to find the first face intersection along the hole axis
                         var hits = evRaycast(context, {
-                                "ray" : line(anchorPoint + normalize(faceNormal) * 0.001 * millimeter, faceNormal),
+                                "ray" : line(anchorPoint + holeAxis * 0.001 * millimeter, holeAxis),
                                 "entities" : definition.targetBody
                             });
+                        var baseDistance = 5 * millimeter; // Fallback default value
                         var validHitFound = false;
                         for (var hit in hits)
                         {
                             // Ignore the starting face intersection (near 0mm distance)
                             if (hit.distance > 0.001 * millimeter)
                             {
-                                computedDepth = hit.distance;
+                                baseDistance = hit.distance;
                                 validHitFound = true;
                                 break;
                             }
                         }
 
-                        println(hits);
-
                         if (!validHitFound)
                         {
-                            computedDepth = 5 * millimeter; // Fallback default value
                             println("Can't find next entity!");
                         }
+
+                        computedDepth = applyTipOffset(definition, baseDistance);
                     }
                     else if (definition.endStyle == FDMHoleEndStyle.UP_TO_ENTITY)
                     {
                         // Raycast directly against the selected target entity
                         var hits = evRaycast(context, {
-                                "ray" : line(anchorPoint, faceNormal),
+                                "ray" : line(anchorPoint, holeAxis),
                                 "entities" : definition.endBoundEntity
                             });
                         var baseDistance = 0 * millimeter;
@@ -244,42 +292,32 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
 
                         if (!validHitFound)
                         {
+                            highlightQuery(context, definition.endBoundEntity, DebugColor.RED);
                             // Fallback to minimum distance evaluation if raycast misses surface boundaries
                             var distResult = evDistance(context, {
-                                    "sideA" : entity,
-                                    "sideB" : definition.endBoundEntity
+                                    "side0" : anchorPoint,
+                                    "side1" : definition.endBoundEntity,
+                                    "extendSide1": true,
                                 });
                             baseDistance = distResult.distance;
                         }
 
-                        // Apply optional offset logic
-                        if (definition.offset)
-                        {
-                            if (definition.oppositeOffsetDirection)
-                            {
-                                baseDistance -= definition.offsetDistance;
-                            }
-                            else
-                            {
-                                baseDistance += definition.offsetDistance;
-                            }
-                        }
-                        computedDepth = baseDistance;
+                        computedDepth = applyTipOffset(definition, baseDistance);
                     }
                     else if (definition.endStyle == FDMHoleEndStyle.THROUGH)
                     {
                         var hits = evRaycast(context, {
-                                "ray" : line(anchorPoint, faceNormal),
+                                "ray" : line(anchorPoint, holeAxis),
                                 "entities" : definition.targetBody
                             });
 
                         var validHitFound = false;
                         // Scan backwards to find the last valid exit boundary hit
-                        for (var i = size(hits) - 1; i >= 0; i -= 1)
+                        for (var ii = size(hits) - 1; ii >= 0; ii -= 1)
                         {
-                            if (hits[i].distance > 0.05 * millimeter)
+                            if (hits[ii].distance > 0.05 * millimeter)
                             {
-                                computedDepth = hits[i].distance + 1 * millimeter;
+                                computedDepth = hits[ii].distance + 1 * millimeter;
                                 validHitFound = true;
                                 break;
                             }
@@ -307,6 +345,67 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                     splited = true;
                 }
 
+                if (definition.prefill)
+                {
+                    const prefiller    =  newInstantiator(id + "prefiller");
+                    const prefillDiam  = (definition.prefillDiam  == undefined || definition.prefillDiam  <= 0) ? definition.diameter + (1 * millimeter) : definition.prefillDiam;
+                    const prefillDepth = (definition.prefillDepth == undefined || definition.prefillDepth <= 0) ? computedDepth                          : definition.prefillDepth;
+                    var prefillQuery = addInstance(prefiller, BasicHole::build, {
+                            "configuration" : {
+                                "diameter" : prefillDiam,
+                                "depth" :    prefillDepth,
+                                "split" :    false,
+                                "height" :   0 * millimeter,
+                                "chamferDist" : definition.chamferDist,
+                            },
+                            "transform" : transformMatrix,
+                        });
+
+                    instantiate(context, prefiller);
+                    highlightQuery(context, prefillQuery, DebugColor.YELLOW, definition.debugMe);
+
+                    try {
+                        opBoolean(context, id + "prefillBool", {
+                                "tools" : qUnion([definition.targetBody, prefillQuery]),
+                                "operationType" : BooleanOperationType.UNION
+                            });
+                    } catch (err) { debug(context, err); }
+                }
+
+
+                if (definition.hasWings)
+                {
+                    const wingman    =  newInstantiator(id + "wingman");
+                    // const wing  = (definition.prefillDiam  == undefined || definition.prefillDiam  <= 0) ? definition.diameter : definition.prefillDiam;
+                    var wingFaceInset = definition.wingFaceInset;
+                    var wingEndDepth = (definition.wingEndDepth == undefined || definition.wingEndDepth <= 0) ? (computedDepth - wingFaceInset) : definition.wingEndDepth;
+                    wingEndDepth = min(wingEndDepth, computedDepth);
+                    wingFaceInset = max(wingFaceInset, wingFaceInset * 0.5 + definition.chamferDist * 0.6);
+                    wingFaceInset = clamp(wingFaceInset, 0*millimeter, wingEndDepth - 0.01*millimeter);
+                    var wingsQuery = addInstance(wingman, Wings::build, {
+                            "configuration" : {
+                                "diameter" : definition.diameter,
+                                "wingMidDiamOutset": definition.wingMidDiamOutset,
+                                "wingGapThk": definition.wingGapThk,
+                                "wingEndDepth" : wingEndDepth,
+                                "wingFaceInset": wingFaceInset,
+                                "wingSpread":    definition.wingSpread,
+                            },
+                            "transform" : transformMatrix,
+                        });
+
+                    instantiate(context, wingman);
+                    highlightQuery(context, wingsQuery, DebugColor.ORANGE, definition.debugMe);
+
+                    try {
+                        opBoolean(context, id + "wingsBool", {
+                                "tools" : wingsQuery,
+                                "targets": definition.targetBody,
+                                "operationType" : BooleanOperationType.SUBTRACTION
+                            });
+                    } catch (err) { debug(context, err); }
+                }
+
                 // start instancing
                 const instantiator = newInstantiator(id + "cutter");
 
@@ -319,7 +418,8 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                     CONFIG = {
                             "config" : definition.thread,
                             "depth" : computedDepth,
-                            "threads" : definition.thread_count
+                            "threads" : definition.thread_count,
+                            "chamferDist" : definition.chamferDist,
                         };
                 }
                 else if (definition.method == HoleType.SIMPLE || definition.method == HoleType.SPLIT)
@@ -329,9 +429,9 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                             "diameter" : definition.diameter,
                             "depth" : computedDepth,
                             "split" : splited,
-                            "height" : definition.split_height
+                            "height" : definition.split_height,
+                            "chamferDist" : definition.chamferDist,
                         };
-
                 }
                 else if (definition.method == HoleType.TEAR)
                 {
@@ -340,33 +440,61 @@ export const FDMHoleFeature = defineFeature(function(context is Context, id is I
                             "diameter" : definition.diameter,
                             "depth" : computedDepth,
                             "angle" : definition.angle,
-                            "layerHeight": definition.layerHeight,
-                            "chamferDist": definition.chamferDist,
-                            "bottomTear": (definition.bottomTear == undefined ? true : definition.bottomTear),
-
+                            "layerHeight" : definition.layerHeight,
+                            "chamferDist" : definition.chamferDist,
+                            "bottomTear" : definition.bottomTear,
                         };
                 }
 
-                var firstQuery = addInstance(instantiator, METHOD, {
+                var cutterQuery = addInstance(instantiator, METHOD, {
                         "configuration" : CONFIG,
                         "transform" : transformMatrix,
                     });
 
                 instantiate(context, instantiator);
-
-                opTransform(context, id + "transform1", {
-                            "bodies" : firstQuery,
-                            "transform" : rotationAround(line(anchorPoint, faceNormal), definition.rotation),
-                        });
+                highlightQuery(context, cutterQuery, DebugColor.CYAN, definition.debugMe);
 
                 try {
                     opBoolean(context, id + "boolean1", {
-                            "tools" : firstQuery,
+                            "tools" : cutterQuery,
                             "targets" : definition.targetBody,
                             "operationType" : BooleanOperationType.SUBTRACTION
                         });
+                    if (definition.hasColor) {
+                        try {
+                            setColor(context, qCreatedBy(id + "boolean1", EntityType.FACE), definition.holeColor);
+                            // testColorUtils(context);
+                        } catch (err) { debug(context, [err, 'bad hole', definition.holeColor]); }
+                    }
                 } catch (err) { debug(context, err); }
-            });
 
+            });
+        holeFeatureName(context, id, definition);
     });
 
+export function fdmHoleFeatureEditLogic(context is Context, id is Id, oldDefinition is map, definition is map, isCreating is boolean, specifiedParameters is map) returns map {
+    return holeFeatureName(context, id, definition);
+}
+
+function holeFeatureName(context is Context, id is Id, definition is map) {
+    var parts = [];
+    var method = HoleTypeTitles[definition.method];
+    parts = append(parts, method);
+    const titleDiam = simpleNumber(definition.diameter);
+    const titleLen  = (definition.endStyle == FDMHoleEndStyle.BLIND) ? ("•" ~ simpleNumber(definition.depth)) : (FDMHoleEndStyleTitles[definition.endStyle]);
+    parts = append(parts, titleDiam ~ titleLen);
+    //
+    if (ifNil(definition.chamferDist, -1) > 0) { parts = append(parts, "C" ~ simpleNumber(definition.chamferDist)); }
+    if (ifNil(definition.hasWings, false))     { parts = append(parts, "W"); }
+    if (ifNil(definition.prefill,  false))     { parts = append(parts, "P" ~ simpleNumber(ifZero(definition.prefillDiam, definition.diameter))); }
+    const displayTitle = join(parts, " ");
+    setFeatureComputedParameter(context, id, { name: "displayTitle", value: displayTitle });
+    definition.displayTitle = displayTitle;
+    return definition;
+}
+
+export function simpleNumber(num is ValueWithUnits) returns string { return simpleNumber(num / millimeter); }
+export function simpleNumber(num is number) returns string {
+    if (tolerantEquals(num, floor(num))) { return "" ~ floor(num); }
+    return "" ~ roundToPrecision(num, 1);
+}
