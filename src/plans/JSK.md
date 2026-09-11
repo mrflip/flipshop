@@ -196,6 +196,8 @@ This whole assembly swaps in for P15-Riser Mount, re-using its mounting screws, 
 
 - [x] Makita RT50DZ 18V Cordless Trimmer — one (alternative motor mounts available for different brands)
 - [x] 3D Printer Filament PLA (Optional: PETG for some parts)
+  - [ ] Optional, must be used with hardened nozzle and special care: [Carbon-Fiber PLA-CF 3D Printer Filament Blue 1KG](https://www.amazon.com/dp/B0GMHYLDL9?ref=ppx_yo2ov_dt_b_fed_asin_title)
+  - [ ] Optional, must be used with special care:
 - [ ] Motion Control:
   - [x] **V01-Side-to-Side Shaft 8mm x 116mm** — two (for P04-Main Body, carrying P01-Bearing Block (Front)/(Back))
   - [x] **V02-In-Out Shaft 8mm x 130mm** — two (spanning P01-Bearing Block (Front)/(Back), carrying P02-Lower Motor Housing)
@@ -205,7 +207,7 @@ This whole assembly swaps in for P15-Riser Mount, re-using its mounting screws, 
   - [ ] ? **V06-Spring VUR10-70** — one (for V02-In-Out Shaft (Left))
   - [ ] ? **V07-Set Collar 8mm ID** — one (for V02-In-Out Shaft (Right)); may be printable
   - [ ] ? **V08-Aluminum T-Track** HFSPUR6-1220-230 — one (for P21/P22/P23-Table Top)
-  - [ ] **V09-4mmx20mm Dowel Pin** — two (shared by P28-Angle Fence Brow and P29-Angle Fence Beak) — [4mm x 20mm A1 Stainless Steel ISO 2338 Precision Dowel Pin](https://www.fastenal.com/product/details/11511389), SKU 11511389
+  - [ ] **V09-4mmx20mm Dowel Pin** — two (shared by P28-Angle Fence Brow and P29-Angle Fence Beak) — [4mm x 20mm A1 Stainless Steel ISO 2338 Precision Dowel Pin](~https://www.fastenal.com/product/details/11511389~), SKU 11511389
 - [ ] Heat Inserts:
   - [ ] M3 x 5mm OD x 4mm L Heat Insert — three (for P06-Vacuum Adapter)
   - [ ] M4 x 6mm OD x 5mm L Heat Insert — six
@@ -224,7 +226,7 @@ This whole assembly swaps in for P15-Riser Mount, re-using its mounting screws, 
     - [ ] eight in two parallel rows of four, giving P16-Sliding Table Base its range of positions
 - [ ] M3 Fasteners:
   - [ ] M3x15mm Countersunk Screw — three (from P04-Main Body into P06-Vacuum Adapter)
-- [ ] M4 Fasteners:
+- [ ] M4 Fasteners: [M4 x 20mm 30mm 40mm 50mm Hex Head Bolts](https://www.amazon.com/GuoYomm-Hexagon-Screws-Stainless-Assortment/dp/B0F7GYLGB5)$9.99
   - [ ] M4x10mm Socket Head Screw — two (for P05-Main Handle)
   - [ ] M4x10mm Countersunk Screw — two (securing V08-Aluminum T-Track to P19/P20-Table Stair Top)
   - [ ] M4x20mm Countersunk Screw — ten
@@ -232,10 +234,10 @@ This whole assembly swaps in for P15-Riser Mount, re-using its mounting screws, 
     - [ ] one for P29-Angle Fence Beak into P08-Handle for Angle Fence
     - [ ] four for P21-Table Top A
     - [ ] four for P22-Table Top B
-  - [ ] M4x20mm External Hex Bolt — six — [M4-0.7 x 20mm DIN 933 Class 8.8 Zinc Finish Hex Cap Screw](https://www.fastenal.com/product/details/38525), SKU 38525
+  - [ ] M4x20mm External Hex Bolt — six — [M4-0.7 x 20mm DIN 933 Class 8.8 Zinc Finish Hex Cap Screw](~https://www.fastenal.com/product/details/38525~), SKU 38525
     - [ ] four for P24/P25-Table Stair Knob M4x20mm
     - [ ] two for P24/P25-Fence Beak/Brow Knob M4x20mm
-  - [ ] M4x35mm External Hex Bolt — two (for P11/P12-Fence/Body Knob Long M4x35mm) — [M4-0.7 x 35mm Class 8.8 Zinc Finish Hex Cap Screw ISO 4014 (DIN 931)](https://www.fastenal.com/product/details/38528), SKU 38528
+  - [ ] M4x35mm External Hex Bolt — two (for P11/P12-Fence/Body Knob Long M4x35mm) — [M4-0.7 x 35mm Class 8.8 Zinc Finish Hex Cap Screw ISO 4014 (DIN 931)](~https://www.fastenal.com/product/details/38528~), SKU 38528
   - [ ] M4 Large Washer — two (for P11/P12-Fence/Body Knob Long M4x35mm). A variety of sizes near 12mm (1/2") OD for either M4 or US #8 will be suitable.
 - [ ] M5 Fasteners:
   - [ ] M5x25mm External Hex Bolt — two (for T03/T04-Tilter Knob M5x25mm)
@@ -260,3 +262,4 @@ No longer required following part integration; listed so earlier build notes and
 - ~~M4 Nut — twelve~~ (eight for T05-T11 Tilter Sled, now integral as T05-11-Tilter Sled)
 - ~~M6 x 8mm OD x 8mm L Heat Insert — ten~~ (for P17-Table Stair Bottom (L) and P18-Table Stair Bottom (R), now integrated into P16-Sliding Table Base)
 - ~~M6x20mm Countersunk Screw — ten~~ (for P17-Table Stair Bottom (L) and P18-Table Stair Bottom (R), now integrated into P16-Sliding Table Base)
+
