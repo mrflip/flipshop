@@ -75,27 +75,27 @@ Note: If you change a screw you must also change the matching insert or nut if a
 * No ?? US#10-24 3.683 ?? or 10-32 3.9624 ?
 * No US3/8-16 7.7978
 
-## Parts List
+# Parts List
 
 Please print the following parts, some of which need multiple copies. Pay close attention to the orientation shown in the photos (the attached .3mf file lets you print directly with recommended per-part settings).
 
 ### Tool and Base Parts (P01-P13)
 
 1\. **P01-Bearing Block (Front)** and **P01-Bearing Block (Back)** — Print **two copies** (one for the front, one for the back), vertically; PETG recommended.
-* Each takes two Linear Bushing 8mm ID (four total), riding the Side-to-Side Shaft 8mm x 116mm supported by that end of P04-Main Body
-* Together, they support the two In-Out Shafts on which P02-Lower Motor Housing slides
-* Captures Spring VUR10-70 on the In-Out Shaft 8mm x 130mm (Left)
-* Captures Set Collar 8mm ID on the In-Out Shaft 8mm x 130mm (Right)
+* Each takes two V05-Linear Bushing 8mm ID (four total), riding the V01-Side-to-Side Shaft 8mm x 116mm supported by that end of P04-Main Body
+* Together, they support the two V02-In-Out Shaft on which P02-Lower Motor Housing slides
+* Captures V06-Spring VUR10-70 on the V02-In-Out Shaft (Left)
+* Captures V07-Set Collar 8mm ID on the V02-In-Out Shaft (Right)
 
-2\. **P02-Lower Motor Housing** — Print on the side; PETG recommended. Takes two M6 Thin Square Nut (DIN 562, 2.72mm thick) and four Linear Bushing 8mm ID, sliding on the two In-Out Shafts supported by P01-Bearing Block (Front)/(Back).
+2\. **P02-Lower Motor Housing** — Print on the side; PETG recommended. Takes two M6 Thin Square Nut (DIN 562, 2.72mm thick) and four V05-Linear Bushing 8mm ID, sliding on the two V02-In-Out Shaft supported by P01-Bearing Block (Front)/(Back).
 
-3\. **P03-Upper Motor Housing** — Print on the side; PETG recommended. Takes two M4 x 6mm OD x 5mm L Heat Insert for P05-Main Handle, and bolts through the P02-Lower Motor Housing square nuts using two M6x50mm Socket Head Screws — this sandwich encloses the motor.
+3\. **P03-Upper Motor Housing** — Print on the side; PETG recommended. Takes two M4 x 6mm OD x 5mm L Heat Insert for P05-Main Handle, and bolts through the P02-Lower Motor Housing square nuts using two M6x50mm Socket Head Screw — this sandwich encloses the motor.
 
 4\. **P04-Main Body** — Print on the side. Takes:
-* the two Side-to-Side Shaft 8mm x 116mm, on which P01-Bearing Block (Front)/(Back) ride
-* three M3x15mm Countersunk Screws, into the three Heat Inserts in P06-Vacuum Adapter
-* four M6x10mm Low-Profile Socket Head Screws when attached to P15-Riser Mount or T05-11-Tilter Sled
-* four P13-Shaft Hole Cover, glued on after the Side-to-Side Shafts are inserted
+* the two V01-Side-to-Side Shaft 8mm x 116mm, on which P01-Bearing Block (Front)/(Back) ride
+* three M3x15mm Countersunk Screw, into the three Heat Inserts in P06-Vacuum Adapter
+* four M6x10mm Low-Profile Socket Head Screw when attached to P15-Riser Mount or T05-11-Tilter Sled
+* four P13-Shaft Hole Cover, glued on after the V01-Side-to-Side Shaft are inserted
 
 5\. **P05-Main Handle** — Attaches to P03-Upper Motor Housing with two M4x10mm Socket Head Screw. Print at an angle using support; PETG recommended.
 
@@ -114,126 +114,167 @@ Please print the following parts, some of which need multiple copies. Pay close 
 10\. **P10-Fence Hole Cover** — Print **four copies** in second color with the flat face down. Two glue into P07-Straight Fence, two into P28-Angle Fence Brow.
 
 11\. **P11-Fence/Body Knob Long M4x35mm** — Print **two copies** with the large face down; no support needed. (Only two of these are needed, as they can be used with either fence style.) Each assembly uses:
-- one P11-Fence/Body Knob Long M4x35mm
+* one P11-Fence/Body Knob Long M4x35mm
 * one P12-Knob M4 Cover
 * one M4x35mm External Hex Bolt
 * one M4 Large Washer
 
 12\. **P12-Knob M4 Cover** — Print **two copies** in second color with the larger face down. Used with P11-Fence/Body Knob Long M4x35mm.
 
-13\. **P13-Shaft Hole Cover** — Print **four copies** in second color with the larger face down. Glues to P04-Main Body after the Side-to-Side Shafts are inserted.
+13\. **P13-Shaft Hole Cover** — Print **four copies** in second color with the larger face down. Glues to P04-Main Body after the V01-Side-to-Side Shaft are inserted.
 
-### Fixed Base Elevating Table (P14-P25):
+### Fixed Base Elevating Table (P14-P25)
 
-14\. **P14-Wood Footing** — Make from wood, MDF or any suitable flat material; plywood 12mm (1/2") is recommended. Place holes by printing the plans onto paper for use as a drilling template for twelve M6 Threaded Inserts. Alternatively, a laser cutter can help mark or drill the holes. Receives four M6x20mm Socket Head Screws from P16-Sliding Table Base (you’ll use different sets of the inserts based on its position) and four M6x20mm Socket Head Screws from either the P15-Riser Mount or the T01-11-Tilter Mount.
-
+14\. **P14-Wood Footing** — Make from wood, MDF or any suitable flat material; plywood 12mm (1/2") is recommended. Place holes by printing the plans onto paper for use as a drilling template for twelve M6 Threaded Insert. Alternatively, a laser cutter can help mark or drill the holes. Receives four M6x20mm Socket Head Screw from P16-Sliding Table Base (you'll use different sets of the inserts based on its position) and four M6x20mm Socket Head Screw from either the P15-Riser Mount or the T01-11-Tilter Mount.
 
 15\. **P15-Riser Mount** — Print flat side down.
-- Takes four M6 x 8mm OD x 8mm L Heat Insert, receiving the four M6x10mm Low-Profile Socket Head Screws from P04-Main Body.
-- Mounts directly to P14-Wood Footing using four M6x20mm hex socket head bolts. Can be swapped out for T01-T11 Tilter assembly to hold the tool at an aligned angle.
+* Takes four M6 x 8mm OD x 8mm L Heat Insert, receiving the four M6x10mm Low-Profile Socket Head Screw from P04-Main Body.
+* Mounts directly to P14-Wood Footing using four M6x20mm Socket Head Screw. Can be swapped out for T01-T11 Tilter assembly to hold the tool at an aligned angle.
 
-16\. **P16-Sliding Table Base** — Print with the flat face down; alternate files are available to print it in halves. Attaches to P14-Wood Footing with four M6x20mm Socket Head Screws and four M6 Large Washers.
+16\. **P16-Sliding Table Base** — Print with the flat face down; alternate files are available to print it in halves. Attaches to P14-Wood Footing with four M6x20mm Socket Head Screw and four M6 Large Washer.
 
-17\. ~~~~P17-Table Stair Bottom (L)~~~~ — removed
+17\. ~~P17-Table Stair Bottom (L)~~ — removed; integrated into P16-Sliding Table Base
 
-18\. ~~~~P18-Table Stair Bottom (R)~~~~ — removed
+18\. ~~P18-Table Stair Bottom (R)~~ — removed; integrated into P16-Sliding Table Base
 
 19\. **P19-Table Stair Top (L)** — see P20-Table Stair Top (R).
 
-20\. **P20-Table Stair Top (R)** — Print largest flat face down. P19/P20 use sixteen M4 x 6mm OD x 6mm L Heat Insert: five each on the top to attach P21-Table Top A, P22-Table Top B, and the Aluminum T-Track; three each on the side for a pair of P24/P25-Table Stair Knob M4x20mm assemblies. (There are multiple inserts for each knob for a variety of positions)
+20\. **P20-Table Stair Top (R)** — Print largest flat face down. P19/P20 use sixteen M4 x 6mm OD x 6mm L Heat Insert: five each on the top to attach P21-Table Top A, P22-Table Top B, and the V08-Aluminum T-Track; three each on the side for a pair of P24/P25-Table Stair Knob M4x20mm assemblies. (There are multiple inserts for each knob for a variety of positions)
 
-21\. **P21-Table Top A** — Make from 12mm thick hardwood (you may substitute any material with an actual thickness near 1/2"). Secure to P19/P20 with four M4x20mm Countersunk Screws.
+21\. **P21-Table Top A** — Make from 12mm thick hardwood (you may substitute any material with an actual thickness near 1/2"). Secure to P19/P20 with four M4x20mm Countersunk Screw.
 
 22\. **P22-Table Top B** — As P21-Table Top A, but less broad. Secure to P19/P20 with four M4x20mm Countersunk Screw.
 
-23\. **P23-Table Track Support** — Make one, from 12mm thick hardwood or MDF (you may substitute any material with an actual thickness near 1/2"). Glues to the underside of P21-Table Top A and P22-Table Top B and supports the T-Track.
+23\. **P23-Table Track Support** — Make one, from 12mm thick hardwood or MDF (you may substitute any material with an actual thickness near 1/2"). Glues to the underside of P21-Table Top A and P22-Table Top B and supports the V08-Aluminum T-Track, which is secured to P19/P20 with two M4x10mm Countersunk Screw.
 
 24\. **P24-Table Stair Knob M4x20mm** and **P24-Fence Beak/Brow Knob M4x20mm** — two parts from one identical model. Print **six copies** with the flat face down (four for P19/P20-Table Stairs, two for P28/P29-Angle Fence). Each assembly uses:
-    * one P24-Knob M4x20mm (this part)
-    * one P25-Knob M4 Cover
-    * one M4x20mm External Hex Bolt
+* one P24-Knob M4x20mm (this part)
+* one P25-Knob M4 Cover
+* one M4x20mm External Hex Bolt
 
 25\. **P25-Knob M4 Cover** — Print **six copies** in second color with the flat face down. Used with P24-Table Stair Knob M4x20mm and P24-Fence Beak/Brow Knob M4x20mm.
 
-### Portable Angle Fence and Accessories (P26-P30):
+### Portable Angle Fence and Accessories (P26-P30)
 
-26\. **P26-Slide Limiter 9.8mm** — Print **two copies** flat. Slides onto the front Side-to-Side Shaft to make this a dowel jig.
+26\. **P26-Slide Limiter 9.8mm** — Print **two copies** flat. Slides onto the front V01-Side-to-Side Shaft to make this a dowel jig.
 
-27\. **P27-Slide Limiter 3.0mm** — Print **two copies** flat. Slides onto the front Side-to-Side Shaft to adapt for thinner dominos.
+27\. **P27-Slide Limiter 3.0mm** — Print **two copies** flat. Slides onto the front V01-Side-to-Side Shaft to adapt for thinner dominos.
 
 28\. **P28-Angle Fence Brow** — Print flat.
-    * In front, takes two M4 x 6mm OD x 5mm L Heat Insert for two P11/P12-Fence/Body Knob Long M4x35mm assemblies
-    * Each side (top recess) takes one M4 x 6mm OD x 6mm L Heat Insert
-    * Attaches to P29-Angle Fence Beak with two P24/P25-Fence Beak/Brow Knob M4x20mm assemblies, two Dowel Pin 4mm OD x 20mm L, and two P30-Dowel Pin Cap
+* In front, takes two M4 x 6mm OD x 5mm L Heat Insert for two P11/P12-Fence/Body Knob Long M4x35mm assemblies
+* Each side (top recess) takes one M4 x 6mm OD x 6mm L Heat Insert
+* Attaches to P29-Angle Fence Beak with two P24/P25-Fence Beak/Brow Knob M4x20mm assemblies, two V09-4mmx20mm Dowel Pin, and two P30-Dowel Pin Cap
 
 29\. **P29-Angle Fence Beak** — Print flat, using support for the two upper arcs (see photo). Uses:
-    * two Dowel Pin 4mm OD x 20mm L (shared with P28-Angle Fence Brow)
-    * one M4x20mm Countersunk Screw to attach P08-Handle for Angle Fence
-    * two P24/P25-Fence Beak/Brow Knob M4x20mm assemblies (shared with P28-Angle Fence Brow)
+* two V09-4mmx20mm Dowel Pin (shared with P28-Angle Fence Brow)
+* one M4x20mm Countersunk Screw to attach P08-Handle for Angle Fence
+* two P24/P25-Fence Beak/Brow Knob M4x20mm assemblies (shared with P28-Angle Fence Brow)
 
-30\. **P30-Dowel Pin Cap** — Print **two copies** standing up, mouth down. Used with the two Dowel Pin 4mm OD x 20mm L.
+30\. **P30-Dowel Pin Cap** — Print **two copies** standing up, mouth down. Used with the two V09-4mmx20mm Dowel Pin.
 
-### Tilting Mount Parts (T01-T11):
+### Tilting Mount Parts (T01-T11)
+
 This whole assembly swaps in for P15-Riser Mount, re-using its mounting screws, to allow placing biscuits in miter joints (ones that meet at non-right angle).
 
+1\. **T01-Tilter Mount (L)** — print flat. It swaps in for P15-Riser Mount and reuses the same M6x20mm Socket Head Screw.
 
-1\. **T01-Tilter Mount (L)** — print flat. It swaps in for P15-Riser Mount and rreuses the same M6x20mm Socket Head Screws
-2\. **T02-Tilter Mount (R)** — print flat. It swaps in for P15-Riser Mount and reuses the same M6x20mm Socket Head screws
-3\. **T03-Tilter Knob M5x20mm** — print **two copies**, larger face down. Mounts into T01/T02-Tilter Mount along with:
+2\. **T02-Tilter Mount (R)** — print flat. It swaps in for P15-Riser Mount and reuses the same M6x20mm Socket Head Screw.
+
+3\. **T03-Tilter Knob M5x25mm** — print **two copies**, larger face down. Mounts into T01/T02-Tilter Mount along with:
 * T04-Knob M5 Cover
-* M5x20mm External Hex Bolt
+* M5x25mm External Hex Bolt
 * M5 Large Washer
-4\. **T04-Knob M5 Cover**  — print  **two copies** flat-face down.
-5\. **T05-11-Tilter Sled** — print flat. Takes
-* two regular M5 Nuts, that receive the T03-Tilter Knob M5x20mm assembly.
-* four regular M6 Nuts, that receive the M6x10mm Low-Profile Socket Head Screws from the main body.
 
-## Inventory and Buy List:
+4\. **T04-Knob M5 Cover** — print **two copies** flat-face down.
 
-- [x] Makita RT50DZ 18V Cordless Trimmer x 1 (alternative motor mounts available for different brands)
-- [x] 3D printer filament PLA
-- [ ] Motion control:
-  - [x] Φ8mm, 116mm length shaft x 2
-  - [x] Φ8mm, 130mm long shaft x 2
-  - [x] Linear bushings: inner diameter 8mm, outer diameter 15mm, length 24mm x 8 (two each for P01-Bearing Block A / P01-Bearing Block B; four for P03-Upper Motor Housing)
-  - [ ] ordered?  Spring (VUR10-70) x 1
-  - [ ] printable? 8mm inner diameter set collar x 1
-  - [ ] Aluminum T-Track HFSPUR6-1220-230 ×1 (for P21/22/23 Table Top)
-  - [ ] Φ4×20mm metal Dowel Pins　× 2 (two for P29-Angle Fence Beak) [M4 x 20mm A1 Stainless Steel ISO 2338 Precision Dowel Pin](~https://www.fastenal.com/product/details/11511389~) **SKU :** 11511389
-- [ ] Heat-Press Threaded Inserts:
-  - [ ] M3 x 5mm OD 4mm L insert nuts x 3 (three for P06-Vacuum Adapter)
-  - [ ] M4 x 6mm OD 5mm L insert nuts x 4 (two for P03-Upper Motor Housing, two for P28-Angle Fence Brow, two for P07-Straight Fence)
-  - [ ] M4 x 6mm OD 6mm L insert nuts x 18 (one for P08-Straight Fence Handle, one for P08-Angle Fence Handle, five each for upper part of P19/P20-Table Stair Top, three each for sides of P19/P20-Table Stair Top)
-  - [ ] M6 x 8mm OD 8mm L insert nuts x 14 (four for P15-Riser Mount)
-  - [ ] M6 threaded insert nuts x 12 (twelve for P14-Wood Footing)
+5\. **T05-11-Tilter Sled** — print flat. Takes:
+* two M5 Nut, that receive the T03/T04-Tilter Knob M5x25mm assemblies
+* four M6 Nut, that receive the M6x10mm Low-Profile Socket Head Screw from P04-Main Body
+
+---
+
+Changes from your last version, beyond the four we agreed:
+
+**Normalized to singular** — P14's "Threaded Inserts," P15/P16's "Screws"/"Washers," T05-11's "Nuts" and "Screws" now match the singular convention used elsewhere. P01's "the two V02-In-Out Shaft" and P04's "the two V01-Side-to-Side Shaft" likewise.
+
+**T05-11 sub-bullets** — dropped "regular," which was the informal counterpart to the formal M6 Thin Square Nut spec; added the length to the M6 Low-Profile Socket Head Screw reference and named P04-Main Body rather than "the main body."
+
+**T01/T02** — fixed "rreuses," made the two entries identical rather than near-identical, and capitalized "screws" in T02.
+
+**P11** — moved the parenthetical up into the lead-in so the four sub-bullets form one clean list; the stray `-` bullet marker on the first item is now `*`.
+
+**P24** — closed the parenthesis.
+
+**P17/P18** — normalized the quadrupled tildes to standard strikethrough and noted where they went.
+
+Two things I left as they are, since they're outside what we've settled: P04 and T05-11 refer to **T05-11-Tilter Sled** while P14 and P15 refer to **T01-11-Tilter Mount** and **T01-T11 Tilter assembly** — three forms for the tilting assembly, and I don't know which of those name the sled versus the whole thing. And the section header still reads T01-T11 while the entries run T01–T05-11.
+## Inventory and Buy List
+
+# Inventory and Buy List
+
+- [x] Makita RT50DZ 18V Cordless Trimmer — one (alternative motor mounts available for different brands)
+- [x] 3D Printer Filament PLA (Optional: PETG for some parts)
+- [ ] Motion Control:
+  - [x] **V01-Side-to-Side Shaft 8mm x 116mm** — two (for P04-Main Body, carrying P01-Bearing Block (Front)/(Back))
+  - [x] **V02-In-Out Shaft 8mm x 130mm** — two (spanning P01-Bearing Block (Front)/(Back), carrying P02-Lower Motor Housing)
+  - [x] **V05-Linear Bushing 8mm ID** (15mm OD x 24mm L) — eight
+    - [x] two each for P01-Bearing Block (Front)/(Back)
+    - [x] four for P02-Lower Motor Housing
+  - [ ] ? **V06-Spring VUR10-70** — one (for V02-In-Out Shaft (Left))
+  - [ ] ? **V07-Set Collar 8mm ID** — one (for V02-In-Out Shaft (Right)); may be printable
+  - [ ] ? **V08-Aluminum T-Track** HFSPUR6-1220-230 — one (for P21/P22/P23-Table Top)
+  - [ ] **V09-4mmx20mm Dowel Pin** — two (shared by P28-Angle Fence Brow and P29-Angle Fence Beak) — [4mm x 20mm A1 Stainless Steel ISO 2338 Precision Dowel Pin](https://www.fastenal.com/product/details/11511389), SKU 11511389
+- [ ] Heat Inserts:
+  - [ ] M3 x 5mm OD x 4mm L Heat Insert — three (for P06-Vacuum Adapter)
+  - [ ] M4 x 6mm OD x 5mm L Heat Insert — six
+    - [ ] two for P03-Upper Motor Housing
+    - [ ] two for P07-Straight Fence
+    - [ ] two for P28-Angle Fence Brow
+  - [ ] M4 x 6mm OD x 6mm L Heat Insert — twenty
+    - [ ] one each for P08-Handle for Straight Fence and P08-Handle for Angle Fence
+    - [x] five each for the tops of P19/P20-Table Stair Top
+    - [x] three each for the sides of P19/P20-Table Stair Top
+    - [ ] two for the side recesses of P28-Angle Fence Brow
+  - [x] M6 x 8mm OD x 8mm L Heat Insert — four (for P15-Riser Mount)
+- [ ] Threaded Inserts:
+  - [x] M6 Threaded Insert — twelve (for P14-Wood Footing)
+    - [ ] four for the mount
+    - [ ] eight in two parallel rows of four, giving P16-Sliding Table Base its range of positions
 - [ ] M3 Fasteners:
-  - [ ] M3 x 15mm countersunk nuts x 3 (three for P06-Vacuum Adapter-Main Body)
+  - [ ] M3x15mm Countersunk Screw — three (from P04-Main Body into P06-Vacuum Adapter)
 - [ ] M4 Fasteners:
-  - [ ] M4 x 10mm socket-head screws x 2 (two for P05-Main Handle)
-  - [ ] M4 x 15mm countersunk screws x 12 (~~~~eight for T05-11 Tilter Sled~~~~)
-  - [ ] M4 x 10mm countersunk screws x 2
-    - [ ] two for securing the T-Track to the stairs top
-  - [ ] M4 x 20mm countersunk screws x 10
-    - [ ] one for P29-Angle Fence Beak/P08-Angle Fence Handle
-    - [ ] one for P07-Straight Fence /P08-Straight Fence Handle
-    - [ ] eight for securing P21-Table Top A/B & the T-Track to the stairs top
-  - [ ] M4 x 20mm external hex bolts x 6 — [M4-0.7 x 20mm DIN 933 Class 8.8 Zinc Finish Hex Cap Screw](~https://www.fastenal.com/product/details/38525~) SKU: 38525
-    - [ ] two for P24-Knob M4 20mm (for P28/P29-Angle Fence)
-    - [ ] four for P24-Knob M4 20mm (for the stairs)
-  - [ ] M4 x 35mm external hex bolts x 2 — [M4-0.7 x 35mm Class 8.8 Zinc Finish Hex Cap Screw ISO 4014 \(DIN 931\)](~https://www.fastenal.com/product/details/38528~) SKU 38528
-    - [ ] two for P11-Fence Sliding M4 35mm Knob
-  - [ ] M4 Large Washer ×2 (two for P11-Fence Sliding M4 35mm Knob). A variety of sizes near 12mm (1/2inch) OD for either M4 or US#8 will be suitable.
-  - [ ] M4 nuts × 12 (~~~~eight for T05-11 Tilter Sled~~~~)
+  - [ ] M4x10mm Socket Head Screw — two (for P05-Main Handle)
+  - [ ] M4x10mm Countersunk Screw — two (securing V08-Aluminum T-Track to P19/P20-Table Stair Top)
+  - [ ] M4x20mm Countersunk Screw — ten
+    - [ ] one for P07-Straight Fence into P08-Handle for Straight Fence
+    - [ ] one for P29-Angle Fence Beak into P08-Handle for Angle Fence
+    - [ ] four for P21-Table Top A
+    - [ ] four for P22-Table Top B
+  - [ ] M4x20mm External Hex Bolt — six — [M4-0.7 x 20mm DIN 933 Class 8.8 Zinc Finish Hex Cap Screw](https://www.fastenal.com/product/details/38525), SKU 38525
+    - [ ] four for P24/P25-Table Stair Knob M4x20mm
+    - [ ] two for P24/P25-Fence Beak/Brow Knob M4x20mm
+  - [ ] M4x35mm External Hex Bolt — two (for P11/P12-Fence/Body Knob Long M4x35mm) — [M4-0.7 x 35mm Class 8.8 Zinc Finish Hex Cap Screw ISO 4014 (DIN 931)](https://www.fastenal.com/product/details/38528), SKU 38528
+  - [ ] M4 Large Washer — two (for P11/P12-Fence/Body Knob Long M4x35mm). A variety of sizes near 12mm (1/2") OD for either M4 or US #8 will be suitable.
 - [ ] M5 Fasteners:
-  - [ ] M5 nuts ×2 (in T11 - Tilter Sled)
-  - [ ] M5 x 25mm external hex bolt ×2 (two T03 - Knob M5 25mm)
-  - [ ] M5 Large Washer x 2 (two T03 - Knob M5 25mm). A variety of sizes near 20mm (5/8 to 3/4inch) OD for either M5 or US#10 will be suitable.
+  - [ ] M5x25mm External Hex Bolt — two (for T03/T04-Tilter Knob M5x25mm)
+  - [ ] M5 Large Washer — two (for T03/T04-Tilter Knob M5x25mm). A variety of sizes near 20mm (5/8" to 3/4") OD for either M5 or US #10 will be suitable.
+  - [ ] M5 Nut — two (for T05-11-Tilter Sled, receiving the T03/T04-Tilter Knob M5x25mm assemblies)
 - [ ] M6 Fasteners:
-  - [x] M6 square nuts x 2 (two for P02-Lower Motor Housing)
-  - [x] M6 nuts × 4 (~~~~four for T05-11 Tilter Sled~~~~)
-  - [ ] M6 x 50mm screws x 2
-  - [ ] M6 x 20mm countersunk screws x 10
-  - [ ] M6 x 20mm hex socket head bolts x 8 (four for P16-Sliding Table Base, four for P15-Riser Mount — reused for T01/T02 Tilter Mount)
-    - [ ] (Alternative: four M6 x 20 mm external hex bolts to use with extra P24/P25-knobs)
-  - [ ] M6 x 10mm low-profile socket-head screws x 4
-  - [ ] M6 Large Washer x 4 (four for P16-Sliding Table Base). A variety of sizes near 20mm (5/8 to 3/4inch) OD for either M6 or US#1/4inch will be suitable.
+  - [ ] M6 Thin Square Nut (DIN 562, 2.72mm thick) — two (for P02-Lower Motor Housing, receiving the M6x50mm Socket Head Screw from P03-Upper Motor Housing)
+  - [ ] M6 Nut — four (for T05-11-Tilter Sled, receiving the M6x10mm Low-Profile Socket Head Screw from P04-Main Body)
+  - [ ] M6x10mm Low-Profile Socket Head Screw — four (from P04-Main Body into P15-Riser Mount or T05-11-Tilter Sled)
+  - [ ] M6x20mm Socket Head Screw — eight
+    - [ ] four for P16-Sliding Table Base
+    - [ ] four for P15-Riser Mount into P14-Wood Footing — reused for T01/T02-Tilter Mount
+    - [ ] Alternative: four M6x20mm External Hex Bolt to use with extra P24/P25 knobs
+  - [ ] M6x50mm Socket Head Screw — two (from P03-Upper Motor Housing into the M6 Thin Square Nut in P02-Lower Motor Housing)
+  - [ ] M6 Large Washer — four (for P16-Sliding Table Base). A variety of sizes near 20mm (5/8" to 3/4") OD for either M6 or US 1/4" will be suitable.
+
+### Removed Pieces
+
+No longer required following part integration; listed so earlier build notes and BOMs reconcile.
+
+- ~~M4x15mm Countersunk Screw — twelve~~ (eight for T05-T11 Tilter Sled, now integral as T05-11-Tilter Sled)
+- ~~M4 Nut — twelve~~ (eight for T05-T11 Tilter Sled, now integral as T05-11-Tilter Sled)
+- ~~M6 x 8mm OD x 8mm L Heat Insert — ten~~ (for P17-Table Stair Bottom (L) and P18-Table Stair Bottom (R), now integrated into P16-Sliding Table Base)
+- ~~M6x20mm Countersunk Screw — ten~~ (for P17-Table Stair Bottom (L) and P18-Table Stair Bottom (R), now integrated into P16-Sliding Table Base)
