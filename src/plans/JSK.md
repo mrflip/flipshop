@@ -1,4 +1,3 @@
-
 # JSK
 
 Thank you so much for the words and the reasoning. I will be forward and attach the files, but the rest of your suggestions ring true.
@@ -20,12 +19,6 @@ I prepared a .3mf file that
 * Getting metric hardware in the US is not as hard as it once was, but only by buying a full pack of 25+ or an assortment. The quantities for the socket hardware were easily justified, and satisfied, by buying assortment packs. However, the knobs required buying small quantities of different hex-head bolts at diffferent lengths
   * I suggest offering a separate download with knobs and sleeve adapters to allow using a \#8-32 (
   * manufacturers dependably use the same outer dimensions as M4 / M5 inserts.
-
-* M4 x 35mm hex bolts x 2
-* M6 x 20mm hex socket head bolts x 8
-* ~[M6 x 10mm low-profile bolts](~https://amzn.to/4naljy3~)~ x 4
-* M5 x 25mm hex bolt ×2
-
 
 * H01-Main Base
 * H02-Tower
@@ -71,6 +64,16 @@ Acceptable fastener substitutions
 * With H13/H11-Drawer Tray/Handle: a low-profile socket bolt will give the best appearance, but you may substitute a regular screw or a US#4-40 screw/insert
 * With H10/H08/H07 and H15/H16/H07/H08 Knobs: to instead use US#6-32 bolts, skip the four H07; print four H07-Knob-USno6 and two H09-Sleeve-USno6. For 30mm length, use 1+1/4” bolts; for 20mm length, use 7/8” or 3/4” bolts
 Note: If you change a screw you must also change the matching insert or nut if any
+
+* 4.51 / 2.41 (M3 2.65 US#6-32 2.6416)
+* 4.00 (M5? 4.26) / 1.95 (M2.5 2.1ish, US#4-40 2.159)
+* 3.22 (M4 3.46 US\#8-32 3.302) / 1.44 (M2 1.72ish, US#2 1.7018)
+* 3.71 (US#10 3.683)
+* 4.9 (US1/4-20 4.9784)
+* 4.98 (M6 5.03)
+* 6.6 (US5/16-18 6.4008)
+* No ?? US#10-24 3.683 ?? or 10-32 3.9624 ?
+* No US3/8-16 7.7978
 
 ## Parts List
 
@@ -177,11 +180,60 @@ This whole assembly swaps in for P15-Riser Mount, re-using its mounting screws, 
 1\. **T01-Tilter Mount (L)** — print flat. It swaps in for P15-Riser Mount and rreuses the same M6x20mm Socket Head Screws
 2\. **T02-Tilter Mount (R)** — print flat. It swaps in for P15-Riser Mount and reuses the same M6x20mm Socket Head screws
 3\. **T03-Tilter Knob M5x20mm** — print **two copies**, larger face down. Mounts into T01/T02-Tilter Mount along with:
+* T04-Knob M5 Cover
 * M5x20mm External Hex Bolt
 * M5 Large Washer
-* T04-Knob M5 Cover
-4\. **T04-Knob M5 Cover**  — print  **two copies** flat-face down
+4\. **T04-Knob M5 Cover**  — print  **two copies** flat-face down.
 5\. **T05-11-Tilter Sled** — print flat. Takes
 * two regular M5 Nuts, that receive the T03-Tilter Knob M5x20mm assembly.
 * four regular M6 Nuts, that receive the M6x10mm Low-Profile Socket Head Screws from the main body.
 
+## Inventory and Buy List:
+
+- [x] Makita RT50DZ 18V Cordless Trimmer x 1 (alternative motor mounts available for different brands)
+- [x] 3D printer filament PLA
+- [ ] Motion control:
+  - [x] Φ8mm, 116mm length shaft x 2
+  - [x] Φ8mm, 130mm long shaft x 2
+  - [x] Linear bushings: inner diameter 8mm, outer diameter 15mm, length 24mm x 8 (two each for P01-Bearing Block A / P01-Bearing Block B; four for P03-Upper Motor Housing)
+  - [ ] ordered?  Spring (VUR10-70) x 1
+  - [ ] printable? 8mm inner diameter set collar x 1
+  - [ ] Aluminum T-Track HFSPUR6-1220-230 ×1 (for P21/22/23 Table Top)
+  - [ ] Φ4×20mm metal Dowel Pins　× 2 (two for P29-Angle Fence Beak) [M4 x 20mm A1 Stainless Steel ISO 2338 Precision Dowel Pin](~https://www.fastenal.com/product/details/11511389~) **SKU :** 11511389
+- [ ] Heat-Press Threaded Inserts:
+  - [ ] M3 x 5mm OD 4mm L insert nuts x 3 (three for P06-Vacuum Adapter)
+  - [ ] M4 x 6mm OD 5mm L insert nuts x 4 (two for P03-Upper Motor Housing, two for P28-Angle Fence Brow, two for P07-Straight Fence)
+  - [ ] M4 x 6mm OD 6mm L insert nuts x 18 (one for P08-Straight Fence Handle, one for P08-Angle Fence Handle, five each for upper part of P19/P20-Table Stair Top, three each for sides of P19/P20-Table Stair Top)
+  - [ ] M6 x 8mm OD 8mm L insert nuts x 14 (four for P15-Riser Mount)
+  - [ ] M6 threaded insert nuts x 12 (twelve for P14-Wood Footing)
+- [ ] M3 Fasteners:
+  - [ ] M3 x 15mm countersunk nuts x 3 (three for P06-Vacuum Adapter-Main Body)
+- [ ] M4 Fasteners:
+  - [ ] M4 x 10mm socket-head screws x 2 (two for P05-Main Handle)
+  - [ ] M4 x 15mm countersunk screws x 12 (~~~~eight for T05-11 Tilter Sled~~~~)
+  - [ ] M4 x 10mm countersunk screws x 2
+    - [ ] two for securing the T-Track to the stairs top
+  - [ ] M4 x 20mm countersunk screws x 10
+    - [ ] one for P29-Angle Fence Beak/P08-Angle Fence Handle
+    - [ ] one for P07-Straight Fence /P08-Straight Fence Handle
+    - [ ] eight for securing P21-Table Top A/B & the T-Track to the stairs top
+  - [ ] M4 x 20mm external hex bolts x 6 — [M4-0.7 x 20mm DIN 933 Class 8.8 Zinc Finish Hex Cap Screw](~https://www.fastenal.com/product/details/38525~) SKU: 38525
+    - [ ] two for P24-Knob M4 20mm (for P28/P29-Angle Fence)
+    - [ ] four for P24-Knob M4 20mm (for the stairs)
+  - [ ] M4 x 35mm external hex bolts x 2 — [M4-0.7 x 35mm Class 8.8 Zinc Finish Hex Cap Screw ISO 4014 \(DIN 931\)](~https://www.fastenal.com/product/details/38528~) SKU 38528
+    - [ ] two for P11-Fence Sliding M4 35mm Knob
+  - [ ] M4 Large Washer ×2 (two for P11-Fence Sliding M4 35mm Knob). A variety of sizes near 12mm (1/2inch) OD for either M4 or US#8 will be suitable.
+  - [ ] M4 nuts × 12 (~~~~eight for T05-11 Tilter Sled~~~~)
+- [ ] M5 Fasteners:
+  - [ ] M5 nuts ×2 (in T11 - Tilter Sled)
+  - [ ] M5 x 25mm external hex bolt ×2 (two T03 - Knob M5 25mm)
+  - [ ] M5 Large Washer x 2 (two T03 - Knob M5 25mm). A variety of sizes near 20mm (5/8 to 3/4inch) OD for either M5 or US#10 will be suitable.
+- [ ] M6 Fasteners:
+  - [x] M6 square nuts x 2 (two for P02-Lower Motor Housing)
+  - [x] M6 nuts × 4 (~~~~four for T05-11 Tilter Sled~~~~)
+  - [ ] M6 x 50mm screws x 2
+  - [ ] M6 x 20mm countersunk screws x 10
+  - [ ] M6 x 20mm hex socket head bolts x 8 (four for P16-Sliding Table Base, four for P15-Riser Mount — reused for T01/T02 Tilter Mount)
+    - [ ] (Alternative: four M6 x 20 mm external hex bolts to use with extra P24/P25-knobs)
+  - [ ] M6 x 10mm low-profile socket-head screws x 4
+  - [ ] M6 Large Washer x 4 (four for P16-Sliding Table Base). A variety of sizes near 20mm (5/8 to 3/4inch) OD for either M6 or US#1/4inch will be suitable.
