@@ -1,9 +1,9 @@
 FeatureScript 3044;
 import(path : "onshape/std/common.fs", version : "3044.0");
 // Utils
-import(path : "14a20c5c0c7e0354a621f347/3a1e5c5e492768208bbb5694/8c588debec029dab0d734198", version : "3cc43cf8c59a339d5ce548d2");
-import(path : "14a20c5c0c7e0354a621f347/3a1e5c5e492768208bbb5694/4ebdc64943b566160ea5cc28", version : "aa1e3063ddbe9d05678234b7");
-import(path : "14a20c5c0c7e0354a621f347/3a1e5c5e492768208bbb5694/9935c9eba0658e8e5d6b672b", version : "3f735e5f0e03a21a2b73182f");
+import(path : "14a20c5c0c7e0354a621f347/2598ef4fc8f1edc5a0e5674f/8c588debec029dab0d734198", version : "5a1a12cc17eebf141db54c9f");
+import(path : "14a20c5c0c7e0354a621f347/2598ef4fc8f1edc5a0e5674f/4ebdc64943b566160ea5cc28", version : "d0ff83fd50d99e237a69f68a");
+import(path : "14a20c5c0c7e0354a621f347/2598ef4fc8f1edc5a0e5674f/9935c9eba0658e8e5d6b672b", version : "3f735e5f0e03a21a2b73182f");
 
 // Import Hole Tools
 BasicHole::import(path : "42452d0d1f5d09a3406f73ac", version : "35bdde628945bd5114060e99");
@@ -70,8 +70,9 @@ export enum ThreadType {
   M5
 }
 
-// Tool parts fail to build at or below this depth
-const MIN_CUT_DEPTH = 0.001 * millimeter;
+// Tool parts reject a depth at or below 0.01mm, so a degenerate cut collapses to a hole that is
+// visibly nothing rather than to a hard parameter error out of the instantiated part studio
+const MIN_CUT_DEPTH = 0.02 * millimeter;
 // A raycast hit this close to the ray origin is the face the mate connector sits on
 const SAME_FACE_TOL = 0.001 * millimeter;
 // Slack for hits against a selected end entity, which may be coincident with the start face
@@ -83,6 +84,8 @@ const UP_TO_NEXT_FALLBACK = 5 * millimeter;
 const THROUGH_FALLBACK = 50 * millimeter;
 // How far along the axis to probe for "the cut starts inside this body"
 const AXIS_PROBE_INSET = 0.01 * millimeter;
+// Below this, the hole axis is too near parallel with an end plane to intersect it
+const PLANE_PARALLEL_TOL = 1e-6;
 
 
 /**
@@ -344,8 +347,12 @@ function holeLocFor(context is Context, definition is map, mateQ is Query) retur
     mateCsys = coordSystem(mateCsys.origin, mateCsys.xAxis, -mateCsys.zAxis);
   }
   const holeLoc = {
-      "pos":       mateCsys.origin,
-      "dir":       mateCsys.zAxis,
+      "pos": mateCsys.origin,
+      // The tool parts are built cutting along their own -Z, so once `toWorld` places them the
+      // cut runs against the mate connector's Z. Terminations have to be measured on the axis
+      // the cut actually runs along, so the negation lives here rather than at each raycast.
+      // The transform is deliberately not negated: that still has to match how the parts build.
+      "dir": -mateCsys.zAxis,
       "transform": toWorld(mateCsys),
     };
   return mergeMaps(holeLoc, { "depth": holeDepthFor(context, definition, holeLoc) });
@@ -384,22 +391,7 @@ function uncheckedHoleDepthFor(context is Context, definition is map, holeLoc is
   }
 
   if (definition.endStyle == FDMHoleEndStyle.UP_TO_ENTITY) {
-    const hits = evRaycast(context, {
-          "ray":      line(holeLoc.pos, holeLoc.dir),
-          "entities": definition.endBoundEntity,
-        });
-    for (var hit in hits) {
-      if (hit.distance > END_ENTITY_TOL) { return applyTipOffset(definition, hit.distance); }
-    }
-
-    highlightQuery(context, definition.endBoundEntity, DebugColor.RED);
-    // Fall back to minimum distance evaluation if the raycast missed the surface boundaries
-    const distResult = evDistance(context, {
-          "side0":       holeLoc.pos,
-          "side1":       definition.endBoundEntity,
-          "extendSide1": true,
-        });
-    return applyTipOffset(definition, distResult.distance);
+    return applyTipOffset(definition, endBoundDepthFor(context, definition, holeLoc, definition.endBoundEntity));
   }
 
   // THROUGH: scan backwards for the last valid exit boundary hit
@@ -424,6 +416,87 @@ function applyTipOffset(definition is map, distance is ValueWithUnits) returns V
     return distance - definition.offsetDistance;
   }
   return distance + definition.offsetDistance;
+}
+
+/**
+ * How far the selected end bound sits from the hole start, measured along the hole axis.
+ *
+ * Axial is the only thing that means anything here, because the number is handed to the tool
+ * part as its depth. A raycast hit is already a distance along the ray, so that case is direct.
+ * Past that:
+ *   - a planar face is intersected with the axis, so a face tilted by theta terminates the cut
+ *     at 1/cos(theta), not at cos(theta) as a nearest-point distance would
+ *   - a vertex or mate connector is projected onto the axis, which is where Onshape's own
+ *     "up to vertex" terminates: the plane through that point, however far off to one side it is
+ *   - anything else keeps the nearest-point behaviour, but projected onto the axis and flagged,
+ *     since the cut will not actually land on the entity
+ * A bound that resolves behind the start now comes back negative and gets clamped to the
+ * minimum cut depth, rather than silently cutting forwards by the distance backwards.
+ */
+function endBoundDepthFor(context is Context, definition is map, holeLoc is map, endQ is Query) returns ValueWithUnits {
+  const found = endBoundHitFor(context, holeLoc, endQ);
+  if (definition.debugMe) {
+    // Draws the measurement axis. If this arrow points opposite to where the hole cuts, every
+    // termination in this feature is reading backwards, not just this one.
+    debug(context, line(holeLoc.pos, holeLoc.dir));
+    println('up to entity: ' ~ found.via ~ ' at ' ~ simpleNumber(found.depth) ~ 'mm along the axis');
+  }
+  if (found.depth <= 0 * millimeter) {
+    println('up to entity: ' ~ found.via ~ ' resolves behind the hole direction, nothing to cut to');
+  }
+  return found.depth;
+}
+
+function endBoundHitFor(context is Context, holeLoc is map, endQ is Query) returns map {
+  const hits = evRaycast(context, {
+        "ray":      line(holeLoc.pos, holeLoc.dir),
+        "entities": endQ,
+      });
+  for (var hit in hits) {
+    if (hit.distance > END_ENTITY_TOL) { return { "depth": hit.distance, "via": 'raycast' }; }
+  }
+
+  // Bounded face the ray fell outside of, or an angled end plane: intersect the axis with it
+  const planeQ = qGeometry(endQ, GeometryType.PLANE);
+  if (! isQueryEmpty(context, planeQ)) {
+    const endPlane = evPlane(context, { "face": planeQ });
+    const axisAlongNormal = dot(holeLoc.dir, endPlane.normal);
+    if (abs(axisAlongNormal) > PLANE_PARALLEL_TOL) {
+      return {
+          "depth": dot(endPlane.origin - holeLoc.pos, endPlane.normal) / axisAlongNormal,
+          "via":   'end plane',
+        };
+    }
+  }
+
+  const endPos = pointEndPosFor(context, endQ);
+  if (isPresent(endPos)) {
+    return { "depth": dot(endPos - holeLoc.pos, holeLoc.dir), "via": 'point projection' };
+  }
+
+  highlightQuery(context, endQ, DebugColor.RED);
+  const nearest = evDistance(context, {
+        "side0":       holeLoc.pos,
+        "side1":       endQ,
+        "extendSide1": true,
+      });
+  return { "depth": dot(nearest.sides[1].point - holeLoc.pos, holeLoc.dir), "via": 'nearest point' };
+}
+
+/**
+ * Position of a point-like end bound, or undefined if the selection is neither a vertex nor a
+ * mate connector.
+ */
+function pointEndPosFor(context is Context, endQ is Query) {
+  const vertexQ = qEntityFilter(endQ, EntityType.VERTEX);
+  if (! isQueryEmpty(context, vertexQ)) {
+    return evVertexPoint(context, { "vertex": vertexQ });
+  }
+  const mateQ = qBodyType(endQ, BodyType.MATE_CONNECTOR);
+  if (! isQueryEmpty(context, mateQ)) {
+    return evMateConnector(context, { "mateConnector": mateQ }).origin;
+  }
+  return undefined;
 }
 
 /**
@@ -525,7 +598,7 @@ function holeFeatureName(context is Context, id is Id, definition is map) return
   parts = append(parts, titleDiam ~ titleLen);
   if (ifNil(definition.chamferDist, -1) > 0) { parts = append(parts, 'C' ~ simpleNumber(definition.chamferDist)); }
   if (ifNil(definition.hasWings, false))     { parts = append(parts, 'W'); }
-  if (ifNil(definition.prefill, false))      { parts = append(parts, 'P' ~ simpleNumber(ifZero(definition.prefillDiam, definition.diameter))); }
+  if (ifNil(definition.prefill, false))      { parts = append(parts, 'P' ~ simpleNumber(ifNilOrZero(definition.prefillDiam, definition.diameter))); }
   const displayTitle = join(parts, ' ');
   setFeatureComputedParameter(context, id, { name: 'displayTitle', value: displayTitle });
   definition.displayTitle = displayTitle;
@@ -533,10 +606,16 @@ function holeFeatureName(context is Context, id is Id, definition is map) return
 }
 
 /**
- * A zero-valued length parameter means "unset" for the optional sizing fields.
+ * A missing or zero length parameter means "unset" for the optional sizing fields.
+ *
+ * Self-contained on purpose: lengths in, lengths out, compared against `0 * millimeter` rather
+ * than a bare `0`, so nothing on either path can cross between lengths and plain numbers. A
+ * value that somehow arrives unitless is treated as unset rather than fed into length maths.
  */
 function ifNilOrZero(val, fallback) {
-  return ifZero(ifNil(val, 0 * millimeter), fallback);
+  if (! isPresent(val)) { return fallback; }
+  if (! (val is ValueWithUnits)) { return fallback; }
+  return (val > 0 * millimeter) ? val : fallback;
 }
 
 export function simpleNumber(num is ValueWithUnits) returns string { return simpleNumber(num / millimeter); }
