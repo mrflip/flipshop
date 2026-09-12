@@ -40,7 +40,7 @@ const FDMHoleEndStyleTitles = {
 export enum HoleType {
   annotation { "Name": 'Simple Hole' }
   SIMPLE,
-  annotation { "Name": 'Split Hole' }
+  annotation { "Name": 'Splited Hole' }
   SPLIT,
   annotation { "Name": 'Self Tapping' }
   THREAD,
@@ -86,6 +86,9 @@ const THROUGH_FALLBACK = 50 * millimeter;
 const AXIS_PROBE_INSET = 0.01 * millimeter;
 // Below this, the hole axis is too near parallel with an end plane to intersect it
 const PLANE_PARALLEL_TOL = 1e-6;
+// A boolean that refuses a tangency or a coincident face will usually accept the same solid
+// moved off it by an amount well under print resolution
+const PLUG_NUDGE = 0.01 * millimeter;
 
 
 /**
@@ -158,39 +161,48 @@ function cutHoleAtMate(context is Context, id is Id, definition is map, mateQ is
  * Adds the prefill plug to each drilled body separately.
  *
  * One plug per body, because a boolean consumes its tools and because a single union across
- * several targets would return them as one merged body. Bodies the plug never reaches are
- * skipped rather than unioned-and-caught, so a disjoint union is never attempted; anything
- * left over after a failed union is deleted instead of being left loose in the part studio.
+ * several targets would return them as one merged body.
+ *
+ * Three guards against a union that cannot produce a manifold solid. The axis test picks the
+ * candidate bodies, which is cheap but only tells you the hole line crosses them. Each candidate
+ * is then checked for shared volume, so contact along a face, an edge or a point is skipped
+ * rather than handed to a boolean that would have to resolve zero-thickness geometry. What is
+ * left is retried once with the plug nudged off whatever coincidence the boolean refused, and
+ * anything still unconsumed is deleted instead of being left loose in the part studio.
  */
 function prefillDrilledBodies(context is Context, id is Id, definition is map, holeLoc is map) {
   const plugDiam = ifNilOrZero(definition.prefillDiam, definition.diameter + 1 * millimeter);
   const plugDepth = ifNilOrZero(definition.prefillDepth, holeLoc.depth);
+  const plugConfig = {
+      "diameter":    plugDiam,
+      "depth":       plugDepth,
+      "split":       false,
+      "height":      0 * millimeter,
+      // A chamfer that eats the plug leaves a knife edge where the cone meets the body face
+      "chamferDist": min(definition.chamferDist, plugDepth * 0.5),
+    };
 
   const bodyQs = drilledBodyQsFor(context, definition.targetBody, holeLoc, plugDepth);
   if (size(bodyQs) == 0) { return; }
 
-  const plugQs = instancedQsFor(context, id + "plugs", BasicHole::build, {
-        "diameter":    plugDiam,
-        "depth":       plugDepth,
-        "split":       false,
-        "height":      0 * millimeter,
-        "chamferDist": definition.chamferDist,
-      }, holeLoc.transform, size(bodyQs));
+  const plugQs = instancedQsFor(context, id + "plugs", BasicHole::build, plugConfig, holeLoc.transform, size(bodyQs));
+  var madeQs = plugQs;
 
   for (var ii = 0; ii < size(bodyQs); ii += 1) {
     highlightQuery(context, plugQs[ii], DebugColor.YELLOW, definition.debugMe);
-    try {
-      opBoolean(context, id + "union" + unstableIdComponent(ii), {
-            "tools":         qUnion([bodyQs[ii], plugQs[ii]]),
-            "operationType": BooleanOperationType.UNION,
-          });
-    } catch (err) {
-      debug(context, err);
-    }
+    if (! bodiesInterfere(context, plugQs[ii], bodyQs[ii])) { continue; }
+    if (tryUnion(context, id + "union" + unstableIdComponent(ii), bodyQs[ii], plugQs[ii])) { continue; }
+
+    const nudgedQ = instancedQFor(context, id + "nudged" + unstableIdComponent(ii), BasicHole::build, mergeMaps(plugConfig, {
+          "diameter": plugDiam + PLUG_NUDGE,
+          "depth":    plugDepth + PLUG_NUDGE,
+        }), holeLoc.transform);
+    madeQs = append(madeQs, nudgedQ);
+    tryUnion(context, id + "retry" + unstableIdComponent(ii), bodyQs[ii], nudgedQ);
   }
 
-  // A consumed plug no longer resolves, so whatever is left here is from a union that failed
-  const strayQs = qUnion(plugQs);
+  // A consumed plug no longer resolves, so whatever is left is from a skip or a failed union
+  const strayQs = qUnion(madeQs);
   if (! isQueryEmpty(context, strayQs)) {
     opDeleteBodies(context, id + "strays", { "entities": strayQs });
   }
@@ -568,6 +580,39 @@ function cutterFor(definition is map, depth is ValueWithUnits) returns map {
           "chamferDist": definition.chamferDist,
         },
     };
+}
+
+/**
+ * Whether two solids share volume, as opposed to merely touching or missing each other.
+ *
+ * Only the count of collision records is read, so this does not depend on their shape. If a
+ * pure touch ever shows up here as a collision, the record's clash type is the knob for it.
+ * An evaluation that refuses outright falls through to attempting the union, since skipping
+ * material is worse than a boolean that might still have worked.
+ */
+function bodiesInterfere(context is Context, toolQ is Query, targetQ is Query) returns boolean {
+  try {
+    return size(evCollision(context, { "tools": toolQ, "targets": targetQ })) > 0;
+  } catch (err) {
+    return true;
+  }
+}
+
+/**
+ * Unions one plug into one body, reporting whether the boolean accepted it rather than throwing,
+ * so a refusal can be retried and the leftover swept up.
+ */
+function tryUnion(context is Context, id is Id, bodyQ is Query, plugQ is Query) returns boolean {
+  try {
+    opBoolean(context, id, {
+          "tools":         qUnion([bodyQ, plugQ]),
+          "operationType": BooleanOperationType.UNION,
+        });
+  } catch (err) {
+    debug(context, err);
+    return false;
+  }
+  return true;
 }
 
 /**

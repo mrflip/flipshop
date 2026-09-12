@@ -1,11 +1,18 @@
-FeatureScript 3029;
-import(path : "onshape/std/common.fs", version : "3029.0");
-import(path : "58963520be3fe612d10b6d2e", version : "a3fca0f70c41654575775503");
-import(path : "c50e2363725f9cf513e36928", version : "f7420b370e103a85d2d29de4");
-import(path : "e313a0b67ecb3be0415d2186", version : "49ce2ecc79daf3ab8bef3f8a");
-import(path : "075be6354063579d5fedb3b7", version : "16b6cffc519512a719cbc22e");
+FeatureScript 3070;
+import(path : "onshape/std/common.fs", version : "3070.0");
+import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
+import(path : "6fcd20533bd2df7c4094a0bf", version : "5849e1654325cddeda6f7440");
+import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
+import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
+import(path : "08b6ba15b8255611bafe7520", version : "2a3b23fb0cdd7a00cb549f43");
+import(path : "f6ab954150609e1e2e014a1e", version : "cefd17945c168add0f500dad");
+//
+import(path : "a92a3694a1d67e78c541bed5", version : "56ba169394d4d160246bdce5");
+import(path : "b87a9ac25313676049cf04cb", version : "3e528d35b76d37ea2d572166");
 
 // == [Run tests] ==
+
+const SuiteTitle = "Collection Utils";
 
 /**
  * Part feature: extrudes `text` sized and aligned within a bounding plate at each selected plane.
@@ -14,182 +21,41 @@ import(path : "075be6354063579d5fedb3b7", version : "16b6cffc519512a719cbc22e");
  *   @field json {string} : stringified JSON to produce
  * }}
  */
-annotation { "Feature Type Name": "Run Utils Tests", "Feature Type Description": "Internal Tests" } // , "Feature Name Template": "Tests of #testname"
-export const mapKeysF = defineFeature(function(context is Context, id is Id, definition is map)
+annotation { "Feature Type Name": 'Run ' ~ SuiteTitle ~ ' Tests', "Feature Type Description": "Internal Tests" }
+export const runClxnTestsFS = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
   annotation { "Name": "Verbose", "UIHint": UIHint.REMEMBER_PREVIOUS_VALUE, "Default": false }
   definition.verbose is boolean;
 }
 {
-  const verbose = ifNil(definition.verbose, false);
-  runStrSliceTests(context, verbose);
-  runStrTakeTests(context, verbose);
-  runStrTakeRightTests(context, verbose);
-  runSizeofTests(context, verbose);
-  runMapValuesTests(context, verbose);
-  runMapValues3Tests(context, verbose);
-  runValuesAtTests(context, verbose);
-  runPadTests(context, verbose);
-  if (! verbose) { debug(context, "\n**********************************\n** Utils Tests ran successfully **\n**********************************"); }
+  try {
+    const verbose = ifNil(definition.verbose, false);
+    //
+    runUndotMapTests(context, verbose);
+    if (verbose) { runUndotMapThrowsTests(context, verbose); }
+    runDotMapTests(context, verbose);
+    runRoundTripTests(context, verbose);
+    //
+    runBuildNestedChoicesTests(context, verbose);
+    //
+    runMapValuesTests(context,  verbose);
+    runMapValues3Tests(context, verbose);
+    runValuesAtTests(context,   verbose);
+    runRebagTests(context, verbose);
+    //
+    runPathForKeyTests(context, verbose);
+    runDeepMergeTests(context, verbose);
+    runGetAtPathTests(context, verbose);
+    runGetAtArrTests(context, verbose);
+    runSetAtTests(context, verbose);
+    if (verbose) { runSetAtThrowsTests(context, verbose); }
+    //
+    if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
+  } catch (err) {
+    debug(context, starbanner('** Error in ' ~ SuiteTitle ~ ' Tests: ' ~ err ~ ' **'));
+  }
 });
 
-export function runTests(context is Context, testname is string, verbose is boolean, testCases is array, testfunc is function) returns map{
-    var results = []; var counts = { "OK": 0, "MISMATCH": 0, "ERROR": 0, total: 0 };
-    for (var testCase in testCases) {
-      const args        = testCase[0];
-      const wanted      = testCase[1];
-      var   grade       = undefined;
-      var   actual      = undefined;
-      try {
-        actual = testfunc(args);
-        grade  = (actual == wanted) ? "OK" : "MISMATCH";
-      } catch (error) {
-        actual = error;
-        grade  = "ERROR";
-      }
-      results  = append(results, concatenateArrays([[grade, actual, wanted], args]));
-      counts[grade] += 1;
-      counts.total  += 1;
-      if (grade != "OK") {
-        debug(context, "Test " ~ grade ~ " for " ~ testname ~ args);
-        debug(context, "Actual: " ~ [actual]);
-        debug(context, "Wanted: " ~ [wanted]);
-      }
-    }
-    const ok = (counts.total == counts.OK);
-    if (verbose || (! ok)) {
-      debug(context, "Tests for " ~ testname ~ ": " ~ counts);
-      debug(context, results);
-    }
-    return { "counts": counts, "results": results, "OK": ok };
-}
-
-const StrSliceTestCases = [
-    [["hello world",    0,     3                    ], "hel"         ],
-    [["hello world",   -5],                            "world"       ],
-    [["hello world",    0,     -1                   ], "hello worl"  ],
-    [["hello world",    0],                            "hello world" ],
-    [["hello world",    0,     SequencePosition.END ], "hello world" ],
-    [["hello world",    3],                            "lo world"    ],
-    [["hello world",    3,     SequencePosition.END ], "lo world"    ],
-    [["hello world", -100,     100                  ], "hello world" ],
-    [["hello world",    5,     2                    ], ""            ],
-    [["hello world",  100,     200                  ], ""            ],
-    [["hello world",   -3,     -1                   ], "rl"          ],
-    [["hello world",    0,     0                    ], ""            ],
-    [["hello world",    2,     2                    ], ""            ],
-    [["hello world",  -11,     -6                   ], "hello"       ],
-    [["abc",            0,     3                    ], "abc"         ],
-    [["abc",            1,     3                    ], "bc"          ],
-    [["abc",            2,     3                    ], "c"           ],
-    [["abc",            3,     3                    ], ""            ],
-    [["abc",            4,     3                    ], ""            ],
-    [["abc",           -1,     3                    ], "c"           ],
-    [["abc",           -2,     3                    ], "bc"          ],
-    [["abc",           -3,     3                    ], "abc"         ],
-    [["abc",            0,     2                    ], "ab"          ],
-    [["abc",            1,     2                    ], "b"           ],
-    [["abc",            2,     2                    ], ""            ],
-    [["abc",            3,     2                    ], ""            ],
-    [["abc",           -1,     2                    ], ""            ],
-    [["abc",           -2,     2                    ], "b"           ],
-    [["abc",           -3,     2                    ], "ab"          ],
-    [["",               0],                            ""            ],
-    [["",               0,     -1                   ], ""            ],
-    [["",               0,     SequencePosition.END ], ""            ],
-    [["",               3,     0                    ], ""            ],
-    [["",               3,     5                    ], ""            ],
-    [["",               3],                            ""            ],
-    [["",               3,     SequencePosition.END ], ""            ],
-    [["",              -3,     0                    ], ""            ],
-    [["",              -3,     5                    ], ""            ],
-    [["",              -3],                            ""            ],
-    [["",              -3,     SequencePosition.END ], ""            ],
-];
-function runStrSliceTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "String Slice", verbose, StrSliceTestCases, function (args is array) returns string {
-    return (size(args) == 2) ? strSlice(args[0], args[1]) : strSlice(args[0], args[1], args[2]);
-  });
-}
-
-function runStrTakeTests(context is Context, verbose is boolean) returns map {
-    return runTests(context, "strTake", verbose, [
-    [["hello world",    30                          ], "hello world"         ],
-    [["hello world",    12                          ], "hello world"         ],
-    [["hello world",    11                          ], "hello world"         ],
-    [["hello world",    10                          ], "hello worl"          ],
-    [["hello world",    2                           ], "he"                 ],
-    [["hello world",    1                           ], "h"         ],
-    [["hello world",    0],                            ""       ],
-    [["hello world",   -1],                            ""       ],
-    [["hello world",   -5],                            ""       ],
-    [["",               3],                            ""            ],
-    [["",               1],                            ""            ],
-    [["",               0],                            ""            ],
-    [["",               -1],                           ""            ],
-    [["",               -5],                           ""            ],
-  ], (args is array) returns string => {
-    return strTake(args[0], args[1]);
-  });
-}
-
-
-function runStrTakeRightTests(context is Context, verbose is boolean) returns map {
-    return runTests(context, "strTake", verbose, [
-    [["hello world",    30                          ], "hello world"         ],
-    [["hello world",    12                          ], "hello world"         ],
-    [["hello world",    11                          ], "hello world"         ],
-    [["hello world",    10                          ], "ello world"          ],
-    [["hello world",    2                           ], "ld"                  ],
-    [["hello world",    1                           ], "d"                   ],
-    [["hello world",    0],                            ""       ],
-    [["hello world",   -1],                            ""       ],
-    [["hello world",   -5],                            ""       ],
-    [["",               3],                            ""            ],
-    [["",               1],                            ""            ],
-    [["",               0],                            ""            ],
-    [["",               -1],                           ""            ],
-    [["",               -5],                           ""            ],
-  ], (args is array) returns string => {
-    return strTakeRight(args[0], args[1]);
-  });
-}
-
-export function runPadTests(context is Context, verbose is boolean) returns map {
-    return runTests(context, "padLeft", verbose, [
-        [["", 0],                       ""],
-        [["", -5],                      ""],
-        [["", 0, " "],                  ""],
-        [["", -5, " "],                 ""],
-        [["", 3],                       "   "],
-        [["", 3, " "],                  "   "],
-        [["", 3, "  "],                 "   "],
-        [["", 3, "1234"],               "123"],
-    ], function(args is array) { return size(args) <= 2 ? padLeft(args[0], args[1]) : padLeft(args[0], args[1], args[2]); });
-}
-
-export function runSizeofTests(context is Context, verbose is boolean) returns map {
-    return runTests(context, "sizeof", verbose, [
-        [[ []                             ],  0],
-        [[ {}                             ],  0],
-        [[ undefined                      ],  0],
-        [[ ""                             ],  0],
-        // arrays
-        [[ [[]]                           ],  1],
-        [[ [{}]                           ],  1],
-        [[ [undefined]                    ],  1],
-        [[ [0]                            ],  1],
-        [[ [0, 1, 2]                      ],  3],
-        // keys with undefined values are removed!!
-        [[ { a: undefined }               ],  0],
-        [[ { a: undefined, b: [], c: "" } ],  2],
-        //
-        [[ { a: 1 }                       ],  1],
-        [[ { a: 1, b: 2 }                 ],  2],
-        // strings
-        [[ "12345"                        ],  5],
-    ], function(args is array) { return sizeof(args[0]); });
-}
 const mapValuesInspector2 = function(val, key)      { return [val, key]; };
 const mapValuesInspector3 = function(val, key, seq) { return [val, key, seq]; };
 
@@ -407,4 +273,27 @@ export function runValuesAtTests(context is Context, verbose is boolean) returns
         [[ [11, 22],         [-1, 0],      MissingPolicy.SKIP], [11] ],
         [[ [11, 22],         [1, -1],      MissingPolicy.SKIP], [22] ],
     ], function(args is array) { return size(args) <= 2 ? valuesAt(args[0], args[1]) : valuesAt(args[0], args[1], args[2]); });
+}
+
+const rebagArrInspector = function(val, seq is number)                { if (val == "skip") return undefined; return ["" ~ seq ~ seq, [val, seq]]; };
+const rebagMapInspector = function(val, key is string, seq is number) { if (val == "skip") return undefined; return ["" ~ key ~ key, [val, key, seq]]; };
+export function runRebagTests(context is Context, verbose is boolean) returns map {
+    return runTests(context, "rebag", verbose, [
+        [[ {},                             curry3to0(noop)],   {} ],
+        [[ { a: 11, b: 22 },               curry3to0(noop)],   {} ],
+        [[ {},                             rebagMapInspector], {} ],
+        [[ { a: 11, b: 22 },               rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
+        [[ { b: 22, a: 11 },               rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
+        [[ { b: 22, a: 11, d: undefined }, rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
+        [[ { b: 22, a: 11, s: "skip" },    rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
+        //
+        [[ [],                             curry2to0(noop)],   {} ],
+        [[ [11, 22],                       curry2to0(noop)],   {} ],
+        [[ [],                             rebagArrInspector], {} ],
+        [[ ["skip"],                       rebagArrInspector], {} ],
+        [[ [11, 22],                       rebagArrInspector], { '00': [11, 0], '11': [22, 1] } ],
+        [[ [11, 22, "skip"],               rebagArrInspector], { '00': [11, 0], '11': [22, 1] } ],
+        //
+        //
+    ], function(args is array) { return rebag(args[0], args[1]);  });
 }
