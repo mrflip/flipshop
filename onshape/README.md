@@ -31,14 +31,14 @@ where noted. Evaluators (`evaluate.fs`'s `evX` functions) are covered further do
 | `V`           | Vector, dims unspecified                                                                                                                                            |
 | `V2`          | Vector, 2D -- eg sketch plane; elements are ValueWithUnits                                                                                                          |
 | `V3`          | Vector, 3D; elements are ValueWithUnits                                                                                                                             |
-| `             |
+| `VU` / `VU3`  | unit Vector (magnitude 1, unitless) / same, 3D                                                                                                                      |
+| `VF2`         | fractional 2D Vector (unitless, components usually 0..1)                                                                                                           |
 | `M`           | Matrix                                                                                                                                                              |
 | `VWU`         | ValueWithUnits                                                                                                                                                      |
 | `MWU`         | MatrixWithUnits                                                                                                                                                     |
 | `T`           | Transform                                                                                                                                                           |
 | `Ctx`         | Context                                                                                                                                                             |
 | `id`          | Id (string path)                                                                                                                                                    |
-| `?`           | optional field/arg                                                                                                                                                  |
 | `→`           | returns                                                                                                                                                             |
 | `curvature`   | always has type `ValueWithUnits<inverse length>`; eg `maxCurvature` or `curvature`                                                                                  |
 | `xxFrac`      | fractional (i.e. 0 <= unitless <= 1) number giving the proportional location along a curve/line/edge: 0.0 is the start, 1.0 is the end                                        |
@@ -47,6 +47,7 @@ where noted. Evaluators (`evaluate.fs`'s `evX` functions) are covered further do
 | `qy:1`        | query must resolve to exactly one entity                                                                                                                            |
 | `!`           | required; on an array, also has at least one element; on a query, also resolves to one or more entities                                                             |
 | `?`           | optional                                                                                                                                                            |
+| `x[]`         | an array of `x`                                                                                                                                                     |
 | `[thisQ, thatV, theOther?]`            | a tuple of typed elements (in this case, a query, a vector and an optional value)                                                                                   |
 | `str` / `num` / `bool` / `arr` / `map` | string / number / boolean / array / generic record                                                                                                                  |
 
@@ -75,7 +76,7 @@ Field types are dropped where the name already says it (e.g. `angle`, `radius`).
 | Type                      | Kind     | Fields                                                                                      |
 | ------------------------- | -------- | ------------------------------------------------------------------------------------------- |
 | `Context`                 | core     | opaque builtin — `@isContext(value)`                                                        |
-| `Id`                      | core     | `arr<str>` — path segments, each `[a-zA-Z0-9_.+/-]*` or `ANY_ID`                            |
+| `Id`                      | core     | `str[]` — path segments, each `[a-zA-Z0-9_.+/-]*` or `ANY_ID`                               |
 | `Query`                   | core     | `queryType:QueryType \| historyType:str`, `entityType?:EntityType`                          |
 | `Vector`                  | math     | `arr` (size > 0) — 2D or 3D, unit-bearing or unitless by convention                         |
 | `Matrix`                  | math     | opaque builtin `@isMatrix` — rows × cols nested array                                       |
@@ -88,13 +89,13 @@ Field types are dropped where the name already says it (e.g. `angle`, `radius`).
 | `CoordSystem`             | geometry | `origin:V3`, `xAxis:V3`, `zAxis:V3` (⟂ required)                                            |
 | `PersistentCoordSystem`   | geometry | `coordSystem?:CoordSystem`, `coordSystemId:str`, `forceRightHanded?:bool`                   |
 | `Box3d`                   | geometry | `minCorner:V3`, `maxCorner:V3`                                                              |
-| `Path`                    | geometry | `edges:arr<Q>`, `flipped:arr<bool>`, `closed:bool`, `adjacentFaces?:Q`                      |
+| `Path`                    | geometry | `edges:Q[]`, `flipped:bool[]`, `closed:bool`, `adjacentFaces?:Q`                             |
 | `PathDistanceInformation` | geometry | `distance:VWU`, `withinBoundingBox:bool`                                                    |
 | `Sketch`                  | sketch   | opaque builtin — `@isSketch(value)`                                                         |
 | `Color`                   | props    | `red,green,blue,alpha:num` ∈ [0,1]                                                          |
 | `Material`                | props    | `name:str`, `density:VWU`                                                                   |
 | `MassProperties`          | eval     | `mass:VWU`, `volume?/area?/length?:VWU`, `count?:num`, `centroid:V`, `inertia:MWU`          |
-| `DistanceResult`          | eval     | `distance:VWU`, `sides:arr[2]` of `{index:num, point:V3, parameter}`                        |
+| `DistanceResult`          | eval     | `distance:VWU`, `sides:{index:num, point:V3, parameter}[2]`                                 |
 | `RaycastResult`           | eval     | `entity:Q`, `entityType:EntityType`, `parameter:num\|V2`, `intersection:V3`, `distance:VWU` |
 
 ### geomOperations.fs — the verbs
@@ -112,15 +113,15 @@ part that differs from op to op.
 | `opDraft`         | edge-treat | draftType, draftFaces, referenceSurface, referenceEntityDraftOptions, pullVec:V3, angle, tangentPropagation?, referenceEntityPropagation?, reFillet?                                                                                                              |
 | `opBodyDraft`     | edge-treat | selectionType?, topEdges, bottomEdges, faces, bodies, excludeFaces?, angle, bothSides?, pullDirection, draftOnSelf?, partingObject, matchFacesAtParting?, matchFaceType?, cornerType?, concaveRepair?, concaveRepairRadius, keepMaterial?, showRefs?              |
 | `opSplitFace`     | split      | faceTargets, edgeTools?, projectionType?, direction?, faceTools?, bodyTools?, keepToolSurfaces?, planeTools?, extendToCompletion?, mutualImprint?                                                                                                                 |
-| `opHole`          | feature    | holeDefinition, axes:arr\<Line\>, identities?, targets, subtractFromTargets?, targetsToExcludeFromSubtraction?, keepTools?                                                                                                                                        |
+| `opHole`          | feature    | holeDefinition, axes:Line[], identities?, targets, subtractFromTargets?, targetsToExcludeFromSubtraction?, keepTools?                                                                                                                                             |
 | `opRevolve`       | primitive  | entities, axis:Line, angleForward, angleBack                                          |
 | `opSweep`         | primitive  | profiles, path, keepProfileOrientation, lockFaces?, lockDirection?, profileControl?   |
 | `opPlane`         | primitive  | plane:Plane, width?, height?, defaultType? *(internal)*                               |
 | `opPoint`         | primitive  | point:V3, origin? *(internal)*                                                        |
-| `opPolyline`      | primitive  | points:arr\<V3\>, bendRadii:arr\<VWU\>                                                |
+| `opPolyline`      | primitive  | points:V3[], bendRadii:VWU[]                                                          |
 | `opBoolean`       | boolean    | tools, targets, operationType, targetsAndToolsNeedGrouping?, keepTools?, makeSolid?   |
 | `opTransform`     | transform  | bodies, transform:T                                                                   |
-| `opPattern`       | pattern    | entities, transforms:arr\<T\>, instanceNames:arr\<str\>, copyPropertiesAndAttributes? |
+| `opPattern`       | pattern    | entities, transforms:T[], instanceNames:str[], copyPropertiesAndAttributes?           |
 | `opShell`         | solidify   | entities, thickness                                                                   |
 | `opThicken`       | solidify   | entities, thickness1, thickness2, keepTools?                                          |
 | `opEnclose`       | solidify   | entities                                                                              |
@@ -164,12 +165,12 @@ The whole file, seven functions plus a predicate — short enough to cover compl
 | Function                                   | Does      | Args                                                                  |
 | ------------------------------------------ | --------- | --------------------------------------------------------------------- |
 | `box3d(minCorner, maxCorner)`              | construct | minCorner, maxCorner:V3 *(auto-sorted per axis)*                      |
-| `box3d(pointArray)`                        | construct | pointArray:arr\<V3\> *(bounding box of all points)*                   |
+| `box3d(pointArray)`                        | construct | pointArray:V3[] *(bounding box of all points)*                        |
 | `transformBox3d(boxIn, transformation)`    | transform | boxIn:Box3d, transformation:T *(re-bounds the 8 transformed corners)* |
 | `extendBox3d(bBox, absoluteValue, factor)` | resize    | bBox:Box3d, absoluteValue:VWU, factor:num                             |
 | `box3dCenter(bBox)`                        | query     | bBox:Box3d → V3                                                       |
 | `box3dDiagonalLength(bBox)`                | query     | bBox:Box3d → VWU                                                      |
-| `box3dAllCorners(bBox)`                    | query     | bBox:Box3d → arr\<V3\> [8]                                            |
+| `box3dAllCorners(bBox)`                    | query     | bBox:Box3d → V3[8]                                                    |
 | `insideBox3d(point, bBox)`                 | predicate | point:V3, bBox:Box3d                                                  |
 
 ### sketch.fs
@@ -192,8 +193,8 @@ reappearing here instead of `start`/`end`, same idea as row 2–3 of the Rosetta
 | `skEllipticalArc`   | entity     | center:V2, majorAxis:V2, minorRadius:VWU, majorRadius:VWU, startParameter:num, endParameter:num, construction? |
 | `skRectangle`       | entity     | firstCorner:V2, secondCorner:V2, construction?                                                                 |
 | `skRegularPolygon`  | entity     | center:V2, firstVertex:V2, sides:num, construction?                                                            |
-| `skPolyline`        | entity     | points:arr\<V2\>, construction?, constrained?                                                                  |
-| `skFitSpline`       | entity     | points:arr, parameters?:arr\<num\>, construction?, startDerivative?:V2, endDerivative?:V2                      |
+| `skPolyline`        | entity     | points:V2[], construction?, constrained?                                                                       |
+| `skFitSpline`       | entity     | points:arr, parameters?:num[], construction?, startDerivative?:V2, endDerivative?:V2                           |
 | `skText`            | entity     | text:str, fontName:str, construction?, firstCorner?:V2, secondCorner?:V2, mirrorHorizontal?, mirrorVertical?   |
 | `skConstraint`      | constraint | constraintType:ConstraintType, length?:VWU, angle?:VWU                                                         |
 
@@ -225,7 +226,7 @@ glance what's generic, what's specific, and what's plural-safe:
 | `xQ:1!`                     | this argument must resolve to **exactly one** entity          |
 | `name?`                     | optional argument, of whatever type fits                      |
 | `x[]`                       | an array of `x`                                               |
-| `[thisQ, thatV, theOther?]  | a tuple of typed elements (in this case, a query, a vector and an optional value) |
+| `[thisQ, thatV, theOther?]` | a tuple of typed elements (in this case, a query, a vector and an optional value) |
 | `EnumType.X`                | a specific enum value is expected (`X` stands for "pick one") |
 | `EnumType[]`                | an array of enum values                                       |
 | plain names (`featureId`, `plane`, `line`, `point`, `direction`, `radius`, …) | a non-Query argument — see each row                           |
@@ -236,8 +237,8 @@ docs require to be a single face.
 
 **Special**
 
-| Function                                                 . | Does                                                                                          |
-| -----------------------------------------------------      | --------------------------------------------------------------------------------------------- |
+| Function | Does |
+|---|---|
 | `qNothing()`                                               | Empty query; matches nothing.                                                                 |
 | `qEverything(EntityType.X?)`                               | Every entity in the context, optionally filtered to one EntityType.                           |
 | `qAllSolidBodies()`                                        | All solid bod(ies) (`BodyType.SOLID`).                                                        |
@@ -246,10 +247,10 @@ docs require to be a single face.
 | `qAllModifiableSolidBodiesNoMesh()`                        | All modifiable, non-mesh solid bod(ies) — everything in the Part Studio's Parts list.         |
 | `qNthElement(qy, n)`                                       | The nth entity of qy (0-based; `-1` = last). qy must resolve to at least `n+1` entities.      |
 | `qEntityFilter(qy, EntityType.X)`                          | Entit(ies) of qy matching EntityType.X.                                                       |
-| `qHasAttribute([qy], name)`                                | Entit(ies) (in qy, or in the whole context) carrying an attribute named `name`.               |
-| `qHasAttributeWithValue([qy], name, value)`                | …carrying attribute `name` equal to `value`.                                                  |
-| `qHasAttributeWithValueMatching([qy], name, pattern)`      | …carrying attribute `name` whose map value matches every key in `pattern`.                    |
-| `qAttributeFilter([qy], pattern)`                          | Legacy unnamed-attribute match against `pattern` (type-tag aware).                            |
+| `qHasAttribute(qy?, name)`                                 | Entit(ies) (in qy, or in the whole context) carrying an attribute named `name`.               |
+| `qHasAttributeWithValue(qy?, name, value)`                 | …carrying attribute `name` equal to `value`.                                                  |
+| `qHasAttributeWithValueMatching(qy?, name, pattern)`       | …carrying attribute `name` whose map value matches every key in `pattern`.                    |
+| `qAttributeFilter(qy?, pattern)`                           | Legacy unnamed-attribute match against `pattern` (type-tag aware).                            |
 | `qCreatedBy(featureId, EntityType.X?)`                     | Entit(ies) created by `featureId` — accepts a single Id or a FeatureList (unions across all). |
 | `qCapEntity(featureId, CapType.X, EntityType.X?)`          | Start/end cap entit(ies) of `featureId` (extrude, revolve, sweep, loft, thicken).             |
 | `qNonCapEntity(featureId, EntityType.X?)`                  | Entit(ies) created by `featureId`, excluding cap entities.                                    |
@@ -259,10 +260,10 @@ docs require to be a single face.
 
 **Boolean combinators**
 
-| Function                                                 . | Does                                                                         |
-| --------------------------------                           | ---------------------------------------------------------------------------- |
-| `qUnion([qy])`                                             | Entit(ies) matching any of the listed querie(s); preserves input order.      |
-| `qIntersection([qy])`                                      | Entit(ies) matching all of the listed queries; preserves order of the first. |
+| Function | Does |
+|---|---|
+| `qUnion(qy[])`                                             | Entit(ies) matching any of the listed querie(s); preserves input order.      |
+| `qIntersection(qy[])`                                      | Entit(ies) matching all of the listed queries; preserves order of the first. |
 | `qSubtraction(qy1, qy2)`                                   | Entit(ies) in qy1 but not qy2; preserves order of qy1.                       |
 | `qSymmetricDifference(qy1, qy2)`                           | Entit(ies) in exactly one of qy1 or qy2.                                     |
 
@@ -283,16 +284,16 @@ docs require to be a single face.
 
 **Geometry type**
 
-| Function                                                 . | Does                                                                      |
-| -----------------------------------------------            | ------------------------------------------------------------------------- |
+| Function | Does |
+|---|---|
 | `qGeometry(qy, GeometryType.X)`                            | Entit(ies) of qy with a given `GeometryType` (LINE, CIRCLE, CYLINDER, …). |
-| `qBodyType(qy, [BodyType])`                                | Entit(ies) of qy belonging to body/bodies of the given `BodyType`(s).     |
+| `qBodyType(qy, BodyType[])`                                | Entit(ies) of qy belonging to body/bodies of the given `BodyType`(s).     |
 | `qConstructionFilter(qy, ConstructionObject.X)`            | Construction (or non-construction) entities of qy.                        |
 
 **Geometry matching**
 
-| Function                                                 . | Does                                                                                                                 |
-| -----------------------------------------------------      | -------------------------------------------------------------------------------------------------------------------- |
+| Function | Does |
+|---|---|
 | `qParallelPlanes(qy, refPlane, includeAntiparallel?)`      | Entities strictly parallel to refPlane, optionally including antiparallel ones.                                      |
 | `qPlanesParallelToDirection(qy, direction)`                | Planar faces of qy whose normal is ⟂ to `direction`.                                                                 |
 | `qFacesParallelToDirection(qy, direction)`                 | Faces of qy parallel to `direction` (normal ⟂ for planar, axis ∥ for cylindrical, extrude direction ∥ for extruded). |
@@ -308,7 +309,7 @@ docs require to be a single face.
 | `qLoopEdges(seedQ)`                              | The edge loop(s) containing seedQ's laminar edges, or bounding seedQ's faces.            |
 | `qParallelEdges(qy, direction)`                  | Linear edges of qy (anti)parallel to `direction`. *(or pass `edgesQ` in place of `direction` to match against any linear edge in edgesQ)*                                                                                                                                                       |
 | `qLoopBoundedFaces(seedQ)`                       | Faces bounded by the face in seedQ, on the side of the edge in seedQ — e.g. select an entire pocket via `qUnion([pocketFace, touchingEdge])`. *(seedQ = `qUnion([faceQ:1!, edgeQ:1!])`; extras beyond the first of each are ignored)*                                                           |
-| `qFaceOrEdgeBoundedFaces(seedQ)`                 | Faces adjacent to the seed face in seedQ, flood-filling outward until blocked by the other entities in seedQ. *(seedQ = `qUnion([seedFaceQ:1!, [boundaryQ]])` — the seed face must be ordered first)*                                                                                           |
+| `qFaceOrEdgeBoundedFaces(seedQ)`                 | Faces adjacent to the seed face in seedQ, flood-filling outward until blocked by the other entities in seedQ. *(seedQ = `qUnion([seedFaceQ:1!, boundaryQ[]])` — the seed face must be ordered first)*                                                                                           |
 | `qHoleFaces(seedQ:1!)`                           | All faces of the hole containing seedQ.                                                  |
 | `qSketchRegion(featureId, filterInnerLoops?)`    | Closed 2D region(s) from the sketch at `featureId`.                                      |
 | `qUniqueVertices(qy)`                            | qy's vertices, deduplicated (keeps the lowest deterministic ID of each duplicate set).   |
@@ -317,7 +318,7 @@ docs require to be a single face.
 | `qMatching(qy)`                                  | Faces/edges geometrically identical (same size & shape) to qy, within qy's owner bodies. |
 | `qDependency(qy)`                                | The true dependency of qy (e.g. an extrude's profile edges).                             |
 | `qLaminarDependency(qy)`                         | Like `qDependency`, but follows back to the nearest laminar edge.                        |
-| `qPatternInstances(featureId, [instanceName], EntityType.X)` | Entities created by named instance(s) of the `opPattern` at `featureId`.     |
+| `qPatternInstances(featureId, instanceName[], EntityType.X)` | Entities created by named instance(s) of the `opPattern` at `featureId`.     |
 
 **Containment & intersection**
 
@@ -359,7 +360,7 @@ docs require to be a single face.
 **Historical / codegen**
 
 | Function                                                      | Does                                                                               |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `qSplitBy(featureId, EntityType.X?, backBody?)`               | Entities on the front (`backBody`=false) or back side of the split at `featureId`. |
 | `sketchEntityQuery(featureId, EntityType.X?, sketchEntityId)` | Wire-body entit(ies) created for one sketch entity.                                |
 
@@ -597,10 +598,10 @@ under the hood — cheap to call either way.
 | `evCollision({ toolsQ!, targetsQ!, passOwners? = false })` | Collisions between `toolsQ` and `targetsQ`. | { type: ClashType, target: Q, targetBody: Q, tool: Q, toolBody: Q }[] |
 | `evRaycast({ entitiesQ!, ray: Line, closest? = true, includeIntersectionsBehind? = false })` | Where `ray` hits `entitiesQ`, closest first. | RaycastResult[] |
 | `evEdgeConvexity({ edgeQ:1! })` | Convexity of `edgeQ`: CONVEX, CONCAVE, SMOOTH, or VARIABLE. | EdgeConvexityType |
-| `evEdgeCurvature({ edgeQ:1!, ptFrac, precise?, faceQ?:1 })` | Frenet frame along an edge, with curvature, at one point. | EdgeCurvatureResult: { frame: CoordSystem\<Z: tangent, X: normal, Y: binormal\>, curvature } |
-| `evEdgeCurvatures({ edgeQ:1!, ptFracs[]!, precise?, faceQ?:1 })` | Frenet frames along an edge, with curvature | EdgeCurvatureResult[]: { frame: CoordSystem\<Z: tangent, X: normal, Y: binormal\>, curvature }[] |
-| `evEdgeTangentLine({ edgeQ:1!, ptFrac, precise?, faceQ?:1 })` | Tangent Line to `edgeQ` at one point. | Line |
-| `evEdgeTangentLines({ edgeQ:1!, ptFracs[]!, precise?, faceQ?:1 })` | Tangent Lines to `edgeQ` at several points. | Line[] |
+| `evEdgeCurvature({ edgeQ:1!, ptFrac, precise?, faceQ:1? })` | Frenet frame along an edge, with curvature, at one point. | EdgeCurvatureResult: { frame: CoordSystem\<Z: tangent, X: normal, Y: binormal\>, curvature } |
+| `evEdgeCurvatures({ edgeQ:1!, ptFracs[]!, precise?, faceQ:1? })` | Frenet frames along an edge, with curvature | EdgeCurvatureResult[]: { frame: CoordSystem\<Z: tangent, X: normal, Y: binormal\>, curvature }[] |
+| `evEdgeTangentLine({ edgeQ:1!, ptFrac, precise?, faceQ:1? })` | Tangent Line to `edgeQ` at one point. | Line |
+| `evEdgeTangentLines({ edgeQ:1!, ptFracs[]!, precise?, faceQ:1? })` | Tangent Lines to `edgeQ` at several points. | Line[] |
 | `evFaceNormalAtEdge({ edgeQ:1!, faceQ:1!, ptFrac, precise?, faceOriented? = false })` | Surface normal of `faceQ` at a point along one of its edges. | VU3 |
 | `evFaceTangentPlaneAtEdge({ edgeQ:1!, faceQ:1!, ptFrac, precise?, faceOriented? = false })` | Plane tangent to `faceQ` at a point along one of its edges. | Plane |
 | `evFaceTangentPlanesAtEdge({ edgeQ:1!, faceQ:1!, ptFracs[]!, precise?, faceOriented? = false })` | Same, at several points along the edge. | Plane[] |
@@ -654,17 +655,16 @@ practice: `import common.fs` gets you almost everything in this doc; add `geomet
 missing something op-specific. No individually-imported `std` file in his code pointed at anything
 not already covered above or in the main tables.
 
-**External documents — need your help.** A handful of import paths are opaque `documentId/workspaceId/elementId`
-triples pointing at other Onshape documents, not `onshape/std`. One dominates: the same document+element
-(`cbeb3dcf671e00785597bd76` / element `a75ab01def146a42f55baa7f`, pinned at a couple of different
-workspace snapshots) is imported by **17 of his 20 top-level files** — almost certainly his personal
-shared utility library, and the most likely place to find more of this caliber of tooling. A second
-document (`c7c08274a0d273b9a5f5b47d`, a few different elements/workspaces) shows up in 6 files and
-likely backs `cadsharpUrlPredicate`/`cadsharpUrlFunctionForPreExistingEditLogic` (18 and 10 calls —
-reads like a standard attribution/help-link widget he drops into every feature). A third, single-segment
-path (`905d9c769056ba52d974e529`, no workspace/element split) appears in 7 files including
-`utils/nodeTransform.fs`. If you can share any of those three, it's worth a second pass. Two remaining
-single-use paths (`12312312345abcabcabcdeff/...`) look like placeholder/test IDs, not worth chasing.
+**External documents.** Two of the opaque `documentId/workspaceId/elementId` import paths are now
+identified. `cbeb3dcf671e00785597bd76` / element `a75ab01def146a42f55baa7f` (pinned at a couple of
+different workspace snapshots, imported by **17 of his 20 top-level files**) is his branding import —
+the attribution/help-link widget behind `cadsharpUrlPredicate`/`cadsharpUrlFunctionForPreExistingEditLogic`
+(18 and 10 calls). `c7c08274a0d273b9a5f5b47d` (6 files) is his toolkit doc:
+https://cad.onshape.com/documents/c7c08274a0d273b9a5f5b47d/w/f348f21ad2fa5c8771f1e1b1/e/af743c73c677355164494e79
+— the more likely place to find more tooling of the `smallestBox`/`QFinder` caliber, if a second pass
+is worth it. A third, single-segment path (`905d9c769056ba52d974e529`, no workspace/element split)
+still appears in 7 files including `utils/nodeTransform.fs` and remains unidentified. Two single-use
+paths (`12312312345abcabcabcdeff/...`) look like placeholder/test IDs, not worth chasing.
 
 **Nothing clearly deprecated.** I went looking for signs his code predates functions `std` later added
 (the kind of thing that'd now be a one-liner) and came up empty — the one candidate, a `tolerantEq`
@@ -674,15 +674,14 @@ else he reaches for either matches this doc already or is one of the two gaps ab
 ### flipshop/coreUtils — essential patches
 
 Per your steer: everything here is treated as already-vetted, not code needing scrutiny — it's the
-project's own `math.fs`/`string.fs`/`containers.fs`. One file name is worth fixing: `clxnGetset.f` is
-missing its `s` (`.f`, not `.fs`) — harmless to Onshape, but it'll silently skip any tool that globs
-for `*.fs`, including every census in this document.
+project's own `math.fs`/`string.fs`/`containers.fs`. (One file, `clxnGetset.fs`, was saved as `clxnGetset.f`
+— missing the `s` — which silently skipped it in every census in this document until fixed.)
 
 | File | Fills the gap of | Catalog |
 |---|---|---|
 | `typeUtils.fs` | no nil/blank/zero coalescing — `std` has no `||`-style default-if-undefined | ifNil, ifBlank, ifZero, ifNilOrZero, isNil, isPresent, isEmpty, strBlank, truthy, vector2, mm, zero |
 | `clxnWalking.fs` | no map/array iteration beyond raw `for` loops | forEach, mapValues, mapValues3, valuesAt, sizeof, hasKey, hasPresentKey, rebag, objectify, pick, pickDefined, boxarrPush, boxarrUnshift, arrLast, arrayIncludes |
-| `clxnGetset.f` *(sic — see above)* | no path-based nested get/set in one call | getAt, setAt, deepMerge, pathForKey |
+| `clxnGetset.fs` | no path-based nested get/set in one call | getAt, setAt, deepMerge, pathForKey |
 | `clxnReshape.fs` | no flatten/unflatten between nested maps and dot-path keys | dotMap, undotMap, buildNestedChoices |
 | `stringUtils.fs` | no case conversion or padding in `string.fs` | downcase, upcase, downcaseChar, upcaseChar, padLeft, padRight, paddingFor, strTake, strTakeRight, strSlice, strRepeat, titleCase, hasMatch, starbanner |
 | `colorUtils.fs` | `Color` is RGBA-only — no hex/tuple string conversions | toColor, toHexcolor, hexcolorToColor, toUnitcolor, unitcolorToColor, toTuplecolor, tuplestrToColor, hexpairToInt, intToHexpair, sameColor, setColor, isHexcolor |
@@ -693,4 +692,4 @@ for `*.fs`, including every census in this document.
 
 Ranked by real usage across `flipshop/`, the ones you reach for constantly: `ifNil` (47), `forEach` (20),
 `vector2` (16), `ifBlank` (16), `mapValues` (15), `toColor`/`padLeft`/`curry3to0`/`curry2to0` (12 each),
-`getAt` (8) — worth knowing `getAt`/`setAt`/`deepMerge`/`pathForKey` live in the misnamed `clxnGetset.f`.
+`getAt` (8) — worth knowing `getAt`/`setAt`/`deepMerge`/`pathForKey` live in `clxnGetset.fs`.

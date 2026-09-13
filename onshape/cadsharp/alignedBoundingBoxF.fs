@@ -12,7 +12,7 @@ icon::import(path : "8df84641116a406e7415a397", version : "1a6d707cb5ecf4badfd54
 descImage::import(path : "a78e15fc45b09cf35c3d11ac", version : "035c947d72841f5d909af7b7");
 
 export import(path : "cbeb3dcf671e00785597bd76/144bf6a7fdc989e9e28ce5ea/a75ab01def146a42f55baa7f", version : "dc78e9b85c9f16ea9e131d3f");
-export import(path : "905d9c769056ba52d974e529", version : "56f64372f8bad64f9a65cf25");
+export import(path : "905d9c769056ba52d974e529", version : "56f64372f8bad64f9a65cf25"); // ./alignedBoundingBox.fs
 export import(path : "c7c08274a0d273b9a5f5b47d/25bc950e6d6cf7a9a4eba62f/0abb9be049d15f1839c40841", version : "664b5281a81636b2d1fc8ff3");
 
 export const suffix = "CADSharp";
