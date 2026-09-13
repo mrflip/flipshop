@@ -378,3 +378,198 @@ docs require to be a single face.
 `qSourceMesh` 1-arg form, `qCapEntity` boolean form
 * **pure codegen/internal plumbing**: `makeQuery`, `dummyQuery`, `qCompressed`, `qCoincidentFilter`, the `*Disambiguation` helpers,
 `stripUnits`, `transientQueriesToStrings`
+
+---
+
+The sections below came out of a function-call census across `community/`, `cadsharp/`, and
+`flipshop/` — every `std` file with real usage that wasn't already covered above. Notation
+follows the conventions in the Legend: `x[]` for arrays, `[a, b, c?]` for tuples, `fooV:VU3` for
+3D unit vectors, `qy:1` for a query required to resolve to exactly one entity, and `!` for "must
+be nonempty" on an array or query.
+
+### vector.fs
+
+The file behind the `Vector` typedef — by far the single most-called thing in the census
+(`vector()` alone: 532 hits across the three directories).
+
+| Function | Does | Args |
+|---|---|---|
+| `vector(x, y)` / `vector(x, y, z)` | construct | 2 or 3 numbers → V |
+| `vector(arr)` | construct | wraps an existing `arr!` as V |
+| `zeroVector(size)` | construct | size:num → V of zeros |
+| `squaredNorm(v)` | math | v:V → num\|VWU *(faster than `norm`, skips the `sqrt`)* |
+| `norm(v)` | math | v:V → num\|VWU |
+| `dot(v1, v2)` | math | v1, v2:V → num\|VWU |
+| `cross(v1, v2)` | math | v1, v2:V3 → V3 |
+| `angleBetween(v1, v2, refV?)` | math | v1, v2:V3 → angle ∈ [0,π]; with `refV`, a signed ccw angle as seen from `refV`'s tip, ∈ (-π,π] |
+| `normalize(v)` | math | v:V → VU *(throws if zero-length)* |
+| `project(targetV, sourceV)` | math | sourceV projected onto targetV → V |
+| `perpendicularVector(v)` | construct | v:V3 → VU3, arbitrary but consistent for the same input |
+| `rotationMatrix3d(fromV, toV)` | construct | fromV, toV:V3 → M, minimum rotation taking fromV to toV |
+| `rotationMatrix3d(axisV, angle)` | construct | axisV:V3, angle:VWU → M, ccw about axisV |
+| `scalarTripleProduct(v1, v2, v3)` | math | v1,v2,v3:V3 → num\|VWU *(`v1 · (v2 × v3)`)* |
+| `tolerantEquals(v1, v2)` | predicate | same point, or same direction, within tolerance |
+| `parallelVectors(v1, v2)` / `perpendicularVectors(v1, v2)` | predicate | angle check within tolerance |
+| `clusterPoints(points[], tolerance)` | util | points:V3[] → number[][], indices grouped by proximity |
+
+Predicates for the `Vector` shape itself, not listed as rows: `canBeVector`, `isLengthVector`,
+`isUnitlessVector`, `is2dPoint`, `is2dPointVector`, `is2dDirection`, `is3dLengthVector`,
+`is3dDirection`.
+
+### feature.fs
+
+The scaffolding every custom feature is built on. `defineFeature` itself is called once per
+feature file, so its 40 census hits means 40 distinct features across the three directories.
+
+| Function | Does | Args |
+|---|---|---|
+| `defineFeature(feature, defaults?)` | wrap | feature:`function(ctx, id, definition)` → function; `defaults` is merged into `definition` before `feature` runs. This wrapper *is* what makes a function a feature — it handles `startFeature`/`endFeature`/`abortFeature` and error status for you. |
+| `forEachEntity(ctx, id, qy, operationToPerform)` | iterate | operationToPerform:`function(entityQ:1, innerId)`, called once per entity matched by qy with a disambiguated `innerId` |
+| `isAnything(value)` | predicate | always true — typecheck for a feature parameter that accepts any expression |
+| `verifyNonemptyQuery(ctx, definition, paramName, error)` | validate | throws+faults `paramName` if `definition[paramName]` resolves to nothing → entityQ[] *(the evaluated result, so you can use it immediately)* |
+| `verifyNonemptyArray(ctx, definition, paramName, error)` | validate | throws+faults `paramName` if `definition[paramName]` isn't a nonempty array |
+| `setFeatureComputedParameter(ctx, id, {name, value})` | util | makes `value` available in a Feature Name Template as `#name` |
+| `getFullPatternTransform(ctx)` | pattern-aware | → T, the full composed transform of the active feature pattern (identity outside one) |
+| `getRemainderPatternTransform(ctx, {references})` | pattern-aware | → T, the portion of the pattern transform not already applied to `references` |
+| `transformResultIfNecessary(ctx, id, transform)` | pattern-aware | applies `transform` to entities created by `id`, skipped entirely if it's the identity |
+| `makeRobustQuery(ctx, qy)` | util | qy ∪ an identity-tracking query, so the result survives identity-preserving upstream edits |
+| `adjustAngle(ctx, angle)` | util | wraps `angle` into [0, 2π) *(range-checks instead, on old library versions)* |
+
+Lifecycle internals `defineFeature` calls for you — rarely called directly: `startFeature`,
+`endFeature`, `abortFeature`, `callSubfeatureAndProcessStatus`.
+
+### error.fs
+
+How a feature raises and reports problems to the user.
+
+| Function | Does | Args |
+|---|---|---|
+| `regenError(message, faultyParameters[]?, entitiesQ?)` | construct | message:str\|ErrorStringEnum → map, meant to be `throw`n; `faultyParameters` highlight fields red in the dialog, `entitiesQ` highlights geometry in the viewport |
+| `reportFeatureError(ctx, id, message, faultyParameters[]?)` | attach | message:str\|ErrorStringEnum — attaches an error status to `id` *without* throwing (doesn't abort the feature) |
+| `reportFeatureWarning(ctx, id, message, faultyParameters[]?)` / `reportFeatureInfo(ctx, id, message, faultyParameters[]?)` | attach | same shape, warning/info severity |
+| `getFeatureStatus(ctx, id)` | inspect | → FeatureStatus{statusType, statusEnum, statusMsg?, faultyParameters?} |
+| `clearFeatureStatus(ctx, id, definition?)` | inspect | resets `id`'s status to OK |
+| `featureHasError(ctx, id)` / `featureHasNonTrivialStatus(ctx, id)` | predicate | → bool |
+| `verify(condition, error, regenErrorOptions?)` | util | throws `regenError(error, regenErrorOptions)` if `condition` is false |
+
+### debug.fs
+
+Visible only while the calling feature's edit dialog is open; never affects real geometry or queries.
+
+| Function | Does | Args |
+|---|---|---|
+| `debug(ctx, value, color?)` | inspect | prints `value`; for Query/V3/direction-V3/Line/CoordSystem/Plane/Box3d, also highlights it in the viewport. Default color red. |
+| `addDebugEntities(ctx, qy, color?)` | highlight | highlights qy with no printing |
+| `addDebugPoint(ctx, pointV3, color?)` | highlight | draws a single point |
+| `addDebugLine(ctx, p1V3, p2V3, color?)` | highlight | draws a line between two points, prints the distance |
+| `addDebugArrow(ctx, fromV3, toV3, radius, color?)` | highlight | draws an arrow; `radius` sets the arrowhead width |
+| `startTimer(name?)` / `printTimer(name?)` | profile | crude millisecond stopwatch pair for basic profiling |
+
+`addAuxiliaryEntities`/`addAuxiliaryPoint`/`addAuxiliaryLine` are `id`-scoped siblings of the
+`addDebug*` family — visible while a *given* feature id's dialog is open, not just the caller's.
+
+### properties.fs
+
+| Function | Does | Args |
+|---|---|---|
+| `setProperty(ctx, {entitiesQ!, propertyType, customPropertyId?, value})` | write | sets name/appearance/material/etc. on bodies or faces; `value`'s type (Color, Material, bool, VWU, str) depends on `propertyType` |
+| `getProperty(ctx, {entityQ:1, propertyType, customPropertyId?})` | read | **not** callable inside a feature's own regeneration — only from tables, editing-logic, and manipulator-change functions, or on a different context |
+| `color(red, green, blue, alpha?)` | construct | 4 (or 3, alpha=1) num ∈ [0,1] → Color |
+| `material(name, density)` | construct | density:VWU\<density\> → Material |
+
+### attributes.fs
+
+Arbitrary data attached to entities by name, readable across features — see also `qHasAttribute*`
+in the Queries section above.
+
+| Function | Does | Args |
+|---|---|---|
+| `setAttribute(ctx, {entitiesQ!, name?, attribute})` | write | `attribute` can be any type; setting it to `undefined` clears the attribute |
+| `getAttribute(ctx, {entityQ:1, name})` | read | → the single named attribute's value, or undefined |
+| `getAttributes(ctx, {entitiesQ, name?, attributePattern?})` | read | → value[], one per matched entity |
+| `getAllAttributes(ctx, {entityQ:1})` | read | → map, every attribute name on that one entity |
+| `removeAttributes(ctx, {entitiesQ?, attributePattern?})` | write | legacy unnamed-attribute removal only — for named attributes, `setAttribute` with `attribute:undefined` instead |
+
+### surfaceGeometry.fs (Plane)
+
+Just the `Plane` half of this file — `cone`/`cylinder`/`sphere`/`torus`/`BSplineSurface` are the
+"fancy surfaces" this doc otherwise skips.
+
+| Function | Does | Args |
+|---|---|---|
+| `plane(origin, normal, x?)` | construct | origin, normal, x:V3; `x` defaults to an arbitrary vector ⟂ `normal` |
+| `plane(cSys)` | construct | cSys:CoordSystem → Plane on its XY plane |
+| `coordSystem(plane)` / `planeToCSys(plane)` | convert | Plane → CoordSystem at the same origin *(aliases of each other)* |
+| `yAxis(plane)` | query | → V3 *(`normal × x`)* |
+| `planeToWorld(plane, pointV2)` / `worldToPlane(plane, pointV3)` | convert | 2D plane-local ↔ 3D world point |
+| `planeToWorld3D(plane)` / `worldToPlane3D(plane)` | convert | → T, the same conversion as a full transform |
+| `project(plane, pointV3)` / `project(plane, line)` | query | → V3, or a Line with its origin moved onto the plane |
+| `intersection(plane1, plane2)` | query | → Line, or undefined if parallel/coincident |
+| `intersection(plane, line)` | query | → LinePlaneIntersection{dim, intersection} *(dim -1/0/1 = none/point/line-is-in-plane)* |
+| `isPointOnPlane(point, plane)` | predicate | |
+| `flip(plane)` | construct | → Plane with `normal` reversed |
+| `mirrorAcross(plane)` | construct | → T, a non-rigid mirroring transform |
+| `transform(fromPlane, toPlane)` | construct | → T mapping one plane onto the other |
+| `tolerantEquals(plane1, plane2)` / `coplanarPlanes(plane1, plane2)` | predicate | equal (same local axes too) vs. merely coplanar |
+
+### curveGeometry.fs (Line)
+
+Just the `Line`/`Circle`/`Ellipse` half — `BSplineCurve`/`KnotArray` construction is skipped,
+same rule as everywhere else in this doc.
+
+| Function | Does | Args |
+|---|---|---|
+| `line(origin, direction)` | construct | direction:V3 gets normalized for you → Line |
+| `collinearLines(line1, line2)` | predicate | |
+| `transform(fromLine, toLine)` | construct | → T, minimum-rotation + translation mapping one line onto the other |
+| `project(line, point)` | query | point's projection onto the line → V3 |
+| `rotationAround(line, angle)` | construct | → T, ccw rotation about `line` by `angle` |
+| `intersection(line1, line2)` | query | → LineLineIntersection{dim, intersection} *(dim -1/0/1 = none/point/collinear)* |
+| `isPointOnLine(point, line)` | predicate | |
+| `circle(cSys, radius)` / `circle(center, xDirection, normal, radius)` | construct | → Circle{coordSystem, radius} |
+| `ellipse(cSys, majorRadius, minorRadius)` / `ellipse(center, xDirection, normal, majorRadius, minorRadius)` | construct | → Ellipse{coordSystem, majorRadius, minorRadius} |
+
+`tolerantEquals` is overloaded for Line, Circle, and Ellipse too — same pattern as everywhere
+else: compare each field within tolerance.
+
+### coordSystem.fs
+
+| Function | Does | Args |
+|---|---|---|
+| `coordSystem(origin, xAxis, zAxis)` | construct | xAxis, zAxis:V3 need not be unit length, but must be ⟂ |
+| `toWorld(cSys, pointV3)` / `toWorld(cSys)` | convert | a point measured in cSys → world, or → T doing the same to any point |
+| `fromWorld(cSys, pointV3)` / `fromWorld(cSys)` | convert | world point → measured in cSys, or → T doing the same |
+| `yAxis(cSys)` | query | → V3 *(`zAxis × xAxis`)* |
+| `scaleNonuniformly(xScale, yScale, zScale, cSys)` | construct | → T, 3-axis scaling centered on `cSys.origin` |
+| `tolerantEquals(cSys1, cSys2)` | predicate | |
+
+Constants: `WORLD_ORIGIN`, `X_DIRECTION`, `Y_DIRECTION`, `Z_DIRECTION`, `WORLD_COORD_SYSTEM`.
+
+### context.fs (variables & ids)
+
+The `Context`/`Id` *functions* — the types themselves are already in the typedefs table above.
+
+| Function | Does | Args |
+|---|---|---|
+| `setVariable(ctx, name, value, description?)` | write | attaches any value to the context by name, for later features; readable as `#name` in expressions |
+| `getVariable(ctx, name, defaultValue?)` | read | throws if `name` isn't found, unless `defaultValue` is given |
+| `getAllVariables(ctx)` | read | → map, every variable on the context |
+| `newId()` / `makeId(str)` | construct | → empty Id / single-segment Id |
+| `isTopLevelId(id)` | predicate | true for a top-level feature or default geometry (`id` has exactly one segment) |
+| `isAtVersionOrLater(ctx, version)` | predicate | whether the active feature runs at ≥ `version` *(library-version compatibility check)* |
+
+### manipulator.fs
+
+All of the `*Manipulator` constructors take one `definition:map` (not `ctx`/`id`) and return a
+`Manipulator`; `addManipulators` is the one function that actually attaches them to a feature.
+
+| Function | Does | Fields |
+|---|---|---|
+| `addManipulators(ctx, id, manipulators)` | register | manipulators:map\<str, Manipulator\> — keys match the `newManipulators` a manipulator-change function receives |
+| `linearManipulator({base, direction:VU3, offset, minValue?, maxValue?, style?, primaryParameterId?})` | construct | single draggable arrow along `direction` |
+| `angularManipulator({axisOrigin, axisDirection:VU3, rotationOrigin, angle, minValue?, maxValue?, disableMinimumOffset?})` | construct | curved drag handle for an angle |
+| `triadManipulator({base, offset})` | construct | axis-aligned 3D position handle |
+| `fullTriadManipulator({base:CoordSystem, transform, displayEditView?, dragType?})` | construct | full 3D transform handle (rotate + translate) |
+| `pointsManipulator({points[]!, index})` | construct | one selectable point out of a set |
+| `togglePointsManipulator({points[]!, selectedIndices[], suppressedIndices[]})` | construct | several independently selectable points |
+| `flipManipulator({base, direction:VU3, flipped, otherDirection?})` | construct | click-to-flip arrow |
