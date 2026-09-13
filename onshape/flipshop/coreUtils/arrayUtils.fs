@@ -3,16 +3,23 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils
 
 /**
- * Whether `target` appears anywhere in `arr`. Unlike lodash's `includes`, this is array-only —
- * no substring search on a string, no value search over a map — and comparison is plain `==`,
- * which is deep structural equality on maps and arrays.
+ * Whether `target` appears anywhere in `bag`'s values or `arr`'s elements. Unlike lodash's
+ * `includes`, there's no substring search on a string — only the array and map collection forms
+ * — and comparison is plain `==`, which is deep structural equality on maps and arrays.
  * @example
  *   arrayIncludes([1, 2, 3], 2);              // => true
  *   arrayIncludes([{ "a": 1 }], { "a": 1 });  // => true
+ *   arrayIncludes({ "x": 1, "y": 2 }, 2);     // => true
  */
 export function arrayIncludes(arr is array, target) returns boolean {
   for (var item in arr) {
     if (item == target) { return true; }
+  }
+  return false;
+}
+export function arrayIncludes(bag is map, target) returns boolean {
+  for (var key in keys(bag)) {
+    if (bag[key] == target) { return true; }
   }
   return false;
 }

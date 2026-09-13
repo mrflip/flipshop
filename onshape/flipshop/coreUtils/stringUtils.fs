@@ -141,11 +141,7 @@ export function padRight(str is string, minlen is number) returns string {
  *   strRepeat("abc", 0); // => ""
  */
 export function strRepeat(str is string, reps is number) returns string {
-  var result = '';
-  for (var i = 0; i < reps; i = i + 1) {
-    result = result ~ str;
-  }
-  return result;
+  return repeatString(str, reps);
 }
 
 /**
