@@ -3,10 +3,10 @@
 
 We will skip the following lodash methds that are...
 
-* complicated: templating. ...
-* async: debounce, ...
-* related to Date or functions: ...
-* involve metaprogramming;
-* part of an alternate api (eg chaining):
-* modify the subject in-place -- assign (vs merge), pull (vs without)
-* otherwise don't seem high-priority
+* complicated: templating. template, escape, unescape, escapeRegExp
+* async: debounce, throttle, defer, delay
+* related to Date or functions: now, after, before, ary, unary, once, flip, flow, flowRight, rest, spread, negate, overArgs, rearg, wrap
+* involve metaprogramming: attempt, bind, bindAll, bindKey, cond, conforms, conformsTo, curry, curryRight, iteratee, matches, matchesProperty, method, methodOf, mixin, noConflict, nthArg, over, overEvery, overSome, partial, partialRight, property, propertyOf, runInContext, stubArray, stubFalse, stubObject, stubString, stubTrue, times, uniqueId
+* part of an alternate api (eg chaining): chain, tap, thru, VERSION
+* modify the subject in-place -- assign (vs merge), pull (vs without): assign, assignIn, assignInWith, assignWith, extend, extendWith, defaults, defaultsDeep, fill, pull, pullAll, pullAllBy, pullAllWith, remove, setWith, unset, update, updateWith
+* otherwise don't seem high-priority: chunk, compact, difference, differenceBy, differenceWith, drop, dropRight, dropRightWhile, dropWhile, findIndex, findLastIndex, flatten, flattenDeep, flattenDepth, fromPairs, initial, intersection, intersectionBy, intersectionWith, lastIndexOf, nth, sortedIndex, sortedIndexBy, sortedIndexOf, sortedLastIndex, sortedLastIndexBy, sortedLastIndexOf, sortedUniq, sortedUniqBy, tail, take, takeRight, takeRightWhile, takeWhile, union, unionBy, unionWith, uniqBy, uniqWith, unzip, unzipWith, without, xor, xorBy, xorWith, zipObject, zipObjectDeep, zipWith, countBy, eachRight, find, findLast, flatMap, flatMapDeep, flatMapDepth, groupBy, invokeMap, orderBy, partition, reject, sample, sampleSize, shuffle, sortBy, castArray, clone, cloneDeep, cloneDeepWith, cloneWith, eq, gt, gte, identity, isArguments, isArrayBuffer, isArrayLike, isArrayLikeObject, isBuffer, isDate, isElement, isError, isFinite, isInteger, isLength, isMatch, isMatchWith, isNaN, isNative, isObjectLike, isRegExp, isSafeInteger, isSet, isSymbol, isTypedArray, isWeakMap, isWeakSet, lt, lte, toArray, toFinite, toInteger, toLength, toNumber, toPlainObject, toSafeInteger, add, divide, maxBy, meanBy, minBy, multiply, subtract, sumBy, inRange, random, create, entries, entriesIn, findKey, findLastKey, forIn, forInRight, forOwn, forOwnRight, functions, functionsIn, hasIn, invert, invertBy, invoke, mapKeys, omit, omitBy, rangeRight, result, toPairs, toPairsIn, transform, valuesIn, camelCase, capitalize, deburr, kebabCase, lowerCase, lowerFirst, pad, parseInt, snakeCase, trim, trimEnd, trimStart, truncate, upperCase, upperFirst, words

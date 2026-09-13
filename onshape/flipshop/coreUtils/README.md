@@ -37,62 +37,220 @@ other function in `colorUtils.fs` is pure and tested in `testColorUtils.fs`.
 ## Lodash correspondence
 
 Much of this directory is an ongoing port of [lodash](https://lodash.com/docs)'s conveniences
-into FeatureScript, pulled in as needed from the reference copy at `lodash.js`. Where a function
-here has a clear lodash counterpart, its docblock is written from that counterpart's own
-description, and the mapping is recorded here. Not everything has one — see the file-by-file
-catalogs below for the rest.
+into FeatureScript, pulled in as needed from the reference copy at `lodash.js`. This section
+catalogs all ~300 of lodash's top-level public functions, organized the way lodash's own docs
+group them (Array, Collection, Function, Lang, Math, Number, Object, Seq, String, Util, plus a
+one-function Date category), and says what — if anything — covers each one on the FeatureScript
+side.
 
-### `clxnGetset.fs`
+**Reading the FeatureScript column:**
 
-| FeatureScript | lodash | Notes |
-|---|---|---|
-| `getAt` | `get` | Array segments accept a negative index, which lodash's `get` does not. |
-| `setAt` | `set` | Autovivifies only maps, never arrays, even for an integer segment (lodash builds an array there). A leaf collision goes through a pluggable `onCollision` instead of always overwriting. Returns a new value rather than mutating in place. |
-| `deepMerge` | `merge` | Two arrays replace each other instead of merging index-by-index. Takes exactly two arguments, not a variadic source list. Returns a new value rather than mutating in place. |
-| `pathForKey` | `toPath` | No `a[0].b` bracket syntax — an index is just another dotted segment (`"a.0.b"`). |
+| Notation | Means |
+|---|---|
+| a plain name (`getAt`, `pick`, …) | implemented in this project's coreUtils — see the file-by-file catalogs further down |
+| `name` *(std)* | a FeatureScript standard-library builtin (`math.fs`/`string.fs`/`containers.fs`) covers it, no port needed |
+| `` `is array` `` etc. *(lang)* | built into the FeatureScript language itself (a type-check expression or operator), not a function call |
+| ~~name~~ | nothing implements it, anywhere — a real (if low-priority) porting candidate |
+| a struck basket + "→ HUMAN-FIXME.md" | consciously not planned; the reason and the full member list live in [`HUMAN-FIXME.md`](HUMAN-FIXME.md) instead of being repeated here |
 
-### `clxnWalking.fs`
+A function can have both a coreUtils port *and* a std builtin that inspired it, and the two can
+differ in how much they actually do — `merge` is the poster child: coreUtils' `deepMerge`
+recurses through nested maps the way lodash's `merge` does, while std's own `mergeMaps` is a
+shallower, "less functional" one-level combine. Both are noted on that row.
 
-| FeatureScript | lodash | Notes |
-|---|---|---|
-| `sizeof` | `size` | Also accepts `undefined`, returning `0`. |
-| `hasKey` | `has` | `key` is a single literal key/index, never a dotted path. The array overload adds a `missingPolicy` (present-but-`undefined` counts unless `SKIP`) and never accepts a negative index. |
-| `arrayIncludes` | `includes` | Array-only — no substring search on a string, no value search over a map. |
-| `pick` | `pick` | Takes one explicit key array rather than variadic paths; otherwise the same "absent key stays absent" behavior. |
-| `pickDefined` | `pickBy` | Fixed predicate ("not `undefined`") over a given `keylist`, rather than an arbitrary predicate over every key of the object. |
-| `arrLast` | `last` | Direct match. |
-| `valuesAt` | `at` | No path traversal (literal keys/indexes only) and no negative array indices. Adds a `missingPolicy` to drop absent slots instead of always leaving an `undefined` gap. |
-| `forEach` | `forEach` | Early exit is returning `NextStepAction.BREAK`, not any falsy value. Adds `missingPolicy` and an explicit `keylist` walk order. |
-| `mapValues` / `mapValues3` | `mapValues` (map) / `map` (array) | Unifies lodash's two separate functions under one dispatch. `mapValues3` adds a 0-based `seq` neither lodash callback gets. Adds `keylist` and `missingPolicy`. |
-| `objectify` | `keyBy` | Key/value roles are swapped from lodash: `objectify` keys by the element itself and lets `func` compute the value, where `keyBy` keys by `iteratee(value)` and keeps `value` as-is. |
+### Array
 
-### `stringUtils.fs`
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `concatenateArrays` *(std)* | `concat` | Concatenates array(s)/value(s) into a new array. | std is arrays-only — no flattening of bare scalar arguments the way lodash does. |
+| `first` *(std)* | `head` / `first` | First element of an array. | std spells it `first`; lodash treats `head`/`first` as aliases of one function. |
+| `indexOf` *(std)* | `indexOf` | Index of the first occurrence of a value. | Direct match. |
+| `join` *(std)* | `join` | Joins array elements into a string. | Direct match. |
+| `last` *(std)* / `arrLast` | `last` | Last element of an array. | Both std's `last` and coreUtils' `arrLast` cover this directly. |
+| `removeElementAt` *(std)* | `pullAt` | Removes element(s) by index. | std takes one index at a time and doesn't hand back what it removed, unlike lodash's variadic, removed-values-returning form. |
+| `reverse` *(std)* | `reverse` | Reverses an array. | Direct match. |
+| `subArray` *(std)* | `slice` | Slice of an array between two indices. | Direct match. |
+| `deduplicate` *(std)* | `uniq` | Duplicate-free version of an array. | Direct match. |
+| `zip` *(std)* | `zip` | Groups the nth elements of several arrays together. | Direct match. |
+| ~~fill~~ / ~~pull~~ / ~~pullAll~~ / ~~pullAllBy~~ / ~~pullAllWith~~ / ~~remove~~ | `fill`, `pull*`, `remove` | Fill/remove elements, in place. | Mutate-in-place family — see HUMAN-FIXME.md. |
+| ~~chunk~~ | `chunk` | Splits an array into groups of `size`. | |
+| ~~compact~~ | `compact` | Removes falsey values from an array. | FeatureScript has no falsy-scalar convention beyond `undefined`; would reduce to a plain filter. |
+| ~~difference~~ / ~~differenceBy~~ / ~~differenceWith~~ | `difference` family | Values in one array not present in others. | |
+| ~~drop~~ / ~~dropRight~~ / ~~dropRightWhile~~ / ~~dropWhile~~ | `drop` family | Drop `n` elements (or while a predicate holds) from either end. | |
+| ~~findIndex~~ | `findIndex` | Index of the first element matching a predicate. | |
+| ~~findLastIndex~~ | `findLastIndex` | Index of the last element matching a predicate. | |
+| ~~flatten~~ / ~~flattenDeep~~ / ~~flattenDepth~~ | `flatten` family | Flatten an array one level / fully / `n` levels deep. | `dotMap`'s `maxDepth` (coreUtils) is the map-shaped cousin, not array-shaped. |
+| ~~fromPairs~~ | `fromPairs` | `[[k,v], …]` → map. | |
+| ~~initial~~ | `initial` | All but the last element. | |
+| ~~intersection~~ / ~~intersectionBy~~ / ~~intersectionWith~~ | `intersection` family | Values present in every given array. | |
+| ~~lastIndexOf~~ | `lastIndexOf` | Index of the last occurrence of a value, searching from the end. | |
+| ~~nth~~ | `nth` | Nth element (negative counts from the end). | |
+| ~~sortedIndex~~ / ~~sortedIndexBy~~ / ~~sortedIndexOf~~ / ~~sortedLastIndex~~ / ~~sortedLastIndexBy~~ / ~~sortedLastIndexOf~~ | `sortedIndex*` family | Binary-search insertion points into an already-sorted array. | |
+| ~~sortedUniq~~ / ~~sortedUniqBy~~ | `sortedUniq`, `sortedUniqBy` | `uniq`/`uniqBy`, optimized for sorted input. | |
+| ~~tail~~ | `tail` | All but the first element. | |
+| ~~take~~ / ~~takeRight~~ / ~~takeRightWhile~~ / ~~takeWhile~~ | `take` family | Take `n` elements (or while a predicate holds) from either end. | `strTake`/`strTakeRight` (coreUtils) cover the string analogue, not arrays. |
+| ~~union~~ / ~~unionBy~~ / ~~unionWith~~ | `union` family | Deduplicated concatenation of several arrays. | |
+| ~~uniqBy~~ / ~~uniqWith~~ | `uniqBy`, `uniqWith` | `uniq`, iteratee-mapped / custom comparator. | |
+| ~~unzip~~ / ~~unzipWith~~ | `unzip`, `unzipWith` | Inverse of `zip`. | |
+| ~~without~~ | `without` | Values from an array excluding the given ones. | |
+| ~~xor~~ / ~~xorBy~~ / ~~xorWith~~ | `xor` family | Symmetric difference of several arrays. | |
+| ~~zipObject~~ / ~~zipObjectDeep~~ / ~~zipWith~~ | `zipObject` family | Build an object, or combine grouped elements with a function. | |
 
-| FeatureScript | lodash | Notes |
-|---|---|---|
-| `padLeft` | `padStart` | Also overloaded for a `number`, stringified first. |
-| `padRight` | `padEnd` | Same numeric overload as `padLeft`. |
-| `strRepeat` | `repeat` | Direct match. |
-| `upcase` | `toUpper` | ASCII-only, via an explicit character lookup — no Unicode case folding. |
-| `downcase` | `toLower` | Same ASCII-only limitation as `upcase`. |
-| `titleCase` | `startCase` | Configurable word-break characters (default `-_`, not Unicode word-boundary detection) and an optional per-character translation map. |
+### Collection
 
-### `typeUtils.fs`
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `forEach` | `forEach` / `each` | Iterate a collection. | |
+| `mapValues3` (array form) | `map` | Map a collection to a same-shaped result. | |
+| `arrayIncludes` | `includes` | Whether a value appears in a collection. | |
+| `objectify` | `keyBy` | Key a collection by a computed key. | Key/value roles swapped from lodash — see the file-by-file table below. |
+| `all` *(std)* | `every` | Whether every element passes a predicate. | |
+| `any` *(std)* | `some` | Whether any element passes a predicate. | |
+| `filter` *(std)* | `filter` | Elements passing a predicate. | |
+| `foldArray` *(std)* | `reduce` | Reduce a collection to a single value. | |
+| `sizeof` / `size` *(std)* | `size` | Element/key/character count. | |
+| ~~forEachRight~~ | `forEachRight` / `eachRight` | Iterate a collection back-to-front. | |
+| ~~countBy~~ | `countBy` | Counts of elements, grouped by a computed key. | |
+| ~~find~~ / ~~findLast~~ | `find`, `findLast` | First/last element matching a predicate. | |
+| ~~flatMap~~ / ~~flatMapDeep~~ / ~~flatMapDepth~~ | `flatMap` family | Map then flatten one/all/`n` levels. | |
+| ~~groupBy~~ | `groupBy` | Group elements by a computed key. | |
+| ~~invokeMap~~ | `invokeMap` | Invoke a named method on each element. | |
+| ~~orderBy~~ | `orderBy` | Sort by multiple iteratees, each with its own direction. | |
+| ~~partition~~ | `partition` | Split into two groups by a predicate. | |
+| ~~reduceRight~~ | `reduceRight` | `reduce`, back-to-front. | |
+| ~~reject~~ | `reject` | Elements *failing* a predicate — inverse of `filter`. | |
+| ~~sample~~ / ~~sampleSize~~ / ~~shuffle~~ | `sample` family | Random element(s) / shuffled order. | |
+| ~~sortBy~~ | `sortBy` | Sort by one or more iteratees. | |
 
-| FeatureScript | lodash | Notes |
-|---|---|---|
-| `ifNil` | `defaultTo` | Only checks `undefined` — FeatureScript has no `null`/`NaN` to also catch. |
-| `isNil` | `isNil` | Same `undefined`-only narrowing. |
-| `isEmpty` | `isEmpty` | Restricted to the map/string/array/`undefined` cases FeatureScript actually has. |
+### Function
 
-### `miscUtils.fs`
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `memoizeFunction` *(std)* | `memoize` | Cache a function's results by argument. | |
+| ~~debounce~~ / ~~defer~~ / ~~delay~~ / ~~throttle~~ | async family | Delay, batch, or rate-limit a function call. | → HUMAN-FIXME.md ("async"). |
+| ~~after~~ / ~~ary~~ / ~~before~~ / ~~flip~~ / ~~flow~~ / ~~flowRight~~ / ~~negate~~ / ~~once~~ / ~~overArgs~~ / ~~rearg~~ / ~~rest~~ / ~~spread~~ / ~~unary~~ / ~~wrap~~ | arity/composition family | Reshape a function's arity, argument order, or call count. | → HUMAN-FIXME.md ("related to Date or functions"). |
+| ~~bind~~ / ~~bindKey~~ / ~~curry~~ / ~~curryRight~~ | binding/currying family | Partially apply or fix a function's `this`/arity. | → HUMAN-FIXME.md ("metaprogramming"). coreUtils has its own fixed-arity `curry2to0`…`curry3to2` (`miscUtils.fs`) for the one shape this project actually needed, not a general variadic curry. |
 
-| FeatureScript | lodash | Notes |
-|---|---|---|
-| `noop` | `noop` | Direct match. |
+### Lang
 
-`debugUtils.fs` and `metadataUtils.fs` have no entries here — neither has a lodash counterpart
-for anything they export (Onshape-specific viewport/attribute plumbing).
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `isNil` | `isNil`, `isNull`, `isUndefined` | Is the value absent? | FeatureScript has no `null`, so all three JS distinctions collapse into one `undefined` check — also expressible as the language operator `== undefined`. |
+| `isEmpty` | `isEmpty` | Is the value empty? | Restricted to the map/string/array/`undefined` cases FeatureScript actually has. |
+| `ifNil` | `defaultTo` | Value, or a fallback if nil. | |
+| `` `is array`/`is map`/`is string`/`is number`/`is boolean`/`is function` `` *(lang)* | `isArray`, `isBoolean`, `isFunction`, `isMap`, `isObject`, `isPlainObject`, `isNumber`, `isString` | Type-check a value. | FeatureScript's `is <Type>` is a language expression, not a function call — this is the basket the styling of `isArray … isUndefined` in this doc's own intro refers to. |
+| `==` *(lang)* | `isEqual`, `isEqualWith` | Deep structural equality. | FeatureScript's `==` already does deep value comparison on maps/arrays — this is the default equality operator, not a function. |
+| `>` / `>=` / `<` / `<=` *(lang)* | `gt`, `gte`, `lt`, `lte` | Numeric comparison. | Plain comparison operators, numbers only — no lodash-style mixed-type coercion. |
+| `toString` *(std)* | `toString` | Converts a value to its string form. | |
+| ~~castArray~~ | `castArray` | Wrap a non-array value in a 1-element array. | |
+| ~~clone~~ / ~~cloneDeep~~ / ~~cloneDeepWith~~ / ~~cloneWith~~ | `clone` family | Shallow/deep copy a value. | FeatureScript maps and arrays already have value (copy-on-write) semantics, so "clone" is largely a non-issue here — there's no shared mutable reference to defend against in the first place. |
+| ~~toArray~~ / ~~toFinite~~ / ~~toInteger~~ / ~~toLength~~ / ~~toNumber~~ / ~~toPlainObject~~ / ~~toSafeInteger~~ | `to*` coercion family | Coerce a value toward a target type. | |
+| ~~conformsTo~~ | `conformsTo` | Whether an object satisfies a predicate-shaped spec. | → HUMAN-FIXME.md ("metaprogramming"). |
+| ~~isArguments~~ / ~~isArrayBuffer~~ / ~~isArrayLike~~ / ~~isArrayLikeObject~~ / ~~isBuffer~~ / ~~isDate~~ / ~~isElement~~ / ~~isError~~ / ~~isFinite~~ / ~~isInteger~~ / ~~isLength~~ / ~~isMatch~~ / ~~isMatchWith~~ / ~~isNaN~~ / ~~isNative~~ / ~~isObjectLike~~ / ~~isRegExp~~ / ~~isSafeInteger~~ / ~~isSet~~ / ~~isSymbol~~ / ~~isTypedArray~~ / ~~isWeakMap~~ / ~~isWeakSet~~ | remaining `is*` predicates | Type-check JS/DOM-runtime-specific types, or match against a pattern. | FeatureScript has no Symbol/Buffer/WeakMap/DOM-element/etc. types for most of these to even ask about. |
+
+### Math
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `ceil` *(std)* | `ceil` | Round up. | |
+| `floor` *(std)* | `floor` | Round down. | |
+| `round` / `roundToPrecision` *(std)* | `round` | Round to the nearest integer, or `n` decimal places. | lodash's optional precision argument becomes a second, separate std function. |
+| `min` *(std)* | `min` | Smaller of two values. | std takes two values; lodash's `min` reduces a whole array. |
+| `max` *(std)* | `max` | Larger of two values. | Same array-vs-pair difference as `min`. |
+| `average` *(std)* | `mean` | Average of an array. | |
+| `sum` *(std)* | `sum` | Sum of an array. | |
+| ~~add~~ / ~~divide~~ / ~~multiply~~ / ~~subtract~~ | arithmetic-as-functions | `+ - * /` as callables. | FeatureScript just uses the operators directly. |
+| ~~maxBy~~ / ~~meanBy~~ / ~~minBy~~ / ~~sumBy~~ | `*By` family | Iteratee-mapped versions of the row above. | |
+
+### Number
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `clamp` *(std)* | `clamp` | Constrain a number to `[lower, upper]`. | |
+| ~~inRange~~ | `inRange` | Whether a number falls within a range. | |
+| ~~random~~ | `random` | Random number in a range. | |
+
+### Object
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `getAt` | `get` | Path-based read from a map/array. | |
+| `setAt` | `set` | Path-based write. | lodash's `set` mutates; `setAt` returns a new value. |
+| `deepMerge` / `mergeMaps` *(std)* | `merge` | Recursively combine two maps. | The headline "weird/less-functional builtin" case: std's `mergeMaps` is a shallow, one-level combine; coreUtils' `deepMerge` is the fuller recursive port lodash's `merge` actually does. |
+| ~~mergeWith~~ | `mergeWith` | `merge` with a custom per-key combiner. | Customizer variant of the row above; not itself ported. |
+| `pick` | `pick` | Map of just the given keys. | |
+| `pickDefined` | `pickBy` | `pick`, keeping only defined values. | |
+| `valuesAt` | `at` | Values at several keys/indices, in order. | |
+| `hasKey` | `has` | Whether a key/path resolves to something. | |
+| `mapValues` | `mapValues` | Map a map's values, keys unchanged. | |
+| `keys` *(std)* | `keys` | A map's keys. | |
+| `values` *(std)* | `values` | A map's values. | |
+| ~~assign~~ / ~~assignIn~~ / ~~assignInWith~~ / ~~assignWith~~ / ~~extend~~ / ~~extendWith~~ | `assign` family | Copy own (+ inherited) properties onto a destination object, in place. | → HUMAN-FIXME.md ("modify the subject in-place"). |
+| ~~defaults~~ / ~~defaultsDeep~~ | `defaults` family | Fill in missing keys from source object(s), in place. | → HUMAN-FIXME.md. |
+| ~~unset~~ / ~~update~~ / ~~updateWith~~ / ~~setWith~~ | in-place path-write family | Path-based delete/update, mutating. | → HUMAN-FIXME.md. |
+| ~~create~~ | `create` | New object with a given prototype. | FeatureScript maps have no prototype chain. |
+| ~~entries~~ / ~~entriesIn~~ / ~~toPairs~~ / ~~toPairsIn~~ | `toPairs` family | Map → `[[k,v], …]`. | |
+| ~~findKey~~ / ~~findLastKey~~ | `findKey`, `findLastKey` | First/last key whose value matches a predicate. | |
+| ~~forIn~~ / ~~forInRight~~ / ~~forOwn~~ / ~~forOwnRight~~ | `forIn`/`forOwn` family | Iterate an object's own vs. inherited keys. | FeatureScript maps have no prototype chain, so the own/inherited split is moot — coreUtils' `forEach` already covers the (only) own-keys case. |
+| ~~functions~~ / ~~functionsIn~~ | `functions` family | Names of an object's function-valued properties. | |
+| ~~hasIn~~ | `hasIn` | `has`, including inherited properties. | |
+| ~~invert~~ / ~~invertBy~~ | `invert` family | Swap an object's keys and values. | |
+| ~~invoke~~ | `invoke` | Call a method found at a path. | |
+| ~~mapKeys~~ | `mapKeys` | Map a map's keys, values unchanged. | |
+| ~~omit~~ / ~~omitBy~~ | `omit` family | Inverse of `pick`/`pickBy` above — all keys *except* the given ones. | |
+| ~~result~~ | `result` | Like `get`, but invokes a function value found at the path. | |
+| ~~transform~~ | `transform` | `reduce`-like, but building up a map/array accumulator. | |
+| ~~valuesIn~~ | `valuesIn` | `values`, including inherited properties. | |
+
+### Seq
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| ~~chain~~ / ~~tap~~ / ~~thru~~ | `chain` family | lodash's chain-sequence wrapper API. | → HUMAN-FIXME.md ("alternate api"). FeatureScript has no equivalent wrapper-object idiom. |
+
+### String
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `padLeft` | `padStart` | Pad a string/number on the left. | |
+| `padRight` | `padEnd` | Pad on the right. | |
+| `strRepeat` / `repeatString` *(std)* | `repeat` | Repeat a string `n` times. | |
+| `upcase` | `toUpper` | ASCII-only uppercase. | |
+| `downcase` | `toLower` | ASCII-only lowercase. | |
+| `titleCase` | `startCase` | Word-boundary capitalization. | |
+| `startsWith` *(std)* | `startsWith` | Whether a string starts with a substring. | |
+| `endsWith` *(std)* | `endsWith` | Whether a string ends with a substring. | |
+| `splitByRegexp` / `splitIntoCharacters` *(std)* | `split` | Split a string. | std splits by regexp or into characters — no plain-substring/limit split like lodash's. |
+| `replace` *(std)* | `replace` | Replace matches in a string. | |
+| `stringToNumber` *(std)* | `parseInt` | Parse a string as a number. | |
+| ~~template~~ / ~~escape~~ / ~~unescape~~ / ~~escapeRegExp~~ | templating family | Compile/interpolate templates; HTML/regex escaping. | → HUMAN-FIXME.md ("templating"). |
+| ~~camelCase~~ / ~~kebabCase~~ / ~~lowerCase~~ / ~~snakeCase~~ / ~~upperCase~~ | case-convention family | Sibling case-converters to the implemented `upcase`/`downcase`/`titleCase` above, for other word-casing conventions. | |
+| ~~capitalize~~ / ~~lowerFirst~~ / ~~upperFirst~~ | single-character case tweaks | Change just the first character's case. | |
+| ~~deburr~~ | `deburr` | Strip Latin-1 diacritics. | |
+| ~~pad~~ | `pad` | Pad on both sides. | coreUtils only has one-sided `padLeft`/`padRight`. |
+| ~~trim~~ / ~~trimEnd~~ / ~~trimStart~~ | `trim` family | Strip whitespace (or a given character set) from either end. | Genuine gap — no FeatureScript builtin or coreUtils port does this at all. |
+| ~~truncate~~ | `truncate` | Truncate a string to a length, with an omission marker. | |
+| ~~words~~ | `words` | Split a string into words. | |
+
+### Util
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| `noop` | `noop` | Does nothing, returns `undefined`. | |
+| `pathForKey` | `toPath` | Split a dotted-key string into path segments. | |
+| `range` *(std)* | `range` | Array of numbers from `start` to `end`. | |
+| ~~rangeRight~~ | `rangeRight` | `range`, descending. | No reverse-range builtin. |
+| ~~attempt~~ / ~~bindAll~~ / ~~cond~~ / ~~conforms~~ / ~~constant~~ / ~~identity~~ / ~~iteratee~~ / ~~matches~~ / ~~matchesProperty~~ / ~~method~~ / ~~methodOf~~ / ~~mixin~~ / ~~noConflict~~ / ~~nthArg~~ / ~~over~~ / ~~overEvery~~ / ~~overSome~~ / ~~property~~ / ~~propertyOf~~ / ~~runInContext~~ / ~~stubArray~~ / ~~stubFalse~~ / ~~stubObject~~ / ~~stubString~~ / ~~stubTrue~~ / ~~times~~ / ~~uniqueId~~ | metaprogramming family | Build predicate/iteratee functions dynamically, generate ids, run code defensively. | → HUMAN-FIXME.md ("metaprogramming"). |
+| ~~VERSION~~ | `VERSION` | lodash's own version string. | Nothing to port. |
+
+### Date
+
+| FeatureScript | Lodash | Does | Notes |
+|---|---|---|---|
+| ~~now~~ | `now` | Current timestamp. | → HUMAN-FIXME.md ("related to Date or functions"). |
+
+`debugUtils.fs` and `metadataUtils.fs` have no entries in the tables above — neither has a lodash
+counterpart for anything they export (Onshape-specific viewport/attribute plumbing).
 
 ---
 
