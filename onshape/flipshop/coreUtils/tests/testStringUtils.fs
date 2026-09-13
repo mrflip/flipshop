@@ -35,6 +35,7 @@ precondition {
     runStrRepeatTests(context, verbose);
     runUpcaseTests(context, verbose);
     runDowncaseTests(context, verbose);
+    runHasMatchTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -206,6 +207,16 @@ export function runUpcaseTests(context is Context, verbose is boolean) returns m
 }
 export function runDowncaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "downcase", verbose, DowncaseCases, function(args is array) { return downcase(args[0]); });
+}
+
+export const HasMatchCases = [
+  [["hello", "ell"], true],
+  [["hello", "^h"],  true],
+  [["hello", "^e"],  false],
+  [[undefined, "x"], false, 'undefined input never throws'],
+];
+export function runHasMatchTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "hasMatch", verbose, HasMatchCases, function(args is array) { return hasMatch(args[0], args[1]); });
 }
 
 function runStrTakeRightTests(context is Context, verbose is boolean) returns map {

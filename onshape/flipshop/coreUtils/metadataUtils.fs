@@ -40,10 +40,13 @@ export function setName(context is Context, entities is Query, nameText is strin
 }
 
 /**
- * Sets the NAME property and a "Name" attribute on entities.
+ * `setName`, after collapsing `nameText`'s whitespace runs to single spaces and truncating to
+ * `maxLength` — for a name that might be multi-line or arbitrarily long (e.g. copied from a
+ * sketch's text) but needs to read as one short line in the part tree.
  * @param context {Context}
  * @param entities {Query}
- * @param name {string}
+ * @param nameText {string}
+ * @param maxLength {number}: Defaults to `20`.
  */
 export function setReadableName(context is Context, entities is Query, nameText is string, maxLength is number) returns string {
   const onelineName  = replace(nameText, "[\\s]+", " ");
@@ -75,6 +78,7 @@ export function getAttrs(context is Context, query is Query, attrName is string,
   return result;
 }
 
+/** Every attribute on `entity`, as `{name: value}`; `{"ok": false, "err": err}` if the read throws. */
 export function getAllAttrs(context is Context, entity is Query) returns map {
     try {
         return getAllAttributes(context, {
@@ -116,14 +120,16 @@ export function getNameProps(context is Context, query is Query, ignoredVal is s
   return getAttrs(context, query, "Name", ignoredVal);
 }
 
+/** `getNameProps`, keeping just each entry's `val`. */
 export function getNames(context is Context, query is Query, ignoredVal is string) returns array {
   const nameProps = getNameProps(context, query, ignoredVal);
   return mapArray(nameProps, (result) => result.val);
 }
 
+/** `getNameProp`'s `val`, or `ignoredVal` when `query` resolves to no entities at all. */
 export function getName(context is Context, query is Query, ignoredVal is string) returns string {
   const result = getNameProp(context, query, ignoredVal);
-  return result.val;
+  return (result == undefined) ? ignoredVal : result.val;
 }
 export function getName(context is Context, query is Query) returns string {
   return getName(context, query, "Part");
@@ -143,12 +149,39 @@ export function getNameProp(context is Context, query is Query) {
     return getNameProp(context, query, "Part");
 }
 
+/** `"Name"` attribute directly on `body` (not its best/first entity), or `defaultVal` if unset. */
 export function getNameOfBody(context is Context, body is Query, defaultVal is string) {
   const nameAttr = getAttributes(context, { "entities" : body, "name": "Name" });
   if ((size(nameAttr) == 0) || (nameAttr[0] == undefined)) { return defaultVal; }
   return nameAttr[0];
 }
 
+/**
+ * Value for `newDefinition[destkey]`, keeping it auto-derived from `newDefinition[basekey]` via
+ * `valfunc(baseVal, definition)` for as long as the user hasn't overridden it — the pattern
+ * behind every `*EditLogic` function in this codebase that keeps a variable name in sync with
+ * whatever it names (@see `jsonVarF.fs`'s `keylistEditLogic`).
+ *
+ * `destkey` is left alone as soon as it's set to anything other than what `valfunc` would have
+ * derived: the "current default" is recomputed from `oldDefinition` and compared against
+ * `oldDefinition[destkey]` to tell an untouched field from a hand-edited one.
+ *
+ * @param oldDefinition {map}: Definition before this edit.
+ * @param newDefinition {map}: Definition being edited.
+ * @param basekey {string}: Key of the field `destkey` derives from.
+ * @param destkey {string}: Key of the derived field.
+ * @param valfunc {function}: `(baseVal, definition) => derivedVal`.
+ * @example
+ *   defaultMaybe({ "bagname": "foo", "varname": "foo_keys" },
+ *                { "bagname": "bar", "varname": "foo_keys" },
+ *                "bagname", "varname", (name, _) => (name ~ "_keys"));
+ *   // => "bar_keys" -- varname was tracking its default, so it follows bagname's rename
+ *
+ *   defaultMaybe({ "bagname": "foo", "varname": "myKeys" },
+ *                { "bagname": "bar", "varname": "myKeys" },
+ *                "bagname", "varname", (name, _) => (name ~ "_keys"));
+ *   // => "myKeys" -- varname was hand-edited away from its default, so it's left alone
+ */
 export function defaultMaybe(oldDefinition is map, newDefinition is map, basekey is string, destkey is string, valfunc is function) {
   const baseNew = newDefinition[basekey];
   const destNew = newDefinition[destkey];
@@ -164,9 +197,19 @@ export function defaultMaybe(oldDefinition is map, newDefinition is map, basekey
   return destNew;
 }
 
+/**
+ * `varname` as a legal-ish variable name: each `.` becomes `_`, and every other non-word
+ * character becomes `__` — independently, so two special characters in a row don't collapse
+ * into one replacement.
+ * @example
+ *   sanitize_varname("foo.bar");  // => "foo_bar"
+ *   sanitize_varname("foo bar!"); // => "foo__bar__"
+ */
 export function sanitize_varname(varname is string) returns string {
     return replace(replace(varname, '\\.', "_"), '\\W', '__');
 }
+
+/** `varname ~ "_" ~ fieldname`, with `fieldname` run through `sanitize_varname` first. */
 export function field_varname(varname is string, fieldname is string) returns string {
     return varname ~ '_' ~ sanitize_varname(fieldname);
 }

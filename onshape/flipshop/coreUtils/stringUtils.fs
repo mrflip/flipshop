@@ -9,6 +9,16 @@ export const UpperToLowercase = {
   'A': 'a', 'B': 'b', 'C': 'c', 'D': 'd', 'E': 'e', 'F': 'f', 'G': 'g', 'H': 'h', 'I': 'i', 'J': 'j', 'K': 'k', 'L': 'l', 'M': 'm', 'N': 'n', 'O': 'o', 'P': 'p', 'Q': 'q', 'R': 'r', 'S': 's', 'T': 't', 'U': 'u', 'V': 'v', 'W': 'w', 'X': 'x', 'Y': 'y', 'Z': 'z',
 };
 
+/**
+ * Substring of `str` from `begseq` up to (not including) `endseq`, JS `String.prototype.slice`
+ * style: a negative index counts from the end, and either index clamps into range rather than
+ * erroring. `endseq` defaults to `str`'s length; `SequencePosition.END` says the same thing
+ * explicitly where a literal length isn't handy.
+ * @example
+ *   strSlice("hello world", 0, 3);  // => "hel"
+ *   strSlice("hello world", -5);    // => "world"
+ *   strSlice("hello world", 0, -1); // => "hello worl"
+ */
 export function strSlice(str is string, begseq is number, endseq is number) returns string {
   const len = length(str);
   // Negative indices count back from the end; positive indices clamp to len
@@ -112,6 +122,13 @@ export function starbanner(str is string) {
   return "\n" ~ stars ~ "\n" ~ str ~ "\n" ~ stars ~ "\n\n";
 }
 
+/**
+ * Whether `str` matches `regex` anywhere — a `match` wrapper that returns `false` instead of
+ * throwing, on either a malformed `regex` or an `undefined` `str`.
+ * @example
+ *   hasMatch("hello", "ell"); // => true
+ *   hasMatch("hello", "^e"); // => false
+ */
 export function hasMatch(str, regex is string) {
   if (str == undefined) { return false; }
   try {

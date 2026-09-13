@@ -5,20 +5,30 @@ geometry-specific, just the plumbing every feature ends up needing. Style follow
 [`STYLE-Featurescript.md`](../STYLE-Featurescript.md); the standard-library map/array/string
 functions these build on are catalogued in [`onshape/README.md`](../../README.md).
 
-This is a starting summary, one line per exported function/constant. It does not (yet) cover
-every file in this directory in equal depth — the `clxn*` collection utilities got the deepest
-pass, since they're the most heavily used and the least self-explanatory from the call site.
-`coreUtils.fs` itself has no functions of its own — it just re-exports the documents the other
-files in this directory compile into, so other features can `import` this one file for all of it.
+This is a starting summary, one line per exported function/constant. `colorUtils.fs` and
+`jsonVarF.fs` are still at brief/prose treatment rather than a full table — everything else has
+had a full pass (tests, docblocks, lodash correspondence where one exists). `coreUtils.fs` itself
+has no functions of its own — it just re-exports the documents the other files in this directory
+compile into, so other features can `import` this one file for all of it.
 
 ## Tests
 
 One `run<Thing>Tests` function per case list, in `tests/`. All `clxn*` suites — everything from
-this file and from `clxnGetset.fs`/`clxnReshape.fs` — run out of a single Feature,
+`clxnWalking.fs` and from `clxnGetset.fs`/`clxnReshape.fs` — run out of a single Feature,
 `runClxnTestsFS` in `tests/testClxnWalking.fs`. Adding a new `clxn*` function's tests means
-adding its `run*Tests` call to that Feature, not creating a new one. (`sizeof`'s tests live
-under `runCoreUtilsTestsFS` in `tests/testCoreUtils.fs` instead, since `sizeof` predates the
-`clxn*` split.)
+adding its `run*Tests` call to that Feature, not creating a new one. Every other file gets its
+own `test<File>.fs` and `run<File>TestsFS` Feature (`sizeof`'s tests are the one exception,
+living under `runCoreUtilsTestsFS` in `tests/testCoreUtils.fs`, since `sizeof` predates the
+`clxn*` split).
+
+Two files' worth of functions have no test suite at all: `debugUtils.fs`'s `highlightQuery` and
+most of `metadataUtils.fs` (`setPropAndAttribute`, `setName`, `setReadableName`, `getAttrs`,
+`getAllAttrs`, `getBestAttr`, `getNameProps`, `getNames`, `getName`, `getNameProp`,
+`getNameOfBody`) read or write properties/attributes on a live `Query`, which the
+plain-data-table `runTests` harness this whole test suite is built on has no way to exercise
+without an actual part studio to run against. `metadataUtils.fs`'s three pure functions
+(`defaultMaybe`, `sanitize_varname`, `field_varname`) are tested in `testMetadataUtils.fs`
+despite that.
 
 ---
 
@@ -79,9 +89,8 @@ catalogs below for the rest.
 |---|---|---|
 | `noop` | `noop` | Direct match. |
 
-`typeUtils.fs` and `miscUtils.fs`'s docblocks haven't been rewritten from lodash's yet — flagging
-the mapping here first since those two files currently have little to no test coverage of their
-own to check new doc examples against.
+`debugUtils.fs` and `metadataUtils.fs` have no entries here — neither has a lodash counterpart
+for anything they export (Onshape-specific viewport/attribute plumbing).
 
 ---
 
@@ -130,12 +139,66 @@ in this project is built from.
 | `MissingPolicy` | `SKIP` / `USE_UNDEFINED` — how the functions above treat an entry whose value is `undefined`, whether that's because it's missing outright or genuinely set to `undefined`. |
 | `NextStepAction.BREAK` | Sentinel a `forEach`-family callback returns to stop the walk early. |
 
-### Quirks worth knowing
+## `stringUtils.fs` — string slicing, padding, and case conversion
 
-* `NextStepAction` used to be un-exported, so nothing outside `clxnWalking.fs` could ever
-  actually trigger `BREAK` — every `forEach`/`mapValues` walk anywhere in the codebase always ran
-  to completion. It's exported now (see `runForEachBreakTests` / `runForEachKeylistBreakTests`
-  in `tests/testClxnWalking.fs`), so early-exit is available and verified going forward.
+| Export | Does |
+|---|---|
+| `strSlice(str, begseq, endseq?)` | JS-style slice: negative indexes count from the end, either index clamps into range. `endseq` accepts `SequencePosition.END` in place of a literal length. |
+| `strTake(str, len)` / `strTakeRight(str, len)` | First/last `len` characters; `len <= 0` is `""`. |
+| `padLeft(str\|num, minlen, padstr?)` / `padRight(...)` | Pads to `minlen` with `padstr` (default `" "`), truncating the padding if it overshoots; a `number` is stringified first. |
+| `strRepeat(str, reps)` | `str` repeated `reps` times. |
+| `starbanner(str)` | Wraps `str` in a `***`-bordered banner, for a `debug()` call that wants to stand out. |
+| `hasMatch(str, regex)` | Whether `regex` matches anywhere in `str`; `false` (not a throw) on `undefined` input or a bad pattern. |
+| `upcase(str)` / `downcase(str)` | ASCII-only case flip via an explicit character lookup; a non-letter passes through unchanged. |
+| `titleCase(str, opts?)` | Splits on `opts.spaces` (default `-_`), capitalizes each word's first letter, lower-cases the rest; `opts.tr` translates individual characters before capitalization. |
+
+## `metadataUtils.fs` — entity names and attributes
+
+Everything here but the last three rows needs a live `Query` against real geometry — there's no
+plain-data test for them; @see the Tests section above.
+
+| Export | Does |
+|---|---|
+| `setPropAndAttribute(context, entities, propType, attrName, value)` | Sets a property and mirrors it into a same-named attribute, since Onshape won't let a feature read its own properties back mid-regeneration — only the attribute survives that round trip. |
+| `setName(context, entities, nameText)` | `setPropAndAttribute` for `PropertyType.NAME` / `"Name"`. |
+| `setReadableName(context, entities, nameText, maxLength?)` | `setName`, after collapsing whitespace runs to one space and truncating to `maxLength` (default `20`). |
+| `getAttrs(context, query, attrName, defaultVal)` | `{ thing, attrName, val }` for every entity in `query`, `val` falling back to `defaultVal` where the attribute is unset. |
+| `getAllAttrs(context, entity)` | Every attribute on one entity, as `{name: value}`; `{"ok": false, "err": err}` if the read throws. |
+| `getBestAttr(context, query, attrName, ignoredVal)` | The first `getAttrs` entry whose value isn't `ignoredVal`, or the first entry if every one of them is; `undefined` if `query` is empty. |
+| `getNameProps` / `getNames` / `getName` / `getNameProp` | `getAttrs`/`getBestAttr`, specialized to `"Name"`. `getName` falls back to `ignoredVal` (default `"Part"`) when `query` resolves to nothing, rather than dereferencing `undefined`. |
+| `getNameOfBody(context, body, defaultVal)` | `"Name"` attribute directly on `body`, not its best/first entity. |
+| `defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc)` | Value for `newDefinition[destkey]`: kept auto-derived from `newDefinition[basekey]` via `valfunc` for as long as it hasn't been hand-edited away from what `valfunc` would have produced from the old base. The pattern behind every `*EditLogic` function that keeps a variable name in sync with what it names. |
+| `sanitize_varname(varname)` / `field_varname(varname, fieldname)` | Turns `varname` into a legal-ish identifier (each `.` → `_`, every other non-word character → `__`, independently — no run-collapsing); `field_varname` joins two of them with `_`. |
+| `PL_TOP`, `hugeSizeVal` / `tinySizeVal` | Shorthand top-plane constant; sentinel min/max for a `LengthBoundSpec` with no practical limit. |
+
+## `miscUtils.fs` — small combinators
+
+| Export | Does |
+|---|---|
+| `idsFor(id, tags)` | `{tag: id + tag}` for each of `tags` — the `ids` map a multi-sketch/multi-op feature declares up front, built in one call. |
+| `noop` | Returns `undefined`, regardless of arguments. |
+| `curry3to0` / `curry3to1` / `curry3to2` / `curry2to0` / `curry2to1` / `curry2to2` | Wraps `func` to accept `N` arguments but call it with only the first `M`, so a fixed-arity callback can sit in a `forEach`/`mapValues`-shaped slot. |
+| `parseJsonSafely(rawjson, opts?)` | `parseJson`/`parseJsonWithUnits` (per `opts.detectUnits`), wrapping a parse failure in a `regenError` labeled with `opts.story` instead of surfacing the raw throw. |
+
+## `typeUtils.fs` — presence checks and small guards
+
+| Export | Does |
+|---|---|
+| `ifNil(val, fallback)` | `val`, or `fallback` if `val` is `undefined`. |
+| `ifBlank(val, fallback)` | `val`, or `fallback` if `val` is `undefined` or `""`. |
+| `ifZero(val, fallback)` | `val`, or `fallback` if `val` is `undefined` or (within tolerance) zero; overloaded for `number` and `ValueWithUnits`. |
+| `truthy(val)` | Neither `undefined` nor `false` — `0` and `""` are truthy, unlike JS. |
+| `isPresent(val)` / `isNil(val)` | Not-`undefined` / is-`undefined`. |
+| `strBlank(val)` | `undefined` or `""`. |
+| `isEmpty(val)` | `undefined`, or a map/string/array with nothing in it. |
+| `vector2(vec)` | Drops `vec`'s z component. |
+| `mm`, `zero` | `millimeter`, and `0 * mm`. |
+
+## `debugUtils.fs` — viewport highlighting
+
+| Export | Does |
+|---|---|
+| `highlightQuery(context, qq, debugColor, debugMe?)` | `addDebugEntities` on `qq` plus the edges of its owning bodies (otherwise invisible through an occluding body's faces); a no-op unless `debugMe` is `true` (the default), so a call site can leave the call in place and flip one flag. |
 
 ---
 
@@ -149,45 +212,29 @@ in this project is built from.
 `toTuplecolor` (the reverse conversions), `hexpairToInt`/`intToHexpair`, `sameColor` (tolerant
 equality), `isHexcolor`.
 
-### `stringUtils.fs` — string slicing, padding, and case conversion
-
-`strSlice` (Python-style slice, negative indexes, `SequencePosition.END`), `strTake`/
-`strTakeRight` (first/last N chars), `padLeft`/`padRight` (string or number), `strRepeat`,
-`starbanner` (wraps a message in a `***` banner for `debug`), `hasMatch` (regex test that
-doesn't throw), `upcase`/`downcase` (ASCII-only case flip), `titleCase` (configurable word-break
-characters and per-character translation map).
-
-### `metadataUtils.fs` — entity names and attributes
-
-`setPropAndAttribute`/`setName`/`setReadableName` (mirror a property into a same-keyed attribute,
-since properties can't be read back mid-regeneration), `getAttrs`/`getBestAttr` (per-entity
-attribute values across a query, with a "best" one picked over a sentinel default),
-`getNameProps`/`getNames`/`getName`/`getNameProp`/`getNameOfBody` (the above specialized to the
-`"Name"` attribute), `getAllAttrs`, `defaultMaybe` (editing-logic helper: keep a derived field at
-its default only while it hasn't been hand-edited), `sanitize_varname`/`field_varname`.
-Also: `PL_TOP`, `hugeSizeVal`/`tinySizeVal` (bound-spec sentinels).
-
 ### `jsonVarF.fs` — variable-producing utility Features
 
 `jsonVarF` (parse a JSON string into a named variable), `keylistF` (a map/array's keys as a
 variable), `sizeofF` (`sizeof` as a variable), `valuesAtF` (`valuesAt` as a variable), `splatF`
 (explodes a map/array into one variable per entry) — plus each one's `*EditLogic` function.
 
-### `miscUtils.fs` — small combinators
+---
 
-`idsFor` (an `ids`-map from a base `Id` and a tag list), `noop`, `curry2to0`/`curry2to1`/
-`curry2to2`/`curry3to0`/`curry3to1`/`curry3to2` (drop trailing arguments so a fixed-arity
-callback fits a `forEach`/`mapValues` slot), `parseJsonSafely` (wraps `parseJson`/
-`parseJsonWithUnits` with a `regenError` on failure instead of an opaque throw).
+## Bugs found and fixed along the way
 
-### `typeUtils.fs` — presence checks and small numeric/string guards
-
-`ifNil`/`ifBlank`/`ifZero` (fallback when `undefined`/blank-string/zero), `isPresent`/`isNil`/
-`truthy`/`strBlank`/`isEmpty`, `vector2` (drops a `Vector`'s z component), `mm`/`zero`
-(shorthand constants).
-
-### `debugUtils.fs` — viewport highlighting
-
-`highlightQuery` — `addDebugEntities` a query plus its owning bodies' edges (so it's visible
-through occluding faces), gated behind a `debugMe` flag so call sites can leave it in and toggle
-it off.
+* **`clxnWalking.fs`:** `NextStepAction` (the `forEach`/`mapValues`-family early-exit sentinel)
+  was never `export`ed, so no caller outside the file could ever actually trigger `BREAK` — every
+  walk anywhere in the codebase always ran to completion. Exported now, and covered by
+  `runForEachBreakTests`/`runForEachKeylistBreakTests` in `tests/testClxnWalking.fs`.
+* **`tests/testStringUtils.fs`:** `runPadTests` had four `return runTests(...)` statements
+  stacked in a row — only the first ever ran, so `padRight` was never tested at all, and the more
+  interesting padding-behavior cases (`LeftPadTestCases`/`RightPadTestCases`) silently never
+  executed either.
+* **`typeUtils.fs`:** `ifZero` had two dead, unreachable private overloads after the real
+  (exported) ones — one untyped, one with the exact same `(val is ValueWithUnits, fallback)`
+  signature as the exported version above it, which is either a silent duplicate-definition or a
+  compile error depending on how FeatureScript resolves it. Deleted both.
+* **`metadataUtils.fs`:** `getName` called `.val` on whatever `getNameProp` returned without
+  checking for `undefined` first — and `getNameProp`/`getBestAttr` return `undefined` exactly
+  when `query` resolves to no entities, which is not a rare case. Fixed to fall back to
+  `ignoredVal` in that case, matching every sibling function's documented contract.
