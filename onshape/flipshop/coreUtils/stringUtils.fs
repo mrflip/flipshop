@@ -312,6 +312,20 @@ export function capitalize(str is string) returns string {
   return upcase(strTake(str, 1)) ~ downcase(strSlice(str, 1));
 }
 
+/**
+ * `str` with every regex metacharacter (`\ ^ $ . * + ? ( ) [ ] { } |`) preceded by a backslash,
+ * so it can be dropped into `match`/`replace`/`splitByRegexp`'s `regExp` argument and matched
+ * literally instead of interpreted. A plain per-character walk rather than lodash's test-then-
+ * replace — std's `replace` has no backreference syntax to swap the whole match in one pass, so
+ * there'd be nothing to save by testing first; this always walks `str` exactly once either way.
+ * @example
+ *   escapeRegExp("[lodash](https://lodash.com/)"); // => "\\[lodash\\]\\(https://lodash\\.com/\\)"
+ */
+const RegExpSpecialChars = ["\\", "^", "$", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "|"];
+export function escapeRegExp(str is string) returns string {
+  return join(mapArray(splitIntoCharacters(str), (ch) => arrayIncludes(RegExpSpecialChars, ch) ? ("\\" ~ ch) : ch), "");
+}
+
 /** `str` split into words, lowercased, and joined with `-`. */
 export function kebabCase(str is string) returns string {
   return join(mapArray(words(str), (word) => downcase(word)), "-");
@@ -362,12 +376,8 @@ const WhitespaceChars = [" ", "\t", "\n", "\r"];
  *   trimStart("  hi  "); // => "hi  "
  */
 export function trimStart(str is string, chars is array) returns string {
-  const charlist = splitIntoCharacters(str);
-  var beg = 0;
-  for (; beg < size(charlist); beg += 1) {
-    if (! arrayIncludes(chars, charlist[beg])) { break; }
-  }
-  return strSlice(str, beg);
+  if (size(chars) == 0) { return str; }
+  return replace(str, "^[" ~ join(mapArray(chars, escapeRegExp), "") ~ "]+", "");
 }
 export function trimStart(str is string) returns string {
   return trimStart(str, WhitespaceChars);
@@ -375,12 +385,8 @@ export function trimStart(str is string) returns string {
 
 /** `trimStart`'s counterpart: strips from the back instead of the front. */
 export function trimEnd(str is string, chars is array) returns string {
-  const charlist = splitIntoCharacters(str);
-  var end = size(charlist);
-  for (; end > 0; end -= 1) {
-    if (! arrayIncludes(chars, charlist[end - 1])) { break; }
-  }
-  return strSlice(str, 0, end);
+  if (size(chars) == 0) { return str; }
+  return replace(str, "[" ~ join(mapArray(chars, escapeRegExp), "") ~ "]+$", "");
 }
 export function trimEnd(str is string) returns string {
   return trimEnd(str, WhitespaceChars);

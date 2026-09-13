@@ -34,6 +34,7 @@ precondition {
     runWordsTests(context, verbose);
     runCamelCaseTests(context, verbose);
     runCapitalizeTests(context, verbose);
+    runEscapeRegExpTests(context, verbose);
     runKebabCaseTests(context, verbose);
     runLowerCaseTests(context, verbose);
     runLowerFirstTests(context, verbose);
@@ -83,7 +84,6 @@ const PadTestCases = [
   [["", 3],                       "   ",                 'empty string, length 3, space padding implicit: 3 spaces'],
   [["", 3, " "],                  "   ",                 'empty string, length 3, space padding explicit: 3 spaces'],
   [["", 3, "  "],                 "   ",                 'empty string, length 3, 2 spaces padding explicit: 3 spaces (not four)'],
-  [["", 3, "1234"],               "123",                 'empty string, length 3, 4 digits padding explicit: 3 digits (not four)'],
   [["hello world", 11],           "hello world",         'string, length less than its own: returns input'],
   [["hello world", 11],           "hello world",         'string, length equal to its own: returns input'],
   [["hello world", 11, "!"],      "hello world",         'string, length equal to its own, with pad string: returns input'],
@@ -98,12 +98,13 @@ const LeftPadTestCases = [
   [["hello world", 16, "!!!"],    "!!!!!hello world",    'string, length five more than its own, with three pad characters: adds five characters of padding'],
   [["hello world", 17, "!!!"],    "!!!!!!hello world",   'string, length six more than its own, with three pad characters: adds six characters of padding'],
   [["hello world", 18, "!!!"],    "!!!!!!!hello world",  'string, length seven more than its own, with three pad characters: adds seven characters of padding'],
-  [["hey world!!", 11, "!!!"],    "!!hey world",         'string, length same as its own, shares characters with padding: returns input'],
-  [["hey world!!", 14, "!!!"],    "!!!hey world",        'string, length one more than its own, shares characters with padding: adds one character of padding'],
-  [["hey world!!", 18, "!!!"],    "!!!!!!!hey world",    'string, length five more than its own, with three pad characters: adds five characters of padding'],
+  [["!hey world!", 11, "!!!"],    "!hey world!",         'string, length same as its own, shares characters with padding: returns input'],
+  [["!hey world!", 14, "!!!"],    "!!!!hey world!",      'string, length one more than its own, shares characters with padding: adds one character of padding'],
+  [["!hey world!", 18, "!!!"],    "!!!!!!!!hey world!",  'string, length five more than its own, with three pad characters: adds five characters of padding'],
+  [["", 3, "1234"],               "123",                 'empty string, length 3, 4 digits padding explicit: 3 digits (not four)'],
 ];
 const RightPadTestCases = [
-  [["hello world",  11, "!!!"],    "hello world!",       'string, length same as its own, shares characters with padding: returns input'],
+  [["hello world",  11, "!!!"],    "hello world",        'string, length same as its own, shares characters with padding: returns input'],
   [["hello world",  12],           "hello world ",       'string, length one more than its own, default padding: adds one space'],
   [["hello world",  12, "!"],      "hello world!",       'string, length one more than its own, with one pad character: adds one character of padding'],
   [["hello world",  12, "!!!"],    "hello world!",       'string, length one more than its own, with three pad characters: adds one character of padding'],
@@ -114,8 +115,9 @@ const RightPadTestCases = [
   [["hello world",  17, "!!!"],    "hello world!!!!!!",  'string, length six more than its own, with three pad characters: adds six characters of padding'],
   [["hello world",  18, "!!!"],    "hello world!!!!!!!", 'string, length seven more than its own, with three pad characters: adds seven characters of padding'],
   [["hey world!!",  11, "!!!"],    "hey world!!",        'string, length same as its own, shares characters with padding: returns input'],
-  [["hey world!!",  14, "!!!"],    "hey world!!!",       'string, length one more than its own, shares characters with padding: adds one character of padding'],
-  [["hey world!!",  18, "!!!"],    "hey world!!!!!!!",   'string, length five more than its own, with three pad characters: adds five characters of padding'],
+  [["hey world!!",  14, "!!!"],    "hey world!!!!!",     'string, length one more than its own, shares characters with padding: adds one character of padding'],
+  [["hey world!!",  18, "!!!"],    "hey world!!!!!!!!!", 'string, length five more than its own, with three pad characters: adds five characters of padding'],
+  [["", 3, "1234"],                "234",                'empty string, length 3, 4 digits padding explicit: 3 digits (not four)'],
 ];
 
 export function runPadTests(context is Context, verbose is boolean) returns map {
@@ -283,6 +285,15 @@ export const CapitalizeCases = [
 ];
 export function runCapitalizeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "capitalize", verbose, CapitalizeCases, function(args is array) { return capitalize(args[0]); });
+}
+
+export const EscapeRegExpCases = [
+  [["[lodash](https://lodash.com/)"], "\\[lodash\\]\\(https://lodash\\.com/\\)"],
+  [["fred"],                          "fred", 'no metacharacters, nothing to escape'],
+  [[""],                              ""],
+];
+export function runEscapeRegExpTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "escapeRegExp", verbose, EscapeRegExpCases, function(args is array) { return escapeRegExp(args[0]); });
 }
 
 export const KebabCaseCases = [
