@@ -565,7 +565,7 @@ Make the visual tempo of the code match what you're trying to communicate:
 
 (queued prompts)
 
-Next: the code in cadsharp/ has a ton of useful add-ons to featurescript, is written by one of its most knowledgeable programmers, and spans probably the entire history of FeatureScript's API (meaning that some stuff in it might now be one-liners).
-Do some light grep'ing or whatever'ing to figure out what functions he leverages most often, internally or from onshape/std. Integrate them into the table: add anything from onshape/std to either the existing tables, to a new ones called "Primitives" and "Utilities" or, as your judgement informs, others; if there are functions from the cadsharp director you think I should regard as part of the standard library, add them to a Cadsharp table.
+Next: the code in cadsharp/ has a ton of useful add-ons to featurescript, is written by one of its most knowledgeable programmers, and spans probably the entire history of FeatureScript's API — meaning that some stuff in it might now be one-liners from the standard library, or use deprecated methods.
+Similar to your earlier census, triage the functions he leverages most often, internally or from onshape/std. if there are functions from the cadsharp collection you think I should regard as part of the standard library, add them to a Cadsharp table.
 
 To be sure I'm clear: we're not looking to document the cadsharp collection; we're (a) using it as a further refinement of what tools I *should* be reaching for, and (b) noting where he has patched some of the yawning gaps (eg.

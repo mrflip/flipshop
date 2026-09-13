@@ -21,7 +21,7 @@ that build and mutate them, distilled from the doc comments in `onshape/std`. So
 `containers.fs`, plus the typedefs behind `Context`, `Query`, `Transform`, `CoordSystem`,
 `Box3d`, `Path`, `Sketch`, `Line`, `Plane`, and a few evaluate-result types.
 Sheet metal, threads, splines, surfaces and release/validation plumbing are left out except
-where noted. Evaluators (`evaluate.fs`'s `evX` functions) are not yet covered.
+where noted. Evaluators (`evaluate.fs`'s `evX` functions) are covered further down.
 
 ### Legend
 
@@ -573,3 +573,124 @@ All of the `*Manipulator` constructors take one `definition:map` (not `ctx`/`id`
 | `pointsManipulator({points[]!, index})` | construct | one selectable point out of a set |
 | `togglePointsManipulator({points[]!, selectedIndices[], suppressedIndices[]})` | construct | several independently selectable points |
 | `flipManipulator({base, direction:VU3, flipped, otherDirection?})` | construct | click-to-flip arrow |
+
+### evaluate.fs
+
+The biggest gap the census turned up — 22+ distinct `evX` functions in real use, more than any
+other uncovered file. Every `evX` shares the shape `evX(context is Context, arg is map)`; `arg`
+fields are shown keyword-style below, `context` dropped as usual. Several come in singular/plural
+pairs (one point vs. `ptFracs[]`) where the singular form is just `plural(context, {..., ptFracs: [ptFrac]})[0]`
+under the hood — cheap to call either way.
+
+| Function | Does | Returns |
+|---|---|---|
+| `evOwnerSketchPlane({ entity: sketchQuery:1!, checkAllEntities? = false })` | The plane of the sketch creating `entity`. By default, checks only the first entity; otherwise, throws if any entity is not on the same plane. | Plane |
+| `evPlane({ faceQ:1! })` | The Plane a planar face or mate connector represents. | Plane |
+| `evPlanarEdge({ edgeQ:1! })` | The Plane a planar edge lies in. | Plane |
+| `evPlanarEdges({ edgesQ! })` | The common Plane all of `edgesQ` lie in, if they share one. | Plane |
+| `evAxis({ axisQ:1! })` | The axis of a line, circle, cylinder, cone, sphere, torus, mate connector, or revolved surface. | Line |
+| `evLine({ edgeQ:1! })` | `edgeQ` as a Line, if it's straight. | Line |
+| `evMateConnector({ mateConnectorQ:1! })` | The coordinate system of a mate connector. | CoordSystem |
+| `evVertexPoint({ vertexQ:1! })` | The location of a point, or the origin of a mate connector. | V3 |
+| `evBox3d({ topologyQ!, cSys?, tight? = true })` | Bounding box around `topologyQ`, in `cSys` if given. `tight = false` trades precision for speed. | Box3d |
+| `evDistance({ side0, side1, extendSide0?, extendSide1?, maximum? = false, precise? = true })` | Minimum (or, if `maximum`, maximum) distance between `side0` and `side1` — each a Q\|V3\|Line\|Plane or an array of those. | DistanceResult |
+| `evCollision({ toolsQ!, targetsQ!, passOwners? = false })` | Collisions between `toolsQ` and `targetsQ`. | { type: ClashType, target: Q, targetBody: Q, tool: Q, toolBody: Q }[] |
+| `evRaycast({ entitiesQ!, ray: Line, closest? = true, includeIntersectionsBehind? = false })` | Where `ray` hits `entitiesQ`, closest first. | RaycastResult[] |
+| `evEdgeConvexity({ edgeQ:1! })` | Convexity of `edgeQ`: CONVEX, CONCAVE, SMOOTH, or VARIABLE. | EdgeConvexityType |
+| `evEdgeCurvature({ edgeQ:1!, ptFrac, precise?, faceQ?:1 })` | Frenet frame along an edge, with curvature, at one point. | EdgeCurvatureResult: { frame: CoordSystem\<Z: tangent, X: normal, Y: binormal\>, curvature } |
+| `evEdgeCurvatures({ edgeQ:1!, ptFracs[]!, precise?, faceQ?:1 })` | Frenet frames along an edge, with curvature | EdgeCurvatureResult[]: { frame: CoordSystem\<Z: tangent, X: normal, Y: binormal\>, curvature }[] |
+| `evEdgeTangentLine({ edgeQ:1!, ptFrac, precise?, faceQ?:1 })` | Tangent Line to `edgeQ` at one point. | Line |
+| `evEdgeTangentLines({ edgeQ:1!, ptFracs[]!, precise?, faceQ?:1 })` | Tangent Lines to `edgeQ` at several points. | Line[] |
+| `evFaceNormalAtEdge({ edgeQ:1!, faceQ:1!, ptFrac, precise?, faceOriented? = false })` | Surface normal of `faceQ` at a point along one of its edges. | VU3 |
+| `evFaceTangentPlaneAtEdge({ edgeQ:1!, faceQ:1!, ptFrac, precise?, faceOriented? = false })` | Plane tangent to `faceQ` at a point along one of its edges. | Plane |
+| `evFaceTangentPlanesAtEdge({ edgeQ:1!, faceQ:1!, ptFracs[]!, precise?, faceOriented? = false })` | Same, at several points along the edge. | Plane[] |
+| `evFaceTangentPlane({ faceQ:1!, ptFracV:VF2 })` | Plane tangent to `faceQ` at one point, given in fractional face-bbox coordinates. | Plane |
+| `evFaceTangentPlanes({ faceQ:1!, ptFracs:VF2[]!, returnUndefinedOutsideFace? = false })` | Same, at several points. | Plane[] |
+| `evFaceCurvature({ faceQ:1!, ptFracV:VF2 })` | Principal curvatures at a point on the non-mesh face, specified by the fractional coordinates within its bounding box. | FaceCurvatureResult: { minCurvature, maxCurvature, minDirection: VU3!, maxDirection: VU3! } |
+| `evFaceCurvatures({ faceQ:1!, ptFracs:VF2[]! })` | Same, at several points. | FaceCurvatureResult[] |
+| `evFilletRadius({ faceQ:1! })` | Radius of a constant-radius fillet face. | VWU\<length\> |
+| `evLength({ entitiesQ! })` | Total length of `entitiesQ`'s edges (own edges, or edges owned by any bodies in it). | VWU\<length\> |
+| `evArea({ entitiesQ! })` | Total area of `entitiesQ`'s faces. | VWU\<area\> |
+| `evVolume({ entitiesQ!, accuracy?:VolumeAccuracy })` | Total volume of `entitiesQ`'s solid bodies. | VWU\<volume\> |
+| `evApproximateCentroid({ entitiesQ! })` | Approximate center of mass of `entitiesQ`, assuming uniform density. Prefer a bounding-box center for modeling purposes. | V3 |
+| `evApproximateMassProperties({ entitiesQ!, density, cSys? })` | Approximate mass, centroid, inertia tensor, and volume/area/length/count for a given `density`. | MassProperties |
+| `evCurveDefinition({ edgeQ:1!, returnBSplinesAsOther? = false })` | `edgeQ` as a Circle, Ellipse, Line, or BSplineCurve (an unspecified map if none of those). | Circle\|Ellipse\|Line\|BSplineCurve\|map |
+
+Left out: B-spline/surface approximators (`evApproximateBSplineCurve/Surface`, `evSurfaceDefinition`,
+`evFaceCurvatureDerivative`, `evEdgeCurvatureDerivative`, `evFacePeriodicity`, `evTessellatedLoftMatches`),
+mesh/sheet-metal (`evMeshPoints`, `evSheetMetalHoleToolBodies`, `evSheetMetalFormToolBodies`, `evCornerType`),
+QA/diagnostic tools (`evMaxPathDeviation`, `evPointsDeviation`, `evOffsetDetection`, `evTolerances`,
+`evMaxTolerance`, `evFaults`), and `evMateConnectorCoordSystem` (`@internal`) — same exclusion rules as
+the rest of this doc.
+
+---
+
+The two tables below came out of a second census, this time over `cadsharp/` (an expert FeatureScript
+author's published features, copy-pasted out of his workspaces — spans enough of FeatureScript's
+history that some of it may predate functions std has since grown) and over `flipshop/`. This isn't
+a census of *his* collection for its own sake — it's what his usage patterns say about which `std`
+tools are worth reaching for, plus the few places he's genuinely plugged a gap `std` still has.
+
+### Cadsharp
+
+Two real gaps in `std`, both from `cadsharp/alignedBoundingBox.fs` and `cadsharp/utils/queryFinder.fs`
+(duplicated verbatim in `utils/functionsPascoe.fs`). Everything else he leans on turned out to already
+be `std` — see the import/usage notes below.
+
+| Function | Does | Args |
+|---|---|---|
+| `smallestBox(ctx, id, definition, csys, axis, maxLoopCount)` | construct | Iteratively rotates `csys` about `axis` to shrink the bounding box of `definition.entities`; call once per axis to converge on a near-minimum-volume oriented box. `std`'s `evBox3d` only *measures* a box in a `cSys` you already picked — it never searches for a better one. |
+| `buildBoundingCylinder(ctx, id, definition, baseCsys, bboxSize)` | construct | Best-fit cylinder body around `definition.entities`, already oriented in world space → Q |
+| `buildBoundingSphere(ctx, id, definition, boxMap, bboxSize)` | construct | Best-fit sphere body → Q |
+| `buildBoundingSplinePrism(ctx, id, definition, baseCsys, bboxSize)` | construct | Best-fit smooth prism, extruded along the shortest box dimension → Q |
+| `QFinderPredicate(definition, suffix)` + `QFinderFunction(ctx, definition, suffix)` + `QFinderSetDefaultsAndVisibility(ctx, definition, oldDefinition, qFinderVisibleInputs, qFinderDefaultInputs, suffix)` | UI pattern | A drop-in "search by attribute / feature / property / identity / transient ID / everything" toggle that turns one plain `Query` parameter into a rich finder UI, with caching. `std` has no equivalent — you'd otherwise hand-roll this per feature. |
+
+**Imports.** Nearly every top-level file imports `onshape/std/common.fs` (the "get almost everything"
+bundle: context, feature, query, evaluate, units, properties, string, sketch, debug, attributes,
+coordSystem, curveGeometry, surfaceGeometry, box, and more — but *not* the op-wrapping modules like
+`extrude.fs`/`fillet.fs`); a few of his files layer `onshape/std/geometry.fs` on top, which re-exports
+`common.fs` *plus* every remaining op/feature-definition module (sheet metal, welds, the lot). In
+practice: `import common.fs` gets you almost everything in this doc; add `geometry.fs` if you're
+missing something op-specific. No individually-imported `std` file in his code pointed at anything
+not already covered above or in the main tables.
+
+**External documents — need your help.** A handful of import paths are opaque `documentId/workspaceId/elementId`
+triples pointing at other Onshape documents, not `onshape/std`. One dominates: the same document+element
+(`cbeb3dcf671e00785597bd76` / element `a75ab01def146a42f55baa7f`, pinned at a couple of different
+workspace snapshots) is imported by **17 of his 20 top-level files** — almost certainly his personal
+shared utility library, and the most likely place to find more of this caliber of tooling. A second
+document (`c7c08274a0d273b9a5f5b47d`, a few different elements/workspaces) shows up in 6 files and
+likely backs `cadsharpUrlPredicate`/`cadsharpUrlFunctionForPreExistingEditLogic` (18 and 10 calls —
+reads like a standard attribution/help-link widget he drops into every feature). A third, single-segment
+path (`905d9c769056ba52d974e529`, no workspace/element split) appears in 7 files including
+`utils/nodeTransform.fs`. If you can share any of those three, it's worth a second pass. Two remaining
+single-use paths (`12312312345abcabcabcdeff/...`) look like placeholder/test IDs, not worth chasing.
+
+**Nothing clearly deprecated.** I went looking for signs his code predates functions `std` later added
+(the kind of thing that'd now be a one-liner) and came up empty — the one candidate, a `tolerantEq`
+helper, turned out to be dead commented-out code in `approximateFace.fs`, not a live call. Everything
+else he reaches for either matches this doc already or is one of the two gaps above.
+
+### flipshop/coreUtils — essential patches
+
+Per your steer: everything here is treated as already-vetted, not code needing scrutiny — it's the
+project's own `math.fs`/`string.fs`/`containers.fs`. One file name is worth fixing: `clxnGetset.f` is
+missing its `s` (`.f`, not `.fs`) — harmless to Onshape, but it'll silently skip any tool that globs
+for `*.fs`, including every census in this document.
+
+| File | Fills the gap of | Catalog |
+|---|---|---|
+| `typeUtils.fs` | no nil/blank/zero coalescing — `std` has no `||`-style default-if-undefined | ifNil, ifBlank, ifZero, ifNilOrZero, isNil, isPresent, isEmpty, strBlank, truthy, vector2, mm, zero |
+| `clxnWalking.fs` | no map/array iteration beyond raw `for` loops | forEach, mapValues, mapValues3, valuesAt, sizeof, hasKey, hasPresentKey, rebag, objectify, pick, pickDefined, boxarrPush, boxarrUnshift, arrLast, arrayIncludes |
+| `clxnGetset.f` *(sic — see above)* | no path-based nested get/set in one call | getAt, setAt, deepMerge, pathForKey |
+| `clxnReshape.fs` | no flatten/unflatten between nested maps and dot-path keys | dotMap, undotMap, buildNestedChoices |
+| `stringUtils.fs` | no case conversion or padding in `string.fs` | downcase, upcase, downcaseChar, upcaseChar, padLeft, padRight, paddingFor, strTake, strTakeRight, strSlice, strRepeat, titleCase, hasMatch, starbanner |
+| `colorUtils.fs` | `Color` is RGBA-only — no hex/tuple string conversions | toColor, toHexcolor, hexcolorToColor, toUnitcolor, unitcolorToColor, toTuplecolor, tuplestrToColor, hexpairToInt, intToHexpair, sameColor, setColor, isHexcolor |
+| `metadataUtils.fs` | naming/attribute idioms layered over `properties.fs`/`attributes.fs` | getName, setName, setReadableName, getNameProp, getNameProps, getNameOfBody, getAttrs, getAllAttrs, getBestAttr, setPropAndAttribute, defaultMaybe, sanitize_varname |
+| `miscUtils.fs` | currying for the function-valued params `mapArray`/`filter`/`sort` expect | curry2to0, curry2to1, curry2to2, curry3to0, curry3to1, curry3to2, noop, idsFor, parseJsonSafely |
+| `debugUtils.fs` | one `debug.fs`-style helper | highlightQuery |
+| `jsonVarF.fs` | a small JSON-backed list/table parameter framework | jsonVarF, keylistF, keylistEditLogic, valuesAtF, valuesAtEditLogic, sizeofF, sizeofEditLogic, splatF |
+
+Ranked by real usage across `flipshop/`, the ones you reach for constantly: `ifNil` (47), `forEach` (20),
+`vector2` (16), `ifBlank` (16), `mapValues` (15), `toColor`/`padLeft`/`curry3to0`/`curry2to0` (12 each),
+`getAt` (8) — worth knowing `getAt`/`setAt`/`deepMerge`/`pathForKey` live in the misnamed `clxnGetset.f`.
