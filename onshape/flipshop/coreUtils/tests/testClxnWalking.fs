@@ -66,6 +66,18 @@ precondition {
     runSetAtTests(context, verbose);
     if (verbose) { runSetAtThrowsTests(context, verbose); }
     //
+    runCountByTests(context, verbose);
+    runFindTests(context, verbose);
+    runFindLastTests(context, verbose);
+    runFlatMapTests(context, verbose);
+    runFlatMapDeepTests(context, verbose);
+    runFlatMapDepthTests(context, verbose);
+    runForEachRightTests(context, verbose);
+    runGroupByTests(context, verbose);
+    runPartitionTests(context, verbose);
+    runReduceRightTests(context, verbose);
+    runRejectTests(context, verbose);
+    //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
     debug(context, starbanner('** Error in ' ~ SuiteTitle ~ ' Tests: ' ~ err ~ ' **'));

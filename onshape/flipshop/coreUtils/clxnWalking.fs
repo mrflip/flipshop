@@ -396,3 +396,120 @@ export function boxarrUnshift(arrRef is box, val) {
   return val;
 }
 //--
+
+// == [Lodash Collection ports] -- countBy, find, findLast, flatMap*, forEachRight, groupBy, partition, reduceRight, reject
+
+/**
+ * Map of `iteratee(val)` results to how many elements of `arr` produced that result.
+ * @example
+ *   countBy([1, 2, 3, 4], (val) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
+ */
+export function countBy(arr is array, iteratee is function) returns map {
+  var result = {};
+  for (var val in arr) {
+    const key = iteratee(val);
+    result[key] = ifNil(result[key], 0) + 1;
+  }
+  return result;
+}
+
+/**
+ * First element of `arr` for which `predicate` holds, or `undefined` if none does — `arrayUtils`'
+ * `findIndex`, dereferenced.
+ * @example
+ *   find([1, 2, 3], (val) => val > 1); // => 2
+ */
+export function find(arr is array, predicate is function) {
+  const seq = findIndex(arr, predicate);
+  return (seq == -1) ? undefined : arr[seq];
+}
+/** `find`, scanning from the end — `findLastIndex`, dereferenced. */
+export function findLast(arr is array, predicate is function) {
+  const seq = findLastIndex(arr, predicate);
+  return (seq == -1) ? undefined : arr[seq];
+}
+
+/**
+ * `arr` mapped through `iteratee`, then flattened one level — @see `arrayUtils`' `flatten`.
+ * `flatMapDeep`/`flatMapDepth` flatten fully / to `depth` levels instead.
+ * @example
+ *   flatMap([1, 2], (val) => [val, val]); // => [1, 1, 2, 2]
+ */
+export function flatMap(arr is array, iteratee is function) returns array {
+  return flatten(mapValues(arr, iteratee));
+}
+export function flatMapDeep(arr is array, iteratee is function) returns array {
+  return flattenDeep(mapValues(arr, iteratee));
+}
+export function flatMapDepth(arr is array, iteratee is function, depth is number) returns array {
+  return flattenDepth(mapValues(arr, iteratee), depth);
+}
+
+/**
+ * `forEach`, back-to-front — otherwise identical, including the `NextStepAction.BREAK` early exit.
+ * @example
+ *   forEachRight([1, 2, 3], function(val, seq) { debug(context, val); }); // visits 3, then 2, then 1
+ */
+export function forEachRight(arr is array, func is function) {
+  for (var seq = size(arr) - 1; seq >= 0; seq -= 1) {
+    const result = func(arr[seq], seq);
+    if (result == NextStepAction.BREAK) { break; }
+  }
+}
+
+/**
+ * Map of `iteratee(val)` results to the elements of `arr` that produced each one, via std's
+ * `insertIntoMapOfArrays`.
+ * @example
+ *   groupBy([1, 2, 3, 4], (val) => (val % 2 == 0) ? "even" : "odd");
+ *   // => { "odd": [1, 3], "even": [2, 4] }
+ */
+export function groupBy(arr is array, iteratee is function) returns map {
+  var result = {};
+  for (var val in arr) {
+    result = insertIntoMapOfArrays(result, iteratee(val), val);
+  }
+  return result;
+}
+
+/**
+ * `[passed, failed]` — `arr` split into the elements for which `predicate` holds and the ones for
+ * which it doesn't, each keeping `arr`'s relative order.
+ * @example
+ *   partition([1, 2, 3, 4], (val) => val % 2 == 0); // => [[2, 4], [1, 3]]
+ */
+export function partition(arr is array, predicate is function) returns array {
+  var passed = [];
+  var failed = [];
+  for (var val in arr) {
+    if (predicate(val)) {
+      passed = append(passed, val);
+    } else {
+      failed = append(failed, val);
+    }
+  }
+  return [passed, failed];
+}
+
+/**
+ * `foldArray` *(std)*, back-to-front: `arr` reduced right-to-left through `foldFunction(accumulator, element)`.
+ * @example
+ *   reduceRight([1, 2, 3], "", function(acc, val) { return acc ~ val; }); // => "321"
+ */
+export function reduceRight(arr is array, seed, foldFunction is function) {
+  return foldArray(reverse(arr), seed, foldFunction);
+}
+/** `reduceRight`, seeded from `arr`'s last element — @see `foldArray`'s single-seed overload. */
+export function reduceRight(arr is array, foldFunction is function) {
+  return foldArray(reverse(arr), foldFunction);
+}
+
+/**
+ * Elements of `arr` for which `predicate` does *not* hold — the inverse of `filter` *(std)*.
+ * @example
+ *   reject([1, 2, 3, 4], (val) => val % 2 == 0); // => [1, 3]
+ */
+export function reject(arr is array, predicate is function) returns array {
+  return filter(arr, (val) => (! predicate(val)));
+}
+//--

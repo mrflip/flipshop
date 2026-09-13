@@ -72,28 +72,28 @@ shallower, "less functional" one-level combine. Both are noted on that row.
 | `subArray` *(std)* | `slice` | Slice of an array between two indices. | Direct match. |
 | `deduplicate` *(std)* | `uniq` | Duplicate-free version of an array. | Direct match. |
 | `zip` *(std)* | `zip` | Groups the nth elements of several arrays together. | Direct match. |
-| ~~chunk~~ | `chunk` | Splits an array into groups of `size`. | |
-| ~~compact~~ | `compact` | Removes falsey values from an array. | FeatureScript has no falsy-scalar convention beyond `undefined`; would reduce to a plain filter. |
-| ~~difference~~ / ~~differenceBy~~ / ~~differenceWith~~ | `difference` family | Values in one array not present in others. | |
-| ~~drop~~ / ~~dropRight~~ / ~~dropRightWhile~~ / ~~dropWhile~~ | `drop` family | Drop `n` elements (or while a predicate holds) from either end. | |
-| ~~findIndex~~ | `findIndex` | Index of the first element matching a predicate. | |
-| ~~findLastIndex~~ | `findLastIndex` | Index of the last element matching a predicate. | |
-| ~~flatten~~ / ~~flattenDeep~~ / ~~flattenDepth~~ | `flatten` family | Flatten an array one level / fully / `n` levels deep. | `dotMap`'s `maxDepth` (coreUtils) is the map-shaped cousin, not array-shaped. |
-| ~~fromPairs~~ | `fromPairs` | `[[k,v], …]` → map. | |
-| ~~initial~~ | `initial` | All but the last element. | |
-| ~~intersection~~ / ~~intersectionBy~~ / ~~intersectionWith~~ | `intersection` family | Values present in every given array. | |
-| ~~lastIndexOf~~ | `lastIndexOf` | Index of the last occurrence of a value, searching from the end. | |
-| ~~nth~~ | `nth` | Nth element (negative counts from the end). | |
-| ~~sortedIndex~~ / ~~sortedIndexBy~~ / ~~sortedIndexOf~~ / ~~sortedLastIndex~~ / ~~sortedLastIndexBy~~ / ~~sortedLastIndexOf~~ | `sortedIndex*` family | Binary-search insertion points into an already-sorted array. | |
-| ~~sortedUniq~~ / ~~sortedUniqBy~~ | `sortedUniq`, `sortedUniqBy` | `uniq`/`uniqBy`, optimized for sorted input. | |
-| ~~tail~~ | `tail` | All but the first element. | |
-| ~~take~~ / ~~takeRight~~ / ~~takeRightWhile~~ / ~~takeWhile~~ | `take` family | Take `n` elements (or while a predicate holds) from either end. | `strTake`/`strTakeRight` (coreUtils) cover the string analogue, not arrays. |
-| ~~union~~ / ~~unionBy~~ / ~~unionWith~~ | `union` family | Deduplicated concatenation of several arrays. | |
-| ~~uniqBy~~ / ~~uniqWith~~ | `uniqBy`, `uniqWith` | `uniq`, iteratee-mapped / custom comparator. | |
-| ~~unzip~~ / ~~unzipWith~~ | `unzip`, `unzipWith` | Inverse of `zip`. | |
-| ~~without~~ | `without` | Values from an array excluding the given ones. | |
-| ~~xor~~ / ~~xorBy~~ / ~~xorWith~~ | `xor` family | Symmetric difference of several arrays. | |
-| ~~zipObject~~ / ~~zipObjectDeep~~ / ~~zipWith~~ | `zipObject` family | Build an object, or combine grouped elements with a function. | |
+| `chunk` | `chunk` | Splits an array into groups of `chunkSize`. | |
+| `compact` | `compact` | Removes falsey values from an array. | Narrower than lodash: only `undefined`/`false` are falsey in FeatureScript, so `0` and `""` survive — a thin wrapper around std `filter` and typeUtils' `truthy`. |
+| `difference` / `differenceBy` | `difference`, `differenceBy` | Values in one array not present in another. | No varargs, so the exclusion values are one array, not trailing arguments — concatenate first to exclude from several sources. ~~differenceWith~~ not ported (marginal over `differenceBy`). |
+| `drop` / `dropRight` / `dropRightWhile` / `dropWhile` | `drop` family | Drop `n` elements (or while a predicate holds) from either end. | |
+| `findIndex` | `findIndex` | Index of the first element matching a predicate. | No `fromIndex` argument. |
+| `findLastIndex` | `findLastIndex` | Index of the last element matching a predicate. | No `fromIndex` argument. |
+| `flatten` / `flattenDeep` / `flattenDepth` | `flatten` family | Flatten an array one level / fully / `n` levels deep. | `dotMap`'s `maxDepth` (coreUtils) is the map-shaped cousin, not array-shaped. |
+| `fromPairs` | `fromPairs` | `[[k,v], …]` → map. | |
+| `initial` | `initial` | All but the last element. | |
+| `intersection` / `intersectionBy` | `intersection`, `intersectionBy` | Values present in every given array. | Takes an array of arrays (no varargs). ~~intersectionWith~~ not ported. |
+| `lastIndexOf` | `lastIndexOf` | Index of the last occurrence of a value, searching from the end. | No `fromIndex` argument. |
+| `nth` | `nth` | Nth element (negative counts from the end). | |
+| ~~sortedIndex~~ / ~~sortedIndexBy~~ / ~~sortedIndexOf~~ / ~~sortedLastIndex~~ / ~~sortedLastIndexBy~~ / ~~sortedLastIndexOf~~ | `sortedIndex*` family | Binary-search insertion points into an already-sorted array. | std's `sort(arr, compareFunction)` makes this possible for numbers, but the 6-function family is a lot of surface for an optimization this codebase has no hot path for. |
+| ~~sortedUniq~~ / ~~sortedUniqBy~~ | `sortedUniq`, `sortedUniqBy` | `uniq`/`uniqBy`, optimized for sorted input. | Redundant with `uniqBy`/std `deduplicate` at this project's scale — the "sorted" optimization buys nothing here. |
+| `tail` | `tail` | All but the first element. | |
+| `take` / `takeRight` / `takeRightWhile` / `takeWhile` | `take` family | Take `n` elements (or while a predicate holds) from either end. | `strTake`/`strTakeRight` (coreUtils) cover the string analogue, not arrays. |
+| `union` / `unionBy` | `union`, `unionBy` | Deduplicated concatenation of several arrays. | Takes an array of arrays (no varargs). ~~unionWith~~ not ported. |
+| `uniqBy` / `uniqWith` | `uniqBy`, `uniqWith` | `uniq`, iteratee-mapped / custom comparator. | Plain `uniq` is std's `deduplicate`. |
+| `unzip` / `unzipWith` | `unzip`, `unzipWith` | Inverse of `zip`. | `zip`'s grouping is its own inverse, so `unzip` is a bare alias for std `zip`. |
+| `without` | `without` | Values from an array excluding the given ones. | Identical to `difference` once variadic exclusion values collapse to one array — kept as its own name for lodash parity. |
+| `xor` | `xor` | Symmetric difference of several arrays. | Takes an array of arrays (no varargs). ~~xorBy~~ / ~~xorWith~~ not ported. |
+| `zipObject` / `zipWith` | `zipObject`, `zipWith` | Build an object, or combine grouped elements with a function. | `zipWith` and `unzipWith` are the same shape of operation, both riding on `zip`'s self-symmetry. ~~zipObjectDeep~~ not ported (needs path-based nested writes, low value here). |
 
 Not Yet (perhaps never):
 
@@ -293,6 +293,36 @@ Many of these may not be possible, hold off unless needed; the `->` operator in 
 counterpart for anything they export (Onshape-specific viewport/attribute plumbing).
 
 ---
+
+## `arrayUtils.fs` — lodash-style array helpers
+
+Straightforward ports from lodash's Array category; anything needing varargs takes an array of
+arrays/values instead (`difference(arr, excludeArr)`, `union(arrList)`, …). Alphabetical order.
+
+| Export | Does |
+|---|---|
+| `chunk(arr, chunkSize)` | Splits `arr` into `chunkSize`-length groups; the last group holds the remainder. `chunkSize < 1` → `[]`. |
+| `compact(arr)` | `arr` filtered to `typeUtils.truthy` — only `undefined`/`false` drop, unlike lodash's wider falsey set. |
+| `difference(arr, excludeArr)` / `differenceBy(arr, excludeArr, iteratee)` | `arr` minus anything (or anything whose `iteratee` value) appears in `excludeArr`. |
+| `drop(arr, dropCount)` / `dropRight(arr, dropCount)` | `arr` with `dropCount` elements removed from the front/back. |
+| `dropWhile(arr, predicate)` / `dropRightWhile(arr, predicate)` | `arr` with a leading/trailing run satisfying `predicate` removed. |
+| `findIndex(arr, predicate)` / `findLastIndex(arr, predicate)` | Index of the first/last element satisfying `predicate`, or `-1`. |
+| `flatten(arr)` / `flattenDeep(arr)` / `flattenDepth(arr, depth)` | Array nesting removed one level / fully / up to `depth` levels. |
+| `fromPairs(pairs)` | `[[key, val], …]` → map; a repeated key keeps its last pair. |
+| `initial(arr)` | `arr` without its last element. |
+| `intersection(arrList)` / `intersectionBy(arrList, iteratee)` | Values (or `iteratee` results) present in every array of `arrList`, deduplicated. |
+| `lastIndexOf(arr, val)` | Index of the last occurrence of `val`, or `-1`. |
+| `nth(arr, seq)` | Element at `seq`; negative counts from the end; out of bounds is `undefined`. |
+| `tail(arr)` | `arr` without its first element. |
+| `take(arr, takeCount)` / `takeRight(arr, takeCount)` | First/last `takeCount` elements of `arr`. |
+| `takeWhile(arr, predicate)` / `takeRightWhile(arr, predicate)` | Leading/trailing run of `arr` satisfying `predicate`. |
+| `union(arrList)` / `unionBy(arrList, iteratee)` | Deduplicated concatenation of every array in `arrList`. |
+| `uniqBy(arr, iteratee)` / `uniqWith(arr, comparator)` | `arr` deduplicated by `iteratee(val)`, or by a custom equality `comparator`. |
+| `unzip(arr)` / `unzipWith(arr, iteratee)` | Ungroups `arr`'s rows into columns (an alias for std `zip`, its own inverse), optionally mapped through `iteratee`. |
+| `without(arr, excludeArr)` | `arr` minus anything in `excludeArr` — identical to `difference`, under lodash's other name. |
+| `xor(arrList)` | Values appearing in exactly one array of `arrList`. |
+| `zipObject(keylist, valuelist)` | Map pairing `keylist`/`valuelist` by position. |
+| `zipWith(arrList, iteratee)` | Std `zip` on `arrList`, each grouped row passed through `iteratee`. |
 
 ## `clxnGetset.fs` — path-based get/set on maps and arrays
 
