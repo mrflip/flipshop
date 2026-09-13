@@ -1,19 +1,4 @@
-### Onshape Projects
-
-Hello robots! See ../AGENTS.md for other important guidelines.
-
-## Subdirectory Style
-
-The onshape/flipshop directory has the actual Featurescript artifacts for this repo. The other directories are mirrors of the standard library and important community contributors:
-
-Mirrors of official Onshape Reference Libraries
-
-* `std/`: git@github.com:javawizard/onshape-std-library-mirror.git -- the onshape standard libraries
-* `community/`: various community contributed onshape extensions. Agentic coders should look here for examples
-* `cadsharp/`: utility scripts written by a top onshape user -- these demonstrate many expert aspects and best practices of Onshape Featurescript programming
-* `flipshop`: this project's contributions
-
-## onshape/std Field Atlas
+# onshape/std Field Atlas
 
 A compact map of the FeatureScript standard library's core geometry types and the functions
 that build and mutate them, distilled from the doc comments in `onshape/std`. Source files:
@@ -382,16 +367,14 @@ docs require to be a single face.
 
 ---
 
-The sections below came out of a function-call census across `community/`, `cadsharp/`, and
-`flipshop/` — every `std` file with real usage that wasn't already covered above. Notation
-follows the conventions in the Legend: `x[]` for arrays, `[a, b, c?]` for tuples, `fooV:VU3` for
-3D unit vectors, `qy:1` for a query required to resolve to exactly one entity, and `!` for "must
-be nonempty" on an array or query.
+The remaining sections cover `vector.fs`, `feature.fs`, `error.fs`, `debug.fs`, `properties.fs`,
+`attributes.fs`, `surfaceGeometry.fs` (Plane), `curveGeometry.fs` (Line), `coordSystem.fs`,
+`context.fs`, and `manipulator.fs`.
 
 ### vector.fs
 
-The file behind the `Vector` typedef — by far the single most-called thing in the census
-(`vector()` alone: 532 hits across the three directories).
+The file behind the `Vector` typedef, and the single most load-bearing function in this whole
+doc — nearly everything geometric eventually routes through `vector()`.
 
 | Function | Does | Args |
 |---|---|---|
@@ -419,8 +402,8 @@ Predicates for the `Vector` shape itself, not listed as rows: `canBeVector`, `is
 
 ### feature.fs
 
-The scaffolding every custom feature is built on. `defineFeature` itself is called once per
-feature file, so its 40 census hits means 40 distinct features across the three directories.
+The scaffolding every custom feature is built on. `defineFeature` is called exactly once per
+feature file — it's the wrapper that turns a plain function into a feature.
 
 | Function | Does | Args |
 |---|---|---|
@@ -577,8 +560,7 @@ All of the `*Manipulator` constructors take one `definition:map` (not `ctx`/`id`
 
 ### evaluate.fs
 
-The biggest gap the census turned up — 22+ distinct `evX` functions in real use, more than any
-other uncovered file. Every `evX` shares the shape `evX(context is Context, arg is map)`; `arg`
+Every `evX` shares the shape `evX(context is Context, arg is map)`; `arg`
 fields are shown keyword-style below, `context` dropped as usual. Several come in singular/plural
 pairs (one point vs. `ptFracs[]`) where the singular form is just `plural(context, {..., ptFracs: [ptFrac]})[0]`
 under the hood — cheap to call either way.
@@ -626,25 +608,18 @@ the rest of this doc.
 
 ---
 
-The two tables below came out of a second census, this time over `cadsharp/` (an expert FeatureScript
-author's published features, copy-pasted out of his workspaces — spans enough of FeatureScript's
-history that some of it may predate functions std has since grown) and over `flipshop/`. This isn't
-a census of *his* collection for its own sake — it's what his usage patterns say about which `std`
-tools are worth reaching for, plus the few places he's genuinely plugged a gap `std` still has.
-
 ### Cadsharp
 
-Two real gaps in `std`, both from `cadsharp/alignedBoundingBox.fs` and `cadsharp/utils/queryFinder.fs`
-(duplicated verbatim in `utils/functionsPascoe.fs`). Everything else he leans on turned out to already
-be `std` — see the import/usage notes below.
+Best-fit bounding shapes, and a reusable query-search UI pattern — from `alignedBoundingBox.fs`
+and `utils/queryFinder.fs` (duplicated verbatim in `utils/functionsPascoe.fs`).
 
 | Function | Does | Args |
 |---|---|---|
-| `smallestBox(ctx, id, definition, csys, axis, maxLoopCount)` | construct | Iteratively rotates `csys` about `axis` to shrink the bounding box of `definition.entities`; call once per axis to converge on a near-minimum-volume oriented box. `std`'s `evBox3d` only *measures* a box in a `cSys` you already picked — it never searches for a better one. |
+| `smallestBox(ctx, id, definition, csys, axis, maxLoopCount)` | construct | Iteratively rotates `csys` about `axis` to shrink the bounding box of `definition.entities`; call once per axis to converge on a near-minimum-volume oriented box. |
 | `buildBoundingCylinder(ctx, id, definition, baseCsys, bboxSize)` | construct | Best-fit cylinder body around `definition.entities`, already oriented in world space → Q |
 | `buildBoundingSphere(ctx, id, definition, boxMap, bboxSize)` | construct | Best-fit sphere body → Q |
 | `buildBoundingSplinePrism(ctx, id, definition, baseCsys, bboxSize)` | construct | Best-fit smooth prism, extruded along the shortest box dimension → Q |
-| `QFinderPredicate(definition, suffix)` + `QFinderFunction(ctx, definition, suffix)` + `QFinderSetDefaultsAndVisibility(ctx, definition, oldDefinition, qFinderVisibleInputs, qFinderDefaultInputs, suffix)` | UI pattern | A drop-in "search by attribute / feature / property / identity / transient ID / everything" toggle that turns one plain `Query` parameter into a rich finder UI, with caching. `std` has no equivalent — you'd otherwise hand-roll this per feature. |
+| `QFinderPredicate(definition, suffix)` + `QFinderFunction(ctx, definition, suffix)` + `QFinderSetDefaultsAndVisibility(ctx, definition, oldDefinition, qFinderVisibleInputs, qFinderDefaultInputs, suffix)` | UI pattern | A drop-in "search by attribute / feature / property / identity / transient ID / everything" toggle that turns one plain `Query` parameter into a rich finder UI, with caching. |
 
 **Imports.** Nearly every top-level file imports `onshape/std/common.fs` (the "get almost everything"
 bundle: context, feature, query, evaluate, units, properties, string, sketch, debug, attributes,
@@ -652,44 +627,25 @@ coordSystem, curveGeometry, surfaceGeometry, box, and more — but *not* the op-
 `extrude.fs`/`fillet.fs`); a few of his files layer `onshape/std/geometry.fs` on top, which re-exports
 `common.fs` *plus* every remaining op/feature-definition module (sheet metal, welds, the lot). In
 practice: `import common.fs` gets you almost everything in this doc; add `geometry.fs` if you're
-missing something op-specific. No individually-imported `std` file in his code pointed at anything
-not already covered above or in the main tables.
+missing something op-specific.
 
-**External documents.** Two of the opaque `documentId/workspaceId/elementId` import paths are now
-identified. `cbeb3dcf671e00785597bd76` / element `a75ab01def146a42f55baa7f` (pinned at a couple of
-different workspace snapshots, imported by **17 of his 20 top-level files**) is his branding import —
-the attribution/help-link widget behind `cadsharpUrlPredicate`/`cadsharpUrlFunctionForPreExistingEditLogic`
-(18 and 10 calls). `c7c08274a0d273b9a5f5b47d` (6 files) is his toolkit doc:
-https://cad.onshape.com/documents/c7c08274a0d273b9a5f5b47d/w/f348f21ad2fa5c8771f1e1b1/e/af743c73c677355164494e79
-— the more likely place to find more tooling of the `smallestBox`/`QFinder` caliber, if a second pass
-is worth it. A third, single-segment path (`905d9c769056ba52d974e529`, no workspace/element split)
-still appears in 7 files including `utils/nodeTransform.fs` and remains unidentified. Two single-use
-paths (`12312312345abcabcabcdeff/...`) look like placeholder/test IDs, not worth chasing.
+### flipshop/coreUtils
 
-**Nothing clearly deprecated.** I went looking for signs his code predates functions `std` later added
-(the kind of thing that'd now be a one-liner) and came up empty — the one candidate, a `tolerantEq`
-helper, turned out to be dead commented-out code in `approximateFace.fs`, not a live call. Everything
-else he reaches for either matches this doc already or is one of the two gaps above.
+This project's own equivalent of `math.fs`/`string.fs`/`containers.fs`.
 
-### flipshop/coreUtils — essential patches
+| File | Catalog |
+|---|---|
+| `typeUtils.fs` | nil/blank/zero coalescing, truthiness: ifNil, ifBlank, ifZero, ifNilOrZero, isNil, isPresent, isEmpty, strBlank, truthy, vector2, mm, zero |
+| `clxnWalking.fs` | map/array iteration: forEach, mapValues, mapValues3, valuesAt, sizeof, hasKey, hasPresentKey, rebag, objectify, pick, pickDefined, boxarrPush, boxarrUnshift, arrLast, arrayIncludes |
+| `clxnGetset.fs` | path-based nested get/set: getAt, setAt, deepMerge, pathForKey |
+| `clxnReshape.fs` | flatten/unflatten nested maps ↔ dot-path keys: dotMap, undotMap, buildNestedChoices |
+| `stringUtils.fs` | case conversion, padding, search: downcase, upcase, downcaseChar, upcaseChar, padLeft, padRight, paddingFor, strTake, strTakeRight, strSlice, strRepeat, titleCase, hasMatch, starbanner |
+| `colorUtils.fs` | Color ↔ hex/tuple string conversions: toColor, toHexcolor, hexcolorToColor, toUnitcolor, unitcolorToColor, toTuplecolor, tuplestrToColor, hexpairToInt, intToHexpair, sameColor, setColor, isHexcolor |
+| `metadataUtils.fs` | naming and attribute helpers: getName, setName, setReadableName, getNameProp, getNameProps, getNameOfBody, getAttrs, getAllAttrs, getBestAttr, setPropAndAttribute, defaultMaybe, sanitize_varname |
+| `miscUtils.fs` | currying, misc: curry2to0, curry2to1, curry2to2, curry3to0, curry3to1, curry3to2, noop, idsFor, parseJsonSafely |
+| `debugUtils.fs` | highlightQuery |
+| `jsonVarF.fs` | JSON-backed list/table parameters: jsonVarF, keylistF, keylistEditLogic, valuesAtF, valuesAtEditLogic, sizeofF, sizeofEditLogic, splatF |
 
-Per your steer: everything here is treated as already-vetted, not code needing scrutiny — it's the
-project's own `math.fs`/`string.fs`/`containers.fs`. (One file, `clxnGetset.fs`, was saved as `clxnGetset.f`
-— missing the `s` — which silently skipped it in every census in this document until fixed.)
-
-| File | Fills the gap of | Catalog |
-|---|---|---|
-| `typeUtils.fs` | no nil/blank/zero coalescing — `std` has no `||`-style default-if-undefined | ifNil, ifBlank, ifZero, ifNilOrZero, isNil, isPresent, isEmpty, strBlank, truthy, vector2, mm, zero |
-| `clxnWalking.fs` | no map/array iteration beyond raw `for` loops | forEach, mapValues, mapValues3, valuesAt, sizeof, hasKey, hasPresentKey, rebag, objectify, pick, pickDefined, boxarrPush, boxarrUnshift, arrLast, arrayIncludes |
-| `clxnGetset.fs` | no path-based nested get/set in one call | getAt, setAt, deepMerge, pathForKey |
-| `clxnReshape.fs` | no flatten/unflatten between nested maps and dot-path keys | dotMap, undotMap, buildNestedChoices |
-| `stringUtils.fs` | no case conversion or padding in `string.fs` | downcase, upcase, downcaseChar, upcaseChar, padLeft, padRight, paddingFor, strTake, strTakeRight, strSlice, strRepeat, titleCase, hasMatch, starbanner |
-| `colorUtils.fs` | `Color` is RGBA-only — no hex/tuple string conversions | toColor, toHexcolor, hexcolorToColor, toUnitcolor, unitcolorToColor, toTuplecolor, tuplestrToColor, hexpairToInt, intToHexpair, sameColor, setColor, isHexcolor |
-| `metadataUtils.fs` | naming/attribute idioms layered over `properties.fs`/`attributes.fs` | getName, setName, setReadableName, getNameProp, getNameProps, getNameOfBody, getAttrs, getAllAttrs, getBestAttr, setPropAndAttribute, defaultMaybe, sanitize_varname |
-| `miscUtils.fs` | currying for the function-valued params `mapArray`/`filter`/`sort` expect | curry2to0, curry2to1, curry2to2, curry3to0, curry3to1, curry3to2, noop, idsFor, parseJsonSafely |
-| `debugUtils.fs` | one `debug.fs`-style helper | highlightQuery |
-| `jsonVarF.fs` | a small JSON-backed list/table parameter framework | jsonVarF, keylistF, keylistEditLogic, valuesAtF, valuesAtEditLogic, sizeofF, sizeofEditLogic, splatF |
-
-Ranked by real usage across `flipshop/`, the ones you reach for constantly: `ifNil` (47), `forEach` (20),
-`vector2` (16), `ifBlank` (16), `mapValues` (15), `toColor`/`padLeft`/`curry3to0`/`curry2to0` (12 each),
-`getAt` (8) — worth knowing `getAt`/`setAt`/`deepMerge`/`pathForKey` live in `clxnGetset.fs`.
+The heaviest hitters: `ifNil`, `forEach`, `vector2`, `ifBlank`, `mapValues`, `toColor`, `padLeft`,
+`curry3to0`, `curry2to0`, `getAt` — worth knowing `getAt`/`setAt`/`deepMerge`/`pathForKey` live in
+`clxnGetset.fs`.
