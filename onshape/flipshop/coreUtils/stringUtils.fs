@@ -47,6 +47,14 @@ export function paddingFor(padstr is string, neededLen is number) returns string
   const reps = ceil(neededLen / length(padstr));
   return repeatString(padstr, reps);
 }
+/**
+ * Pads `str` on the left side if it's shorter than `minlen`. Padding characters are truncated if
+ * they exceed `minlen`. Also overloaded for a `number`, which is stringified first.
+ * @example
+ *   padLeft("hello world", 12);        // => " hello world"
+ *   padLeft("hello world", 12, "!");   // => "!hello world"
+ *   padLeft("hello world", 11);        // => "hello world"
+ */
 export function padLeft(str is string, minlen is number, padstr is string) returns string {
   if     (padstr == '') { throw "Padchar must not be blank (trying to pad " ~ str ~ ")"; }
   const  minlen0 = max(0, minlen);
@@ -64,6 +72,13 @@ export function padLeft(num is number, minlen is number, padstr is string) retur
 export function padLeft(num is number, minlen is number) returns string {
   return padLeft(num, minlen, ' ');
 }
+/**
+ * Pads `str` on the right side if it's shorter than `minlen`. Padding characters are truncated
+ * if they exceed `minlen`. Also overloaded for a `number`, which is stringified first.
+ * @example
+ *   padRight("hello world", 12);      // => "hello world "
+ *   padRight("hello world", 12, "!"); // => "hello world!"
+ */
 export function padRight(str is string, minlen is number, padstr is string) returns string {
   if     (padstr == '') { throw "Padchar must not be blank (trying to pad " ~ str ~ ")"; }
   const  minlen0 = max(0, minlen);
@@ -76,6 +91,13 @@ export function padRight(str is string, minlen is number) returns string {
   return padRight(str, minlen, ' ');
 }
 
+/**
+ * Repeats `str` `reps` times.
+ * @example
+ *   strRepeat("*", 3);   // => "***"
+ *   strRepeat("abc", 2); // => "abcabc"
+ *   strRepeat("abc", 0); // => ""
+ */
 export function strRepeat(str is string, reps is number) returns string {
   var result = '';
   for (var i = 0; i < reps; i = i + 1) {
@@ -104,6 +126,14 @@ function downcaseChar(char is string) returns string {
   return lochar;
 }
 
+/**
+ * Converts `str`, as a whole, to lower case. ASCII-only, via an explicit character lookup —
+ * unlike lodash's `toLower`, there's no Unicode case folding, but a non-letter character is left
+ * untouched rather than causing an error.
+ * @example
+ *   downcase("fooBar");      // => "foobar"
+ *   downcase("--FOO-BAR--"); // => "--foo-bar--"
+ */
 export function downcase(str is string) returns string {
   var lower is string = '';
   for (var char in splitIntoCharacters(str)) {
@@ -118,6 +148,12 @@ function upcaseChar(char is string) returns string {
   return lochar;
 }
 
+/**
+ * Converts `str`, as a whole, to upper case. Same ASCII-only limitation as `downcase`.
+ * @example
+ *   upcase("fooBar");      // => "FOOBAR"
+ *   upcase("--foo-bar--"); // => "--FOO-BAR--"
+ */
 export function upcase(str is string) returns string {
   var upper is string = '';
   for (var char in splitIntoCharacters(str)) {
@@ -126,17 +162,23 @@ export function upcase(str is string) returns string {
   return upper;
 }
 
-/**
- * Prototype for titleCase with default options.
- */
+/** `titleCase` with default options — @see the two-argument overload. */
 export function titleCase(str is string) returns string {
   return titleCase(str, {});
 }
 
 /**
- * Converts a string to Title Case.
- * @param opts.spaces {regexp}: Characters that denote spaces/word breaks (default "-_").
- * @param opts.tr {map}: Single-character to single-character translation map.
+ * Converts `str` to start case, in the spirit of lodash's `startCase`: splits into words,
+ * capitalizes each word's first letter, and lower-cases the rest. Unlike `startCase`, word
+ * breaks come from a configurable set of delimiter characters rather than Unicode word-boundary
+ * detection, and a single-character translation can run ahead of capitalization.
+ * @param opts {map}: keyword options
+ *   - @field [spaces="-_"] {string}: Characters that denote a word break.
+ *   - @field [tr={}] {map}: Single-character to single-character translation, applied before capitalization.
+ * @example
+ *   titleCase("socket_kind");                             // => "Socket Kind"
+ *   titleCase("hello.world", { "spaces": "." });          // => "Hello World"
+ *   titleCase("a_b_c", { "tr": { "a": "X", "b": "Y" } }); // => "X Y C"
  */
 export function titleCase(str is string, opts is map) returns string {
   const spaces = opts.spaces == undefined ? "-_" : opts.spaces;

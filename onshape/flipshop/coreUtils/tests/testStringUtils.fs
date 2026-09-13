@@ -32,6 +32,9 @@ precondition {
     //
     runTitleCaseTests(context, verbose);
     runPadTests(context, verbose);
+    runStrRepeatTests(context, verbose);
+    runUpcaseTests(context, verbose);
+    runDowncaseTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -106,9 +109,9 @@ const RightPadTestCases = [
 ];
 
 export function runPadTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "padLeft (trivial cases)",  verbose, PadTestCases,      function(args is array) { return size(args) <= 2 ? padLeft(args[0],  args[1]) : padLeft(args[0],  args[1], args[2]); });
-  return runTests(context, "padRight (trivial cases)", verbose, PadTestCases,      function(args is array) { return size(args) <= 2 ? padRight(args[0], args[1]) : padRight(args[0], args[1], args[2]); });
-  return runTests(context, "padLeft (padding cases)",  verbose, LeftPadTestCases,  function(args is array) { return size(args) <= 2 ? padLeft(args[0],  args[1]) : padLeft(args[0],  args[1], args[2]); });
+  runTests(context, "padLeft (trivial cases)",  verbose, PadTestCases,      function(args is array) { return size(args) <= 2 ? padLeft(args[0],  args[1]) : padLeft(args[0],  args[1], args[2]); });
+  runTests(context, "padRight (trivial cases)", verbose, PadTestCases,      function(args is array) { return size(args) <= 2 ? padRight(args[0], args[1]) : padRight(args[0], args[1], args[2]); });
+  runTests(context, "padLeft (padding cases)",  verbose, LeftPadTestCases,  function(args is array) { return size(args) <= 2 ? padLeft(args[0],  args[1]) : padLeft(args[0],  args[1], args[2]); });
   return runTests(context, "padRight (padding cases)", verbose, RightPadTestCases, function(args is array) { return size(args) <= 2 ? padRight(args[0], args[1]) : padRight(args[0], args[1], args[2]); });
 }
 
@@ -179,6 +182,30 @@ function runStrTakeTests(context is Context, verbose is boolean) returns map {
   ], (args is array) returns string => {
     return strTake(args[0], args[1]);
   });
+}
+
+export const StrRepeatCases = [
+  [["*", 3],   "***"],
+  [["abc", 2], "abcabc"],
+  [["abc", 0], ""],
+];
+export function runStrRepeatTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "strRepeat", verbose, StrRepeatCases, function(args is array) { return strRepeat(args[0], args[1]); });
+}
+
+export const UpcaseCases = [
+  [["fooBar"],       "FOOBAR"],
+  [["--foo-bar--"],  "--FOO-BAR--"],
+];
+export const DowncaseCases = [
+  [["fooBar"],       "foobar"],
+  [["--FOO-BAR--"],  "--foo-bar--"],
+];
+export function runUpcaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "upcase", verbose, UpcaseCases, function(args is array) { return upcase(args[0]); });
+}
+export function runDowncaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "downcase", verbose, DowncaseCases, function(args is array) { return downcase(args[0]); });
 }
 
 function runStrTakeRightTests(context is Context, verbose is boolean) returns map {

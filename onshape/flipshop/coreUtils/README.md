@@ -22,6 +22,69 @@ under `runCoreUtilsTestsFS` in `tests/testCoreUtils.fs` instead, since `sizeof` 
 
 ---
 
+## Lodash correspondence
+
+Much of this directory is an ongoing port of [lodash](https://lodash.com/docs)'s conveniences
+into FeatureScript, pulled in as needed from the reference copy at `lodash.js`. Where a function
+here has a clear lodash counterpart, its docblock is written from that counterpart's own
+description, and the mapping is recorded here. Not everything has one — see the file-by-file
+catalogs below for the rest.
+
+### `clxnGetset.fs`
+
+| FeatureScript | lodash | Notes |
+|---|---|---|
+| `getAt` | `get` | Array segments accept a negative index, which lodash's `get` does not. |
+| `setAt` | `set` | Autovivifies only maps, never arrays, even for an integer segment (lodash builds an array there). A leaf collision goes through a pluggable `onCollision` instead of always overwriting. Returns a new value rather than mutating in place. |
+| `deepMerge` | `merge` | Two arrays replace each other instead of merging index-by-index. Takes exactly two arguments, not a variadic source list. Returns a new value rather than mutating in place. |
+| `pathForKey` | `toPath` | No `a[0].b` bracket syntax — an index is just another dotted segment (`"a.0.b"`). |
+
+### `clxnWalking.fs`
+
+| FeatureScript | lodash | Notes |
+|---|---|---|
+| `sizeof` | `size` | Also accepts `undefined`, returning `0`. |
+| `hasKey` | `has` | `key` is a single literal key/index, never a dotted path. The array overload adds a `missingPolicy` (present-but-`undefined` counts unless `SKIP`) and never accepts a negative index. |
+| `arrayIncludes` | `includes` | Array-only — no substring search on a string, no value search over a map. |
+| `pick` | `pick` | Takes one explicit key array rather than variadic paths; otherwise the same "absent key stays absent" behavior. |
+| `pickDefined` | `pickBy` | Fixed predicate ("not `undefined`") over a given `keylist`, rather than an arbitrary predicate over every key of the object. |
+| `arrLast` | `last` | Direct match. |
+| `valuesAt` | `at` | No path traversal (literal keys/indexes only) and no negative array indices. Adds a `missingPolicy` to drop absent slots instead of always leaving an `undefined` gap. |
+| `forEach` | `forEach` | Early exit is returning `NextStepAction.BREAK`, not any falsy value. Adds `missingPolicy` and an explicit `keylist` walk order. |
+| `mapValues` / `mapValues3` | `mapValues` (map) / `map` (array) | Unifies lodash's two separate functions under one dispatch. `mapValues3` adds a 0-based `seq` neither lodash callback gets. Adds `keylist` and `missingPolicy`. |
+| `objectify` | `keyBy` | Key/value roles are swapped from lodash: `objectify` keys by the element itself and lets `func` compute the value, where `keyBy` keys by `iteratee(value)` and keeps `value` as-is. |
+
+### `stringUtils.fs`
+
+| FeatureScript | lodash | Notes |
+|---|---|---|
+| `padLeft` | `padStart` | Also overloaded for a `number`, stringified first. |
+| `padRight` | `padEnd` | Same numeric overload as `padLeft`. |
+| `strRepeat` | `repeat` | Direct match. |
+| `upcase` | `toUpper` | ASCII-only, via an explicit character lookup — no Unicode case folding. |
+| `downcase` | `toLower` | Same ASCII-only limitation as `upcase`. |
+| `titleCase` | `startCase` | Configurable word-break characters (default `-_`, not Unicode word-boundary detection) and an optional per-character translation map. |
+
+### `typeUtils.fs`
+
+| FeatureScript | lodash | Notes |
+|---|---|---|
+| `ifNil` | `defaultTo` | Only checks `undefined` — FeatureScript has no `null`/`NaN` to also catch. |
+| `isNil` | `isNil` | Same `undefined`-only narrowing. |
+| `isEmpty` | `isEmpty` | Restricted to the map/string/array/`undefined` cases FeatureScript actually has. |
+
+### `miscUtils.fs`
+
+| FeatureScript | lodash | Notes |
+|---|---|---|
+| `noop` | `noop` | Direct match. |
+
+`typeUtils.fs` and `miscUtils.fs`'s docblocks haven't been rewritten from lodash's yet — flagging
+the mapping here first since those two files currently have little to no test coverage of their
+own to check new doc examples against.
+
+---
+
 ## `clxnGetset.fs` — path-based get/set on maps and arrays
 
 Lodash's `get`/`set`/`merge`, adapted to FeatureScript's value semantics and negative-index
@@ -69,11 +132,6 @@ in this project is built from.
 
 ### Quirks worth knowing
 
-* `pick` and `pickDefined` produce the same result on a map — kept both because "defined" reads
-  clearer at some call sites (`embedBodiesF.fs` uses `pickDefined`).
-* `hasKey`/`hasPresentKey`/`valuesAt` on an array never accept a negative index; `getAt`/`setAt`
-  in `clxnGetset.fs` do. Don't assume the negative-index convention is uniform across this
-  directory.
 * `NextStepAction` used to be un-exported, so nothing outside `clxnWalking.fs` could ever
   actually trigger `BREAK` — every `forEach`/`mapValues` walk anywhere in the codebase always ran
   to completion. It's exported now (see `runForEachBreakTests` / `runForEachKeylistBreakTests`
