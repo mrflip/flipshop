@@ -1,13 +1,9 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
-import(path : "6fcd20533bd2df7c4094a0bf", version : "5849e1654325cddeda6f7440");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-import(path : "08b6ba15b8255611bafe7520", version : "2a3b23fb0cdd7a00cb549f43");
-import(path : "f6ab954150609e1e2e014a1e", version : "cefd17945c168add0f500dad");
+//
+import(path : "f6ab954150609e1e2e014a1e", version : "939862c0f6583971525024d5"); // runTests
 // Testing this:
-import(path : "8c588debec029dab0d734198", version : "2c669528a2f3a8e07f6f4493");
+import(path : "8c588debec029dab0d734198", version : "b49eb315047d1da4cb9defd0"); // colorUtils: testing this
 
 const SuiteTitle = "Color Utils";
 

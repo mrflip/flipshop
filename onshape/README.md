@@ -636,7 +636,7 @@ This project's own equivalent of `math.fs`/`string.fs`/`containers.fs`.
 | File | Catalog |
 |---|---|
 | `typeUtils.fs` | nil/blank/zero coalescing, truthiness: ifNil, ifBlank, ifZero, ifNilOrZero, isNil, isPresent, isEmpty, strBlank, truthy, vector2, mm, zero |
-| `clxnWalking.fs` | map/array iteration: forEach, mapValues, mapValues3, valuesAt, sizeof, hasKey, hasPresentKey, rebag, objectify, pick, pickDefined, boxarrPush, boxarrUnshift, arrLast, arrayIncludes |
+| `clxnUtiles.fs` | map/array iteration: forEach, mapValues, mapValues3, valuesAt, sizeof, hasKey, hasPresentKey, rebag, objectify, pick, pickDefined, boxarrPush, boxarrUnshift, arrLast, arrayIncludes |
 | `clxnGetset.fs` | path-based nested get/set: getAt, setAt, deepMerge, pathForKey |
 | `clxnReshape.fs` | flatten/unflatten nested maps ↔ dot-path keys: dotMap, undotMap, buildNestedChoices |
 | `stringUtils.fs` | case conversion, padding, search: downcase, upcase, downcaseChar, upcaseChar, padLeft, padRight, paddingFor, strTake, strTakeRight, strSlice, strRepeat, titleCase, hasMatch, starbanner |

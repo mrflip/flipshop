@@ -1,14 +1,12 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
-import(path : "6fcd20533bd2df7c4094a0bf", version : "5849e1654325cddeda6f7440");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-import(path : "08b6ba15b8255611bafe7520", version : "2a3b23fb0cdd7a00cb549f43");
-import(path : "f6ab954150609e1e2e014a1e", version : "cefd17945c168add0f500dad");
 //
-import(path : "a92a3694a1d67e78c541bed5", version : "56ba169394d4d160246bdce5");
-import(path : "b87a9ac25313676049cf04cb", version : "3e528d35b76d37ea2d572166");
+import(path : "f6ab954150609e1e2e014a1e", version : "939862c0f6583971525024d5"); // runTests
+import(path : "08b6ba15b8255611bafe7520", version : "25c448c89a44ac841877ddc3"); // miscUtils (For noop, curryX)
+//
+import(path : "a92a3694a1d67e78c541bed5", version : "8091b95c1e95e0c9560f4c40"); // testClxnGetset: we run their tests
+import(path : "b87a9ac25313676049cf04cb", version : "bfc5deb303dfdab8392e5eba"); // testClxnReshape: we run their tests
+import(path : "54590bc1c9cee0141b968fbb", version : "656aceb1a703e20bf00c28bd"); // clxnUtils: testing this
 
 // == [Run tests] ==
 

@@ -1,12 +1,9 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "8cd2afc2ff84f655137b7d87");
-import(path : "6fcd20533bd2df7c4094a0bf", version : "9d269efd18246748c18e517c");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "a7311f6cf30fb8456ecc98c3");
-import(path : "66e287bede293cb227dfb89c", version : "92efbb7ccaa5d62b7bde80f1");
-import(path : "08b6ba15b8255611bafe7520", version : "c6bf827f869026285643ae25");
-import(path : "f6ab954150609e1e2e014a1e", version : "c69bf4c156d9a99562430034");
-import(path : "dcee57677ef58f0c8e045269", version : "53d161746eae24628d8a5877");
+//
+import(path : "f6ab954150609e1e2e014a1e", version : "939862c0f6583971525024d5"); // runTests
+// Testing this:
+import(path : "dcee57677ef58f0c8e045269", version : "0d87751b06d38b222b661b1a");
 
 const SuiteTitle = "Core Utils";
 
