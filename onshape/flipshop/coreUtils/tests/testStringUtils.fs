@@ -10,13 +10,6 @@ import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340");
 
 const SuiteTitle = "String Utils";
 
-/**
- * Part feature: extrudes `text` sized and aligned within a bounding plate at each selected plane.
- * Delegates all geometry to @see `textChip`.
- * @param definition {{
- *   @field json {string} : stringified JSON to produce
- * }}
- */
 annotation { "Feature Type Name": 'Run ' ~ SuiteTitle ~ ' Tests', "Feature Type Description": "Internal Tests" }
 export const runStringUtilsTestsFS = defineFeature(function(context is Context, id is Id, definition is map)
 precondition {
@@ -36,6 +29,7 @@ precondition {
     runUpcaseTests(context, verbose);
     runDowncaseTests(context, verbose);
     runHasMatchTests(context, verbose);
+    runStarbannerTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -207,6 +201,13 @@ export function runUpcaseTests(context is Context, verbose is boolean) returns m
 }
 export function runDowncaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "downcase", verbose, DowncaseCases, function(args is array) { return downcase(args[0]); });
+}
+
+export const StarbannerCases = [
+  [["hi"], "\n**\nhi\n**\n\n"],
+];
+export function runStarbannerTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "starbanner", verbose, StarbannerCases, function(args is array) { return starbanner(args[0]); });
 }
 
 export const HasMatchCases = [

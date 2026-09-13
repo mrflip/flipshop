@@ -5,11 +5,11 @@ geometry-specific, just the plumbing every feature ends up needing. Style follow
 [`STYLE-Featurescript.md`](../STYLE-Featurescript.md); the standard-library map/array/string
 functions these build on are catalogued in [`onshape/README.md`](../../README.md).
 
-This is a starting summary, one line per exported function/constant. `colorUtils.fs` and
-`jsonVarF.fs` are still at brief/prose treatment rather than a full table — everything else has
-had a full pass (tests, docblocks, lodash correspondence where one exists). `coreUtils.fs` itself
-has no functions of its own — it just re-exports the documents the other files in this directory
-compile into, so other features can `import` this one file for all of it.
+This is a starting summary, one line per exported function/constant, and every file in the
+directory has now had a full pass: tests wherever plain-data testing is possible, docblocks
+throughout, and a lodash correspondence table where one applies. `coreUtils.fs` itself has no
+functions of its own — it just re-exports the documents the other files in this directory compile
+into, so other features can `import` this one file for all of it.
 
 ## Tests
 
@@ -21,14 +21,16 @@ own `test<File>.fs` and `run<File>TestsFS` Feature (`sizeof`'s tests are the one
 living under `runCoreUtilsTestsFS` in `tests/testCoreUtils.fs`, since `sizeof` predates the
 `clxn*` split).
 
-Two files' worth of functions have no test suite at all: `debugUtils.fs`'s `highlightQuery` and
-most of `metadataUtils.fs` (`setPropAndAttribute`, `setName`, `setReadableName`, `getAttrs`,
-`getAllAttrs`, `getBestAttr`, `getNameProps`, `getNames`, `getName`, `getNameProp`,
-`getNameOfBody`) read or write properties/attributes on a live `Query`, which the
-plain-data-table `runTests` harness this whole test suite is built on has no way to exercise
-without an actual part studio to run against. `metadataUtils.fs`'s three pure functions
-(`defaultMaybe`, `sanitize_varname`, `field_varname`) are tested in `testMetadataUtils.fs`
-despite that.
+Three files' worth of functions have no test suite at all, and for the same underlying reason:
+`debugUtils.fs`'s `highlightQuery`, most of `metadataUtils.fs` (`setPropAndAttribute`, `setName`,
+`setReadableName`, `getAttrs`, `getAllAttrs`, `getBestAttr`, `getNameProps`, `getNames`,
+`getName`, `getNameProp`, `getNameOfBody`), and every Feature in `jsonVarF.fs`
+(`jsonVarF`/`keylistF`/`sizeofF`/`valuesAtF`/`splatF`, plus `setColor` in `colorUtils.fs`) read or
+write properties/attributes/variables on a live `Query`/`Context`, which the plain-data-table
+`runTests` harness this whole test suite is built on has no way to exercise without an actual
+part studio to run against. `metadataUtils.fs`'s three pure functions (`defaultMaybe`,
+`sanitize_varname`, `field_varname`) are tested in `testMetadataUtils.fs` despite that, and every
+other function in `colorUtils.fs` is pure and tested in `testColorUtils.fs`.
 
 ---
 
@@ -145,7 +147,8 @@ in this project is built from.
 |---|---|
 | `strSlice(str, begseq, endseq?)` | JS-style slice: negative indexes count from the end, either index clamps into range. `endseq` accepts `SequencePosition.END` in place of a literal length. |
 | `strTake(str, len)` / `strTakeRight(str, len)` | First/last `len` characters; `len <= 0` is `""`. |
-| `padLeft(str\|num, minlen, padstr?)` / `padRight(...)` | Pads to `minlen` with `padstr` (default `" "`), truncating the padding if it overshoots; a `number` is stringified first. |
+| `padLeft(str\|num, minlen, padstr?)` | Pads to `minlen` with `padstr` (default `" "`), truncating the padding if it overshoots; a `number` overload stringifies first. |
+| `padRight(str, minlen, padstr?)` | Same as `padLeft`, right-padded — but no numeric overload; a `number` must be stringified by the caller. |
 | `strRepeat(str, reps)` | `str` repeated `reps` times. |
 | `starbanner(str)` | Wraps `str` in a `***`-bordered banner, for a `debug()` call that wants to stand out. |
 | `hasMatch(str, regex)` | Whether `regex` matches anywhere in `str`; `false` (not a throw) on `undefined` input or a bad pattern. |
@@ -200,23 +203,38 @@ plain-data test for them; @see the Tests section above.
 |---|---|
 | `highlightQuery(context, qq, debugColor, debugMe?)` | `addDebugEntities` on `qq` plus the edges of its owning bodies (otherwise invisible through an occluding body's faces); a no-op unless `debugMe` is `true` (the default), so a call site can leave the call in place and flip one flag. |
 
----
+## `colorUtils.fs` — Color ↔ hex/tuple string conversion
 
-## Other files (brief)
+No lodash correspondence — color parsing isn't something lodash does.
 
-### `colorUtils.fs` — Color ↔ hex/tuple string conversion
+| Export | Does |
+|---|---|
+| `setColor(context, qq, cmap)` | Sets the `APPEARANCE` property on `qq` to `cmap` — a `Color`, or anything `toColor` accepts. |
+| `hexcolorToColor(hexcolor)` | Parses `"#rrggbb"`/`"#rrggbbaa"` (leading `#` optional, either case) into a `Color`. |
+| `tuplestrToColor(tuplestr)` | Parses a 0–255 RGB(A) tuple string (`"200,99,100,33"` or `"[0, 1, 255]"`) into a `Color`. |
+| `unitcolorToColor(unitcolor)` | Parses a 0.0–1.0 RGB(A) tuple string (`"0.5, 0.1, 1.0"`) into a `Color`. |
+| `toColor(cmap\|carr\|raw)` | Dispatches to whichever of the above fits: a `Color` passes through, an array goes straight to `color(...)` (no 0–255 detection), a string is sniffed hex → unit → tuple, first match wins. `OopsColor` (bright red) if nothing matches. |
+| `toHexcolor` / `toUnitcolor` / `toTuplecolor` | The reverse conversions, `Color` → string/array. |
+| `hexpairToInt(hexpair, fallback?)` / `intToHexpair(num)` | 2-character hex string ↔ 0–255 decimal, case-insensitive going in. |
+| `sameColor(c1, c2, tol?)` | Channel-by-channel tolerant equality; default `tol` is just under `1/255`. |
+| `isHexcolor(str)` | Whether `str` is a hexcolor string `hexcolorToColor` would accept. |
 
-`setColor` (Color, hexcolor, or `[r,g,b,a?]` array), `hexcolorToColor`/`tuplestrToColor`/
-`unitcolorToColor` (parse `"#rrggbb[aa]"` / `"r,g,b[,a]"` 0–255 / `"r,g,b[,a]"` 0–1 strings),
-`toColor` (dispatches to whichever of the above matches), `toHexcolor`/`toUnitcolor`/
-`toTuplecolor` (the reverse conversions), `hexpairToInt`/`intToHexpair`, `sameColor` (tolerant
-equality), `isHexcolor`.
+## `jsonVarF.fs` — variable-producing utility Features
 
-### `jsonVarF.fs` — variable-producing utility Features
+A collection of Features, not a library — each `defineFeature` body reads/writes variables on a
+live `Context`, so (per this pass's scope) none of them have plain-data tests; only docblocks and
+style got the treatment here.
 
-`jsonVarF` (parse a JSON string into a named variable), `keylistF` (a map/array's keys as a
-variable), `sizeofF` (`sizeof` as a variable), `valuesAtF` (`valuesAt` as a variable), `splatF`
-(explodes a map/array into one variable per entry) — plus each one's `*EditLogic` function.
+| Export | Does |
+|---|---|
+| `jsonVarF` | Parses `definition.rawjson` and sets it as variable `varname`. |
+| `keylistF` / `keylistEditLogic` | Sets `varname` to the ordered keys of variable `bagname`. Edit logic keeps `varname` at `bagname ~ "_keys"` until hand-edited. |
+| `sizeofF` / `sizeofEditLogic` | Sets `varname` to `sizeof` of variable `objname`. Edit logic keeps `varname` at `objname ~ "_size"` until hand-edited. |
+| `valuesAtF` / `valuesAtEditLogic` | Sets `varname` to `valuesAt(bag, keylist)` for variable `bagname` and a JSON-array `keylistJSON`. Edit logic tracks both `varname` and `description`. |
+| `splatF` | Explodes variable `objname`'s value into one variable per entry — `<objname>_<00-padded index>` for an array, `<objname>_<key>` (or bare `<key>`) for a map. |
+
+Open design questions found while documenting this file are tracked in
+[`../HUMAN-FIXME.md`](../HUMAN-FIXME.md), not here.
 
 ---
 
@@ -238,3 +256,20 @@ variable), `sizeofF` (`sizeof` as a variable), `valuesAtF` (`valuesAt` as a vari
   checking for `undefined` first — and `getNameProp`/`getBestAttr` return `undefined` exactly
   when `query` resolves to no entities, which is not a rare case. Fixed to fall back to
   `ignoredVal` in that case, matching every sibling function's documented contract.
+* **`colorUtils.fs`:** `HexcolorRE` only matched lowercase hex digits (`[0-9a-f]`), so
+  `hexcolorToColor`, `toColor`, and `isHexcolor` all silently failed on a perfectly standard
+  uppercase or mixed-case hex string like `"#FF0000"` — falling back to `OopsColor` (or `false`
+  for `isHexcolor`) instead of parsing it. Widened to `[0-9a-fA-F]`; `hexpairToInt` already
+  downcased its input, so nothing else needed to change.
+* **`jsonVarF.fs`:** `keylistF`'s throw message named `definition.varname` (the *destination*
+  variable being written) when reporting that the *source* variable wasn't a bag or array — a
+  debugging-time red herring, since the name in the error never matched the variable actually at
+  fault. Now names `bagname`, the variable that was actually checked.
+* **`tests/testColorUtils.fs`:** the whole file was replaced — `runColorRoundtripTests` wrapped
+  its body in a bare `try { }` with no `catch`, which isn't valid FeatureScript (only `try silent
+  { }` and `try { } catch (error) { }` are), and even if it had compiled, the mismatches it
+  collected into `oops` were never reported or asserted on — the function always returned `{}`
+  regardless of what it found. On top of that, the Feature itself was exported as
+  `runStringUtilsTestsFS`, a copy-paste of `testStringUtils.fs`'s Feature name rather than its own
+  — a name collision waiting to happen the day both files' symbols land in the same scope.
+  Replaced with table-driven `runTests`-style coverage for every pure function in the file.

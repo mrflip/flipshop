@@ -1,23 +1,36 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 
+/** ASCII lowercase → uppercase, one character to one character. */
 export const LowerToUppercase = {
   'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E', 'f': 'F', 'g': 'G', 'h': 'H', 'i': 'I', 'j': 'J', 'k': 'K', 'l': 'L', 'm': 'M', 'n': 'N', 'o': 'O', 'p': 'P', 'q': 'Q', 'r': 'R', 's': 'S', 't': 'T', 'u': 'U', 'v': 'V', 'w': 'W', 'x': 'X', 'y': 'Y', 'z': 'Z',
 };
 
+/** ASCII uppercase → lowercase, one character to one character. */
 export const UpperToLowercase = {
   'A': 'a', 'B': 'b', 'C': 'c', 'D': 'd', 'E': 'e', 'F': 'f', 'G': 'g', 'H': 'h', 'I': 'i', 'J': 'j', 'K': 'k', 'L': 'l', 'M': 'm', 'N': 'n', 'O': 'o', 'P': 'p', 'Q': 'q', 'R': 'r', 'S': 's', 'T': 't', 'U': 'u', 'V': 'v', 'W': 'w', 'X': 'x', 'Y': 'y', 'Z': 'z',
 };
 
 /**
- * Substring of `str` from `begseq` up to (not including) `endseq`, JS `String.prototype.slice`
- * style: a negative index counts from the end, and either index clamps into range rather than
- * erroring. `endseq` defaults to `str`'s length; `SequencePosition.END` says the same thing
- * explicitly where a literal length isn't handy.
+ * Extracts the text from `begseq` up to, but not including, `endseq`, and returns it as a new
+ * string — the semantics of JS's `String.prototype.slice`.
+ *
+ * If `begseq >= length(str)`, an empty string is returned. If `begseq < 0`, it's treated as
+ * `max(length(str) + begseq, 0)` — counted from the end of the string; `endseq` follows the same
+ * rule when negative. If `endseq` is omitted, or `>= length(str)`, this extracts to the end of
+ * the string. If, after normalizing negative values, `endseq <= begseq`, an empty string is
+ * returned.
+ *
+ * FeatureScript has no omitted-argument default the way JS does, so `SequencePosition.END` is an
+ * explicit stand-in for "to the end of the string" at a call site that must supply all three
+ * arguments (e.g. inside a fixed-arity callback).
+ *
  * @example
- *   strSlice("hello world", 0, 3);  // => "hel"
- *   strSlice("hello world", -5);    // => "world"
- *   strSlice("hello world", 0, -1); // => "hello worl"
+ *   strSlice("hello world", 0, 3);     // => "hel"
+ *   strSlice("hello world", -5);       // => "world"
+ *   strSlice("hello world", 0, -1);    // => "hello worl"
+ *   strSlice("hello world", -3, -1);   // => "rl"
+ *   strSlice("hello world", 100, 200); // => ""
  */
 export function strSlice(str is string, begseq is number, endseq is number) returns string {
   const len = length(str);
@@ -29,8 +42,10 @@ export function strSlice(str is string, begseq is number, endseq is number) retu
   //
   return substring(str, beg, end);
 }
+/** Explicit stand-in for "to the end of the string," for a `strSlice` call site that must supply all three arguments. */
 export enum SequencePosition { annotation { "Name": "End of String" } END }
 
+/** Resolves `pos` (only `SequencePosition.END` is defined) against `beg`/`end`; `undefined` otherwise. */
 export function rangedSequencePosition(pos is SequencePosition, beg is number, end is number) {
   if (pos == SequencePosition.END) { return end; }
   return undefined;
@@ -43,23 +58,35 @@ export function strSlice(str is string, begseq is number) returns string {
   return strSlice(str, begseq, length(str));
 }
 
+/**
+ * First `len` characters of `str`; `""` if `len <= 0`.
+ * @example
+ *   strTake("hello world", 2); // => "he"
+ */
 export function strTake(str is string, len is number) returns string {
   if (len <= 0) { return ""; }
   return substring(str, 0, min(len, length(str)));
 }
+/**
+ * Last `len` characters of `str`; `""` if `len <= 0`.
+ * @example
+ *   strTakeRight("hello world", 2); // => "ld"
+ */
 export function strTakeRight(str is string, len is number) returns string {
   if (len <= 0) { return ""; }
   const beg = max(0, length(str) - len);
   return substring(str, beg, length(str));
 }
 
+/** `padstr` repeated enough times to reach at least `neededLen` characters — not truncated to it; that's the caller's job. */
 export function paddingFor(padstr is string, neededLen is number) returns string {
   const reps = ceil(neededLen / length(padstr));
   return repeatString(padstr, reps);
 }
 /**
  * Pads `str` on the left side if it's shorter than `minlen`. Padding characters are truncated if
- * they exceed `minlen`. Also overloaded for a `number`, which is stringified first.
+ * they exceed `minlen`. Overloads: `padLeft(num is number, minlen is number, padstr is string)`
+ * and `padLeft(num is number, minlen is number)` call `padLeft` on the stringified value.
  * @example
  *   padLeft("hello world", 12);        // => " hello world"
  *   padLeft("hello world", 12, "!");   // => "!hello world"
@@ -82,9 +109,11 @@ export function padLeft(num is number, minlen is number, padstr is string) retur
 export function padLeft(num is number, minlen is number) returns string {
   return padLeft(num, minlen, ' ');
 }
+
 /**
  * Pads `str` on the right side if it's shorter than `minlen`. Padding characters are truncated
- * if they exceed `minlen`. Also overloaded for a `number`, which is stringified first.
+ * if they exceed `minlen`. Unlike `padLeft`, there's no numeric overload — a `number` has to be
+ * stringified by the caller first.
  * @example
  *   padRight("hello world", 12);      // => "hello world "
  *   padRight("hello world", 12, "!"); // => "hello world!"
@@ -116,7 +145,12 @@ export function strRepeat(str is string, reps is number) returns string {
   return result;
 }
 
-// repeats the string surrounded by "\n****************************************\n"
+/**
+ * Wraps `str` in a border of `*` characters matching its own length, for a `debug()` call that
+ * wants to stand out.
+ * @example
+ *   starbanner("hi"); // => "\n**\nhi\n**\n\n"
+ */
 export function starbanner(str is string) {
   const stars = strRepeat("*", length(str));
   return "\n" ~ stars ~ "\n" ~ str ~ "\n" ~ stars ~ "\n\n";
@@ -154,7 +188,7 @@ function downcaseChar(char is string) returns string {
 export function downcase(str is string) returns string {
   var lower is string = '';
   for (var char in splitIntoCharacters(str)) {
-      lower = lower ~ downcaseChar(char);
+    lower = lower ~ downcaseChar(char);
   }
   return lower;
 }
@@ -174,7 +208,7 @@ function upcaseChar(char is string) returns string {
 export function upcase(str is string) returns string {
   var upper is string = '';
   for (var char in splitIntoCharacters(str)) {
-      upper = upper ~ upcaseChar(char);
+    upper = upper ~ upcaseChar(char);
   }
   return upper;
 }
@@ -226,15 +260,15 @@ export function titleCase(str is string, opts is map) returns string {
     }
 
     if (isSpace) {
-        result ~= " ";
-        capitalizeNext = true;
+      result ~= " ";
+      capitalizeNext = true;
     } else {
-        if (capitalizeNext) {
-            result ~= upcaseChar(c);
-            capitalizeNext = false;
-        } else {
-            result ~= downcaseChar(c);
-        }
+      if (capitalizeNext) {
+        result ~= upcaseChar(c);
+        capitalizeNext = false;
+      } else {
+        result ~= downcaseChar(c);
+      }
     }
   }
   return result;
