@@ -1,23 +1,33 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
+//
+import(path : "54590bc1c9cee0141b968fbb", version : "103c8c30f1046331d65db3e3"); // clxnWalking, for forEach
+import(path : "3b81563d40faaff8be820296", version : "95c758559e6e54348e4472ec"); // arrayUtils, for arrayIncludes
 
 /**
- * First key of `bag` whose value satisfies `predicate(val, key)`, or `undefined` if none does.
+ * First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
  * `findLastKey` scans in the reverse of `keys(bag)` order.
  * @example
  *   findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
  */
-export function findKey(bag is map, predicate is function) {
+export function findKey(bag is map, rule is function) {
   for (var key in keys(bag)) {
-    if (predicate(bag[key], key)) { return key; }
+    if (rule(bag[key], key)) { return key; }
   }
   return undefined;
 }
-export function findLastKey(bag is map, predicate is function) {
+
+/**
+ * Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
+ * `findKey` scans in the reverse of `keys(bag)` order.
+ * @example
+ *   findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
+ */
+export function findLastKey(bag is map, rule is function) {
   const keylist = keys(bag);
   for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
     const key = keylist[seq];
-    if (predicate(bag[key], key)) { return key; }
+    if (rule(bag[key], key)) { return key; }
   }
   return undefined;
 }
@@ -61,8 +71,8 @@ export function mapKeys(bag is map, iteratee is function) returns map {
 
 /**
  * `bag` without the entries at `keylist` — the inverse of `pick`. `omitBy` instead drops any
- * entry for which `predicate(val, key)` holds, the inverse of `pickDefined`'s spirit but with a
- * caller-supplied predicate rather than a fixed "is defined" check.
+ * entry for which `rule(val, key)` holds, the inverse of `pickDefined`'s spirit but with a
+ * caller-supplied rule rather than a fixed "is defined" check.
  * @example
  *   omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }
  */
@@ -73,10 +83,10 @@ export function omit(bag is map, keylist is array) returns map {
   }
   return result;
 }
-export function omitBy(bag is map, predicate is function) returns map {
+export function omitBy(bag is map, rule is function) returns map {
   var result = {};
   for (var key in keys(bag)) {
-    if (! predicate(bag[key], key)) { result[key] = bag[key]; }
+    if (! rule(bag[key], key)) { result[key] = bag[key]; }
   }
   return result;
 }
@@ -89,5 +99,4 @@ export function omitBy(bag is map, predicate is function) returns map {
  *   toPairs({ "a": 1, "b": 2 }); // => [["a", 1], ["b", 2]]
  */
 export function toPairs(bag is map) returns array {
-  return mapValues(keys(bag), (key) => [key, bag[key]]);
-}
+  return mapValues(keys(bag), (key, _seq) => [key, bag[key]]);

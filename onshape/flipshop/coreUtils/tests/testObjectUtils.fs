@@ -1,11 +1,10 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
-import(path : "6fcd20533bd2df7c4094a0bf", version : "5849e1654325cddeda6f7440");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-import(path : "08b6ba15b8255611bafe7520", version : "2a3b23fb0cdd7a00cb549f43");
-import(path : "f6ab954150609e1e2e014a1e", version : "cefd17945c168add0f500dad");
+//
+import(path : "4ebdc64943b566160ea5cc28", version : "49324f8ccdd2bc8f00f68a0f");
+import(path : "f6ab954150609e1e2e014a1e", version : "17748a1c9444555f3047e363");
+// Testing this:
+import(path : "84606dd053f2ce0f6166587c", version : "696fd6b762114e0c3ed93deb");
 
 const SuiteTitle = "Object Utils";
 
@@ -37,7 +36,7 @@ precondition {
 
 // == [findKey / findLastKey] ==
 
-const gtOne = function(val) { return val > 1; };
+const gtOne = function(val, _key) { return val > 1; };
 
 export const FindKeyCases = [
   [[{ "a": 1, "b": 2, "c": 3 }, gtOne],  "b"],

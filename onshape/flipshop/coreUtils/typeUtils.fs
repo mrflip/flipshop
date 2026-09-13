@@ -1,6 +1,5 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "54590bc1c9cee0141b968fbb", version : "a8d11848557d891d016ec291");
 
 /** Millimeter unit shorthand, and its zero. */
 export const mm  = millimeter;
@@ -58,6 +57,7 @@ export function strBlank(val)  { return isUndefinedOrEmptyString(val); }
  */
 export function ifZero(val is number,         fallback) { if ((val == undefined) || tolerantEquals(val, 0))              { return fallback; } return val; }
 export function ifZero(val is ValueWithUnits, fallback) { if ((val == undefined) || tolerantEquals(val, 0 * millimeter)) { return fallback; } return val; }
+export function ifZero(val is undefined,      fallback) { return fallback; }
 
 /**
  * Whether `val` is `undefined`, or a map/string/array with no entries. Unlike lodash's
@@ -85,4 +85,26 @@ export function isEmpty(val) returns boolean {
 export function castArray(val) returns array {
   if (val is array) { return val; }
   return [val];
+}
+
+/**
+ * Size of `val`: length for a string, element count for an array, key count for a map, `0` for
+ * `undefined`.
+ * @example
+ *   sizeof([0, 1, 2]);  // => 3
+ *   sizeof({ "a": 1 }); // => 1
+ *   sizeof("12345");    // => 5
+ *   sizeof(undefined);  // => 0
+ */
+export function sizeof(val is map) returns number {
+    return size(keys(val));
+}
+export function sizeof(val is string) returns number {
+    return length(val);
+}
+export function sizeof(val is array) returns number {
+    return size(val);
+}
+export function sizeof(val is undefined) returns number {
+    return 0;
 }

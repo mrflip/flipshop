@@ -1,8 +1,8 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
+import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7"); // typeUtils, for ifNil &c
+import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340"); // clxnGetset, for deepMerge and pathForKey
+import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4"); // metadataUtils, for setAt
 
 export function undotMap(obj is map) returns map {
   return undotMap(obj, ((existing, incoming) => deepMerge(existing, incoming)));

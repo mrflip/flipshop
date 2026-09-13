@@ -1,6 +1,9 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
+//
+import(path : "54590bc1c9cee0141b968fbb", version : "103c8c30f1046331d65db3e3"); // clxnWalking, for objectify
+import(path : "dd812faf6ff4099cda4aa0eb", version : "e85c3ea5781c0d24e61537eb"); // stringUtils, for strTake
+import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
 
 /**
  * Map of `tags` to a same-named child of `id`: `idsFor(id, ["a", "b"])` is

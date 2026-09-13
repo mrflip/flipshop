@@ -1,5 +1,21 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
+import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils
+
+/**
+ * Whether `target` appears anywhere in `arr`. Unlike lodash's `includes`, this is array-only —
+ * no substring search on a string, no value search over a map — and comparison is plain `==`,
+ * which is deep structural equality on maps and arrays.
+ * @example
+ *   arrayIncludes([1, 2, 3], 2);              // => true
+ *   arrayIncludes([{ "a": 1 }], { "a": 1 });  // => true
+ */
+export function arrayIncludes(arr is array, target) returns boolean {
+  for (var item in arr) {
+    if (item == target) { return true; }
+  }
+  return false;
+}
 
 /**
  * Splits `arr` into groups of `chunkSize` elements each; the last group holds whatever's left
@@ -72,54 +88,54 @@ export function dropRight(arr is array, dropCount is number) returns array {
 }
 
 /**
- * `arr` with elements dropped from the end for as long as `predicate` holds; the first
- * (rightmost-scanned) element `predicate` rejects, and everything before it, is kept.
+ * `arr` with elements dropped from the end for as long as `rule` holds; the first
+ * (rightmost-scanned) element `rule` rejects, and everything before it, is kept.
  * @example
  *   dropRightWhile([1, 2, 3, 4], (val) => val > 2); // => [1, 2]
  */
-export function dropRightWhile(arr is array, predicate is function) returns array {
+export function dropRightWhile(arr is array, rule is function) returns array {
   var end = size(arr);
   for (; end > 0; end -= 1) {
-    if (! predicate(arr[end - 1])) { break; }
+    if (! rule(arr[end - 1])) { break; }
   }
   return subArray(arr, 0, end);
 }
 
 /**
- * `arr` with elements dropped from the beginning for as long as `predicate` holds.
+ * `arr` with elements dropped from the beginning for as long as `rule` holds.
  * @example
  *   dropWhile([1, 2, 3, 4], (val) => val < 3); // => [3, 4]
  */
-export function dropWhile(arr is array, predicate is function) returns array {
+export function dropWhile(arr is array, rule is function) returns array {
   var beg = 0;
   for (; beg < size(arr); beg += 1) {
-    if (! predicate(arr[beg])) { break; }
+    if (! rule(arr[beg])) { break; }
   }
   return subArray(arr, beg);
 }
 
 /**
- * Index of the first element of `arr` for which `predicate` holds, or `-1` if none does.
+ * Index of the first element of `arr` for which `rule` holds, or `-1` if none does.
  * @example
  *   findIndex([1, 2, 3], (val) => val > 1); // => 1
  *   findIndex([1, 2, 3], (val) => val > 9); // => -1
  */
-export function findIndex(arr is array, predicate is function) returns number {
+export function findIndex(arr is array, rule is function) returns number {
   for (var seq = 0; seq < size(arr); seq += 1) {
-    if (predicate(arr[seq])) { return seq; }
+    if (rule(arr[seq])) { return seq; }
   }
   return -1;
 }
 
 /**
- * `findIndex`, scanning from the end: index of the last element of `arr` for which `predicate`
+ * `findIndex`, scanning from the end: index of the last element of `arr` for which `rule`
  * holds, or `-1` if none does.
  * @example
  *   findLastIndex([1, 2, 3], (val) => val < 3); // => 1
  */
-export function findLastIndex(arr is array, predicate is function) returns number {
+export function findLastIndex(arr is array, rule is function) returns number {
   for (var seq = size(arr) - 1; seq >= 0; seq -= 1) {
-    if (predicate(arr[seq])) { return seq; }
+    if (rule(arr[seq])) { return seq; }
   }
   return -1;
 }
@@ -271,27 +287,27 @@ export function takeRight(arr is array, takeCount is number) returns array {
 }
 
 /**
- * Elements taken from the end of `arr` for as long as `predicate` holds.
+ * Elements taken from the end of `arr` for as long as `rule` holds.
  * @example
  *   takeRightWhile([1, 2, 3, 4], (val) => val > 2); // => [3, 4]
  */
-export function takeRightWhile(arr is array, predicate is function) returns array {
+export function takeRightWhile(arr is array, rule is function) returns array {
   var beg = size(arr);
   for (; beg > 0; beg -= 1) {
-    if (! predicate(arr[beg - 1])) { break; }
+    if (! rule(arr[beg - 1])) { break; }
   }
   return subArray(arr, beg);
 }
 
 /**
- * Elements taken from the beginning of `arr` for as long as `predicate` holds.
+ * Elements taken from the beginning of `arr` for as long as `rule` holds.
  * @example
  *   takeWhile([1, 2, 3, 4], (val) => val < 3); // => [1, 2]
  */
-export function takeWhile(arr is array, predicate is function) returns array {
+export function takeWhile(arr is array, rule is function) returns array {
   var end = 0;
   for (; end < size(arr); end += 1) {
-    if (! predicate(arr[end])) { break; }
+    if (! rule(arr[end])) { break; }
   }
   return subArray(arr, 0, end);
 }

@@ -1,8 +1,9 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
-import(path : "08b6ba15b8255611bafe7520", version : "2a3b23fb0cdd7a00cb549f43");
-import(path : "6fcd20533bd2df7c4094a0bf", version : "5849e1654325cddeda6f7440");
+//
+import(path : "4ebdc64943b566160ea5cc28", version : "2dcc2fdbf288873168104c0d"); // coreUtils, for parseJsonSafely
+import(path : "08b6ba15b8255611bafe7520", version : "a132b0ddb6abb95a28f02035"); // jsonVarF, for setVariable
+import(path : "6fcd20533bd2df7c4094a0bf", version : "2a0cbea09ce40f274fc34d90"); // jsonVarF, for strTake
 
 IconNamespace::import(path : "ce7a4dfe88a5752b501f7baf", version : "2f0856d649310aa73a24518e");
 

@@ -1,5 +1,8 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
+//
+import(path : "3b81563d40faaff8be820296", version : "95c758559e6e54348e4472ec"); // arrayUtils, for findIndex, findLastIndex &c
+import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
 
 // boolean, number, string, array, map, box, function, builtin, and undefined
 
@@ -23,29 +26,9 @@ export enum MissingPolicy {
     USE_UNDEFINED
 }
 
-// == [Collection Inspection] -- sizeof, hasKey
+// == [Collection Inspection] -- hasKey
 
 /**
- * Size of `val`: length for a string, element count for an array, key count for a map, `0` for
- * `undefined`.
- * @example
- *   sizeof([0, 1, 2]);  // => 3
- *   sizeof({ "a": 1 }); // => 1
- *   sizeof("12345");    // => 5
- *   sizeof(undefined);  // => 0
- */
-export function sizeof(val is map) returns number {
-    return size(keys(val));
-}
-export function sizeof(val is string) returns number {
-    return length(val);
-}
-export function sizeof(val is array) returns number {
-    return size(val);
-}
-export function sizeof(val is undefined) returns number {
-    return 0;
-}
 
 /**
  * Whether `key` is present in `obj`. Unlike lodash's `has`, `key` is a single literal key or
@@ -87,20 +70,6 @@ export function hasPresentKey(obj is array, key is number) returns boolean {
   return (key >= 0) && (key < size(obj)) && (obj[key] != undefined);
 }
 
-/**
- * Whether `target` appears anywhere in `arr`. Unlike lodash's `includes`, this is array-only —
- * no substring search on a string, no value search over a map — and comparison is plain `==`,
- * which is deep structural equality on maps and arrays.
- * @example
- *   arrayIncludes([1, 2, 3], 2);              // => true
- *   arrayIncludes([{ "a": 1 }], { "a": 1 });  // => true
- */
-export function arrayIncludes(arr is array, target) returns boolean {
-  for (var item in arr) {
-    if (item == target) { return true; }
-  }
-  return false;
-}
 // --
 
 // == [Collection retrieve many] -- pick, pickDefined, arrLast
@@ -111,7 +80,7 @@ export function arrayIncludes(arr is array, target) returns boolean {
  *
  * `pickDefined` additionally drops a key whose value is `undefined` — for a map this is the same
  * result as `pick`, since a map can never hold an `undefined` value to differ over. Unlike
- * lodash's `pickBy`, the predicate isn't customizable and the keys considered are exactly
+ * lodash's `pickBy`, the rule isn't customizable and the keys considered are exactly
  * `keylist`, not every key of `bag`.
  *
  * @example
@@ -414,18 +383,18 @@ export function countBy(arr is array, iteratee is function) returns map {
 }
 
 /**
- * First element of `arr` for which `predicate` holds, or `undefined` if none does — `arrayUtils`'
+ * First element of `arr` for which `rule` holds, or `undefined` if none does — `arrayUtils`'
  * `findIndex`, dereferenced.
  * @example
  *   find([1, 2, 3], (val) => val > 1); // => 2
  */
-export function find(arr is array, predicate is function) {
-  const seq = findIndex(arr, predicate);
+export function find(arr is array, rule is function) {
+  const seq = findIndex(arr, rule);
   return (seq == -1) ? undefined : arr[seq];
 }
 /** `find`, scanning from the end — `findLastIndex`, dereferenced. */
-export function findLast(arr is array, predicate is function) {
-  const seq = findLastIndex(arr, predicate);
+export function findLast(arr is array, rule is function) {
+  const seq = findLastIndex(arr, rule);
   return (seq == -1) ? undefined : arr[seq];
 }
 
@@ -473,16 +442,16 @@ export function groupBy(arr is array, iteratee is function) returns map {
 }
 
 /**
- * `[passed, failed]` — `arr` split into the elements for which `predicate` holds and the ones for
+ * `[passed, failed]` — `arr` split into the elements for which `rule` holds and the ones for
  * which it doesn't, each keeping `arr`'s relative order.
  * @example
  *   partition([1, 2, 3, 4], (val) => val % 2 == 0); // => [[2, 4], [1, 3]]
  */
-export function partition(arr is array, predicate is function) returns array {
+export function partition(arr is array, rule is function) returns array {
   var passed = [];
   var failed = [];
   for (var val in arr) {
-    if (predicate(val)) {
+    if (rule(val)) {
       passed = append(passed, val);
     } else {
       failed = append(failed, val);
@@ -505,11 +474,11 @@ export function reduceRight(arr is array, foldFunction is function) {
 }
 
 /**
- * Elements of `arr` for which `predicate` does *not* hold — the inverse of `filter` *(std)*.
+ * Elements of `arr` for which `rule` does *not* hold — the inverse of `filter` *(std)*.
  * @example
  *   reject([1, 2, 3, 4], (val) => val % 2 == 0); // => [1, 3]
  */
-export function reject(arr is array, predicate is function) returns array {
-  return filter(arr, (val) => (! predicate(val)));
+export function reject(arr is array, rule is function) returns array {
+  return filter(arr, (val) => (! rule(val)));
 }
 //--

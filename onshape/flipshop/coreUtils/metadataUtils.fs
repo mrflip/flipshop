@@ -1,9 +1,8 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-// import(path : "4ebdc64943b566160ea5cc28", version : "030f1c3158058ab3c122092a");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-
+//
+import(path : "dd812faf6ff4099cda4aa0eb", version : "e85c3ea5781c0d24e61537eb"); // stringUtils, for strTake
+import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for strBlank &c
 
 // Shorthand aliases used throughout for readability.
 export const PL_TOP      = plane(WORLD_ORIGIN, Z_AXIS.direction);

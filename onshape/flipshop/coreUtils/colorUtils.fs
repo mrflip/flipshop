@@ -1,9 +1,8 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-// import(path : "4ebdc64943b566160ea5cc28", version : "ab211723d9126cd674ed5829");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
-
+//
+import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4"); // metadataUtils, for setPropAndAttribute
+import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7"); // typeUtils, for ifNil &c
 
 /**
  * Sets the `APPEARANCE` property on `qq` to `cmap` — a `Color`, or anything `toColor` accepts

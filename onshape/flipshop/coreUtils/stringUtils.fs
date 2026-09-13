@@ -1,5 +1,8 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
+//
+import(path : "3b81563d40faaff8be820296", version : "95c758559e6e54348e4472ec"); // arrayUtils, for arrayIncludes
+import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
 
 /** ASCII lowercase → uppercase, one character to one character. */
 export const LowerToUppercase = {
