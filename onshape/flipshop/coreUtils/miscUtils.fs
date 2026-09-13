@@ -1,10 +1,10 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "54590bc1c9cee0141b968fbb", version : "103c8c30f1046331d65db3e3"); // clxnWalking, for objectify, pick, mapValues
-import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340"); // clxnGetset, for getAt
-import(path : "dd812faf6ff4099cda4aa0eb", version : "e85c3ea5781c0d24e61537eb"); // stringUtils, for strTake
-import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
+import(path : "54590bc1c9cee0141b968fbb", version : "972034451094efe0cf2307f8"); // clxnWalking, for objectify, pick, mapValues
+import(path : "607f97fc690581579d1d4a08", version : "7bdc77843983df15c42b55ba"); // clxnGetset, for getAt
+import(path : "dd812faf6ff4099cda4aa0eb", version : "a7311f6cf30fb8456ecc98c3"); // stringUtils, for strTake
+import(path : "66e287bede293cb227dfb89c", version : "92efbb7ccaa5d62b7bde80f1"); // typeUtils, for ifNil &c
 
 /**
  * Map of `tags` to a same-named child of `id`: `idsFor(id, ["a", "b"])` is
@@ -17,8 +17,8 @@ export function idsFor(id is Id, tags is array) returns map {
     return objectify(tags, (tag, _) => id + tag);
 }
 
-/** Returns `undefined`, regardless of arguments received. */
-export const noop = function() {};
+
+// == [Function arity currying] ==
 
 /**
  * `curryNtoM` wraps `func` to accept `N` arguments but call `func` with only the first `M` of
@@ -35,6 +35,9 @@ export function curry3to2(func is function) { return (arg1,  arg2,  _arg3) => fu
 export function curry2to0(func is function) { return (_arg1, _arg2) => func();           }
 export function curry2to1(func is function) { return (arg1,  _arg2) => func(arg1);       }
 export function curry2to2(func is function) { return (arg1,  arg2) => func(arg1, arg2);  }
+// --
+
+// == [JSON parsing] ==
 
 /**
  * Parses `rawjson` into a map/array, wrapping a parse failure in a `regenError` (naming `story`,
@@ -59,16 +62,6 @@ export function parseJsonSafely(rawjson is string, opts is map) {
 }
 export function parseJsonSafely(rawjson is string) { return parseJsonSafely(rawjson, { "detectUnits": false }); }
 
-/**
- * `range` *(std)*, descending, via a plain `reverse` — inherits std `range`'s own inclusive-of-
- * `to` convention rather than lodash's exclusive one, matching how `range` itself is already
- * mapped in this project.
- * @example
- *   rangeRight(0, 3); // => [3, 2, 1, 0]
- */
-export function rangeRight(from is number, to is number) returns array {
-  return reverse(range(from, to));
-}
 //--
 
 // == [Lodash Util ports] -- attempt, cond, conforms/conformsTo, constant, identity, iteratee, matches/matchesProperty, over/overEvery/overSome, property/propertyOf, times
@@ -140,12 +133,28 @@ export function conformsTo(obj is map, source is map) returns boolean {
  * @example
  *   times(3, constant(0)); // => [0, 0, 0]
  */
+export function constant(val, arity is number) returns function {
+  if (arity == 1) { return (_x) => val; }
+  if (arity == 2) { return (_x, _y) => val; }
+  if (arity == 3) { return (_x, _y, _z) => val; }
+  return () => val;
+}
 export function constant(val) returns function {
-  return (_val) => val;
+  return (_x, _y) => val;
 }
 
 /** Returns `val` unchanged — the fallback `iteratee` reaches for when nothing more specific applies. */
-export function identity(val) { return val; }
+export const identity  = ((val, _seq) => val);
+export const identity1 = ((val) => val);
+export const identity2 = identity;
+export const identity3 = ((val, _x, _y) => val);
+
+/** Returns `undefined`, regardless of arguments received. */
+export const noop  = ((val, _seq)        => undefined);
+export const noop0 = (()                 => undefined);
+export const noop1 = ((val)              => undefined);
+export const noop2 = noop;
+export const noop3 = ((val1, val2, val3) => undefined);
 
 /**
  * Coerces `spec` into a callable iteratee: a function passes through unchanged, a map becomes a
@@ -226,6 +235,17 @@ export function propertyOf(obj) returns function {
 }
 
 /**
+ * `range` *(std)*, descending, via a plain `reverse` — inherits std `range`'s own inclusive-of-
+ * `to` convention rather than lodash's exclusive one, matching how `range` itself is already
+ * mapped in this project.
+ * @example
+ *   rangeRight(0, 3); // => [3, 2, 1, 0]
+ */
+export function rangeRight(from is number, to is number) returns array {
+  return reverse(range(from, to));
+}
+
+/**
  * Calls `func(seq)` for `seq` from `0` to `count - 1`, collecting results — `count < 1` returns
  * `[]`. With no `func` given, defaults to `identity`, so `times(3)` is just `[0, 1, 2]`.
  * @example
@@ -240,3 +260,30 @@ export function times(count is number) returns array {
   return times(count, identity);
 }
 //--
+
+// == [Function values] --
+
+export const UtilsFuncs = {
+  "attempt":         (func)           => attempt(func),
+  "cond":            (pairs)          => cond(pairs),
+  "conforms":        (source)         => conforms(source),
+  "conformsTo":      (obj, source)    => conformsTo(obj, source),
+  "constant":        (val)            => constant(val),
+  "identity":        identity,
+  "identity2":       identity2,
+  "identity3":       identity3,
+  "iteratee":        (spec)           => iteratee(spec),
+  "matches":         (source)         => matches(source),
+  "matchesProperty": (path, srcValue) => matchesProperty(path, srcValue),
+  "noop":            noop,
+  "noop1":           noop1,
+  "noop2":           noop2,
+  "noop3":           noop3,
+  "over":            (funcs)          => over(funcs),
+  "overEvery":       (funcs)          => overEvery(funcs),
+  "overSome":        (funcs)          => overSome(funcs),
+  "property":        (path)           => property(path),
+  "propertyOf":      (obj)            => propertyOf(obj),
+  "rangeRight":      (from, to)       => rangeRight(from, to),
+  "times":           (count, func)    => times(count, func),
+};

@@ -1,11 +1,11 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
-import(path : "4ebdc64943b566160ea5cc28", version : "3684960ff67d0db556614489");
-import(path : "6fcd20533bd2df7c4094a0bf", version : "5849e1654325cddeda6f7440");
-import(path : "dd812faf6ff4099cda4aa0eb", version : "ccf1aec9c08b9ad59691b4d4");
-import(path : "66e287bede293cb227dfb89c", version : "e6c9aacc05cf0a6f15c7d4c7");
-import(path : "08b6ba15b8255611bafe7520", version : "2a3b23fb0cdd7a00cb549f43");
-import(path : "f6ab954150609e1e2e014a1e", version : "cefd17945c168add0f500dad");
+import(path : "4ebdc64943b566160ea5cc28", version : "1b90dc6c4195762f0e5be632");
+import(path : "6fcd20533bd2df7c4094a0bf", version : "9d269efd18246748c18e517c");
+import(path : "dd812faf6ff4099cda4aa0eb", version : "a7311f6cf30fb8456ecc98c3");
+import(path : "66e287bede293cb227dfb89c", version : "92efbb7ccaa5d62b7bde80f1");
+import(path : "08b6ba15b8255611bafe7520", version : "a01e809b55c6acd05b24ad25");
+import(path : "f6ab954150609e1e2e014a1e", version : "c22b78a2c205be57e553756a");
 
 const SuiteTitle = "Misc Utils";
 
@@ -66,7 +66,7 @@ export const NoopCases = [
   [[], undefined],
 ];
 export function runNoopTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "noop", verbose, NoopCases, function(args is array) { return noop(); });
+  return runTests(context, "noop", verbose, NoopCases, function(args is array) { return noop0(); });
 }
 
 // == [curryNtoM] ==
@@ -121,8 +121,8 @@ export function runAttemptTests(context is Context, verbose is boolean) returns 
 // == [cond] ==
 
 const gradeCond = cond([
-  [(score) => score >= 90, constant("A")],
-  [(score) => score >= 80, constant("B")],
+  [(score, _seq) => score >= 90, constant("A")],
+  [(score, _seq) => score >= 80, constant("B")],
   [constant(true),         constant("F")]
 ]);
 export const CondCases = [
@@ -136,13 +136,13 @@ export function runCondTests(context is Context, verbose is boolean) returns map
 
 // == [conforms / conformsTo] ==
 
-const isAdultConforms = conforms({ "age": (age) => age >= 18 });
+const isAdultConforms = conforms({ "age": (age, _seq) => age >= 18 });
 export const ConformsCases = [
   [[isAdultConforms, { "age": 20 }], true],
   [[isAdultConforms, { "age": 10 }], false],
 ];
 export function runConformsTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "conforms", verbose, ConformsCases, function(args is array) { return args[0](args[1]); });
+  return runTests(context, "conforms", verbose, ConformsCases, function(args is array) { return args[0](args[1], 0); });
 }
 
 export const ConformsToCases = [
@@ -160,7 +160,7 @@ export const ConstantCases = [
   [[constant({ "a": 1 })], { "a": 1 }],
 ];
 export function runConstantTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "constant", verbose, ConstantCases, function(args is array) { return args[0]("ignored"); });
+  return runTests(context, "constant", verbose, ConstantCases, function(args is array) { return args[0]("ignored", undefined); });
 }
 
 // == [identity] ==
@@ -171,14 +171,14 @@ export const IdentityCases = [
   [[[1, 2, 3]],  [1, 2, 3]],
 ];
 export function runIdentityTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "identity", verbose, IdentityCases, function(args is array) { return identity(args[0]); });
+  return runTests(context, "identity", verbose, IdentityCases, function(args is array) { return identity(args[0], undefined); });
 }
 
 // == [iteratee] ==
 
 export const IterateeCases = [
   [["a",         { "a": 1 }],            1,    'string spec becomes a property accessor'],
-  [[{ "a": 1 }, { "a": 1, "b": 2 }],     true, 'map spec becomes a matches predicate'],
+  [[{ "a": 1 },  { "a": 1, "b": 2 }],    true, 'map spec becomes a matches predicate'],
   [[identity,    5],                     5,    'function spec passes through unchanged'],
 ];
 export function runIterateeTests(context is Context, verbose is boolean) returns map {
@@ -248,9 +248,9 @@ export function runPropertyOfTests(context is Context, verbose is boolean) retur
 // == [times] ==
 
 export const TimesCases = [
-  [[3, (seq) => seq * seq], [0, 1, 4]],
-  [[3],                     [0, 1, 2], 'no func given defaults to identity'],
-  [[0, identity],           []],
+  [[3, (seq, _x) => seq * seq], [0, 1, 4]],
+  [[3],                         [0, 1, 2], 'no func given defaults to identity'],
+  [[0, identity],               []],
 ];
 export function runTimesTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "times", verbose, TimesCases, function(args is array) {

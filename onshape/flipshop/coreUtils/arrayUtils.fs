@@ -126,7 +126,7 @@ export function dropRightWhile(arr is array, rule is function) returns array {
 export function dropWhile(arr is array, rule is function) returns array {
   var beg = 0;
   for (; beg < size(arr); beg += 1) {
-    if (! rule(arr[beg])) { break; }
+    if (! rule(arr[beg], _seq)) { break; }
   }
   return subArray(arr, beg);
 }
@@ -139,7 +139,7 @@ export function dropWhile(arr is array, rule is function) returns array {
  */
 export function findIndex(arr is array, rule is function) returns number {
   for (var seq = 0; seq < size(arr); seq += 1) {
-    if (rule(arr[seq])) { return seq; }
+    if (rule(arr[seq], _seq)) { return seq; }
   }
   return -1;
 }

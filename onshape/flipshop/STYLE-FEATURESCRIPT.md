@@ -3,13 +3,14 @@
 Conventions for `.fs` files in this project. The audience is a human or an AI coding session
 working in this codebase; the sections are ordered by how expensive it is to get them wrong.
 
-> **Read this first.** The three rules that cause the most damage when ignored:
+> **Read this first.** Rules that cause the most damage when ignored:
 > 1. **Do not invent stdlib functions.** See [Language Limitations](#language-limitations).
 > 2. **Apart from a few language requirements, follow modern Typescript style conventions and approach**
-> 3. **Quote every map key.** A bare key resolves against in-scope variables.
+> 3. **Quote map keys where scope demands.** A bare key collides with in-scope variable names.
+> 4. **Do not built Contraptions, do not bang rocks together**. If you run up against one of featurescript's weird limitations, do not start implementing complicated workarounds, rethinking your whole approach, or banging out ad-hoc MacGuyvers. Either carry on, documenting the edge case; stop, and ask for help; or write a function fooFacade(...) that has no essential complications past calling foo, but gives us a hook to address whatever friction you've encountered.
 >
-> `reference/socketCellCutter.fs` is the canonical exemplar. When prose here and that file
-> disagree, the file wins — and when this guide is silent, imitate it.
+
+The files in `coreUtils` are good exemplars
 
 ---
 
@@ -17,24 +18,16 @@ working in this codebase; the sections are ordered by how expensive it is to get
 
 These are the things that produce confidently wrong code rather than syntax errors.
 
-**Do not invent stdlib functions.** Hallucinating a plausible `join`, `hasKey`, `flatten`, or
-`ifPresent` is the dominant failure mode, and it stays invisible until regeneration. These exist
-and are safe to use unverified:
-
-`keys`, `size`, `append`, `concatenateArrays`, `subArray`, `mapArray`, `isIn`, `reverse`,
-`mergeMaps`, `splitByRegexp`, `splitIntoCharacterArray`, `debug`, `regenError`,
-plus our own `ifNil(val, fallback)` and `isPresent(val)`.
-
-Anything not on that list gets verified against the std source in the FeatureScript editor
-before use. Writing a four-line helper is always cheaper than guessing. Note there is no
-`ifPresent`; if it existed it would take the `ifNil` signature.
+**Do not invent stdlib functions.**  the onshape/README.md file has a great overview of the essential operations. See especially the coreUtils/ directory, where we've implemented most of lodash. Use those freely. If it's not in either it might be hallucination: `onshape/std` has everything up to a year ago.
 
 **Value semantics.** Maps and arrays are values, not references. Assignment copies; there is no
 aliasing. Function parameters are immutable, so mutating one starts with `var result = obj;`.
 
-**No null, and `undefined` is indistinguishable from absence.** Reading a missing key returns
-`undefined`; storing `undefined` under a key gives you the same reading back. There is no
+**No null, and `undefined` is indistinguishable from absence from a map.** Reading a missing key returns
+`undefined`; storing `undefined` under a key of a map gives you the same reading back. There is no
 key-existence test beyond comparing against `undefined` (`isPresent`).
+
+**random number generation is weird**; it's generally discouraged as a practice in CAD, but it can be done with a workaround not yet implemented.
 
 **`==` is deep structural equality** on maps and arrays. This is what makes table-driven tests
 viable — compare whole result maps, don't walk them field by field.
@@ -48,9 +41,10 @@ give a parameter a default — there are no default argument values. What Onshap
 *definition keys* sharing a name inside a `defineFeature` precondition block.
 
 **Strings.** `~` concatenates. `splitByRegexp(str, pattern)` splits; note it drops trailing empty
-segments, so char-level work via `splitIntoCharacterArray` is sometimes the honest choice — say
-so in a comment when you make that trade. There is no interpolation and no `join`; write the
-loop.
+segments. There is no string interpolation, but everything pretty-prints nicely. Don't start banging rocks together if you hit an edge case with regex: work around it or prompt for help.
+
+**cannot compare two strings** using the builtin `<`, '>', `<=`, `>=` operators. We have a more expensive `cmpStr` and `cmp` workaround. Similarly, **sorting strings is weird**; the coreUtils/sortUtils file has workarounds with caveats
+
 
 **Errors.** `throw regenError(...)` is what Onshape renders properly in the feature tree; a
 thrown bare string works but surfaces differently, so use it only where a caller is catching the
@@ -307,13 +301,28 @@ for (var keyName in keys(obj)) {
 
 ---
 
-## Anonymous Functions
+## Anonymous / Lambda / Dagger Functions
 
-Params are always parenthesized, even a single one:
+Params are always parenthesized, even a single one.
+Use dagger functions for inline-lambdas.
+Moderately prefer dagger functions for very brief function variables, `function` functions if not.
+Embrace a whole const dagger function in parens; that reminds us to use a `;`.
+You cannot refer to a function by name unless it was declared variable style (`const foo = (() => ...);`) -- BUT you also can't overload a constant. FML.
+Our solution in coreUtils is to export a bag of functions.
 
 ```featurescript
-const fieldOf = function(val) { return val[fieldName]; };
-mapArray(rows, function(row) { return row.width; });
+
+
+mapArray(rows, (row) => row.width);
+
+const fieldOf = ((val) => val[fieldName]);
+
+const downcaseChar = (function(char is string) returns string {
+  const lochar = UpperToLowercase[char];
+  if (lochar == undefined) { return char; }
+  return lochar;
+});
+
 ```
 
 ---

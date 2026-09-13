@@ -89,20 +89,20 @@ const mapValuesInspector3 = function(val, key, seq) { return [val, key, seq]; };
 
 export function runMapValues3Tests(context is Context, verbose is boolean) returns map {
     return runTests(context, "mapValues3", verbose, [
-        [[ {},                             curry3to0(noop)],    {} ],
+        [[ {},                             noop3],    {} ],
         [[ {},                             mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 },               mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { b: 22, a: 11 },               mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { b: 22, a: 11, d: undefined }, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         //
-        [[ {},               [],           curry3to0(noop)],    {} ],
+        [[ {},               [],           noop3],    {} ],
         [[ {},               [],           mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 }, [],           mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 }, ["a", "b"],   mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { a: 11, b: 22 }, ["b", "a"],   mapValuesInspector3], { a: [11, "a", 1], b: [22, "b", 0] } ],
         [[ { a: 11, b: 22 }, ["b"],        mapValuesInspector3], {                  b: [22, "b", 0] } ],
         //
-        [[ {},               ["c"],        curry3to0(noop)],     { c: undefined } ],
+        [[ {},               ["c"],        noop3],     { c: undefined } ],
         [[ {},               ["c"],        mapValuesInspector3], { c: [undefined, "c", 0] } ],
         [[ { a: 11, b: 22 }, ["c"],        mapValuesInspector3], { c: [undefined, "c", 0] } ],
         [[ { a: 11, b: 22 }, ["a", "c"],   mapValuesInspector3], { a: [11,        "a", 0], c: [undefined, "c", 1] } ],
@@ -112,20 +112,20 @@ export function runMapValues3Tests(context is Context, verbose is boolean) retur
         [[ [],               mapValuesInspector3], [] ],
         [[ [11, 22],         mapValuesInspector3], [[11, 0, 0], [22, 1, 1]] ],
         //
-        [[ {},                             MissingPolicy.USE_UNDEFINED, curry3to0(noop)],     {} ],
+        [[ {},                             MissingPolicy.USE_UNDEFINED, noop3],     {} ],
         [[ {},                             MissingPolicy.USE_UNDEFINED, mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 },               MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { b: 22, a: 11 },               MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { b: 22, a: 11, d: undefined }, MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         //
-        [[ {},               [],           MissingPolicy.USE_UNDEFINED, curry3to0(noop)],     {} ],
+        [[ {},               [],           MissingPolicy.USE_UNDEFINED, noop3],     {} ],
         [[ {},               [],           MissingPolicy.USE_UNDEFINED, mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 }, [],           MissingPolicy.USE_UNDEFINED, mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 }, ["a", "b"],   MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { a: 11, b: 22 }, ["b", "a"],   MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { b: [22, "b", 0], a: [11, "a", 1] } ],
         [[ { a: 11, b: 22 }, ["b"],        MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { b: [22, "b", 0] } ],
         //
-        [[ {},               ["c"],        MissingPolicy.USE_UNDEFINED, curry3to0(noop)],     { c: undefined } ],
+        [[ {},               ["c"],        MissingPolicy.USE_UNDEFINED, noop3],     { c: undefined } ],
         [[ {},               ["c"],        MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { c: [undefined, "c", 0] } ],
         [[ { a: 11, b: 22 }, ["c"],        MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { c: [undefined, "c", 0] } ],
         [[ { a: 11, b: 22 }, ["a", "c"],   MissingPolicy.USE_UNDEFINED, mapValuesInspector3], { a: [11,        "a", 0], c: [undefined, "c", 1] } ],
@@ -135,20 +135,20 @@ export function runMapValues3Tests(context is Context, verbose is boolean) retur
         [[ [],                             MissingPolicy.USE_UNDEFINED,  mapValuesInspector3], [] ],
         [[ [11, 22],                       MissingPolicy.USE_UNDEFINED,  mapValuesInspector3], [[11, 0, 0], [22, 1, 1]] ],
         //
-        [[ {},                             MissingPolicy.SKIP, curry3to0(noop)],     {} ],
+        [[ {},                             MissingPolicy.SKIP, noop3],     {} ],
         [[ {},                             MissingPolicy.SKIP, mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 },               MissingPolicy.SKIP, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { b: 22, a: 11 },               MissingPolicy.SKIP, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { b: 22, a: 11, d: undefined }, MissingPolicy.SKIP, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         //
-        [[ {},               [],           MissingPolicy.SKIP, curry3to0(noop)],     {} ],
+        [[ {},               [],           MissingPolicy.SKIP, noop3],     {} ],
         [[ {},               [],           MissingPolicy.SKIP, mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 }, [],           MissingPolicy.SKIP, mapValuesInspector3], {} ],
         [[ { a: 11, b: 22 }, ["a", "b"],   MissingPolicy.SKIP, mapValuesInspector3], { a: [11, "a", 0], b: [22, "b", 1] } ],
         [[ { a: 11, b: 22 }, ["b", "a"],   MissingPolicy.SKIP, mapValuesInspector3], { a: [11, "a", 1], b: [22, "b", 0] } ],
         [[ { a: 11, b: 22 }, ["b"],        MissingPolicy.SKIP, mapValuesInspector3], {                  b: [22, "b", 0] } ],
         //
-        [[ {},               ["c"],        MissingPolicy.SKIP, curry3to0(noop)],     { } ],
+        [[ {},               ["c"],        MissingPolicy.SKIP, noop3],     { } ],
         [[ {},               ["c"],        MissingPolicy.SKIP, mapValuesInspector3], { } ],
         [[ { a: 11, b: 22 }, ["c"],        MissingPolicy.SKIP, mapValuesInspector3], { } ],
         [[ { a: 11, b: 22 }, ["a", "c"],   MissingPolicy.SKIP, mapValuesInspector3], { a: [11, "a", 0] } ],
@@ -161,24 +161,24 @@ export function runMapValues3Tests(context is Context, verbose is boolean) retur
     ], function(args is array) { return (size(args) <= 2) ? mapValues3(args[0], args[1]) : ((size(args) <= 3) ? mapValues3(args[0], args[1], args[2]) :  mapValues3(args[0], args[1], args[2], args[3])); });
 }
 export function runMapValuesTests(context is Context, verbose is boolean) returns map {
-    return runTests(context, "mapValues3", verbose, [
-        [[ { fred: 40, pebbles: 1 },       function(age) { return age * 2; } ], { fred: 80, pebbles: 2 }, 'doc example: doubles each value, keys unchanged'],
-        [[ [4, 8],                         function(nn) { return nn * nn; } ], [16, 64],                  'doc example: squares each element'],
+    return runTests(context, "mapValues", verbose, [
+        [[ { fred: 40, pebbles: 1 },       function(age, _seq) { return age * 2; } ], { fred: 80, pebbles: 2 }, 'doc example: doubles each value, keys unchanged'],
+        [[ [4, 8],                         function(nn, _seq) { return nn * nn; } ], [16, 64],                  'doc example: squares each element'],
         //
-        [[ {},                             curry2to0(noop)],     {} ],
+        [[ {},                             noop2],     {} ],
         [[ {},                             mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 },               mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { b: 22, a: 11 },               mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { b: 22, a: 11, d: undefined }, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         //
-        [[ {},               [],           curry2to0(noop)],     {} ],
+        [[ {},               [],           noop2],     {} ],
         [[ {},               [],           mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 }, [],           mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 }, ["a", "b"],   mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { a: 11, b: 22 }, ["b", "a"],   mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { a: 11, b: 22 }, ["b"],        mapValuesInspector2], {               b: [22, "b"] } ],
         //
-        [[ {},               ["c"],        curry2to0(noop)],     { c: undefined } ],
+        [[ {},               ["c"],        noop2],     { c: undefined } ],
         [[ {},               ["c"],        mapValuesInspector2], { c: [undefined, "c"] } ],
         [[ { a: 11, b: 22 }, ["c"],        mapValuesInspector2], { c: [undefined, "c"] } ],
         [[ { a: 11, b: 22 }, ["a", "c"],   mapValuesInspector2], { a: [11,        "a"], c: [undefined, "c"] } ],
@@ -188,20 +188,20 @@ export function runMapValuesTests(context is Context, verbose is boolean) return
         [[ [],                             mapValuesInspector2], [] ],
         [[ [11, 22],                       mapValuesInspector2], [[11, 0], [22, 1]] ],
         //
-        [[ {},                             MissingPolicy.USE_UNDEFINED, curry2to0(noop)],     {} ],
+        [[ {},                             MissingPolicy.USE_UNDEFINED, noop2],     {} ],
         [[ {},                             MissingPolicy.USE_UNDEFINED, mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 },               MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { b: 22, a: 11 },               MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { b: 22, a: 11, d: undefined }, MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         //
-        [[ {},               [],           MissingPolicy.USE_UNDEFINED, curry2to0(noop)],     {} ],
+        [[ {},               [],           MissingPolicy.USE_UNDEFINED, noop2],     {} ],
         [[ {},               [],           MissingPolicy.USE_UNDEFINED, mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 }, [],           MissingPolicy.USE_UNDEFINED, mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 }, ["a", "b"],   MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { a: 11, b: 22 }, ["b", "a"],   MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { a: 11, b: 22 }, ["b"],        MissingPolicy.USE_UNDEFINED, mapValuesInspector2], {               b: [22, "b"] } ],
         //
-        [[ {},               ["c"],        MissingPolicy.USE_UNDEFINED, curry2to0(noop)],     { c: undefined } ],
+        [[ {},               ["c"],        MissingPolicy.USE_UNDEFINED, noop2],     { c: undefined } ],
         [[ {},               ["c"],        MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { c: [undefined, "c"] } ],
         [[ { a: 11, b: 22 }, ["c"],        MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { c: [undefined, "c"] } ],
         [[ { a: 11, b: 22 }, ["a", "c"],   MissingPolicy.USE_UNDEFINED, mapValuesInspector2], { a: [11,        "a"], c: [undefined, "c"] } ],
@@ -211,20 +211,20 @@ export function runMapValuesTests(context is Context, verbose is boolean) return
         [[ [],                             MissingPolicy.USE_UNDEFINED,  mapValuesInspector2], [] ],
         [[ [11, 22],                       MissingPolicy.USE_UNDEFINED,  mapValuesInspector2], [[11, 0], [22, 1]] ],
         //
-        [[ {},                             MissingPolicy.SKIP, curry2to0(noop)],     {} ],
+        [[ {},                             MissingPolicy.SKIP, noop2],     {} ],
         [[ {},                             MissingPolicy.SKIP, mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 },               MissingPolicy.SKIP, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { b: 22, a: 11 },               MissingPolicy.SKIP, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { b: 22, a: 11, d: undefined }, MissingPolicy.SKIP, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         //
-        [[ {},               [],           MissingPolicy.SKIP, curry2to0(noop)],     {} ],
+        [[ {},               [],           MissingPolicy.SKIP, noop2],     {} ],
         [[ {},               [],           MissingPolicy.SKIP, mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 }, [],           MissingPolicy.SKIP, mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 }, ["a", "b"],   MissingPolicy.SKIP, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { a: 11, b: 22 }, ["b", "a"],   MissingPolicy.SKIP, mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
         [[ { a: 11, b: 22 }, ["b"],        MissingPolicy.SKIP, mapValuesInspector2], {               b: [22, "b"] } ],
         //
-        [[ {},               ["c"],        MissingPolicy.SKIP, curry2to0(noop)],     { } ],
+        [[ {},               ["c"],        MissingPolicy.SKIP, noop2],     { } ],
         [[ {},               ["c"],        MissingPolicy.SKIP, mapValuesInspector2], { } ],
         [[ { a: 11, b: 22 }, ["c"],        MissingPolicy.SKIP, mapValuesInspector2], { } ],
         [[ { a: 11, b: 22 }, ["a", "c"],   MissingPolicy.SKIP, mapValuesInspector2], { a: [11, "a"] } ],
@@ -310,16 +310,16 @@ const rebagArrInspector = function(val, seq is number)                { if (val 
 const rebagMapInspector = function(val, key is string, seq is number) { if (val == "skip") return undefined; return ["" ~ key ~ key, [val, key, seq]]; };
 export function runRebagTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "rebag", verbose, [
-        [[ {},                             curry3to0(noop)],   {} ],
-        [[ { a: 11, b: 22 },               curry3to0(noop)],   {} ],
+        [[ {},                             noop3],   {} ],
+        [[ { a: 11, b: 22 },               noop3],   {} ],
         [[ {},                             rebagMapInspector], {} ],
         [[ { a: 11, b: 22 },               rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
         [[ { b: 22, a: 11 },               rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
         [[ { b: 22, a: 11, d: undefined }, rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
         [[ { b: 22, a: 11, s: "skip" },    rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
         //
-        [[ [],                             curry2to0(noop)],   {} ],
-        [[ [11, 22],                       curry2to0(noop)],   {} ],
+        [[ [],                             noop2],   {} ],
+        [[ [11, 22],                       noop2],   {} ],
         [[ [],                             rebagArrInspector], {} ],
         [[ ["skip"],                       rebagArrInspector], {} ],
         [[ [11, 22],                       rebagArrInspector], { '00': [11, 0], '11': [22, 1] } ],
@@ -528,7 +528,7 @@ export function runForEachKeylistBreakTests(context is Context, verbose is boole
 // == [Lodash Collection ports] ==
 
 const isEven = curry2to1(function(val) { return val % 2 == 0; });
-const parityKey = function(val, _key) { return isEven(val) ? "even" : "odd"; };
+const parityKey = function(val, seq) { return isEven(val, seq) ? "even" : "odd"; };
 
 export const CountByCases = [
   [[ [1, 2, 3, 4], parityKey ], { "odd": 2, "even": 2 } ],
@@ -545,8 +545,8 @@ export const FindCases = [
   [[ [1, 2, 3], function(val) { return val > 1; } ], 2 ],
   [[ [1, 2, 3], function(val) { return val > 9; } ], undefined ],
   //
-  [[ { a: 1, b: 2, c: 3 }, function(val) { return val > 1; } ], 2, 'map form returns the value, not the key'],
-  [[ { a: 1, b: 2, c: 3 }, function(val) { return val > 9; } ], undefined ],
+  [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 1; } ], 2, 'map form returns the value, not the key'],
+  [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 9; } ], undefined ],
 ];
 export function runFindTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "find", verbose, FindCases, function(args is array) { return find(args[0], args[1]); });
@@ -556,8 +556,8 @@ export const FindLastCases = [
   [[ [1, 2, 3], function(val) { return val < 3; } ], 2 ],
   [[ [1, 2, 3], function(val) { return val > 9; } ], undefined ],
   //
-  [[ { a: 1, b: 2, c: 3 }, function(val) { return val < 3; } ], 2 ],
-  [[ { a: 1, b: 2, c: 3 }, function(val) { return val > 9; } ], undefined ],
+  [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val < 3; } ], 2 ],
+  [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 9; } ], undefined ],
 ];
 export function runFindLastTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findLast", verbose, FindLastCases, function(args is array) { return findLast(args[0], args[1]); });
