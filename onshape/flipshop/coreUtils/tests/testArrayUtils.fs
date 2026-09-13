@@ -68,15 +68,17 @@ precondition {
 // == [chunk] ==
 
 export const ChunkCases = [
-  [[[],                   2],  []],
-  [[["a", "b", "c", "d"], 1],  [["a"], ["b"], ["c"], ["d"]], 'chunkSize == 1 returns arrays with individual elements'],
-  [[["a", "b", "c", "d"], 2],  [["a", "b"], ["c", "d"]],     'chunkSize a divisor of array length: each chunk has equal length'],
-  [[["a", "b", "c", "d"], 3],  [["a", "b", "c"], ["d"]],     'chunkSize not a divisor of array length: last chunk is shorter'],
-  [[["a", "b", "c", "d"], 4],  [["a", "b", "c", "d"]],       'chunkSize == array length returns its input'],
-  [[["a", "b", "c", "d"], 5],  [["a", "b", "c", "d"]],       'chunkSize >= array length returns its input'],
-  [[["a", "b"],         -10],  [],                           'chunkSize < 1 returns an empty array'],
-  [[["a", "b"],          -1],  [],                           'chunkSize < 1 returns an empty array'],
-  [[["a", "b"],           0],  [],                           'chunkSize < 1 returns an empty array'],
+  [[ [],                   2 ],  []],
+  [[ ["a", "b", "c", "d"], 1 ],  [["a"], ["b"], ["c"], ["d"]], 'chunkSize == 1 returns arrays with individual elements'],
+  [[ ["a", "b", "c", "d"], 2 ],  [["a", "b"], ["c", "d"]],     'chunkSize a divisor of array length: each chunk has equal length'],
+  [[ ["a", "b", "c", "d"], 3 ],  [["a", "b", "c"], ["d"]],     'chunkSize not a divisor of array length: last chunk is shorter'],
+  [[ ["a", "b", "c", "d"], 4 ],  [["a", "b", "c", "d"]],       'chunkSize == array length returns its input'],
+  [[ ["a", "b", "c", "d"], 5 ],  [["a", "b", "c", "d"]],       'chunkSize >= array length returns its input'],
+  [[ [1, [], {}, 9], 2],         [[1, []], [{}, 9]]],
+  [[ [[], [[1]], [1,[]]], 2],    [ [[], [[1]]], [ [1,[]] ]] ],
+  [[ ["a", "b"],         -10 ],  [],                           'chunkSize < 1 returns an empty array'],
+  [[ ["a", "b"],          -1 ],  [],                           'chunkSize < 1 returns an empty array'],
+  [[ ["a", "b"],           0 ],  [],                           'chunkSize < 1 returns an empty array'],
 ];
 export function runChunkTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "chunk", verbose, ChunkCases, function(args is array) { return chunk(args[0], args[1]); });
