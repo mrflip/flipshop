@@ -54,7 +54,9 @@ export enum FrameCutlistEnum
     annotation { "Name" : "Angle 1" }
     Angle1,
     annotation { "Name" : "Angle 2" }
-    Angle2
+    Angle2,
+    annotation { "Name" : "Custom" }
+    Custom
 }
 
 export enum MyUnitOfMeasure
@@ -185,7 +187,7 @@ export const suffixQuery = "Query";
 
 annotation {
         "Feature Type Name" : "Property / Attribute",
-        "Feature Name Template" : "#action #operation",
+        "Feature Name Template" : "#myFeatureName",
         "Icon" : icon::BLOB_DATA,
         "Description Image" : cadsharpLogo::BLOB_DATA,
         "Feature Type Description" : "<b> Summary </b> <br> Set the properties of a part. <br>",
@@ -194,6 +196,21 @@ annotation {
 export const property = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
+        annotation { "Name" : "Feature name" }
+        definition.editFeatureName is boolean;
+
+        annotation { "Group Name" : "Feature name", "Driving Parameter" : "editFeatureName", "Collapsed By Default" : false }
+        {
+            if (definition.editFeatureName)
+            {
+                annotation { "Name" : "Auto prefix", "Default" : true }
+                definition.autoPrefix is boolean;
+
+                annotation { "Name" : "Name" }
+                definition.featureName is string;
+            }
+        }
+
         annotation { "Name" : "Action", "UIHint" : UIHint.HORIZONTAL_ENUM, "Default" : ActionEnum.SET }
         definition.action is ActionEnum;
 
@@ -260,6 +277,9 @@ export const property = defineFeature(function(context is Context, id is Id, def
                     {
                         annotation { "Name" : "Hexadecimal", "Default" : "E2300B", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
                         definition.aHexadecimal is string;
+
+                        annotation { "Name" : "Alpha" }
+                        isReal(definition.aColorAlpha, { (unitless) : [0, 1, 1] } as RealBoundSpec);
                     }
                 }
             }
@@ -286,6 +306,12 @@ export const property = defineFeature(function(context is Context, id is Id, def
             annotation { "Name" : "Cutlist attribute" }
             definition.cutlistAttribute is FrameCutlistEnum;
 
+            if (definition.cutlistAttribute == FrameCutlistEnum.Custom)
+            {
+                annotation { "Name" : "Custom attribute name", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
+                definition.customCutlistAttribute is string;
+            }
+
             if (definition.action == ActionEnum.SET)
             {
                 annotation { "Name" : "Attribute value" }
@@ -300,6 +326,9 @@ export const property = defineFeature(function(context is Context, id is Id, def
                     {
                         annotation { "Name" : "Hexadecimal", "Default" : "E2300B", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
                         definition.fHexadecimal is string;
+
+                        annotation { "Name" : "Alpha" }
+                        isReal(definition.fColorAlpha, { (unitless) : [0, 1, 1] } as RealBoundSpec);
                     }
                 }
             }
@@ -429,7 +458,7 @@ export const property = defineFeature(function(context is Context, id is Id, def
                     setProperty(context, {
                                 "entities" : definition.aEntity,
                                 "propertyType" : PropertyType.APPEARANCE,
-                                "value" : color(hex.red, hex.green, hex.blue, 1)
+                                "value" : color(hex.red, hex.green, hex.blue, definition.aColorAlpha)
                             });
                 }
             }
@@ -475,50 +504,54 @@ export const property = defineFeature(function(context is Context, id is Id, def
 
                 const frameComposite = qCompositePartsContaining(definition.fEntity);
 
-                var cutlist = getAttribute(context, {
-                        "entity" : frameComposite,
-                        "name" : FRAME_ATTRIBUTE_CUTLIST_NAME
-                    });
-
-                cutlist = setValueInCutlist(context, cutlist, definition.fEntity, definition.cutlistAttribute, definition.fValue);
-
-                // debug(context, cutlist, DebugColor.RED);
-
-                // setAttribute(context, {
-                //             "entities" : frameComposite,
-                //             "name" : FRAME_ATTRIBUTE_CUTLIST_NAME,
-                //             "attribute" : cutlist
-                //         });
-
-                setCutlistAttribute(context, frameComposite, cutlist as CutlistAttribute);
-
-
-
-                if (definition.aColorEntity)
+                if (isQueryEmpty(context, frameComposite))
                 {
-                    const hex = hexToRGB(definition.aHexadecimal);
+                    reportFeatureError(context, id, "No frame cut list found. Select a frame member, and make sure a 'Frame cut list' feature has processed the frame first.");
+                }
+                else
+                {
+                    var cutlist = getAttribute(context, {
+                            "entity" : frameComposite,
+                            "name" : FRAME_ATTRIBUTE_CUTLIST_NAME
+                        });
 
-                    setProperty(context, {
-                                "entities" : definition.aEntity,
-                                "propertyType" : PropertyType.APPEARANCE,
-                                "value" : color(hex.red, hex.green, hex.blue, 1)
-                            });
+                    cutlist = setValueInCutlist(context, cutlist, definition.fEntity, resolveCutlistColumnName(definition), definition.fValue);
+
+                    setCutlistAttribute(context, frameComposite, cutlist as CutlistAttribute);
+
+                    if (definition.fColorEntity)
+                    {
+                        const hex = hexToRGB(definition.fHexadecimal);
+
+                        setProperty(context, {
+                                    "entities" : definition.fEntity,
+                                    "propertyType" : PropertyType.APPEARANCE,
+                                    "value" : color(hex.red, hex.green, hex.blue, definition.fColorAlpha)
+                                });
+                    }
                 }
             }
             else
             {
                 var attribute = undefined;
 
-                try
+                const frameComposite = qCompositePartsContaining(definition.fEntity);
+
+                if (isQueryEmpty(context, frameComposite))
                 {
-                    const frameComposite = qCompositePartsContaining(definition.fEntity);
+                    reportFeatureWarning(context, id, "No frame cut list found. Select a frame member, and make sure a 'Frame cut list' feature has processed the frame first.");
+                }
+                else
+                {
+                    try silent
+                    {
+                        const cutlist = getAttribute(context, {
+                                    "entity" : frameComposite,
+                                    "name" : FRAME_ATTRIBUTE_CUTLIST_NAME
+                                });
 
-                    const cutlist = getAttribute(context, {
-                                "entity" : frameComposite,
-                                "name" : FRAME_ATTRIBUTE_CUTLIST_NAME
-                            });
-
-                    attribute = getValueFromCutlist(context, cutlist, definition.fEntity, definition.cutlistAttribute);
+                        attribute = getValueFromCutlist(context, cutlist, definition.fEntity, resolveCutlistColumnName(definition));
+                    }
                 }
 
                 if (attribute == undefined)
@@ -583,20 +616,28 @@ export const property = defineFeature(function(context is Context, id is Id, def
             }
         }
 
-        setFeatureComputedParameter(context, id, {
-                    "name" : "action",
-                    "value" : isGet ? "[Get]" : "[Set]"
-                });
-
         const operationName = switch (definition.operation) {
                     OperationEnum.PROPERTY : "- Property",
                     OperationEnum.ATTRIBUTE : "- Attribute",
                     OperationEnum.IDENTITY : "- Identity",
                 };
 
+        const prefix = isGet ? "[Get " : "[Set ";
+        var featureName = prefix ~ operationName ~ "] ";
+
+        if (definition.editFeatureName)
+        {
+            if (!definition.autoPrefix)
+            {
+                featureName = "";
+            }
+
+            featureName ~= definition.featureName;
+        }
+
         setFeatureComputedParameter(context, id, {
-                    "name" : "operation",
-                    "value" : operationName
+                    "name" : "myFeatureName",
+                    "value" : featureName
                 });
     });
 
@@ -629,7 +670,7 @@ function setPropertiesFunction(context is Context, id is Id, definition is map)
         setProperty(context, {
                     "entities" : definition.entities,
                     "propertyType" : PropertyType.APPEARANCE,
-                    "value" : color(hex.red, hex.green, hex.blue, 1)
+                    "value" : color(hex.red, hex.green, hex.blue, definition.colorAlpha)
                 });
     }
 
@@ -826,6 +867,9 @@ export predicate SetPropertyPredicate(definition)
         {
             annotation { "Name" : "Hexadecimal", "UIHint" : UIHint.REMEMBER_PREVIOUS_VALUE }
             definition.hexadecimal is string;
+
+            annotation { "Name" : "Alpha" }
+            isReal(definition.colorAlpha, { (unitless) : [0, 1, 1] } as RealBoundSpec);
         }
     }
 
@@ -1035,15 +1079,20 @@ export predicate SetPropertyPredicate(definition)
     }
 }
 
-function getValueFromCutlist(context, cutlist, query is Query, columnEnum)
+// Resolve the cutlist column key from the enum, or the user-typed string when "Custom" is selected.
+function resolveCutlistColumnName(definition is map) returns string
 {
-    const columnId = enumToCutlistColumnName[columnEnum];
+    if (definition.cutlistAttribute == FrameCutlistEnum.Custom)
+    {
+        return definition.customCutlistAttribute;
+    }
+    return enumToCutlistColumnName[definition.cutlistAttribute];
+}
+
+function getValueFromCutlist(context, cutlist, query is Query, columnName is string)
+{
     const rows = cutlist.table.rows;
     const rowCount = size(rows);
-
-    // Get entities from the input query
-    const inputEntities = evaluateQuery(context, query);
-    const inputEntityCount = size(inputEntities);
 
     for (var i = 0; i < rowCount; i += 1)
     {
@@ -1052,24 +1101,20 @@ function getValueFromCutlist(context, cutlist, query is Query, columnEnum)
 
         if (!isQueryEmpty(context, qIntersection([query, rowEntities])))
         {
-            const columnMap = row.columnIdToCell;
-            const keys = keys(columnMap);
-
-            return columnMap[enumToCutlistColumnName[columnEnum]];
+            return row.columnIdToCell[columnName];
         }
     }
 }
 
-function setValueInCutlist(context, cutlist, query is Query, columnEnum, newValue)
+function setValueInCutlist(context, cutlist, query is Query, columnName is string, newValue)
 {
     const rowCount = size(cutlist.table.rows);
-    const columnKey = columnEnum->toString();
 
     for (var i = 0; i < rowCount; i += 1)
     {
         if (!isQueryEmpty(context, qIntersection([query, cutlist.table.rows[i].entities])))
         {
-            cutlist.table.rows[i].columnIdToCell[enumToCutlistColumnName[columnEnum]] = newValue;
+            cutlist.table.rows[i].columnIdToCell[columnName] = newValue;
             return cutlist;
         }
     }
