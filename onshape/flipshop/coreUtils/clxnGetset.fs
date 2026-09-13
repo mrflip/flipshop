@@ -142,6 +142,21 @@ export function setAt(arr is array, keyPath is array, val, onCollision is functi
 }
 
 /**
+ * Read-modify-write: sets `bag`/`arr` at `keyStr`/`keyPath` to `updater(currentVal)`, via
+ * `getAt`/`setAt`. `updateWith` additionally takes `setAt`'s `onCollision` — really a customizer
+ * for how a missing intermediate segment gets created, same as lodash's `updateWith` — since the
+ * updated value only ever collides with the (about to be replaced) value it was read from.
+ * @example
+ *   update({ "a": 1 }, "a", (val) => val + 1); // => { "a": 2 }
+ */
+export function update(bag, keyStrOrPath, updater is function) {
+  return setAt(bag, keyStrOrPath, updater(getAt(bag, keyStrOrPath)));
+}
+export function updateWith(bag, keyStrOrPath, updater is function, onCollision is function) {
+  return setAt(bag, keyStrOrPath, updater(getAt(bag, keyStrOrPath)), onCollision);
+}
+
+/**
  * Recursively merges `incoming` into `existing`: two maps combine key by key all the way down;
  * an `undefined` source leaves the existing value alone; anything else, `incoming` wins.
  *
@@ -162,6 +177,44 @@ export function deepMerge(existing, incoming) {
   var out = existing;
   for (var keyStr in keys(incoming)) {
     out[keyStr] = deepMerge(existing[keyStr], incoming[keyStr]);
+  }
+  return out;
+}
+
+/**
+ * `mergeMaps` *(std)*, with `combine(existingVal, incomingVal, key)` deciding what lands at a key
+ * present in `incoming`, instead of `incoming` unconditionally winning — returning `undefined`
+ * from `combine` falls back to that default.
+ * @example
+ *   assignWith({ "a": 1 }, { "a": 2 }, (existingVal, incomingVal) => existingVal + incomingVal);
+ *   // => { "a": 3 }
+ */
+export function assignWith(existing is map, incoming is map, combine is function) returns map {
+  var out = existing;
+  for (var key in keys(incoming)) {
+    const combined = combine(existing[key], incoming[key], key);
+    out[key] = isPresent(combined) ? combined : incoming[key];
+  }
+  return out;
+}
+
+/**
+ * `deepMerge`, with `combine(existingVal, incomingVal, key)` deciding what lands at a key present
+ * in both — called at every level of the recursion, not just the leaves, so returning `undefined`
+ * falls back to `deepMerge`'s own rule for that pair.
+ * @example
+ *   mergeWith({ "a": 1 }, { "a": 2 }, (existingVal, incomingVal) => existingVal + incomingVal);
+ *   // => { "a": 3 }
+ */
+export function mergeWith(existing, incoming, combine is function) {
+  if (! isPresent(incoming)) { return existing; }
+  if (! isPresent(existing)) { return incoming; }
+  const combined = combine(existing, incoming);
+  if (isPresent(combined)) { return combined; }
+  if (! ((existing is map) && (incoming is map))) { return incoming; }
+  var out = existing;
+  for (var keyStr in keys(incoming)) {
+    out[keyStr] = mergeWith(existing[keyStr], incoming[keyStr], combine);
   }
   return out;
 }

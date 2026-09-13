@@ -179,3 +179,45 @@ export function runSetAtTests(context is Context, verbose is boolean) returns ma
 export function runSetAtThrowsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "setAt throws", verbose, SetAtThrows, assertThrows(runSetAtTest));
 }
+
+export const UpdateCases = [
+  [[{ "a": 1 },          "a",   function(val) { return val + 1; }],           { "a": 2 }],
+  [[{ "a": { "b": 1 } }, "a.b", function(val) { return val + 1; }],           { "a": { "b": 2 } }],
+  [[{},                  "a.b", function(val) { return ifNil(val, 0) + 1; }], { "a": { "b": 1 } }, 'a missing path autovivifies, reading as undefined first'],
+];
+export function runUpdateTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "update", verbose, UpdateCases, function(args is array) { return update(args[0], args[1], args[2]); });
+}
+
+const sumIfExisting = function(existingVal, incomingVal) {
+  return (existingVal is number) ? (existingVal + incomingVal) : undefined;
+};
+
+export const UpdateWithCases = [
+  [[{ "a": 1 }, "a",   function(val) { return val + 1; }, sumIfExisting],
+   { "a": 3 },
+   'the resolver sees the old value and the updater result when the leaf already exists'],
+  [[{},         "a.b", function(val) { return ifNil(val, 0) + 1; }, sumIfExisting],
+   { "a": { "b": 1 } },
+   'a freshly autovivified path never collides, so the resolver is not consulted'],
+];
+export function runUpdateWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "updateWith", verbose, UpdateWithCases, function(args is array) { return updateWith(args[0], args[1], args[2], args[3]); });
+}
+
+export const AssignWithCases = [
+  [[{ "a": 1, "b": 2 }, { "a": 10 }, sumIfExisting], { "a": 11, "b": 2 }, 'the resolver combines a key present in both'],
+  [[{ "a": 1 },         { "b": 2 },  sumIfExisting], { "a": 1, "b": 2 },  'the resolver returns undefined for a key only in incoming, which falls back to incoming winning'],
+];
+export function runAssignWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "assignWith", verbose, AssignWithCases, function(args is array) { return assignWith(args[0], args[1], args[2]); });
+}
+
+export const MergeWithCases = [
+  [[{ "a": 1 },          { "a": 2 },          sumIfExisting], { "a": 3 },                  'the resolver combines a leaf present in both'],
+  [[{ "a": { "x": 1 } }, { "a": { "y": 2 } }, sumIfExisting], { "a": { "x": 1, "y": 2 } }, 'a non-number pair falls back to the ordinary deep-merge rule'],
+  [[{ "a": 1 },          undefined,           sumIfExisting], { "a": 1 },                  'an undefined source leaves what is there alone, same as deepMerge'],
+];
+export function runMergeWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "mergeWith", verbose, MergeWithCases, function(args is array) { return mergeWith(args[0], args[1], args[2]); });
+}

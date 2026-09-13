@@ -75,6 +75,16 @@ export function differenceBy(arr is array, excludeArr is array, iteratee is func
 }
 
 /**
+ * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==`.
+ * @example
+ *   differenceWith([{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], (aa, bb) => aa.x == bb.x);
+ *   // => [{ "x": 2 }]
+ */
+export function differenceWith(arr is array, excludeArr is array, comparator is function) returns array {
+  return filter(arr, (val) => (! any(excludeArr, (other) => comparator(val, other))));
+}
+
+/**
  * `arr` with the first `dropCount` elements removed; `dropCount <= 0` returns `arr` unchanged.
  * @example
  *   drop([1, 2, 3], 2); // => [3]
@@ -242,6 +252,20 @@ export function intersectionBy(arrList is array, iteratee is function) returns a
 }
 
 /**
+ * `intersection`, comparing elements with `comparator(val, other)` instead of `==`.
+ * @example
+ *   intersectionWith([[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], (aa, bb) => aa.x == bb.x);
+ *   // => [{ "x": 2 }]
+ */
+export function intersectionWith(arrList is array, comparator is function) returns array {
+  if (size(arrList) == 0) { return []; }
+  const first = arrList[0];
+  const rest = subArray(arrList, 1);
+  const kept = filter(first, (val) => all(rest, (other) => any(other, (otherVal) => comparator(val, otherVal))));
+  return uniqWith(kept, comparator);
+}
+
+/**
  * Index of the last occurrence of `val` in `arr`, searching from the end, or `-1` if absent.
  * @example
  *   lastIndexOf([1, 2, 1], 1); // => 2
@@ -338,6 +362,16 @@ export function unionBy(arrList is array, iteratee is function) returns array {
 }
 
 /**
+ * `union`, deduplicating with `comparator(kept, val)` instead of `==`.
+ * @example
+ *   unionWith([[{ "x": 1 }], [{ "x": 1 }, { "x": 2 }]], (aa, bb) => aa.x == bb.x);
+ *   // => [{ "x": 1 }, { "x": 2 }]
+ */
+export function unionWith(arrList is array, comparator is function) returns array {
+  return uniqWith(concatenateArrays(arrList), comparator);
+}
+
+/**
  * `arr` with duplicate elements removed, keeping the first occurrence — like std's
  * `deduplicate`, but comparing `iteratee(val)` instead of `val` itself.
  * @example
@@ -417,6 +451,39 @@ export function xor(arrList is array) returns array {
     var count = 0;
     for (var other in arrList) {
       if (arrayIncludes(other, val)) { count += 1; }
+    }
+    return count == 1;
+  });
+}
+
+/**
+ * `xor`, comparing by `iteratee(val)` instead of `val` itself.
+ * @example
+ *   xorBy([[2.1, 1.2], [2.3, 3.4]], (val) => floor(val)); // => [1.2, 3.4]
+ */
+export function xorBy(arrList is array, iteratee is function) returns array {
+  const allVals = uniqBy(concatenateArrays(arrList), iteratee);
+  return filter(allVals, (val) returns boolean => {
+    const key = iteratee(val);
+    var count = 0;
+    for (var other in arrList) {
+      if (any(other, (otherVal) => (iteratee(otherVal) == key))) { count += 1; }
+    }
+    return count == 1;
+  });
+}
+/**
+ * `xor`, comparing with `comparator(val, otherVal)` instead of `==`.
+ * @example
+ *   xorWith([[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], (aa, bb) => aa.x == bb.x);
+ *   // => [{ "x": 1 }]
+ */
+export function xorWith(arrList is array, comparator is function) returns array {
+  const allVals = uniqWith(concatenateArrays(arrList), comparator);
+  return filter(allVals, (val) returns boolean => {
+    var count = 0;
+    for (var other in arrList) {
+      if (any(other, (otherVal) => comparator(val, otherVal))) { count += 1; }
     }
     return count == 1;
   });

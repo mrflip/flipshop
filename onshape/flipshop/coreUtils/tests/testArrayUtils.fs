@@ -23,6 +23,7 @@ precondition {
     runCompactTests(context, verbose);
     runDifferenceTests(context, verbose);
     runDifferenceByTests(context, verbose);
+    runDifferenceWithTests(context, verbose);
     runDropTests(context, verbose);
     runDropRightTests(context, verbose);
     runDropRightWhileTests(context, verbose);
@@ -36,6 +37,7 @@ precondition {
     runInitialTests(context, verbose);
     runIntersectionTests(context, verbose);
     runIntersectionByTests(context, verbose);
+    runIntersectionWithTests(context, verbose);
     runLastIndexOfTests(context, verbose);
     runNthTests(context, verbose);
     runTailTests(context, verbose);
@@ -45,12 +47,15 @@ precondition {
     runTakeWhileTests(context, verbose);
     runUnionTests(context, verbose);
     runUnionByTests(context, verbose);
+    runUnionWithTests(context, verbose);
     runUniqByTests(context, verbose);
     runUniqWithTests(context, verbose);
     runUnzipTests(context, verbose);
     runUnzipWithTests(context, verbose);
     runWithoutTests(context, verbose);
     runXorTests(context, verbose);
+    runXorByTests(context, verbose);
+    runXorWithTests(context, verbose);
     runZipObjectTests(context, verbose);
     runZipWithTests(context, verbose);
     //
@@ -97,6 +102,13 @@ export const DifferenceByCases = [
 ];
 export function runDifferenceByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "differenceBy", verbose, DifferenceByCases, function(args is array) { return differenceBy(args[0], args[1], args[2]); });
+}
+
+export const DifferenceWithCases = [
+  [[[{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 2 }]],
+];
+export function runDifferenceWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "differenceWith", verbose, DifferenceWithCases, function(args is array) { return differenceWith(args[0], args[1], args[2]); });
 }
 
 // == [drop / dropRight / dropWhile / dropRightWhile] ==
@@ -218,6 +230,13 @@ export function runIntersectionByTests(context is Context, verbose is boolean) r
   return runTests(context, "intersectionBy", verbose, IntersectionByCases, function(args is array) { return intersectionBy(args[0], args[1]); });
 }
 
+export const IntersectionWithCases = [
+  [[[[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 2 }]],
+];
+export function runIntersectionWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "intersectionWith", verbose, IntersectionWithCases, function(args is array) { return intersectionWith(args[0], args[1]); });
+}
+
 // == [lastIndexOf] ==
 
 export const LastIndexOfCases = [
@@ -300,6 +319,13 @@ export function runUnionByTests(context is Context, verbose is boolean) returns 
   return runTests(context, "unionBy", verbose, UnionByCases, function(args is array) { return unionBy(args[0], args[1]); });
 }
 
+export const UnionWithCases = [
+  [[[[{ "x": 1 }], [{ "x": 1 }, { "x": 2 }]], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 1 }, { "x": 2 }]],
+];
+export function runUnionWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "unionWith", verbose, UnionWithCases, function(args is array) { return unionWith(args[0], args[1]); });
+}
+
 // == [uniqBy / uniqWith] ==
 
 export const UniqByCases = [
@@ -349,6 +375,20 @@ export const XorCases = [
 ];
 export function runXorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "xor", verbose, XorCases, function(args is array) { return xor(args[0]); });
+}
+
+export const XorByCases = [
+  [[[[2.1, 1.2], [2.3, 3.4]], function(val) { return floor(val); }],  [1.2, 3.4]],
+];
+export function runXorByTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "xorBy", verbose, XorByCases, function(args is array) { return xorBy(args[0], args[1]); });
+}
+
+export const XorWithCases = [
+  [[[[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 1 }]],
+];
+export function runXorWithTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "xorWith", verbose, XorWithCases, function(args is array) { return xorWith(args[0], args[1]); });
 }
 
 // == [zipObject / zipWith] ==
