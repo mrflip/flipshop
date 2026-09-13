@@ -74,3 +74,15 @@ export function isEmpty(val) returns boolean {
   if (val is map || val is string || val is array) { return sizeof(val) <= 0; }
   return false;
 }
+
+/**
+ * `val` unchanged if it's already an array, otherwise `[val]` — a non-array value wrapped in a
+ * single-element array.
+ * @example
+ *   castArray(1);      // => [1]
+ *   castArray([1, 2]); // => [1, 2]
+ */
+export function castArray(val) returns array {
+  if (val is array) { return val; }
+  return [val];
+}

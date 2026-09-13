@@ -54,3 +54,14 @@ export function parseJsonSafely(rawjson is string, opts is map) {
   }
 }
 export function parseJsonSafely(rawjson is string) { return parseJsonSafely(rawjson, { "detectUnits": false }); }
+
+/**
+ * `range` *(std)*, descending, via a plain `reverse` — inherits std `range`'s own inclusive-of-
+ * `to` convention rather than lodash's exclusive one, matching how `range` itself is already
+ * mapped in this project.
+ * @example
+ *   rangeRight(0, 3); // => [3, 2, 1, 0]
+ */
+export function rangeRight(from is number, to is number) returns array {
+  return reverse(range(from, to));
+}

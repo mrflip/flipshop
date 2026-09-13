@@ -30,6 +30,7 @@ precondition {
     runIfZeroVWUTests(context, verbose);
     runIsEmptyTests(context, verbose);
     runVector2Tests(context, verbose);
+    runCastArrayTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -145,4 +146,15 @@ export const Vector2Cases = [
 ];
 export function runVector2Tests(context is Context, verbose is boolean) returns map {
   return runTests(context, "vector2", verbose, Vector2Cases, function(args is array) { return tolerantEquals(vector2(args[0]), args[1]); });
+}
+
+// == [castArray] ==
+
+export const CastArrayCases = [
+  [[1],       [1]],
+  [[[1, 2]],  [1, 2]],
+  [[undefined], [undefined]],
+];
+export function runCastArrayTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "castArray", verbose, CastArrayCases, function(args is array) { return castArray(args[0]); });
 }

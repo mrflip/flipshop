@@ -24,6 +24,7 @@ precondition {
     runNoopTests(context, verbose);
     runCurryTests(context, verbose);
     runParseJsonSafelyTests(context, verbose);
+    runRangeRightTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -80,4 +81,14 @@ export function runParseJsonSafelyTests(context is Context, verbose is boolean) 
   return runTests(context, "parseJsonSafely", verbose, ParseJsonSafelyCases, function(args is array) {
     return (size(args) <= 1) ? parseJsonSafely(args[0]) : parseJsonSafely(args[0], args[1]);
   });
+}
+
+// == [rangeRight] ==
+
+export const RangeRightCases = [
+  [[0, 3], [3, 2, 1, 0]],
+  [[2, 2], [2],           'from == to is a single-element range'],
+];
+export function runRangeRightTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "rangeRight", verbose, RangeRightCases, function(args is array) { return rangeRight(args[0], args[1]); });
 }

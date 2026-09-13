@@ -113,20 +113,19 @@ Not Yet (perhaps never):
 | `filter` *(std)* | `filter` | Elements passing a predicate. | |
 | `foldArray` *(std)* | `reduce` | Reduce a collection to a single value. | |
 | `sizeof` / `size` *(std)* | `size` | Element/key/character count. | |
-| ~~countBy~~ | `countBy` | Counts of elements, grouped by a computed key. | |
-| ~~find~~ / ~~findLast~~ | `find`, `findLast` | First/last element matching a predicate. | |
-| ~~flatMap~~ / ~~flatMapDeep~~ / ~~flatMapDepth~~ | `flatMap` family | Map then flatten one/all/`n` levels. | |
-| ~~groupBy~~ | `groupBy` | Group elements by a computed key. | |
-| ~~partition~~ | `partition` | Split into two groups by a predicate. | |
-| ~~reduceRight~~ | `reduceRight` | `reduce`, back-to-front. | |
-| ~~reject~~ | `reject` | Elements *failing* a predicate — inverse of `filter`. | |
+| `countBy` | `countBy` | Counts of elements, grouped by a computed key. | |
+| `find` / `findLast` | `find`, `findLast` | First/last element matching a predicate. | Arrays only — dereferences `arrayUtils`' `findIndex`/`findLastIndex`. |
+| `flatMap` / `flatMapDeep` / `flatMapDepth` | `flatMap` family | Map then flatten one/all/`n` levels. | Rides on `arrayUtils`' `flatten` family. |
+| `forEachRight` | `forEachRight` / `eachRight` | Iterate a collection back-to-front. | Arrays only. |
+| `groupBy` | `groupBy` | Group elements by a computed key. | Built on std's `insertIntoMapOfArrays`. |
+| `partition` | `partition` | Split into two groups by a predicate. | |
+| `reduceRight` | `reduceRight` | `reduce`, back-to-front. | `foldArray` *(std)* over a `reverse`d array. |
+| `reject` | `reject` | Elements *failing* a predicate — inverse of `filter`. | |
 
 Not yet:
-| ~~sample~~ / ~~sampleSize~~ / ~~shuffle~~ | `sample` family | Random element(s) / shuffled order. | |
-| ~~sortBy~~ | `sortBy` | Sort by one or more iteratees. | |
-| ~~forEachRight~~ | `forEachRight` / `eachRight` | Iterate a collection back-to-front. | |
-| ~~invokeMap~~ | `invokeMap` | Invoke a named method on each element. | |
-| ~~orderBy~~ | `orderBy` | Sort by multiple iteratees, each with its own direction. | |
+| ~~sample~~ / ~~sampleSize~~ / ~~shuffle~~ | `sample` family | Random element(s) / shuffled order. | Randomness isn't a FeatureScript thing by design. |
+| ~~sortBy~~ / ~~orderBy~~ | `sortBy`, `orderBy` | Sort by one or more iteratees, each with its own direction. | Iteratee results are often strings, and Onshape can't compare strings with `< > <= >=` — leaving this alone until that workaround is worth the heroics. |
+| ~~invokeMap~~ | `invokeMap` | Invoke a named method on each element. | No dynamic method dispatch by name in FeatureScript. |
 
 ### Function
 
@@ -164,7 +163,7 @@ Not yet/ever:
 | FeatureScript                           | Lodash                                  | Does                                 | Notes                                                                                                                                                                    |
 | ---------------------------------------- | ---------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | ~~isArguments~~ / ~~isArrayBuffer~~ / ~~isArrayLike~~ / ~~isArrayLikeObject~~ / ~~isBuffer~~ / ~~isDate~~ / ~~isElement~~ / ~~isError~~ / ~~isFinite~~ / ~~isInteger~~ / ~~isLength~~ / ~~isMatch~~ / ~~isMatchWith~~ / ~~isNaN~~ / ~~isNative~~ / ~~isObjectLike~~ / ~~isRegExp~~ / ~~isSafeInteger~~ / ~~isSet~~ / ~~isSymbol~~ / ~~isTypedArray~~ / ~~isWeakMap~~ / ~~isWeakSet~~ | remaining `is*` predicates | Type-check JS/DOM-runtime-specific types, or match against a pattern. | FeatureScript has no Symbol/Buffer/WeakMap/DOM-element/etc. types for most of these to even ask about. |
-| ~~castArray~~ | `castArray` | Wrap a non-array value in a 1-element array. | |
+| `castArray` | `castArray` | Wrap a non-array value in a 1-element array. | |
 | ~~clone~~ / ~~cloneDeep~~ / ~~cloneDeepWith~~ / ~~cloneWith~~ | `clone` family | Shallow/deep copy a value. | FeatureScript maps and arrays already have value (copy-on-write) semantics, so "clone" is largely a non-issue here — there's no shared mutable reference to defend against in the first place. |
 | ~~toArray~~ / ~~toFinite~~ / ~~toInteger~~ / ~~toLength~~ / ~~toNumber~~ / ~~toPlainObject~~ / ~~toSafeInteger~~ | `to*` coercion family | Coerce a value toward a target type. | |
 | ~~conformsTo~~ | `conformsTo` | Whether an object satisfies a predicate-shaped spec. | → HUMAN-FIXME.md ("metaprogramming"). |
@@ -181,15 +180,15 @@ Not yet/ever:
 | `average` *(std)* | `mean` | Average of an array. | |
 | `sum` *(std)* | `sum` | Sum of an array. | |
 | ~~add~~ / ~~divide~~ / ~~multiply~~ / ~~subtract~~ | arithmetic-as-functions | `+ - * /` as callables. | FeatureScript just uses the operators directly. |
-| ~~maxBy~~ / ~~meanBy~~ / ~~minBy~~ / ~~sumBy~~ | `*By` family | Iteratee-mapped versions of the row above. | |
+| `maxBy` / `meanBy` / `minBy` / `sumBy` | `*By` family | Iteratee-mapped versions of the row above. | In `numberUtils.fs`. |
 
 ### Number
 
 | FeatureScript | Lodash | Does | Notes |
 |---|---|---|---|
 | `clamp` *(std)* | `clamp` | Constrain a number to `[lower, upper]`. | |
-| ~~inRange~~ | `inRange` | Whether a number falls within a range. | |
-| ~~random~~ | `random` | Random number in a range. | |
+| `inRange` | `inRange` | Whether a number falls within a range. | Bounds auto-swap if `start > end`, matching lodash. |
+| ~~random~~ | `random` | Random number in a range. | Randomness isn't a FeatureScript thing by design. |
 
 ### Object
 
@@ -205,12 +204,12 @@ Not yet/ever:
 | `mapValues` | `mapValues` | Map a map's values, keys unchanged. | |
 | `keys` *(std)* | `keys` | A map's keys. | |
 | `values` *(std)* | `values` | A map's values. | |
-| ~~entries~~ / ~~entriesIn~~ / ~~toPairs~~ / ~~toPairsIn~~ | `toPairs` family | Map → `[[k,v], …]`. | |
-| ~~findKey~~ / ~~findLastKey~~ | `findKey`, `findLastKey` | First/last key whose value matches a predicate. | |
-| ~~invert~~ / ~~invertBy~~ | `invert` family | Swap an object's keys and values. | |
-| ~~mapKeys~~ | `mapKeys` | Map a map's keys, values unchanged. | |
-| ~~omit~~ / ~~omitBy~~ | `omit` family | Inverse of `pick`/`pickBy` above — all keys *except* the given ones. | |
-| ~~result~~ | `result` | Like `get`, but invokes a function value found at the path. | |
+| `toPairs` | `toPairs` | Map → `[[k,v], …]`. | FeatureScript maps have no own/inherited distinction, so this one function also covers `entries`, `entriesIn`, and `toPairsIn`. In `objectUtils.fs`. |
+| `findKey` / `findLastKey` | `findKey`, `findLastKey` | First/last key whose value matches a predicate. | In `objectUtils.fs`. |
+| `invert` / `invertBy` | `invert` family | Swap an object's keys and values. | In `objectUtils.fs`. |
+| `mapKeys` | `mapKeys` | Map a map's keys, values unchanged. | In `objectUtils.fs`. |
+| `omit` / `omitBy` | `omit` family | Inverse of `pick`/`pickBy` above — all keys *except* the given ones. | In `objectUtils.fs`. |
+| ~~result~~ | `result` | Like `get`, but invokes a function value found at the path. | Marginal over `getAt` plus a manual call at the call site. |
 
 Not yet/ever:
 
@@ -244,12 +243,12 @@ Not yet/ever:
 | `splitByRegexp` / `splitIntoCharacters` *(std)* | `split` | Split a string. | std splits by regexp or into characters — no plain-substring/limit split like lodash's. |
 | `replace` *(std)* | `replace` | Replace matches in a string. | |
 | `stringToNumber` *(std)* | `parseInt` | Parse a string as a number. | |
-| ~~camelCase~~ / ~~kebabCase~~ / ~~lowerCase~~ / ~~snakeCase~~ / ~~upperCase~~ | case-convention family | Sibling case-converters to the implemented `upcase`/`downcase`/`titleCase` above, for other word-casing conventions. | |
-| ~~capitalize~~ / ~~lowerFirst~~ / ~~upperFirst~~ | single-character case tweaks | Change just the first character's case. | |
-| ~~pad~~ | `pad` | Pad on both sides. | coreUtils only has one-sided `padLeft`/`padRight`. |
-| ~~trim~~ / ~~trimEnd~~ / ~~trimStart~~ | `trim` family | Strip whitespace (or a given character set) from either end. | Genuine gap — no FeatureScript builtin or coreUtils port does this at all. |
-| ~~truncate~~ | `truncate` | Truncate a string to a length, with an omission marker. | |
-| ~~words~~ | `words` | Split a string into words. | |
+| `camelCase` / `kebabCase` / `lowerCase` / `snakeCase` / `upperCase` | case-convention family | Sibling case-converters to `upcase`/`downcase`/`titleCase`, for other word-casing conventions. | Built on `words` — see its note on the simplified word-boundary rule. |
+| `capitalize` / `lowerFirst` / `upperFirst` | single-character case tweaks | Change just the first character's case. | |
+| `pad` | `pad` | Pad on both sides. | `padLeft`/`padRight` remain the one-sided originals. |
+| `trim` / `trimEnd` / `trimStart` | `trim` family | Strip whitespace (or a given character set) from either end. | |
+| `truncate` | `truncate` | Truncate a string to a length, with an omission marker. | No `separator` option to break at a word/regex boundary instead of an exact count. |
+| `words` | `words` | Split a string into words. | Simplified: splits only on non-alphanumeric delimiter runs, not on camelCase boundaries or digit runs the way lodash's own `words` does. |
 
 Not yet/ever:
 
@@ -266,7 +265,7 @@ Not yet/ever:
 | `noop` | `noop` | Does nothing, returns `undefined`. | |
 | `pathForKey` | `toPath` | Split a dotted-key string into path segments. | |
 | `range` *(std)* | `range` | Array of numbers from `start` to `end`. | |
-| ~~rangeRight~~ | `rangeRight` | `range`, descending. | No reverse-range builtin. |
+| `rangeRight` | `rangeRight` | `range`, descending. | `reverse` *(std)* over std's own `range` — inherits its inclusive-of-`end` convention. |
 
 Not Yet:
 
@@ -368,6 +367,14 @@ in this project is built from.
 | `boxarrPush(arrRef, val)` / `boxarrUnshift(arrRef, val)` | Append / prepend `val` into the array inside a `box`, in place, returning `val` — for accumulating into an outer array from inside a `forEach`/`mapValues` callback. |
 | `MissingPolicy` | `SKIP` / `USE_UNDEFINED` — how the functions above treat an entry whose value is `undefined`, whether that's because it's missing outright or genuinely set to `undefined`. |
 | `NextStepAction.BREAK` | Sentinel a `forEach`-family callback returns to stop the walk early. |
+| `countBy(arr, iteratee)` | Map of `iteratee(val)` results to how many elements produced each one. |
+| `find(arr, predicate)` / `findLast(arr, predicate)` | First/last element for which `predicate` holds, or `undefined` — `arrayUtils`' `findIndex`/`findLastIndex`, dereferenced. |
+| `flatMap(arr, iteratee)` / `flatMapDeep(arr, iteratee)` / `flatMapDepth(arr, iteratee, depth)` | `arr` mapped through `iteratee`, then flattened one level / fully / `depth` levels, via `arrayUtils`' `flatten` family. |
+| `forEachRight(arr, func)` | `forEach`, back-to-front — same `NextStepAction.BREAK` early exit. |
+| `groupBy(arr, iteratee)` | Map of `iteratee(val)` results to the elements that produced each one, via std's `insertIntoMapOfArrays`. |
+| `partition(arr, predicate)` | `[passed, failed]` — `arr` split by whether `predicate` holds, each half keeping `arr`'s order. |
+| `reduceRight(arr, seed?, foldFunction)` | `foldArray` *(std)*, back-to-front, over a `reverse`d copy of `arr`. |
+| `reject(arr, predicate)` | Elements of `arr` for which `predicate` does *not* hold — the inverse of `filter` *(std)*. |
 
 ## `stringUtils.fs` — string slicing, padding, and case conversion
 
@@ -382,6 +389,13 @@ in this project is built from.
 | `hasMatch(str, regex)` | Whether `regex` matches anywhere in `str`; `false` (not a throw) on `undefined` input or a bad pattern. |
 | `upcase(str)` / `downcase(str)` | ASCII-only case flip via an explicit character lookup; a non-letter passes through unchanged. |
 | `titleCase(str, opts?)` | Splits on `opts.spaces` (default `-_`), capitalizes each word's first letter, lower-cases the rest; `opts.tr` translates individual characters before capitalization. |
+| `words(str)` | `str` split into words on runs of non-alphanumeric characters — the shared primitive behind the case-convention functions below. |
+| `camelCase(str)` / `kebabCase(str)` / `lowerCase(str)` / `snakeCase(str)` / `upperCase(str)` | `words`, rejoined without separators / with `-` / with a space / with `_` / with a space (case-converted per convention). |
+| `capitalize(str)` | First character uppercased, the rest lowercased. |
+| `upperFirst(str)` / `lowerFirst(str)` | Only the first character's case changed; everything else left as-is. |
+| `pad(str, minlen, padstr?)` | Pads both sides if shorter than `minlen`, splitting as evenly as possible (right side gets the extra character when odd). |
+| `trimStart(str, chars?)` / `trimEnd(str, chars?)` / `trim(str, chars?)` | Strips `chars` (default whitespace) from the front / back / both ends. |
+| `truncate(str, opts?)` | `str` cut to at most `opts.length` (default `30`) characters, omission marker included, replacing the cut tail with `opts.omission` (default `"..."`). |
 
 ## `metadataUtils.fs` — entity names and attributes
 
@@ -410,6 +424,30 @@ plain-data test for them; @see the Tests section above.
 | `noop` | Returns `undefined`, regardless of arguments. |
 | `curry3to0` / `curry3to1` / `curry3to2` / `curry2to0` / `curry2to1` / `curry2to2` | Wraps `func` to accept `N` arguments but call it with only the first `M`, so a fixed-arity callback can sit in a `forEach`/`mapValues`-shaped slot. |
 | `parseJsonSafely(rawjson, opts?)` | `parseJson`/`parseJsonWithUnits` (per `opts.detectUnits`), wrapping a parse failure in a `regenError` labeled with `opts.story` instead of surfacing the raw throw. |
+| `rangeRight(from, to)` | `range` *(std)*, descending, via a plain `reverse`. |
+
+## `numberUtils.fs` — range checks and iteratee-mapped math reductions
+
+| Export | Does |
+|---|---|
+| `inRange(num, start?, end)` | Whether `num` falls in `[start, end)`; `start` defaults to `0`; bounds auto-swap if `start > end`. |
+| `maxBy(arr, iteratee)` / `minBy(arr, iteratee)` | Element of `arr` for which `iteratee(val)` is greatest/least, or `undefined` for an empty `arr` — std's array `max`/`min` pick the value itself, these pick the element behind it. |
+| `meanBy(arr, iteratee)` / `sumBy(arr, iteratee)` | `average`/`sum` *(std)*, iteratee-mapped. |
+
+## `objectUtils.fs` — lodash-style map helpers
+
+Straightforward ports from lodash's Object category, beyond what `clxnGetset.fs`/`clxnWalking.fs`
+already cover (`getAt`/`setAt`/`pick`/`mapValues`/`hasKey`/…).
+
+| Export | Does |
+|---|---|
+| `findKey(bag, predicate)` / `findLastKey(bag, predicate)` | First/last key of `bag` (in `keys(bag)` order) whose value satisfies `predicate(val, key)`. |
+| `invert(bag)` | `bag` with keys and values swapped; a repeated value keeps only its last key. A non-string value is stringified into its new key. |
+| `invertBy(bag, iteratee)` | `invert`, grouping every key (not just the last) under `iteratee(val)`, via std's `insertIntoMapOfArrays`. |
+| `mapKeys(bag, iteratee)` | `bag`'s values, keyed by `iteratee(val, key)` instead of `key`. |
+| `omit(bag, keylist)` | `bag` without the entries at `keylist` — the inverse of `pick`. |
+| `omitBy(bag, predicate)` | `bag` without any entry for which `predicate(val, key)` holds. |
+| `toPairs(bag)` | `bag` flattened into `[[key, val], …]` pairs — the inverse of `fromPairs` *(arrayUtils)*. |
 
 ## `typeUtils.fs` — presence checks and small guards
 
@@ -422,6 +460,7 @@ plain-data test for them; @see the Tests section above.
 | `isPresent(val)` / `isNil(val)` | Not-`undefined` / is-`undefined`. |
 | `strBlank(val)` | `undefined` or `""`. |
 | `isEmpty(val)` | `undefined`, or a map/string/array with nothing in it. |
+| `castArray(val)` | `val` unchanged if it's already an array, otherwise `[val]`. |
 | `vector2(vec)` | Drops `vec`'s z component. |
 | `mm`, `zero` | `millimeter`, and `0 * mm`. |
 

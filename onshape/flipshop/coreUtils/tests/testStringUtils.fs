@@ -31,6 +31,21 @@ precondition {
     runHasMatchTests(context, verbose);
     runStarbannerTests(context, verbose);
     //
+    runWordsTests(context, verbose);
+    runCamelCaseTests(context, verbose);
+    runCapitalizeTests(context, verbose);
+    runKebabCaseTests(context, verbose);
+    runLowerCaseTests(context, verbose);
+    runLowerFirstTests(context, verbose);
+    runPadBothTests(context, verbose);
+    runSnakeCaseTests(context, verbose);
+    runTrimStartTests(context, verbose);
+    runTrimEndTests(context, verbose);
+    runTrimTests(context, verbose);
+    runTruncateTests(context, verbose);
+    runUpperCaseTests(context, verbose);
+    runUpperFirstTests(context, verbose);
+    //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
     debug(context, starbanner('** Error in ' ~ SuiteTitle ~ ' Tests: ' ~ err ~ ' **'));
@@ -239,6 +254,129 @@ function runStrTakeRightTests(context is Context, verbose is boolean) returns ma
   ], (args is array) returns string => {
     return strTakeRight(args[0], args[1]);
   });
+}
+
+// == [Lodash String ports] ==
+
+export const WordsCases = [
+  [["foo-bar_baz qux"], ["foo", "bar", "baz", "qux"]],
+  [["  foo  "],          ["foo"]],
+  [[""],                 []],
+];
+export function runWordsTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "words", verbose, WordsCases, function(args is array) { return words(args[0]); });
+}
+
+export const CamelCaseCases = [
+  [["Foo Bar"], "fooBar"],
+  [["foo-bar"], "fooBar"],
+  [["foo_bar"], "fooBar"],
+];
+export function runCamelCaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "camelCase", verbose, CamelCaseCases, function(args is array) { return camelCase(args[0]); });
+}
+
+export const CapitalizeCases = [
+  [["FRED"], "Fred"],
+  [["fred"], "Fred"],
+  [[""],     ""],
+];
+export function runCapitalizeTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "capitalize", verbose, CapitalizeCases, function(args is array) { return capitalize(args[0]); });
+}
+
+export const KebabCaseCases = [
+  [["Foo Bar"], "foo-bar"],
+  [["fooBar"],  "foobar", 'no camelCase-boundary splitting, unlike lodash'],
+];
+export function runKebabCaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "kebabCase", verbose, KebabCaseCases, function(args is array) { return kebabCase(args[0]); });
+}
+
+export const LowerCaseCases = [
+  [["Foo Bar"], "foo bar"],
+  [["foo-bar"], "foo bar"],
+];
+export function runLowerCaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "lowerCase", verbose, LowerCaseCases, function(args is array) { return lowerCase(args[0]); });
+}
+
+export const LowerFirstCases = [
+  [["Fred"], "fred"],
+];
+export function runLowerFirstTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "lowerFirst", verbose, LowerFirstCases, function(args is array) { return lowerFirst(args[0]); });
+}
+
+export const PadBothCases = [
+  [["hi", 6],      "  hi  "],
+  [["hi", 5],      " hi  "],
+  [["hi", 1],      "hi",     'minlen shorter than str returns str unchanged'],
+];
+export function runPadBothTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "pad", verbose, PadBothCases, function(args is array) { return pad(args[0], args[1]); });
+}
+
+export const SnakeCaseCases = [
+  [["Foo Bar"], "foo_bar"],
+  [["foo-bar"], "foo_bar"],
+];
+export function runSnakeCaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "snakeCase", verbose, SnakeCaseCases, function(args is array) { return snakeCase(args[0]); });
+}
+
+export const TrimStartCases = [
+  [["  hi  "],           "hi  "],
+  [["--hi--", ["-"]],    "hi--"],
+];
+export function runTrimStartTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "trimStart", verbose, TrimStartCases, function(args is array) {
+    return (size(args) <= 1) ? trimStart(args[0]) : trimStart(args[0], args[1]);
+  });
+}
+
+export const TrimEndCases = [
+  [["  hi  "],           "  hi"],
+  [["--hi--", ["-"]],    "--hi"],
+];
+export function runTrimEndTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "trimEnd", verbose, TrimEndCases, function(args is array) {
+    return (size(args) <= 1) ? trimEnd(args[0]) : trimEnd(args[0], args[1]);
+  });
+}
+
+export const TrimCases = [
+  [["  hi  "],           "hi"],
+  [["--hi--", ["-"]],    "hi"],
+];
+export function runTrimTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "trim", verbose, TrimCases, function(args is array) {
+    return (size(args) <= 1) ? trim(args[0]) : trim(args[0], args[1]);
+  });
+}
+
+export const TruncateCases = [
+  [["hello world", { "length": 8 }], "hello..."],
+  [["hi"],                           "hi",  'shorter than the default length returns str unchanged'],
+];
+export function runTruncateTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "truncate", verbose, TruncateCases, function(args is array) {
+    return (size(args) <= 1) ? truncate(args[0]) : truncate(args[0], args[1]);
+  });
+}
+
+export const UpperCaseCases = [
+  [["foo-bar"], "FOO BAR"],
+];
+export function runUpperCaseTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "upperCase", verbose, UpperCaseCases, function(args is array) { return upperCase(args[0]); });
+}
+
+export const UpperFirstCases = [
+  [["fred"], "Fred"],
+];
+export function runUpperFirstTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "upperFirst", verbose, UpperFirstCases, function(args is array) { return upperFirst(args[0]); });
 }
 
 // --

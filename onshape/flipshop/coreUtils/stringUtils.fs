@@ -273,3 +273,160 @@ export function titleCase(str is string, opts is map) returns string {
   }
   return result;
 }
+
+// == [Lodash String ports] -- camelCase, capitalize, kebabCase, lowerCase, lowerFirst, pad, snakeCase, trim*, truncate, upperCase, upperFirst, words
+
+/**
+ * `str` split into words on runs of non-alphanumeric characters — the shared primitive behind
+ * `camelCase`/`kebabCase`/`snakeCase`/`upperCase`/`lowerCase` below. Simpler than lodash's own
+ * `words`: this splits only on delimiter characters, not on camelCase boundaries or digit runs.
+ * @example
+ *   words("foo-bar_baz qux"); // => ["foo", "bar", "baz", "qux"]
+ */
+export function words(str is string) returns array {
+  return filter(splitByRegexp(str, "[^a-zA-Z0-9]+"), (word) => (word != ""));
+}
+
+/**
+ * `str` split into words and rejoined in camelCase: the first word lowercased, every other word
+ * capitalized, no separators.
+ * @example
+ *   camelCase("Foo Bar");  // => "fooBar"
+ *   camelCase("foo-bar");  // => "fooBar"
+ */
+export function camelCase(str is string) returns string {
+  const wordlist = words(str);
+  if (size(wordlist) == 0) { return ""; }
+  var result = downcase(wordlist[0]);
+  for (var seq = 1; seq < size(wordlist); seq += 1) {
+    result ~= capitalize(wordlist[seq]);
+  }
+  return result;
+}
+
+/**
+ * `str` with its first character uppercased and the rest lowercased.
+ * @example
+ *   capitalize("FRED"); // => "Fred"
+ */
+export function capitalize(str is string) returns string {
+  return upcase(strTake(str, 1)) ~ downcase(strSlice(str, 1));
+}
+
+/** `str` split into words, lowercased, and joined with `-`. */
+export function kebabCase(str is string) returns string {
+  return join(mapArray(words(str), (word) => downcase(word)), "-");
+}
+
+/** `str` split into words, lowercased, and joined with a space. */
+export function lowerCase(str is string) returns string {
+  return join(mapArray(words(str), (word) => downcase(word)), " ");
+}
+
+/**
+ * `str` with only its first character lowercased, the rest left untouched — `upperFirst`'s
+ * counterpart.
+ * @example
+ *   lowerFirst("Fred"); // => "fred"
+ */
+export function lowerFirst(str is string) returns string {
+  return downcase(strTake(str, 1)) ~ strSlice(str, 1);
+}
+
+/**
+ * Pads `str` on both sides if it's shorter than `minlen`, splitting the padding as evenly as
+ * possible and favoring the right side when it's odd — `padLeft`/`padRight`'s two-sided sibling.
+ * @example
+ *   pad("hi", 6); // => "  hi  "
+ *   pad("hi", 5); // => " hi  "
+ */
+export function pad(str is string, minlen is number, padstr is string) returns string {
+  const neededLen = max(0, minlen - length(str));
+  const leftLen = floor(neededLen / 2);
+  return padRight(padLeft(str, length(str) + leftLen, padstr), minlen, padstr);
+}
+export function pad(str is string, minlen is number) returns string {
+  return pad(str, minlen, ' ');
+}
+
+/** `str` split into words, lowercased, and joined with `_`. */
+export function snakeCase(str is string) returns string {
+  return join(mapArray(words(str), (word) => downcase(word)), "_");
+}
+
+/** Whitespace characters `trim`/`trimStart`/`trimEnd` strip by default. */
+const WhitespaceChars = [" ", "\t", "\n", "\r"];
+
+/**
+ * `str` with any character in `chars` (default whitespace) removed from the front.
+ * @example
+ *   trimStart("  hi  "); // => "hi  "
+ */
+export function trimStart(str is string, chars is array) returns string {
+  const charlist = splitIntoCharacters(str);
+  var beg = 0;
+  for (; beg < size(charlist); beg += 1) {
+    if (! arrayIncludes(chars, charlist[beg])) { break; }
+  }
+  return strSlice(str, beg);
+}
+export function trimStart(str is string) returns string {
+  return trimStart(str, WhitespaceChars);
+}
+
+/** `trimStart`'s counterpart: strips from the back instead of the front. */
+export function trimEnd(str is string, chars is array) returns string {
+  const charlist = splitIntoCharacters(str);
+  var end = size(charlist);
+  for (; end > 0; end -= 1) {
+    if (! arrayIncludes(chars, charlist[end - 1])) { break; }
+  }
+  return strSlice(str, 0, end);
+}
+export function trimEnd(str is string) returns string {
+  return trimEnd(str, WhitespaceChars);
+}
+
+/** `trimStart` and `trimEnd` together: strips from both ends. */
+export function trim(str is string, chars is array) returns string {
+  return trimEnd(trimStart(str, chars), chars);
+}
+export function trim(str is string) returns string {
+  return trim(str, WhitespaceChars);
+}
+
+/**
+ * `str` shortened to at most `opts.length` characters (the omission marker included), replacing
+ * whatever got cut with `opts.omission`. Unlike lodash, there's no `separator` option to break at
+ * a word/regex boundary instead of an exact character count.
+ * @param opts {map}: keyword options
+ *   - @field [length=30] {number}: Maximum result length, omission marker included.
+ *   - @field [omission="..."] {string}: Marker appended when `str` is cut.
+ * @example
+ *   truncate("hello world", { "length": 8 }); // => "hello..."
+ */
+export function truncate(str is string, opts is map) returns string {
+  const maxlen = ifNil(opts.length, 30);
+  const omission = ifNil(opts.omission, "...");
+  if (length(str) <= maxlen) { return str; }
+  const keepLen = max(0, maxlen - length(omission));
+  return strTake(str, keepLen) ~ omission;
+}
+export function truncate(str is string) returns string {
+  return truncate(str, {});
+}
+
+/** `str` split into words, uppercased, and joined with a space. */
+export function upperCase(str is string) returns string {
+  return join(mapArray(words(str), (word) => upcase(word)), " ");
+}
+
+/**
+ * `str` with only its first character uppercased, the rest left untouched — unlike `capitalize`,
+ * everything after the first character is left as-is rather than lowercased.
+ * @example
+ *   upperFirst("fred"); // => "Fred"
+ */
+export function upperFirst(str is string) returns string {
+  return upcase(strTake(str, 1)) ~ strSlice(str, 1);
+}

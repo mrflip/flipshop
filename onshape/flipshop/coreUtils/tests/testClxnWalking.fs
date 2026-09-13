@@ -520,3 +520,99 @@ export function runForEachKeylistBreakTests(context is Context, verbose is boole
     return seen[];
   });
 }
+
+// == [Lodash Collection ports] ==
+
+const isEven = function(val) { return val % 2 == 0; };
+const parityKey = function(val) { return isEven(val) ? "even" : "odd"; };
+
+export const CountByCases = [
+  [[ [1, 2, 3, 4], parityKey ], { "odd": 2, "even": 2 } ],
+  [[ [],           parityKey ], {} ],
+];
+export function runCountByTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "countBy", verbose, CountByCases, function(args is array) { return countBy(args[0], args[1]); });
+}
+
+export const FindCases = [
+  [[ [1, 2, 3], function(val) { return val > 1; } ], 2 ],
+  [[ [1, 2, 3], function(val) { return val > 9; } ], undefined ],
+];
+export function runFindTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "find", verbose, FindCases, function(args is array) { return find(args[0], args[1]); });
+}
+
+export const FindLastCases = [
+  [[ [1, 2, 3], function(val) { return val < 3; } ], 2 ],
+  [[ [1, 2, 3], function(val) { return val > 9; } ], undefined ],
+];
+export function runFindLastTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "findLast", verbose, FindLastCases, function(args is array) { return findLast(args[0], args[1]); });
+}
+
+const duplicated = function(val) { return [val, val]; };
+export const FlatMapCases = [
+  [[ [1, 2], duplicated ], [1, 1, 2, 2] ],
+];
+export function runFlatMapTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "flatMap", verbose, FlatMapCases, function(args is array) { return flatMap(args[0], args[1]); });
+}
+
+const nestedPair = function(val) { return [[val], [val]]; };
+export const FlatMapDeepCases = [
+  [[ [1, 2], nestedPair ], [1, 1, 2, 2] ],
+];
+export function runFlatMapDeepTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "flatMapDeep", verbose, FlatMapDeepCases, function(args is array) { return flatMapDeep(args[0], args[1]); });
+}
+
+export const FlatMapDepthCases = [
+  [[ [1, 2], nestedPair, 1 ], [[1], [1], [2], [2]] ],
+];
+export function runFlatMapDepthTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "flatMapDepth", verbose, FlatMapDepthCases, function(args is array) { return flatMapDepth(args[0], args[1], args[2]); });
+}
+
+export const ForEachRightCases = [
+  [[ [1, 2, 3] ], [3, 2, 1] ],
+  [[ [] ],        [] ],
+];
+export function runForEachRightTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "forEachRight", verbose, ForEachRightCases, function(args is array) {
+    const seen = new box([]);
+    forEachRight(args[0], (val, seq) => { boxarrPush(seen, val); });
+    return seen[];
+  });
+}
+
+export const GroupByCases = [
+  [[ [1, 2, 3, 4], parityKey ], { "odd": [1, 3], "even": [2, 4] } ],
+];
+export function runGroupByTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "groupBy", verbose, GroupByCases, function(args is array) { return groupBy(args[0], args[1]); });
+}
+
+export const PartitionCases = [
+  [[ [1, 2, 3, 4], isEven ], [[2, 4], [1, 3]] ],
+];
+export function runPartitionTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "partition", verbose, PartitionCases, function(args is array) { return partition(args[0], args[1]); });
+}
+
+const concatString = function(acc, val) { return acc ~ val; };
+export const ReduceRightCases = [
+  [[ [1, 2, 3], "", concatString ],           "321" ],
+  [[ ["1", "2", "3"], concatString ],         "321", 'no-seed overload starts from the last element'],
+];
+export function runReduceRightTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "reduceRight", verbose, ReduceRightCases, function(args is array) {
+    return (size(args) <= 2) ? reduceRight(args[0], args[1]) : reduceRight(args[0], args[1], args[2]);
+  });
+}
+
+export const RejectCases = [
+  [[ [1, 2, 3, 4], isEven ], [1, 3] ],
+];
+export function runRejectTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "reject", verbose, RejectCases, function(args is array) { return reject(args[0], args[1]); });
+}
