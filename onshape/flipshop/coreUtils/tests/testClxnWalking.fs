@@ -542,8 +542,8 @@ export function runCountByTests(context is Context, verbose is boolean) returns 
 }
 
 export const FindCases = [
-  [[ [1, 2, 3], function(val) { return val > 1; } ], 2 ],
-  [[ [1, 2, 3], function(val) { return val > 9; } ], undefined ],
+  [[ [1, 2, 3], function(val, _seq) { return val > 1; } ], 2 ],
+  [[ [1, 2, 3], function(val, _seq) { return val > 9; } ], undefined ],
   //
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 1; } ], 2, 'map form returns the value, not the key'],
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 9; } ], undefined ],
@@ -553,8 +553,8 @@ export function runFindTests(context is Context, verbose is boolean) returns map
 }
 
 export const FindLastCases = [
-  [[ [1, 2, 3], function(val) { return val < 3; } ], 2 ],
-  [[ [1, 2, 3], function(val) { return val > 9; } ], undefined ],
+  [[ [1, 2, 3], function(val, _seq) { return val < 3; } ], 2 ],
+  [[ [1, 2, 3], function(val, _seq) { return val > 9; } ], undefined ],
   //
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val < 3; } ], 2 ],
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 9; } ], undefined ],

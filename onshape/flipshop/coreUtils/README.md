@@ -14,8 +14,8 @@ into, so other features can `import` this one file for all of it.
 ## Tests
 
 One `run<Thing>Tests` function per case list, in `tests/`. All `clxn*` suites — everything from
-`clxnWalking.fs` and from `clxnGetset.fs`/`clxnReshape.fs` — run out of a single Feature,
-`runClxnTestsFS` in `tests/testClxnWalking.fs`. Adding a new `clxn*` function's tests means
+`clxnUtiles.fs` and from `clxnGetset.fs`/`clxnReshape.fs` — run out of a single Feature,
+`runClxnTestsFS` in `tests/testclxnUtiles.fs`. Adding a new `clxn*` function's tests means
 adding its `run*Tests` call to that Feature, not creating a new one. Every other file gets its
 own `test<File>.fs` and `run<File>TestsFS` Feature (`sizeof`'s tests are the one exception,
 living under `runCoreUtilsTestsFS` in `tests/testCoreUtils.fs`, since `sizeof` predates the
@@ -378,7 +378,7 @@ convention.
 | `dotMap(obj, options?)`            | The inverse: depth-first flattens a nested map into dotted keys. `options.maxDepth` caps how many levels collapse (lodash's `flattenDepth` semantics); arrays and empty maps are leaves. Lossy against a key that already contains a dot — `undotMap(dotMap(x))` isn't always `x`.                                                                                                                                                                 |
 | `buildNestedChoices(levels, tree)` | Turns a raw uniformly-nested map into the `{name, displayName, entries}` structure a custom-feature enum dialog wants, given a `levels` list like `['socket_kind', ['drive_kind', {inthex: 'Int Hex'}]]` (name, optional display name, optional key-translation map per level).                                                                                                                                                                    |
 
-## `clxnWalking.fs` — inspecting, iterating, and reshaping maps and arrays
+## `clxnUtiles.fs` — inspecting, iterating, and reshaping maps and arrays
 
 The workhorse file: `forEach` and `mapValues`/`mapValues3` are what most other collection code
 in this project is built from.
@@ -459,7 +459,7 @@ plain-data test for them; @see the Tests section above.
 
 ## `objectUtils.fs` — lodash-style map helpers
 
-Straightforward ports from lodash's Object category, beyond what `clxnGetset.fs`/`clxnWalking.fs`
+Straightforward ports from lodash's Object category, beyond what `clxnGetset.fs`/`clxnUtiles.fs`
 already cover (`getAt`/`setAt`/`pick`/`mapValues`/`hasKey`/…).
 
 | Export | Does |
@@ -530,10 +530,10 @@ Open design questions found while documenting this file are tracked in
 
 ## Bugs found and fixed along the way
 
-* **`clxnWalking.fs`:** `NextStepAction` (the `forEach`/`mapValues`-family early-exit sentinel)
+* **`clxnUtiles.fs`:** `NextStepAction` (the `forEach`/`mapValues`-family early-exit sentinel)
   was never `export`ed, so no caller outside the file could ever actually trigger `BREAK` — every
   walk anywhere in the codebase always ran to completion. Exported now, and covered by
-  `runForEachBreakTests`/`runForEachKeylistBreakTests` in `tests/testClxnWalking.fs`.
+  `runForEachBreakTests`/`runForEachKeylistBreakTests` in `tests/testclxnUtiles.fs`.
 * **`tests/testStringUtils.fs`:** `runPadTests` had four `return runTests(...)` statements
   stacked in a row — only the first ever ran, so `padRight` was never tested at all, and the more
   interesting padding-behavior cases (`LeftPadTestCases`/`RightPadTestCases`) silently never

@@ -98,7 +98,7 @@ export function runDifferenceTests(context is Context, verbose is boolean) retur
 }
 
 export const DifferenceByCases = [
-  [[[2.1, 1.2], [2.3, 3.4], function(val) { return floor(val); }],  [1.2]],
+  [[[2.1, 1.2], [2.3, 3.4], function(val, _seq) { return floor(val); }],  [1.2]],
 ];
 export function runDifferenceByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "differenceBy", verbose, DifferenceByCases, function(args is array) { return differenceBy(args[0], args[1], args[2]); });
@@ -132,17 +132,17 @@ export function runDropRightTests(context is Context, verbose is boolean) return
 }
 
 export const DropRightWhileCases = [
-  [[[1, 2, 3, 4], function(val) { return val > 2; }],  [1, 2]],
-  [[[1, 2, 3, 4], function(val) { return val > 9; }],  [1, 2, 3, 4]],
-  [[[1, 2, 3, 4], function(val) { return val > 0; }],  []],
+  [[[1, 2, 3, 4], function(val, _seq) { return val > 2; }],  [1, 2]],
+  [[[1, 2, 3, 4], function(val, _seq) { return val > 9; }],  [1, 2, 3, 4]],
+  [[[1, 2, 3, 4], function(val, _seq) { return val > 0; }],  []],
 ];
 export function runDropRightWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "dropRightWhile", verbose, DropRightWhileCases, function(args is array) { return dropRightWhile(args[0], args[1]); });
 }
 
 export const DropWhileCases = [
-  [[[1, 2, 3, 4], function(val) { return val < 3; }],  [3, 4]],
-  [[[1, 2, 3, 4], function(val) { return val < 0; }],  [1, 2, 3, 4]],
+  [[[1, 2, 3, 4], function(val, _seq) { return val < 3; }],  [3, 4]],
+  [[[1, 2, 3, 4], function(val, _seq) { return val < 0; }],  [1, 2, 3, 4]],
 ];
 export function runDropWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "dropWhile", verbose, DropWhileCases, function(args is array) { return dropWhile(args[0], args[1]); });
@@ -151,16 +151,16 @@ export function runDropWhileTests(context is Context, verbose is boolean) return
 // == [findIndex / findLastIndex] ==
 
 export const FindIndexCases = [
-  [[[1, 2, 3], function(val) { return val > 1; }],  1],
-  [[[1, 2, 3], function(val) { return val > 9; }],  -1],
+  [[[1, 2, 3], function(val, _seq) { return val > 1; }],  1],
+  [[[1, 2, 3], function(val, _seq) { return val > 9; }],  -1],
 ];
 export function runFindIndexTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findIndex", verbose, FindIndexCases, function(args is array) { return findIndex(args[0], args[1]); });
 }
 
 export const FindLastIndexCases = [
-  [[[1, 2, 3], function(val) { return val < 3; }],  1],
-  [[[1, 2, 3], function(val) { return val > 9; }],  -1],
+  [[[1, 2, 3], function(val, _seq) { return val < 3; }],  1],
+  [[[1, 2, 3], function(val, _seq) { return val > 9; }],  -1],
 ];
 export function runFindLastIndexTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findLastIndex", verbose, FindLastIndexCases, function(args is array) { return findLastIndex(args[0], args[1]); });
@@ -224,7 +224,7 @@ export function runIntersectionTests(context is Context, verbose is boolean) ret
 }
 
 export const IntersectionByCases = [
-  [[[[2.1, 1.2], [2.3, 3.4]], function(val) { return floor(val); }],  [2.1]],
+  [[[[2.1, 1.2], [2.3, 3.4]], function(val, _seq) { return floor(val); }],  [2.1]],
 ];
 export function runIntersectionByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "intersectionBy", verbose, IntersectionByCases, function(args is array) { return intersectionBy(args[0], args[1]); });
@@ -289,14 +289,14 @@ export function runTakeRightTests(context is Context, verbose is boolean) return
 }
 
 export const TakeRightWhileCases = [
-  [[[1, 2, 3, 4], function(val) { return val > 2; }],  [3, 4]],
+  [[[1, 2, 3, 4], function(val, _seq) { return val > 2; }],  [3, 4]],
 ];
 export function runTakeRightWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "takeRightWhile", verbose, TakeRightWhileCases, function(args is array) { return takeRightWhile(args[0], args[1]); });
 }
 
 export const TakeWhileCases = [
-  [[[1, 2, 3, 4], function(val) { return val < 3; }],  [1, 2]],
+  [[[1, 2, 3, 4], function(val, _seq) { return val < 3; }],  [1, 2]],
 ];
 export function runTakeWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "takeWhile", verbose, TakeWhileCases, function(args is array) { return takeWhile(args[0], args[1]); });
@@ -313,7 +313,7 @@ export function runUnionTests(context is Context, verbose is boolean) returns ma
 }
 
 export const UnionByCases = [
-  [[[[2.1], [1.2, 2.3]], function(val) { return floor(val); }],  [2.1, 1.2]],
+  [[[[2.1], [1.2, 2.3]], function(val, _seq) { return floor(val); }],  [2.1, 1.2]],
 ];
 export function runUnionByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unionBy", verbose, UnionByCases, function(args is array) { return unionBy(args[0], args[1]); });
@@ -329,7 +329,7 @@ export function runUnionWithTests(context is Context, verbose is boolean) return
 // == [uniqBy / uniqWith] ==
 
 export const UniqByCases = [
-  [[[2.1, 1.2, 2.3], function(val) { return floor(val); }],  [2.1, 1.2]],
+  [[[2.1, 1.2, 2.3], function(val, _seq) { return floor(val); }],  [2.1, 1.2]],
 ];
 export function runUniqByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "uniqBy", verbose, UniqByCases, function(args is array) { return uniqBy(args[0], args[1]); });
@@ -352,7 +352,7 @@ export function runUnzipTests(context is Context, verbose is boolean) returns ma
 }
 
 export const UnzipWithCases = [
-  [[[[1, 10], [2, 20]], function(col) { return sum(col); }],  [3, 30]],
+  [[[[1, 10], [2, 20]], function(col, _seq) { return sum(col); }],  [3, 30]],
 ];
 export function runUnzipWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unzipWith", verbose, UnzipWithCases, function(args is array) { return unzipWith(args[0], args[1]); });
