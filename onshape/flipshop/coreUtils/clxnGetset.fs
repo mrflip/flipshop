@@ -15,29 +15,25 @@ export const UnboundedDotDepth = 1000000000;
 export const lastInWins = ((existing, incoming) => incoming);
 
 /**
- * lodash's get and set over maps and arrays, with your negative indexes kept.
+ * Gets the value at `keyStr`/`keyPath` of `bag`/`arr`. If the resolved value is `undefined`,
+ * `fallback` is returned in its place — except an array element that is present but genuinely
+ * `undefined`, which comes back as itself; a map can't hold that case, since FeatureScript elides
+ * an `undefined` value on the way in.
  *
- * One rule decides how the second argument is read, everywhere:
- *   a string  is a dotted path, so "a.b" is two steps and "rows.-1.x" is three
- *   an array  is a list of literal keys, so ["a.b"] is one step and reaches a key with a dot in it
- *   a number  is an array index
+ * A string path is dotted (`"a.b.c"` is three steps); an array path is a list of literal keys, so
+ * `["a.b"]` is one step, reaching a key with a dot in its own name. Either kind of path may
+ * contain a negative array index, which counts from the end.
  *
- * A path descends whatever it meets. A string segment indexes an array when it is an integer
- * string, a map by its own key otherwise. An empty path is the identity, so these fold.
- *
- * getAt returns the fallback (undefined when none is given) for any step that misses, including
- * stepping into a scalar. An array element that is present but undefined is returned as
- * undefined rather than as the fallback; a map cannot hold that case, since FeatureScript
- * elides an undefined value on the way in.
- *
- * setAt autovivifies missing steps as maps and returns the container with the type it was
- * handed. Where the leaf is already occupied it calls `onCollision(existing, incoming)`, which
- * defaults to lastInWins; @see `deepMerge` for the deep-merge rule. The resolver sees leaf
- * collisions only: a scalar sitting in the way of a deeper path is replaced outright, the way
- * lodash's set replaces one, while an existing map or array is descended and written through.
- *
- * Two more consequences of the language: setting an undefined value deletes a map key rather
- * than storing one, and writing past the end of an array pads it with undefined.
+ * @param bag {map|array}: Container to read from.
+ * @param keyStr {string}: Dotted path.
+ * @param keyPath {array}: Path as literal keys/indexes.
+ * @param fallback: Returned in place of an `undefined` result. Defaults to `undefined`.
+ * @example
+ *   getAt({ "a": { "b": 1 } }, "a.b");                            // => 1
+ *   getAt({ "a": { "b": 1 } }, ["a", "b"]);                       // => 1
+ *   getAt({ "a": { "b": 1 } }, "a.c", { "not": "met" });          // => { "not": "met" }
+ *   getAt({ "rows": [{ "cells": [7, 8] }] }, "rows.-1.cells.-1"); // => 8
+ *   getAt([1, 2, 3], -1);                                         // => 3
  */
 export function getAt(bag is map, keyStr is string, fallback) {
   return valAtPath(bag, pathForKey(keyStr), fallback);
@@ -79,6 +75,32 @@ export function getAt(arr is array, keyPath is array) {
   return valAtPath(arr, keyPath, undefined);
 }
 
+/**
+ * Sets the value at `keyStr`/`keyPath` of `bag`/`arr`, returning the (possibly new) container.
+ * If a portion of the path doesn't exist, it's created — unlike lodash's `set`, always as a map,
+ * even for an integer segment; there's no way to grow an array mid-path the way assigning past
+ * the end of a whole array already does.
+ *
+ * A scalar in the way of a deeper path is replaced outright, same as lodash. Where the path's own
+ * leaf is already occupied, `onCollision(existing, incoming)` decides what lands there instead of
+ * just overwriting it — default is `lastInWins`; @see `deepMerge` for the deep-merge rule.
+ *
+ * Two more consequences of FeatureScript having no `null`: setting a value of `undefined` deletes
+ * a map key rather than storing one, and writing past the end of an array pads it with
+ * `undefined` rather than throwing.
+ *
+ * @param bag {map|array}: Container to write into.
+ * @param keyStr {string}: Dotted path.
+ * @param keyPath {array}: Path as literal keys/indexes.
+ * @param val: Value to place at the path's leaf.
+ * @param onCollision {function}: `(existing, incoming) => merged`, called only when the leaf is already occupied. Defaults to `lastInWins`.
+ * @example
+ *   setAt({}, "a.b.c", 1);   // => { "a": { "b": { "c": 1 } } }
+ *   setAt({}, "a.0.b", 1);   // => { "a": { "0": { "b": 1 } } }
+ *   setAt([1, 2], 4, 9);     // => [1, 2, undefined, undefined, 9]
+ *   setAt({ "a": { "x": 1 } }, "a", { "y": 2 }, ((existing, incoming) => deepMerge(existing, incoming)));
+ *                            // => { "a": { "x": 1, "y": 2 } }
+ */
 export function setAt(bag is map, keyStr is string, val) returns map {
   return setAtPath(bag, pathForKey(keyStr), 0, val, lastInWins);
 }
@@ -120,14 +142,18 @@ export function setAt(arr is array, keyPath is array, val, onCollision is functi
 }
 
 /**
- * lodash's merge, which is the deep one Onshape's mergeMaps is not: two maps combine key by
- * key all the way down, anything else is replaced by what arrives, and an undefined source
- * leaves what is there alone. As a collision rule under a shallowest-first loop, "what
- * arrives wins" reads as "the deeper key wins".
+ * Recursively merges `incoming` into `existing`: two maps combine key by key all the way down;
+ * an `undefined` source leaves the existing value alone; anything else, `incoming` wins.
  *
- * Unlike lodash, two arrays are replaced rather than merged index by index. An array here is
- * a value, and half-overwriting one is worse than replacing it. If you want lodash's rule it
- * is one more branch below.
+ * Unlike lodash's `merge`, two arrays replace rather than merge index by index — an array here
+ * is a value, and half-overwriting one is worse than replacing it outright.
+ *
+ * @param existing: Base value.
+ * @param incoming: Value to merge in; wins any conflict that isn't two maps.
+ * @example
+ *   deepMerge({ "a": { "x": 1 } }, { "a": { "y": 2 } }); // => { "a": { "x": 1, "y": 2 } }
+ *   deepMerge({ "a": [1, 2] }, { "a": [3] });            // => { "a": [3] }
+ *   deepMerge({ "a": 1 }, undefined);                    // => { "a": 1 }
  */
 export function deepMerge(existing, incoming) {
   if (! isPresent(incoming)) { return existing; }
@@ -141,15 +167,20 @@ export function deepMerge(existing, incoming) {
 }
 
 /**
- * Splits a dotted key into segments. An empty segment names an empty key, which a map is
- * perfectly willing to hold, so "a..b" is three steps and ".foo" is two.
+ * Converts a dotted string into a path array — @see `getAt`/`setAt`'s second argument. Unlike
+ * lodash's `toPath`, there's no `a[0].b` bracket syntax; an array index is just another
+ * dot-separated segment (`"a.0.b"`).
  *
- * A key with a terminal dot is unhandled behavior: splitByRegexp discards exactly one trailing
- * empty segment, so "foo." reads as "foo" and ".." as two empty keys rather than three. The
- * first person who wants otherwise can decide what it means and patch it here.
+ * An empty segment names an empty key, which a map is perfectly willing to hold, so `"a..b"` is
+ * three steps and `".foo"` is two. A key with a terminal dot is unhandled: `splitByRegexp`
+ * discards exactly one trailing empty segment, so `"foo."` reads as `"foo"` rather than as
+ * `"foo"` plus a trailing empty key.
  *
- * A key with no dot at all never reaches the splitter, which is what keeps "" a literal empty
- * key rather than whatever the trailing-empty rule would make of it.
+ * @param keyStr {string}: Dotted path.
+ * @example
+ *   pathForKey("a.b.c"); // => ["a", "b", "c"]
+ *   pathForKey("a..b");  // => ["a", "", "b"]
+ *   pathForKey("foo.");  // => ["foo"]
  */
 export function pathForKey(keyStr is string) returns array {
   if (keyStr == "") { return [""]; }

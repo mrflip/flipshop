@@ -38,10 +38,26 @@ precondition {
     //
     runBuildNestedChoicesTests(context, verbose);
     //
+    runHasKeyMapTests(context,        verbose);
+    runHasPresentKeyMapTests(context, verbose);
+    runHasKeyArrTests(context,        verbose);
+    runHasPresentKeyArrTests(context, verbose);
+    runArrayIncludesTests(context,    verbose);
+    //
+    runPickTests(context,        verbose);
+    runPickDefinedTests(context, verbose);
+    runArrLastTests(context,     verbose);
+    //
     runMapValuesTests(context,  verbose);
     runMapValues3Tests(context, verbose);
     runValuesAtTests(context,   verbose);
+    runForEachBreakTests(context,        verbose);
+    runForEachKeylistBreakTests(context, verbose);
+    runObjectifyTests(context, verbose);
     runRebagTests(context, verbose);
+    //
+    runBoxarrPushTests(context,    verbose);
+    runBoxarrUnshiftTests(context, verbose);
     //
     runPathForKeyTests(context, verbose);
     runDeepMergeTests(context, verbose);
@@ -134,6 +150,9 @@ export function runMapValues3Tests(context is Context, verbose is boolean) retur
 }
 export function runMapValuesTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "mapValues3", verbose, [
+        [[ { fred: 40, pebbles: 1 },       function(age) { return age * 2; } ], { fred: 80, pebbles: 2 }, 'doc example: doubles each value, keys unchanged'],
+        [[ [4, 8],                         function(nn) { return nn * nn; } ], [16, 64],                  'doc example: squares each element'],
+        //
         [[ {},                             curry2to0(noop)],     {} ],
         [[ {},                             mapValuesInspector2], {} ],
         [[ { a: 11, b: 22 },               mapValuesInspector2], { a: [11, "a"], b: [22, "b"] } ],
@@ -296,4 +315,196 @@ export function runRebagTests(context is Context, verbose is boolean) returns ma
         //
         //
     ], function(args is array) { return rebag(args[0], args[1]);  });
+}
+
+export const ObjectifyCases = [
+  [[ ["a", "b", "c"], (val, seq) => seq ], { a: 0, b: 1, c: 2 }, 'keys the result by the array values themselves'],
+  [[ [],              (val, seq) => seq ], {} ],
+  [[ ["x", "x"],      (val, seq) => seq ], { x: 1 },             'a repeated value collides on the same key; the later one wins'],
+];
+export function runObjectifyTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "objectify", verbose, ObjectifyCases, function(args is array) { return objectify(args[0], args[1]); });
+}
+
+// == [hasKey / hasPresentKey / arrayIncludes] ==
+
+export const HasKeyMapCases = [
+  [[ {},               "a" ], false ],
+  [[ { a: 1 },          "a" ], true ],
+  [[ { a: 1 },          "b" ], false ],
+  [[ { a: undefined },  "a" ], false, 'FeatureScript elides an undefined value on write, so there is no key here to find'],
+  //
+  [[ { a: 1 }, "a", MissingPolicy.SKIP],          true,  'missingPolicy never changes the answer for a map'],
+  [[ { a: 1 }, "a", MissingPolicy.USE_UNDEFINED], true],
+  [[ {},       "a", MissingPolicy.SKIP],          false],
+];
+export const HasPresentKeyMapCases = [
+  [[ {},      "a" ], false ],
+  [[ { a: 1}, "a" ], true ],
+];
+export const HasKeyArrCases = [
+  [[ [1, 2, 3], 0 ],  true ],
+  [[ [1, 2, 3], 2 ],  true ],
+  [[ [1, 2, 3], 3 ],  false ],
+  [[ [1, 2, 3], -1 ], false, 'no negative-index support here, unlike getAt'],
+  [[ [1, undefined, 3], 1 ], true, 'present but undefined still counts as having the key'],
+  //
+  [[ [1, undefined, 3], 1, MissingPolicy.USE_UNDEFINED ], true ],
+  [[ [1, undefined, 3], 1, MissingPolicy.SKIP ],          false, 'SKIP defers to hasPresentKey: present-but-undefined does not count'],
+  [[ [1, 2, 3],          5, MissingPolicy.SKIP ],          false ],
+];
+export const HasPresentKeyArrCases = [
+  [[ [1, 2, 3], 1 ],          true ],
+  [[ [1, undefined, 3], 1 ], false ],
+  [[ [1, 2, 3], 5 ],          false ],
+];
+export const ArrayIncludesCases = [
+  [[ [1, 2, 3], 2 ], true ],
+  [[ [1, 2, 3], 5 ], false ],
+  [[ [], 1 ],        false ],
+  [[ [undefined, 1], undefined ], true ],
+  [[ [{ a: 1 }], { a: 1 } ],      true, '`==` is deep structural equality, so a matching map counts'],
+];
+
+const runHasKeyTest        = ((args is array) => ((size(args) <= 2) ? hasKey(args[0], args[1]) : hasKey(args[0], args[1], args[2])));
+const runHasPresentKeyTest = ((args is array) => hasPresentKey(args[0], args[1]));
+const runArrayIncludesTest = ((args is array) => arrayIncludes(args[0], args[1]));
+
+export function runHasKeyMapTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "hasKey (map)", verbose, HasKeyMapCases, runHasKeyTest);
+}
+export function runHasPresentKeyMapTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "hasPresentKey (map)", verbose, HasPresentKeyMapCases, runHasPresentKeyTest);
+}
+export function runHasKeyArrTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "hasKey (array)", verbose, HasKeyArrCases, runHasKeyTest);
+}
+export function runHasPresentKeyArrTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "hasPresentKey (array)", verbose, HasPresentKeyArrCases, runHasPresentKeyTest);
+}
+export function runArrayIncludesTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "arrayIncludes", verbose, ArrayIncludesCases, runArrayIncludesTest);
+}
+
+// == [pick / pickDefined / arrLast] ==
+
+export const PickCases = [
+  [[ { a: 1, b: 2, c: 3 }, ["a", "c"] ],  { a: 1, c: 3 } ],
+  [[ { a: 1 },             [] ],          {} ],
+  [[ { a: 1 },             ["missing"] ], {}, 'a key absent from bag is elided from the result rather than set to undefined'],
+];
+export const PickDefinedCases = [
+  [[ { a: 1, b: undefined, c: 3 }, ["a", "b", "c"] ], { a: 1, c: 3 } ],
+  [[ { a: 1 },                     ["missing"] ],     {} ],
+];
+export const ArrLastCases = [
+  [[ [1, 2, 3] ], 3 ],
+  [[ [1] ],       1 ],
+  [[ [] ],        undefined ],
+];
+
+export function runPickTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "pick", verbose, PickCases, function(args is array) { return pick(args[0], args[1]); });
+}
+export function runPickDefinedTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "pickDefined", verbose, PickDefinedCases, function(args is array) { return pickDefined(args[0], args[1]); });
+}
+export function runArrLastTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "arrLast", verbose, ArrLastCases, function(args is array) { return arrLast(args[0]); });
+}
+
+// == [boxarrPush / boxarrUnshift] ==
+
+export const BoxarrPushCases = [
+  [[ [1, 2], 3 ], [3, [1, 2, 3]] ],
+  [[ [],     1 ], [1, [1]] ],
+];
+export const BoxarrUnshiftCases = [
+  [[ [1, 2], 3 ], [3, [3, 1, 2]] ],
+  [[ [],     1 ], [1, [1]] ],
+];
+
+export function runBoxarrPushTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "boxarrPush", verbose, BoxarrPushCases, function(args is array) {
+    const arrRef = new box(args[0]);
+    const returned = boxarrPush(arrRef, args[1]);
+    return [returned, arrRef[]];
+  });
+}
+export function runBoxarrUnshiftTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "boxarrUnshift", verbose, BoxarrUnshiftCases, function(args is array) {
+    const arrRef = new box(args[0]);
+    const returned = boxarrUnshift(arrRef, args[1]);
+    return [returned, arrRef[]];
+  });
+}
+
+// == [forEach BREAK] ==
+// mapValues/mapValues3/rebag above visit every entry and never return NextStepAction.BREAK, so
+// none of those cases exercise the early-exit path at all. These do.
+
+export const ForEachBreakCases = [
+  [[ { a: 1, b: 2, c: 3 }, "b" ],
+   [["a", 1, 0], ["b", 2, 1]],
+   'map: stops right after the matching key, "c" is never visited'],
+  [[ { a: 1, b: 2, c: 3 }, "zz" ],
+   [["a", 1, 0], ["b", 2, 1], ["c", 3, 2]],
+   'map: never matches, so every entry is visited'],
+  [[ ["x", "y", "z"], "y" ],
+   [["x", 0, 0], ["y", 1, 1]],
+   'array: stops right after the matching value, "z" is never visited'],
+];
+export function runForEachBreakTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "forEach BREAK", verbose, ForEachBreakCases, function(args is array) {
+    const container = args[0];
+    const target = args[1];
+    const seen = new box([]);
+    if (container is map) {
+      forEach(container, (val, key, seq) => {
+        boxarrPush(seen, [key, val, seq]);
+        if (key == target) { return NextStepAction.BREAK; }
+      });
+    } else {
+      forEach(container, (val, seq) => {
+        boxarrPush(seen, [val, seq, seq]);
+        if (val == target) { return NextStepAction.BREAK; }
+      });
+    }
+    return seen[];
+  });
+}
+
+/**
+ * BREAK under the `keylist` and `missingPolicy` overloads: `keylist` order (not `keys(bag)`
+ * order) is what BREAK stops early against, and a SKIP'd undefined entry does not consume a
+ * `seq` slot on the way to the match.
+ */
+export const ForEachKeylistBreakCases = [
+  [[ { a: 1, b: 2, c: 3 }, ["c", "a", "b"], "a" ],
+   [["c", 3, 0], ["a", 1, 1]],
+   'walks keylist order, not keys(bag) order, and still stops at the match'],
+  [[ { a: 1, b: 2, c: 3 }, ["c", "a", "b"], MissingPolicy.SKIP, "a" ],
+   [["c", 3, 0], ["a", 1, 1]],
+   'SKIP only matters for undefined entries; the match still stops the walk the same way'],
+  [[ { a: 1, b: undefined, c: 3 }, ["a", "b", "c"], MissingPolicy.SKIP, "c" ],
+   [["a", 1, 0], ["c", 3, 1]],
+   'SKIP passes over the undefined "b" entry without counting it toward seq, then stops at "c"'],
+];
+export function runForEachKeylistBreakTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "forEach(keylist) BREAK", verbose, ForEachKeylistBreakCases, function(args is array) {
+    const bag = args[0];
+    const keylist = args[1];
+    const target = (size(args) <= 3) ? args[2] : args[3];
+    const seen = new box([]);
+    const recordBreak = function(val, key, seq) {
+      boxarrPush(seen, [key, val, seq]);
+      if (key == target) { return NextStepAction.BREAK; }
+    };
+    if (size(args) <= 3) {
+      forEach(bag, keylist, recordBreak);
+    } else {
+      forEach(bag, keylist, args[2], recordBreak);
+    }
+    return seen[];
+  });
 }

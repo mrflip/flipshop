@@ -124,6 +124,12 @@ export function buildNestedChoices(levels is array, tree is map) returns map {
   return buildChoicesRecursive(parsedLevels, 0, tree);
 }
 
+/**
+ * One level of `buildNestedChoices`'s descent: wraps each key of `currentTree` in a
+ * `{ name, displayName, entries }` choice entry, translating the key via `levels[levelIdx].tr`
+ * (falling back to `titleCase`) and recursing into `entries` until `levelIdx` reaches the
+ * second-to-last level, where `entries` is `currentTree`'s own subtree unchanged.
+ */
 function buildChoicesRecursive(levels is array, levelIdx is number, currentTree is map) returns map {
   var result = {};
   var currentDef = levels[levelIdx];
@@ -139,10 +145,10 @@ function buildChoicesRecursive(levels is array, levelIdx is number, currentTree 
       "displayName": nextDef.displayName
     };
     if (isLastLevel) {
-      // Base case: The bottom level acts as the leaf data mapping[cite: 1]
+      // Base case: the bottom level's entries are the leaf data itself
       entry["entries"] = subTree;
     } else {
-      // Recursive case: Continue descending the tree[cite: 1]
+      // Recursive case: keep descending the tree
       entry["entries"] = buildChoicesRecursive(levels, levelIdx + 1, subTree);
     }
     result[translatedKey] = entry;
