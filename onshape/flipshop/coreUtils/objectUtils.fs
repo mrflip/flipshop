@@ -100,3 +100,4 @@ export function omitBy(bag is map, rule is function) returns map {
  */
 export function toPairs(bag is map) returns array {
   return mapValues(keys(bag), (key, _seq) => [key, bag[key]]);
+}

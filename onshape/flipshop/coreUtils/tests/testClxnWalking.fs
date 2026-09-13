@@ -527,8 +527,8 @@ export function runForEachKeylistBreakTests(context is Context, verbose is boole
 
 // == [Lodash Collection ports] ==
 
-const isEven = function(val) { return val % 2 == 0; };
-const parityKey = function(val) { return isEven(val) ? "even" : "odd"; };
+const isEven = curry2to1(function(val) { return val % 2 == 0; });
+const parityKey = function(val, _key) { return isEven(val) ? "even" : "odd"; };
 
 export const CountByCases = [
   [[ [1, 2, 3, 4], parityKey ], { "odd": 2, "even": 2 } ],
@@ -563,7 +563,9 @@ export function runFindLastTests(context is Context, verbose is boolean) returns
   return runTests(context, "findLast", verbose, FindLastCases, function(args is array) { return findLast(args[0], args[1]); });
 }
 
-const duplicated = function(val) { return [val, val]; };
+const duplicated = function(val, _seq) { return [val, val]; };
+const nestedPair = function(val, _seq) { return [[val], [val]]; };
+
 export const FlatMapCases = [
   [[ [1, 2], duplicated ], [1, 1, 2, 2] ],
   //
@@ -573,7 +575,6 @@ export function runFlatMapTests(context is Context, verbose is boolean) returns 
   return runTests(context, "flatMap", verbose, FlatMapCases, function(args is array) { return flatMap(args[0], args[1]); });
 }
 
-const nestedPair = function(val) { return [[val], [val]]; };
 export const FlatMapDeepCases = [
   [[ [1, 2], nestedPair ], [1, 1, 2, 2] ],
   //

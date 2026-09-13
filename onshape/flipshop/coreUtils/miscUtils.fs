@@ -118,7 +118,7 @@ export function cond(pairs is array) returns function {
  *   isAdult({ "age": 20 }); // => true
  */
 export function conforms(source is map) returns function {
-  return function(obj is map) { return conformsTo(obj, source); };
+  return (obj is map) => conformsTo(obj, source);
 }
 
 /**
@@ -133,12 +133,15 @@ export function conformsTo(obj is map, source is map) returns boolean {
 }
 
 /**
- * Builds a function that always returns `val`, ignoring whatever arguments it's called with.
+ * Builds a single-argument function that always returns `val`, ignoring the argument it's called
+ * with — FeatureScript calls a function with exactly its declared arity, so unlike lodash's
+ * `constant` this only fits a one-argument slot (e.g. `mapArray`/`filter`/a `cond` handler); lift
+ * it into a `(val, seq)` slot with `curry2to1(constant(val))`.
  * @example
  *   times(3, constant(0)); // => [0, 0, 0]
  */
 export function constant(val) returns function {
-  return function() { return val; };
+  return (_val) => val;
 }
 
 /** Returns `val` unchanged — the fallback `iteratee` reaches for when nothing more specific applies. */
@@ -167,7 +170,7 @@ export function iteratee(spec) returns function {
  *   matches({ "a": 1 })({ "a": 2, "b": 2 }); // => false
  */
 export function matches(source is map) returns function {
-  return function(obj is map) { return pick(obj, keys(source)) == source; };
+  return (obj is map) => (pick(obj, keys(source)) == source);
 }
 /**
  * Builds a predicate that's `true` when `path` of a given object equals `srcValue`, via `getAt`.
@@ -175,7 +178,7 @@ export function matches(source is map) returns function {
  *   matchesProperty("a.b", 1)({ "a": { "b": 1 } }); // => true
  */
 export function matchesProperty(path, srcValue) returns function {
-  return function(obj) { return getAt(obj, path) == srcValue; };
+  return (obj) => (getAt(obj, path) == srcValue);
 }
 
 /**
@@ -185,7 +188,7 @@ export function matchesProperty(path, srcValue) returns function {
  *   over([(val) => val + 1, (val) => val - 1])(5); // => [6, 4]
  */
 export function over(funcs is array) returns function {
-  return function(val) { return mapValues(funcs, (func, _seq) => func(val)); };
+  return (val) => mapValues(funcs, (func, _seq) => func(val));
 }
 /**
  * Builds a predicate that's `true` only when every function in `funcs` returns truthy for `val`.
@@ -193,7 +196,7 @@ export function over(funcs is array) returns function {
  *   overEvery([(val) => val > 0, (val) => val < 10])(5); // => true
  */
 export function overEvery(funcs is array) returns function {
-  return function(val) { return all(funcs, (func) => func(val)); };
+  return (val) => all(funcs, (func) => func(val));
 }
 /**
  * Builds a predicate that's `true` when any function in `funcs` returns truthy for `val`.
@@ -201,7 +204,7 @@ export function overEvery(funcs is array) returns function {
  *   overSome([(val) => val < 0, (val) => val > 10])(5); // => false
  */
 export function overSome(funcs is array) returns function {
-  return function(val) { return any(funcs, (func) => func(val)); };
+  return (val) => any(funcs, (func) => func(val));
 }
 
 /**
@@ -210,7 +213,7 @@ export function overSome(funcs is array) returns function {
  *   property("a.b")({ "a": { "b": 1 } }); // => 1
  */
 export function property(path) returns function {
-  return function(obj) { return getAt(obj, path); };
+  return (obj) => getAt(obj, path);
 }
 /**
  * The reverse of `property`: fixes the object up front and builds a function that reads whatever
@@ -219,7 +222,7 @@ export function property(path) returns function {
  *   propertyOf({ "a": { "b": 1 } })("a.b"); // => 1
  */
 export function propertyOf(obj) returns function {
-  return function(path) { return getAt(obj, path); };
+  return (path) => getAt(obj, path);
 }
 
 /**

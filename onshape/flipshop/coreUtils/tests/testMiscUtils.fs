@@ -160,7 +160,7 @@ export const ConstantCases = [
   [[constant({ "a": 1 })], { "a": 1 }],
 ];
 export function runConstantTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "constant", verbose, ConstantCases, function(args is array) { return args[0](); });
+  return runTests(context, "constant", verbose, ConstantCases, function(args is array) { return args[0]("ignored"); });
 }
 
 // == [identity] ==
