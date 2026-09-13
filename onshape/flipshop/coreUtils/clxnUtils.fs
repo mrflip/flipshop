@@ -370,17 +370,16 @@ export function boxarrUnshift(arrRef is box, val) {
 // == [Lodash Collection ports] -- countBy, find, findLast, flatMap*, forEachRight, groupBy, partition, reduceRight, reject
 
 /**
- * Map of `iteratee(val, key?)` results to how many elements of `bag`/`arr` produced that
- * result. `key` is only offered to the map form — the array form has no analogue, matching
- * `forEach`'s split between key and index.
+ * Map of `iteratee(val, seq)` (array) / `iteratee(val, key)` (map) results to how many elements
+ * of `arr`/`bag` produced that result — `seq`/`key` match `forEach`'s split between index and key.
  * @example
- *   countBy([1, 2, 3, 4], (val) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
- *   countBy({ a: 1, b: 2 }, (val) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }
+ *   countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
+ *   countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }
  */
 export function countBy(arr is array, iteratee is function) returns map {
   var result = {};
-  for (var val in arr) {
-    const key = iteratee(val);
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const key = iteratee(arr[seq], seq);
     result[key] = ifNil(result[key], 0) + 1;
   }
   return result;
@@ -478,16 +477,17 @@ export function forEachRight(bag is map, func is function) {
 }
 
 /**
- * Map of `iteratee(val, key?)` results to the elements of `bag`/`arr` that produced each one,
- * via std's `insertIntoMapOfArrays`. The map form hands `iteratee` the key as a second argument.
+ * Map of `iteratee(val, seq)` (array) / `iteratee(val, key)` (map) results to the elements of
+ * `arr`/`bag` that produced each one, via std's `insertIntoMapOfArrays`.
  * @example
- *   groupBy([1, 2, 3, 4], (val) => (val % 2 == 0) ? "even" : "odd");
+ *   groupBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd");
  *   // => { "odd": [1, 3], "even": [2, 4] }
  */
 export function groupBy(arr is array, iteratee is function) returns map {
   var result = {};
-  for (var val in arr) {
-    result = insertIntoMapOfArrays(result, iteratee(val), val);
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    result = insertIntoMapOfArrays(result, iteratee(val, seq), val);
   }
   return result;
 }
@@ -501,16 +501,17 @@ export function groupBy(bag is map, iteratee is function) returns map {
 
 /**
  * `[passed, failed]` — `bag`/`arr` split into the elements for which `rule` holds and the ones
- * for which it doesn't, keeping visiting order. The map form hands `rule` the key as a second
- * argument and returns values only, same as lodash's collection form.
+ * for which it doesn't, keeping visiting order. `rule` gets `(val, seq)` (array) or `(val, key)`
+ * (map); the map form returns values only, same as lodash's collection form.
  * @example
- *   partition([1, 2, 3, 4], (val) => val % 2 == 0); // => [[2, 4], [1, 3]]
+ *   partition([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [[2, 4], [1, 3]]
  */
 export function partition(arr is array, rule is function) returns array {
   var passed = [];
   var failed = [];
-  for (var val in arr) {
-    if (rule(val)) {
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    if (rule(val, seq)) {
       passed = append(passed, val);
     } else {
       failed = append(failed, val);
@@ -532,14 +533,18 @@ export function partition(bag is map, rule is function) returns array {
 }
 
 /**
- * `foldArray` *(std)*, back-to-front: `bag`/`arr` reduced right-to-left through
- * `foldFunction(accumulator, val, key?)`. The map form walks `keys(bag)` in reverse and hands
- * `foldFunction` the key as a third argument.
+ * `bag`/`arr` reduced right-to-left through `foldFunction(accumulator, val, seq|key)` — a manual
+ * reversed walk rather than std's `foldArray`, which only ever hands `foldFunction` two arguments,
+ * so that both forms uniformly offer the index/key as a third argument.
  * @example
- *   reduceRight([1, 2, 3], "", function(acc, val) { return acc ~ val; }); // => "321"
+ *   reduceRight([1, 2, 3], "", function(acc, val, _seq) { return acc ~ val; }); // => "321"
  */
 export function reduceRight(arr is array, seed, foldFunction is function) {
-  return foldArray(reverse(arr), seed, foldFunction);
+  var acc = seed;
+  for (var seq = size(arr) - 1; seq >= 0; seq -= 1) {
+    acc = foldFunction(acc, arr[seq], seq);
+  }
+  return acc;
 }
 export function reduceRight(bag is map, seed, foldFunction is function) {
   var acc = seed;
@@ -548,9 +553,14 @@ export function reduceRight(bag is map, seed, foldFunction is function) {
   }
   return acc;
 }
-/** `reduceRight`, seeded from the last-visited element — @see `foldArray`'s single-seed overload. */
+/** `reduceRight`, seeded from the last-visited element — `undefined` for an empty `arr`/`bag`. */
 export function reduceRight(arr is array, foldFunction is function) {
-  return foldArray(reverse(arr), foldFunction);
+  if (size(arr) == 0) { return undefined; }
+  var acc = arr[size(arr) - 1];
+  for (var seq = size(arr) - 2; seq >= 0; seq -= 1) {
+    acc = foldFunction(acc, arr[seq], seq);
+  }
+  return acc;
 }
 export function reduceRight(bag is map, foldFunction is function) {
   const keylist = reverse(keys(bag));
@@ -564,13 +574,18 @@ export function reduceRight(bag is map, foldFunction is function) {
 }
 
 /**
- * Elements of `bag`/`arr` for which `rule` does *not* hold — the inverse of `filter` *(std)*. The
- * map form hands `rule` the key as a second argument and returns values only.
+ * Elements of `bag`/`arr` for which `rule` does *not* hold — the inverse of `filter` *(std)*, whose
+ * `filterFunction` only ever gets one argument, so this walks `arr` by index instead in order to
+ * hand `rule` `(val, seq)`; the map form gets `(val, key)` and returns values only.
  * @example
- *   reject([1, 2, 3, 4], (val) => val % 2 == 0); // => [1, 3]
+ *   reject([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [1, 3]
  */
 export function reject(arr is array, rule is function) returns array {
-  return filter(arr, (val) => (! rule(val)));
+  var result = [];
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    if (! rule(arr[seq], seq)) { result = append(result, arr[seq]); }
+  }
+  return result;
 }
 export function reject(bag is map, rule is function) returns array {
   var result = [];
@@ -651,7 +666,7 @@ export function difference(arr is array, excludeArr is array) returns array {
  *   differenceBy([2.1, 1.2], [2.3, 3.4], (val) => floor(val)); // => [1.2]
  */
 export function differenceBy(arr is array, excludeArr is array, iteratee is function) returns array {
-  const excludeKeys = mapValues(excludeArr, iteratee);
+  const excludeKeys = mapValues(excludeArr, (val, _seq) => iteratee(val));
   return filter(arr, (val) => (! arrayIncludes(excludeKeys, iteratee(val))));
 }
 
@@ -827,7 +842,7 @@ export function intersection(arrList is array) returns array {
 export function intersectionBy(arrList is array, iteratee is function) returns array {
   if (size(arrList) == 0) { return []; }
   const first = arrList[0];
-  const restKeys = mapValues(subArray(arrList, 1), (other, _seq) => mapValues(other, iteratee));
+  const restKeys = mapValues(subArray(arrList, 1), (other, _seq) => mapValues(other, (val, _valSeq) => iteratee(val)));
   const kept = filter(first, (val) => all(restKeys, (otherKeys) => arrayIncludes(otherKeys, iteratee(val))));
   return uniqBy(kept, iteratee);
 }
@@ -961,9 +976,8 @@ export function unionWith(arrList is array, comparator is function) returns arra
 export function uniqBy(arr is array, iteratee is function) returns array {
   var seenKeys = [];
   var result = [];
-  for (var seq = 0; seq < size(arr); seq += 1) {
-    const val = arr[seq];
-    const key = iteratee(val, seq);
+  for (var val in arr) {
+    const key = iteratee(val);
     if (! arrayIncludes(seenKeys, key)) {
       seenKeys = append(seenKeys, key);
       result = append(result, val);

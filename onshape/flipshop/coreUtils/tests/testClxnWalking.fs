@@ -626,7 +626,7 @@ export function runPartitionTests(context is Context, verbose is boolean) return
   return runTests(context, "partition", verbose, PartitionCases, function(args is array) { return partition(args[0], args[1]); });
 }
 
-const concatString = function(acc, val) { return acc ~ val; };
+const concatString = function(acc, val, _seq) { return acc ~ val; };
 export const ReduceRightCases = [
   [[ [1, 2, 3], "", concatString ],           "321" ],
   [[ ["1", "2", "3"], concatString ],         "321", 'no-seed overload starts from the last element'],

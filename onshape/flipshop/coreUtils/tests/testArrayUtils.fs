@@ -329,7 +329,7 @@ export function runUnionWithTests(context is Context, verbose is boolean) return
 // == [uniqBy / uniqWith] ==
 
 export const UniqByCases = [
-  [[[2.1, 1.2, 2.3], function(val, _seq) { return floor(val); }],  [2.1, 1.2]],
+  [[[2.1, 1.2, 2.3], function(val) { return floor(val); }],  [2.1, 1.2]],
 ];
 export function runUniqByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "uniqBy", verbose, UniqByCases, function(args is array) { return uniqBy(args[0], args[1]); });
@@ -402,7 +402,7 @@ export function runZipObjectTests(context is Context, verbose is boolean) return
 }
 
 export const ZipWithCases = [
-  [[[[1, 2], [10, 20]], function(row) { return sum(row); }],  [11, 22]],
+  [[[[1, 2], [10, 20]], function(row, _seq) { return sum(row); }],  [11, 22]],
 ];
 export function runZipWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "zipWith", verbose, ZipWithCases, function(args is array) { return zipWith(args[0], args[1]); });
