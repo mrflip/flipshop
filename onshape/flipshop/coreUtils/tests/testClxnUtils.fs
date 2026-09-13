@@ -304,17 +304,17 @@ export function runValuesAtTests(context is Context, verbose is boolean) returns
     ], function(args is array) { return size(args) <= 2 ? valuesAt(args[0], args[1]) : valuesAt(args[0], args[1], args[2]); });
 }
 
-const rebagArrInspector = function(val, seq is number)                { if (val == "skip") return undefined; return ["" ~ seq ~ seq, [val, seq]]; };
-const rebagMapInspector = function(val, key is string, seq is number) { if (val == "skip") return undefined; return ["" ~ key ~ key, [val, key, seq]]; };
+const rebagArrInspector = function(val, seq is number)      { if (val == "skip") return undefined; return ["" ~ seq ~ seq, [val, seq]]; };
+const rebagMapInspector = function(val, key is string)      { if (val == "skip") return undefined; return ["" ~ key ~ key, [val, key]]; };
 export function runRebagTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "rebag", verbose, [
-        [[ {},                             noop3],   {} ],
-        [[ { a: 11, b: 22 },               noop3],   {} ],
+        [[ {},                             noop2],   {} ],
+        [[ { a: 11, b: 22 },               noop2],   {} ],
         [[ {},                             rebagMapInspector], {} ],
-        [[ { a: 11, b: 22 },               rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
-        [[ { b: 22, a: 11 },               rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
-        [[ { b: 22, a: 11, d: undefined }, rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
-        [[ { b: 22, a: 11, s: "skip" },    rebagMapInspector], { aa: [11, "a", 0], bb: [22, "b", 1] } ],
+        [[ { a: 11, b: 22 },               rebagMapInspector], { aa: [11, "a"], bb: [22, "b"] } ],
+        [[ { b: 22, a: 11 },               rebagMapInspector], { aa: [11, "a"], bb: [22, "b"] } ],
+        [[ { b: 22, a: 11, d: undefined }, rebagMapInspector], { aa: [11, "a"], bb: [22, "b"] } ],
+        [[ { b: 22, a: 11, s: "skip" },    rebagMapInspector], { aa: [11, "a"], bb: [22, "b"] } ],
         //
         [[ [],                             noop2],   {} ],
         [[ [11, 22],                       noop2],   {} ],
@@ -459,13 +459,13 @@ export function runBoxarrUnshiftTests(context is Context, verbose is boolean) re
 
 export const ForEachBreakCases = [
   [[ { a: 1, b: 2, c: 3 }, "b" ],
-   [["a", 1, 0], ["b", 2, 1]],
+   [["a", 1], ["b", 2]],
    'map: stops right after the matching key, "c" is never visited'],
   [[ { a: 1, b: 2, c: 3 }, "zz" ],
-   [["a", 1, 0], ["b", 2, 1], ["c", 3, 2]],
+   [["a", 1], ["b", 2], ["c", 3]],
    'map: never matches, so every entry is visited'],
   [[ ["x", "y", "z"], "y" ],
-   [["x", 0, 0], ["y", 1, 1]],
+   [["x", 0], ["y", 1]],
    'array: stops right after the matching value, "z" is never visited'],
 ];
 export function runForEachBreakTests(context is Context, verbose is boolean) returns map {
@@ -474,13 +474,13 @@ export function runForEachBreakTests(context is Context, verbose is boolean) ret
     const target = args[1];
     const seen = new box([]);
     if (container is map) {
-      forEach(container, (val, key, seq) => {
-        boxarrPush(seen, [key, val, seq]);
+      forEach(container, (val, key) => {
+        boxarrPush(seen, [key, val]);
         if (key == target) { return NextStepAction.BREAK; }
       });
     } else {
       forEach(container, (val, seq) => {
-        boxarrPush(seen, [val, seq, seq]);
+        boxarrPush(seen, [val, seq]);
         if (val == target) { return NextStepAction.BREAK; }
       });
     }
@@ -515,9 +515,9 @@ export function runForEachKeylistBreakTests(context is Context, verbose is boole
       if (key == target) { return NextStepAction.BREAK; }
     };
     if (size(args) <= 3) {
-      forEach(bag, keylist, recordBreak);
+      forEach3(bag, keylist, recordBreak);
     } else {
-      forEach(bag, keylist, args[2], recordBreak);
+      forEach3(bag, keylist, args[2], recordBreak);
     }
     return seen[];
   });

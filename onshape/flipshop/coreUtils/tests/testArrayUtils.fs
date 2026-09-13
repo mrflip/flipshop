@@ -68,10 +68,15 @@ precondition {
 // == [chunk] ==
 
 export const ChunkCases = [
-  [[["a", "b", "c", "d"], 2],  [["a", "b"], ["c", "d"]]],
-  [[["a", "b", "c", "d"], 3],  [["a", "b", "c"], ["d"]]],
   [[[],                   2],  []],
-  [[["a", "b"],           0],  [],  'chunkSize < 1 returns an empty array'],
+  [[["a", "b", "c", "d"], 1],  [["a"], ["b"], ["c"], ["d"]], 'chunkSize == 1 returns arrays with individual elements'],
+  [[["a", "b", "c", "d"], 2],  [["a", "b"], ["c", "d"]],     'chunkSize a divisor of array length: each chunk has equal length'],
+  [[["a", "b", "c", "d"], 3],  [["a", "b", "c"], ["d"]],     'chunkSize not a divisor of array length: last chunk is shorter'],
+  [[["a", "b", "c", "d"], 4],  [["a", "b", "c", "d"]],       'chunkSize == array length returns its input'],
+  [[["a", "b", "c", "d"], 5],  [["a", "b", "c", "d"]],       'chunkSize >= array length returns its input'],
+  [[["a", "b"],         -10],  [],                           'chunkSize < 1 returns an empty array'],
+  [[["a", "b"],          -1],  [],                           'chunkSize < 1 returns an empty array'],
+  [[["a", "b"],           0],  [],                           'chunkSize < 1 returns an empty array'],
 ];
 export function runChunkTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "chunk", verbose, ChunkCases, function(args is array) { return chunk(args[0], args[1]); });
@@ -329,7 +334,7 @@ export function runUnionWithTests(context is Context, verbose is boolean) return
 // == [uniqBy / uniqWith] ==
 
 export const UniqByCases = [
-  [[[2.1, 1.2, 2.3], function(val) { return floor(val); }],  [2.1, 1.2]],
+  [[[2.1, 1.2, 2.3], function(val, _seq) { return floor(val); }],  [2.1, 1.2]],
 ];
 export function runUniqByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "uniqBy", verbose, UniqByCases, function(args is array) { return uniqBy(args[0], args[1]); });
@@ -378,7 +383,7 @@ export function runXorTests(context is Context, verbose is boolean) returns map 
 }
 
 export const XorByCases = [
-  [[[[2.1, 1.2], [2.3, 3.4]], function(val) { return floor(val); }],  [1.2, 3.4]],
+  [[[[2.1, 1.2], [2.3, 3.4]], function(val, _seq) { return floor(val); }],  [1.2, 3.4]],
 ];
 export function runXorByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "xorBy", verbose, XorByCases, function(args is array) { return xorBy(args[0], args[1]); });

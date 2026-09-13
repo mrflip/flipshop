@@ -161,23 +161,82 @@ export function valuesAt(bag is map, keylist is array) returns array {
 // == [Collection Walking] -- mapValues, objectify, rebag
 
 /**
- * Iterates over `bag`/`arr`, invoking `func` for each entry as `func(val, key, seq)` (map) or
- * `func(val, seq)` (array) — `seq` is always a 0-based visit count. Unlike lodash's `forEach`,
- * where an iteratee may exit early by returning `false`, iteration here stops only when `func`
- * returns `NextStepAction.BREAK`.
+ * Iterates over `bag`/`arr`, invoking `func` for each entry as `func(val, key)` (map) or
+ * `func(val, seq)` (array) — the same two-argument shape every iterator in this file uses.
+ * Unlike lodash's `forEach`, where an iteratee may exit early by returning `false`, iteration
+ * here stops only when `func` returns `NextStepAction.BREAK`.
  *
  * `missingPolicy` (`USE_UNDEFINED`, the default, or `SKIP`) decides whether an entry whose value
- * is `undefined` gets visited at all; when given for an array, `func` also receives the index
- * twice (`func(val, seq, seq)`), matching the map callback's arity. A `keylist` overload walks
- * exactly those keys, in that order, instead of `keys(bag)`.
+ * is `undefined` gets visited at all. A `keylist` overload walks exactly those keys, in that
+ * order, instead of `keys(bag)`.
  *
  * @example
- *   forEach({ "a": 1, "b": 2, "c": 3 }, function(val, key, seq) {
+ *   forEach({ "a": 1, "b": 2, "c": 3 }, function(val, key) {
  *     if (key == "b") { return NextStepAction.BREAK; }
  *   }); // visits "a" then "b"; "c" is never reached
  */
 export function forEach(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) {
-  var seq  = 0;
+  if (missingPolicy == MissingPolicy.SKIP) {
+      for (var key in keylist) {
+        const val = bag[key];
+        if (val == undefined) { continue; }
+        const result = func(val, key);
+        if (result == NextStepAction.BREAK) { break; }
+      }
+  } else {
+      for (var key in keylist) {
+        const val = bag[key];
+        const result = func(val, key);
+        if (result == NextStepAction.BREAK) { break; }
+      }
+  }
+}
+
+export function forEach(bag is map, missingPolicy is MissingPolicy, func is function) {
+    return forEach(bag, keys(bag), MissingPolicy.USE_UNDEFINED, func);
+}
+
+export function forEach(bag is map, keylist is array, func is function) {
+  for (var key in keylist) {
+    const val = bag[key];
+    const result = func(val, key);
+    if (result == NextStepAction.BREAK) { break; }
+  }
+}
+
+export function forEach(bag is map, func is function) {
+  return forEach(bag, keys(bag), func);
+}
+
+export function forEach(arr is array, missingPolicy is MissingPolicy, func is function) {
+  if (missingPolicy == MissingPolicy.SKIP) {
+      for (var seq = 0; seq < size(arr); seq += 1) {
+        if (arr[seq] == undefined) { continue; }
+        const result = func(arr[seq], seq);
+        if (result == NextStepAction.BREAK) { break; }
+      }
+  } else {
+      for (var seq = 0; seq < size(arr); seq += 1) {
+        const result = func(arr[seq], seq);
+        if (result == NextStepAction.BREAK) { break; }
+      }
+  }
+}
+
+export function forEach(arr is array, func is function) {
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const result = func(arr[seq], seq);
+    if (result == NextStepAction.BREAK) { break; }
+  }
+}
+
+/**
+ * `forEach`, handing `func` a third argument: a 0-based visit-count `seq`, distinct from `key`
+ * for a map (a `SKIP`'d entry consumes a `keylist` slot but not a `seq` one) — `seq` fills both
+ * trailing slots for an array, `func(val, seq, seq)`, matching the map callback's arity.
+ */
+export function forEach3(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) {
+  var seq = 0;
   if (missingPolicy == MissingPolicy.SKIP) {
       for (var key in keylist) {
         const val = bag[key];
@@ -195,13 +254,11 @@ export function forEach(bag is map, keylist is array, missingPolicy is MissingPo
       }
   }
 }
-
-export function forEach(bag is map, missingPolicy is MissingPolicy, func is function) {
-    return forEach(bag, keys(bag), MissingPolicy.USE_UNDEFINED, func);
+export function forEach3(bag is map, missingPolicy is MissingPolicy, func is function) {
+  return forEach3(bag, keys(bag), MissingPolicy.USE_UNDEFINED, func);
 }
-
-export function forEach(bag is map, keylist is array, func is function) {
-  var seq  = 0;
+export function forEach3(bag is map, keylist is array, func is function) {
+  var seq = 0;
   for (var key in keylist) {
     const val = bag[key];
     const result = func(val, key, seq);
@@ -209,12 +266,10 @@ export function forEach(bag is map, keylist is array, func is function) {
     seq += 1;
   }
 }
-
-export function forEach(bag is map, func is function) {
-  return forEach(bag, keys(bag), func);
+export function forEach3(bag is map, func is function) {
+  return forEach3(bag, keys(bag), func);
 }
-
-export function forEach(arr is array, missingPolicy is MissingPolicy, func is function) {
+export function forEach3(arr is array, missingPolicy is MissingPolicy, func is function) {
   if (missingPolicy == MissingPolicy.SKIP) {
       for (var seq = 0; seq < size(arr); seq += 1) {
         if (arr[seq] == undefined) { continue; }
@@ -228,10 +283,9 @@ export function forEach(arr is array, missingPolicy is MissingPolicy, func is fu
       }
   }
 }
-
-export function forEach(arr is array, func is function) {
+export function forEach3(arr is array, func is function) {
   for (var seq = 0; seq < size(arr); seq += 1) {
-    const result = func(arr[seq], seq);
+    const result = func(arr[seq], seq, seq);
     if (result == NextStepAction.BREAK) { break; }
   }
 }
@@ -240,11 +294,12 @@ export function forEach(arr is array, func is function) {
  * `bag`/`arr` with every value replaced by `func`'s result. Lodash splits this into two
  * functions — `mapValues` keeps an object's keys, `map` returns a new array — unified here under
  * one dispatch, since they share every other behavior: `func` is `func(val, key)` for a map or
- * `func(val, seq)` for an array. `mapValues3` adds the trailing 0-based `seq` @see `forEach`
- * does, for either container shape. The `keylist` and `missingPolicy` overloads follow
- * `forEach`'s rules: a `keylist` walks exactly those keys, and `missingPolicy` decides whether
- * an `undefined` value is mapped (`USE_UNDEFINED`, the default) or its key dropped from the
- * result entirely (`SKIP`).
+ * `func(val, seq)` for an array, the same two-argument shape every iterator in this file uses.
+ * `mapValues3` instead hands `func` all three of `val`, `key`, and a 0-based visit-count `seq`
+ * (for an array, `seq` fills both slots) when a map form needs to distinguish visit order from
+ * key order. The `keylist` and `missingPolicy` overloads follow `forEach`'s rules: a `keylist`
+ * walks exactly those keys, and `missingPolicy` decides whether an `undefined` value is mapped
+ * (`USE_UNDEFINED`, the default) or its key dropped from the result entirely (`SKIP`).
  *
  * @example
  *   mapValues({ "fred": 40, "pebbles": 1 }, function(age) { return age * 2; });
@@ -253,23 +308,23 @@ export function forEach(arr is array, func is function) {
  */
 export function mapValues(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) returns map {
   const result = new box({});
-  forEach(bag, keylist, missingPolicy, (val, key, seq is number) => { result[][key] = func(val, key); });
+  forEach(bag, keylist, missingPolicy, (val, key) => { result[][key] = func(val, key); });
   return result[];
 }
 export function mapValues3(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) returns map {
   const result = new box({});
-  forEach(bag, keylist, missingPolicy, (val, key, seq is number) => { result[][key] = func(val, key, seq); });
+  forEach3(bag, keylist, missingPolicy, (val, key, seq) => { result[][key] = func(val, key, seq); });
   return result[];
 }
 
 export function mapValues(bag is map, keylist is array, func is function) returns map {
   const result = new box({});
-  forEach(bag, keylist, (val, key, seq is number) => { result[][key] = func(val, key); });
+  forEach(bag, keylist, (val, key) => { result[][key] = func(val, key); });
   return result[];
 }
 export function mapValues3(bag is map, keylist is array, func is function) returns map {
   const result = new box({});
-  forEach(bag, keylist, (val, key, seq is number) => { result[][key] = func(val, key, seq); });
+  forEach3(bag, keylist, (val, key, seq) => { result[][key] = func(val, key, seq); });
   return result[];
 }
 export function mapValues(bag is map, missingPolicy is MissingPolicy, func is function) returns map {
@@ -287,7 +342,7 @@ export function mapValues3(bag is map, func is function) returns map {
 
 export function mapValues(arr is array, missingPolicy is MissingPolicy, func is function) returns array {
   var result = new box(makeArray(size(arr)));
-  forEach(arr, missingPolicy, (val, seq, _) => {
+  forEach(arr, missingPolicy, (val, seq) => {
       result[][seq] = func(val, seq);
   });
   return result[];
@@ -295,7 +350,7 @@ export function mapValues(arr is array, missingPolicy is MissingPolicy, func is 
 
 export function mapValues3(arr is array, missingPolicy is MissingPolicy, func is function) returns array {
   var result = new box(makeArray(size(arr)));
-  forEach(arr, missingPolicy, (val, seq, _) => {
+  forEach(arr, missingPolicy, (val, seq) => {
       result[][seq] = func(val, seq, seq);
   });
   return result[];
@@ -331,20 +386,21 @@ export function objectify(arr is array, func is function) returns map {
 }
 
 /**
- * Rebuilds a map (from a map or an array) by asking `func(val, key?, seq)` for the
- * `[newKey, newVal]` pair each entry becomes; an entry where `func` returns `undefined` (rather
- * than a pair) is dropped rather than written under an `undefined` key. Where two entries land
- * on the same `newKey`, the later one wins — `keys(bag)` order for a map, index order for an
- * array.
+ * Rebuilds a map (from a map or an array) by asking `func(val, key?)` — `func(val, seq)` for an
+ * array, `func(val, key)` for a map, the same two-argument shape every iterator in this file
+ * uses — for the `[newKey, newVal]` pair each entry becomes; an entry where `func` returns
+ * `undefined` (rather than a pair) is dropped rather than written under an `undefined` key.
+ * Where two entries land on the same `newKey`, the later one wins — `keys(bag)` order for a map,
+ * index order for an array.
  */
 export function rebag(arr is array, func is function) returns map {
     var result = new box({});
-    forEach(arr, (val, seq is number)                => { const kv = func(val, seq);      if (kv != undefined) { result[][kv[0]] = kv[1]; } });
+    forEach(arr, (val, seq) => { const kv = func(val, seq); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
     return result[];
 }
 export function rebag(bag is map, func is function) returns map {
     var result = new box({});
-    forEach(bag, (val, key is string, seq is number) => { const kv = func(val, key, seq); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
+    forEach(bag, (val, key) => { const kv = func(val, key); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
     return result[];
 }
 // --
@@ -661,17 +717,25 @@ export function difference(arr is array, excludeArr is array) returns array {
 }
 
 /**
- * `difference`, comparing `arr` and `excludeArr` by `iteratee(val)` instead of `val` itself.
+ * `difference`, comparing `arr` and `excludeArr` by `iteratee(val, seq)` instead of `val` itself
+ * — `iteratee` gets the same two-argument shape every iterator in this file uses; `filter` *(std)*
+ * only ever hands a callback one argument, so this walks `arr` by index instead.
  * @example
- *   differenceBy([2.1, 1.2], [2.3, 3.4], (val) => floor(val)); // => [1.2]
+ *   differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]
  */
 export function differenceBy(arr is array, excludeArr is array, iteratee is function) returns array {
-  const excludeKeys = mapValues(excludeArr, (val, _seq) => iteratee(val));
-  return filter(arr, (val) => (! arrayIncludes(excludeKeys, iteratee(val))));
+  const excludeKeys = mapValues(excludeArr, iteratee);
+  var result = [];
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    if (! arrayIncludes(excludeKeys, iteratee(val, seq))) { result = append(result, val); }
+  }
+  return result;
 }
 
 /**
- * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==`.
+ * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==` —
+ * the same argument order every comparator in this file uses.
  * @example
  *   differenceWith([{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], (aa, bb) => aa.x == bb.x);
  *   // => [{ "x": 2 }]
@@ -835,15 +899,21 @@ export function intersection(arrList is array) returns array {
 }
 
 /**
- * `intersection`, comparing elements by `iteratee(val)` instead of `val` itself.
+ * `intersection`, comparing elements by `iteratee(val, seq)` instead of `val` itself — the same
+ * two-argument shape every iterator in this file uses; `filter` *(std)* only ever hands a
+ * callback one argument, so `first` is walked by index instead.
  * @example
- *   intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val) => floor(val)); // => [2.1]
+ *   intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]
  */
 export function intersectionBy(arrList is array, iteratee is function) returns array {
   if (size(arrList) == 0) { return []; }
   const first = arrList[0];
-  const restKeys = mapValues(subArray(arrList, 1), (other, _seq) => mapValues(other, (val, _valSeq) => iteratee(val)));
-  const kept = filter(first, (val) => all(restKeys, (otherKeys) => arrayIncludes(otherKeys, iteratee(val))));
+  const restKeys = mapValues(subArray(arrList, 1), (other, _seq) => mapValues(other, iteratee));
+  var kept = [];
+  for (var seq = 0; seq < size(first); seq += 1) {
+    const val = first[seq];
+    if (all(restKeys, (otherKeys) => arrayIncludes(otherKeys, iteratee(val, seq)))) { kept = append(kept, val); }
+  }
   return uniqBy(kept, iteratee);
 }
 
@@ -958,7 +1028,7 @@ export function unionBy(arrList is array, iteratee is function) returns array {
 }
 
 /**
- * `union`, deduplicating with `comparator(kept, val)` instead of `==`.
+ * `union`, deduplicating with `comparator(val, kept)` instead of `==`.
  * @example
  *   unionWith([[{ "x": 1 }], [{ "x": 1 }, { "x": 2 }]], (aa, bb) => aa.x == bb.x);
  *   // => [{ "x": 1 }, { "x": 2 }]
@@ -969,15 +1039,17 @@ export function unionWith(arrList is array, comparator is function) returns arra
 
 /**
  * `arr` with duplicate elements removed, keeping the first occurrence — like std's
- * `deduplicate`, but comparing `iteratee(val)` instead of `val` itself.
+ * `deduplicate`, but comparing `iteratee(val, seq)` instead of `val` itself — the same
+ * two-argument shape every iterator in this file uses.
  * @example
- *   uniqBy([2.1, 1.2, 2.3], (val) => floor(val)); // => [2.1, 1.2]
+ *   uniqBy([2.1, 1.2, 2.3], (val, _seq) => floor(val)); // => [2.1, 1.2]
  */
 export function uniqBy(arr is array, iteratee is function) returns array {
   var seenKeys = [];
   var result = [];
-  for (var val in arr) {
-    const key = iteratee(val);
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    const key = iteratee(val, seq);
     if (! arrayIncludes(seenKeys, key)) {
       seenKeys = append(seenKeys, key);
       result = append(result, val);
@@ -988,7 +1060,8 @@ export function uniqBy(arr is array, iteratee is function) returns array {
 
 /**
  * `arr` with duplicate elements removed, keeping the first occurrence, where two elements count
- * as duplicates when `comparator(kept, val)` is `true`.
+ * as duplicates when `comparator(val, kept)` is `true` — the same argument order every
+ * comparator in this file uses.
  * @example
  *   uniqWith([{ "x": 1 }, { "x": 1 }, { "x": 2 }], (aa, bb) => aa.x == bb.x);
  *   // => [{ "x": 1 }, { "x": 2 }]
@@ -996,7 +1069,7 @@ export function uniqBy(arr is array, iteratee is function) returns array {
 export function uniqWith(arr is array, comparator is function) returns array {
   var result = [];
   for (var val in arr) {
-    if (! any(result, (kept) => comparator(kept, val))) {
+    if (! any(result, (kept) => comparator(val, kept))) {
       result = append(result, val);
     }
   }
@@ -1053,20 +1126,26 @@ export function xor(arrList is array) returns array {
 }
 
 /**
- * `xor`, comparing by `iteratee(val)` instead of `val` itself.
+ * `xor`, comparing by `iteratee(val, seq)` instead of `val` itself — the same two-argument shape
+ * every iterator in this file uses; `filter`/`any` *(std)* only ever hand a callback one
+ * argument, so this walks `allVals` and each candidate `other` array by index instead, via
+ * `findIndex`.
  * @example
- *   xorBy([[2.1, 1.2], [2.3, 3.4]], (val) => floor(val)); // => [1.2, 3.4]
+ *   xorBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [1.2, 3.4]
  */
 export function xorBy(arrList is array, iteratee is function) returns array {
   const allVals = uniqBy(concatenateArrays(arrList), iteratee);
-  return filter(allVals, (val) returns boolean => {
-    const key = iteratee(val);
+  var result = [];
+  for (var seq = 0; seq < size(allVals); seq += 1) {
+    const val = allVals[seq];
+    const key = iteratee(val, seq);
     var count = 0;
     for (var other in arrList) {
-      if (any(other, (otherVal) => (iteratee(otherVal) == key))) { count += 1; }
+      if (findIndex(other, (otherVal, otherSeq) => (iteratee(otherVal, otherSeq) == key)) != -1) { count += 1; }
     }
-    return count == 1;
-  });
+    if (count == 1) { result = append(result, val); }
+  }
+  return result;
 }
 /**
  * `xor`, comparing with `comparator(val, otherVal)` instead of `==`.
@@ -1148,7 +1227,8 @@ export function findLastKey(bag is map, rule is function) {
  * `bag` with its keys and values swapped: `{"a": "x", "b": "x"}` → `{"x": "b"}` — a value that
  * occurs more than once keeps only its last key, same as lodash. A non-string value is
  * stringified into its new key, matching how lodash's own object keys coerce. `invertBy` collects
- * every key instead of just the last one, grouped under `iteratee(val)` rather than `val` itself.
+ * every key instead of just the last one, grouped under `iteratee(val, key)` rather than `val`
+ * itself — the same two-argument shape every iterator in this file uses.
  * @example
  *   invert({ "a": 1, "b": 2, "c": 1 }); // => { "1": "c", "2": "b" }
  */
@@ -1162,7 +1242,7 @@ export function invert(bag is map) returns map {
 export function invertBy(bag is map, iteratee is function) returns map {
   var result = {};
   for (var key in keys(bag)) {
-    result = insertIntoMapOfArrays(result, iteratee(bag[key]), key);
+    result = insertIntoMapOfArrays(result, iteratee(bag[key], key), key);
   }
   return result;
 }

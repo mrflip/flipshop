@@ -64,7 +64,7 @@ export function runInvertTests(context is Context, verbose is boolean) returns m
 }
 
 export const InvertByCases = [
-  [[{ "a": 1, "b": 2, "c": 1 }, function(val) { return "" ~ val; }],  { "1": ["a", "c"], "2": ["b"] }],
+  [[{ "a": 1, "b": 2, "c": 1 }, function(val, _key) { return "" ~ val; }],  { "1": ["a", "c"], "2": ["b"] }],
 ];
 export function runInvertByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "invertBy", verbose, InvertByCases, function(args is array) { return invertBy(args[0], args[1]); });

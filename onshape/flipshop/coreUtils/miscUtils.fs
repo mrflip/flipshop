@@ -84,20 +84,23 @@ export function attempt(func is function) {
 
 /**
  * Builds a function that tries `pairs` (`[predicate, handler]`) in order, calling and returning
- * the first `handler` whose `predicate` holds `val`, or `undefined` if none does.
+ * the first `handler` whose `predicate` holds `val`, or `undefined` if none does — `predicate`
+ * and `handler` both get `(val, seq)`, the same two-argument shape every iterator in this file
+ * uses, and the returned function itself takes `(val, seq)` so it can sit in that same kind of
+ * slot.
  * @example
  *   const grade = cond([
- *     [(score) => score >= 90, constant("A")],
- *     [(score) => score >= 80, constant("B")],
- *     [constant(true),         constant("F")]
+ *     [(score, _seq) => score >= 90, constant("A")],
+ *     [(score, _seq) => score >= 80, constant("B")],
+ *     [constant(true),               constant("F")]
  *   ]);
- *   grade(95); // => "A"
- *   grade(70); // => "F"
+ *   grade(95, 0); // => "A"
+ *   grade(70, 0); // => "F"
  */
 export function cond(pairs is array) returns function {
-  return function(val) {
+  return function(val, seq) {
     for (var pair in pairs) {
-      if (pair[0](val)) { return pair[1](val); }
+      if (pair[0](val, seq)) { return pair[1](val, seq); }
     }
     return undefined;
   };
@@ -105,24 +108,27 @@ export function cond(pairs is array) returns function {
 
 /**
  * Curried `conformsTo`: builds a predicate that checks whether a given map conforms to `source`'s
- * per-key predicates.
+ * per-key predicates. Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot
+ * every iterator in this file does.
  * @example
- *   const isAdult = conforms({ "age": (age) => age >= 18 });
- *   isAdult({ "age": 20 }); // => true
+ *   const isAdult = conforms({ "age": (age, _key) => age >= 18 });
+ *   isAdult({ "age": 20 }, 0); // => true
  */
 export function conforms(source is map) returns function {
-  return (obj is map) => conformsTo(obj, source);
+  return (obj is map, _seq) => conformsTo(obj, source);
 }
 
 /**
  * Whether every predicate in `source` holds against the same-keyed value of `obj` — a key in
  * `source` but absent from `obj` reads as `undefined`, same as any other missing-key read.
+ * Each predicate gets `(val, key)`, matching how every other object-land iterator in this file
+ * hands a value's key as the second argument.
  * @example
- *   conformsTo({ "a": 1, "b": 2 }, { "b": (n) => n > 1 }); // => true
- *   conformsTo({ "a": 1, "b": 2 }, { "b": (n) => n > 2 }); // => false
+ *   conformsTo({ "a": 1, "b": 2 }, { "b": (n, _key) => n > 1 }); // => true
+ *   conformsTo({ "a": 1, "b": 2 }, { "b": (n, _key) => n > 2 }); // => false
  */
 export function conformsTo(obj is map, source is map) returns boolean {
-  return all(keys(source), (key) => source[key](obj[key]));
+  return all(keys(source), (key) => source[key](obj[key], key));
 }
 
 /**
@@ -174,64 +180,71 @@ export function iteratee(spec) returns function {
 /**
  * Builds a predicate that's `true` for any map holding `source`'s entries — a partial deep match,
  * via the `pick(obj, keys(source)) == source` trick (`==` is already deep structural equality).
+ * Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this
+ * file does.
  * @example
- *   matches({ "a": 1 })({ "a": 1, "b": 2 }); // => true
- *   matches({ "a": 1 })({ "a": 2, "b": 2 }); // => false
+ *   matches({ "a": 1 })({ "a": 1, "b": 2 }, 0); // => true
+ *   matches({ "a": 1 })({ "a": 2, "b": 2 }, 0); // => false
  */
 export function matches(source is map) returns function {
-  return (obj is map) => (pick(obj, keys(source)) == source);
+  return (obj is map, _seq) => (pick(obj, keys(source)) == source);
 }
 /**
  * Builds a predicate that's `true` when `path` of a given object equals `srcValue`, via `getAt`.
+ * Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this
+ * file does.
  * @example
- *   matchesProperty("a.b", 1)({ "a": { "b": 1 } }); // => true
+ *   matchesProperty("a.b", 1)({ "a": { "b": 1 } }, 0); // => true
  */
 export function matchesProperty(path, srcValue) returns function {
-  return (obj) => (getAt(obj, path) == srcValue);
+  return (obj, _seq) => (getAt(obj, path) == srcValue);
 }
 
 /**
- * Builds a function that calls every function in `funcs` with `val`, collecting results into an
- * array in `funcs`' order.
+ * Builds a function that calls every function in `funcs` with `(val, seq)`, collecting results
+ * into an array in `funcs`' order — the same two-argument shape every iterator in this file
+ * uses, forwarded to each of `funcs` in turn.
  * @example
- *   over([(val) => val + 1, (val) => val - 1])(5); // => [6, 4]
+ *   over([(val, _seq) => val + 1, (val, _seq) => val - 1])(5, 0); // => [6, 4]
  */
 export function over(funcs is array) returns function {
-  return (val) => mapValues(funcs, (func, _seq) => func(val));
+  return (val, seq) => mapValues(funcs, (func, _idx) => func(val, seq));
 }
 /**
- * Builds a predicate that's `true` only when every function in `funcs` returns truthy for `val`.
+ * Builds a predicate that's `true` only when every function in `funcs` returns truthy for
+ * `(val, seq)`.
  * @example
- *   overEvery([(val) => val > 0, (val) => val < 10])(5); // => true
+ *   overEvery([(val, _seq) => val > 0, (val, _seq) => val < 10])(5, 0); // => true
  */
 export function overEvery(funcs is array) returns function {
-  return (val) => all(funcs, (func) => func(val));
+  return (val, seq) => all(funcs, (func) => func(val, seq));
 }
 /**
- * Builds a predicate that's `true` when any function in `funcs` returns truthy for `val`.
+ * Builds a predicate that's `true` when any function in `funcs` returns truthy for `(val, seq)`.
  * @example
- *   overSome([(val) => val < 0, (val) => val > 10])(5); // => false
+ *   overSome([(val, _seq) => val < 0, (val, _seq) => val > 10])(5, 0); // => false
  */
 export function overSome(funcs is array) returns function {
-  return (val) => any(funcs, (func) => func(val));
+  return (val, seq) => any(funcs, (func) => func(val, seq));
 }
 
 /**
- * Builds a function that reads `path` off whatever it's given, via `getAt`.
+ * Builds a function that reads `path` off whatever it's given, via `getAt`. Returns
+ * `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this file does.
  * @example
- *   property("a.b")({ "a": { "b": 1 } }); // => 1
+ *   property("a.b")({ "a": { "b": 1 } }, 0); // => 1
  */
 export function property(path) returns function {
-  return (obj) => getAt(obj, path);
+  return (obj, _seq) => getAt(obj, path);
 }
 /**
  * The reverse of `property`: fixes the object up front and builds a function that reads whatever
- * path it's given off of it.
+ * path it's given off of it. Returns `(path, seq)`, discarding `seq`, for the same reason.
  * @example
- *   propertyOf({ "a": { "b": 1 } })("a.b"); // => 1
+ *   propertyOf({ "a": { "b": 1 } })("a.b", 0); // => 1
  */
 export function propertyOf(obj) returns function {
-  return (path) => getAt(obj, path);
+  return (path, _seq) => getAt(obj, path);
 }
 
 /**
@@ -246,15 +259,22 @@ export function rangeRight(from is number, to is number) returns array {
 }
 
 /**
- * Calls `func(seq)` for `seq` from `0` to `count - 1`, collecting results — `count < 1` returns
- * `[]`. With no `func` given, defaults to `identity`, so `times(3)` is just `[0, 1, 2]`.
+ * Calls `func(seq, seq)` for `seq` from `0` to `count - 1`, collecting results — `count < 1`
+ * returns `[]`. There's no second value to offer alongside the index, so `seq` fills both slots,
+ * the same two-argument shape every iterator in this file uses (a manual loop rather than std's
+ * `mapArray`, which only ever hands a callback one argument). With no `func` given, defaults to
+ * `identity`, so `times(3)` is just `[0, 1, 2]`.
  * @example
- *   times(3, (seq) => seq * seq); // => [0, 1, 4]
- *   times(3);                     // => [0, 1, 2]
+ *   times(3, (seq, _seq2) => seq * seq); // => [0, 1, 4]
+ *   times(3);                            // => [0, 1, 2]
  */
 export function times(count is number, func is function) returns array {
   if (count < 1) { return []; }
-  return mapArray(range(0, count - 1), func);
+  var result = makeArray(count);
+  for (var seq = 0; seq < count; seq += 1) {
+    result[seq] = func(seq, seq);
+  }
+  return result;
 }
 export function times(count is number) returns array {
   return times(count, identity);
