@@ -2,7 +2,6 @@ FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
-import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53"); // helperFuncs, for iteratee
 import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340"); // clxnGetset, for getAt/setAt
 
 // == [valuesAt]

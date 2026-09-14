@@ -1,10 +1,11 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "54590bc1c9cee0141b968fbb", version : "c6288b0ee53a3fd79915562f"); // clxn for flatMap, mapValues
-import(path : "66e287bede293cb227dfb89c", version : "fdb086499ae795a21af26725"); // ifNil &c
-import(path : "dd812faf6ff4099cda4aa0eb", version : "fe205ef425e3a7b0e6f43229"); // strUtils for hasNatch
-import(path : "08b6ba15b8255611bafe7520", version : "1e6e0baae135d1e3f89931d2"); // helperFuncs, for iteratee & identity
+import(path : "54590bc1c9cee0141b968fbb", version : "4bd6c845a2f67b3868ae7632"); // clxn for flatMap, mapValues
+import(path : "66e287bede293cb227dfb89c", version : "f5db6953645e7ce84f7591c0"); // ifNil &c
+import(path : "dd812faf6ff4099cda4aa0eb", version : "4e9280895db387eb34594ef9"); // strUtils for hasNatch
+import(path : "08b6ba15b8255611bafe7520", version : "f10d0d385cd8835dbe66a5dc"); // helperFuncs, for iteratee & identity
+import(path : "607f97fc690581579d1d4a08", version : "edd393c457dca9e8660ae895"); // clxnGetset, for iteratee
 
 export function strOrderBy(vals is array) returns array {
   var bucket = {};

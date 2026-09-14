@@ -555,9 +555,9 @@ export const ForEachKeylistBreakCases = [
   [[ { a: 1, b: undefined, c: 3 }, ["a", "b", "c"], MissingPolicy.USE_UNDEFINED, "b" ],
    [["a", 1, 0], ["b", undefined, 1]],
    'USE_UNDEFINED visits the undefined "b" entry (consuming a seq slot) and can still match on it'],
-  [[ { a: 1, b: 2 }, ["a", "a", "b"], "a" ],
-   [["a", 1, 0], ["a", 1, 1]],
-   'a keylist entry repeated twice is visited (and can match) twice, each consuming its own seq slot'],
+  [[ { a: 1, b: 2 }, ["a", "a", "b", "z", "b", "z"], "b" ],
+   [["a", 1, 0], ["a", 1, 1], ["b", 2, 2]],
+   'a keylist entry repeated twice is visited (and can match) twice, each consuming its own seq slot, and BREAK at the first "b" leaves the trailing "z"/"b"/"z" unvisited'],
 ];
 export function runForEachKeylistBreakTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "forEach(keylist) BREAK", verbose, ForEachKeylistBreakCases, function(args is array) {

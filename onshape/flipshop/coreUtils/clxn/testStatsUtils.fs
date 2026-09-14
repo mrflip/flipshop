@@ -48,7 +48,7 @@ export function runInRangeTests(context is Context, verbose is boolean) returns 
 
 // == [maxBy / minBy] ==
 
-const byN = function(val) { return val.n; };
+const byN = function(val, _seq) { return val.n; };
 
 export const MaxByCases = [
   [[[{ n: 1 }, { n: 3 }, { n: 2 }], byN],  { n: 3 }],
