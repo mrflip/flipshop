@@ -54,7 +54,7 @@ export const IdsForCases = [
   [[newId(), []],              []],
   [[newId(), ["only"]],        ["only"]],
 ];
-export function runIdsForTests(context is Context, verbose is boolean) returns map {
+function runIdsForTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "idsFor", verbose, IdsForCases, function(args is array) { return keys(idsFor(args[0], args[1])); });
 }
 
@@ -63,7 +63,7 @@ export function runIdsForTests(context is Context, verbose is boolean) returns m
 export const NoopCases = [
   [[], undefined],
 ];
-export function runNoopTests(context is Context, verbose is boolean) returns map {
+function runNoopTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "noop", verbose, NoopCases, function(args is array) { return noop0(); });
 }
 
@@ -77,7 +77,7 @@ export const CurryCases = [
   [[curry3to1(function(val) { return val; }),                   1, 2, 3], 1,        'curry3to1 keeps only the first argument'],
   [[curry3to2(function(val1, val2) { return [val1, val2]; }),   1, 2, 3], [1, 2],   'curry3to2 keeps the first two arguments, drops the third'],
 ];
-export function runCurryTests(context is Context, verbose is boolean) returns map {
+function runCurryTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "curryNtoM", verbose, CurryCases, function(args is array) {
     const curried = args[0];
     return (size(args) == 3) ? curried(args[1], args[2]) : curried(args[1], args[2], args[3]);
@@ -90,7 +90,7 @@ export const ParseJsonSafelyCases = [
   [['{"a": 1, "b": [1, 2, 3]}'],                       { "a": 1, "b": [1, 2, 3] }],
   [['{"a": 1, "b": [1, 2, 3]}', { "detectUnits": false }], { "a": 1, "b": [1, 2, 3] }],
 ];
-export function runParseJsonSafelyTests(context is Context, verbose is boolean) returns map {
+function runParseJsonSafelyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "parseJsonSafely", verbose, ParseJsonSafelyCases, function(args is array) {
     return (size(args) <= 1) ? parseJsonSafely(args[0]) : parseJsonSafely(args[0], args[1]);
   });
@@ -102,7 +102,7 @@ export const RangeRightCases = [
   [[0, 3], [3, 2, 1, 0]],
   [[2, 2], [2],           'from == to is a single-element range'],
 ];
-export function runRangeRightTests(context is Context, verbose is boolean) returns map {
+function runRangeRightTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "rangeRight", verbose, RangeRightCases, function(args is array) { return rangeRight(args[0], args[1]); });
 }
 
@@ -112,7 +112,7 @@ export const AttemptCases = [
   [[function() { return 42; }],    42],
   [[function() { throw "boom"; }], "boom", 'a thrown value comes back instead of propagating'],
 ];
-export function runAttemptTests(context is Context, verbose is boolean) returns map {
+function runAttemptTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "attempt", verbose, AttemptCases, function(args is array) { return attempt(args[0]); });
 }
 
@@ -128,7 +128,7 @@ export const CondCases = [
   [[gradeCond, 82], "B"],
   [[gradeCond, 70], "F"],
 ];
-export function runCondTests(context is Context, verbose is boolean) returns map {
+function runCondTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cond", verbose, CondCases, function(args is array) { return args[0](args[1], 0); });
 }
 
@@ -139,7 +139,7 @@ export const ConformsCases = [
   [[isAdultConforms, { "age": 20 }], true],
   [[isAdultConforms, { "age": 10 }], false],
 ];
-export function runConformsTests(context is Context, verbose is boolean) returns map {
+function runConformsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "conforms", verbose, ConformsCases, function(args is array) { return args[0](args[1], 0); });
 }
 
@@ -147,7 +147,7 @@ export const ConformsToCases = [
   [[{ "a": 1, "b": 2 }, { "b": (n, _key) => n > 1 }], true],
   [[{ "a": 1, "b": 2 }, { "b": (n, _key) => n > 2 }], false],
 ];
-export function runConformsToTests(context is Context, verbose is boolean) returns map {
+function runConformsToTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "conformsTo", verbose, ConformsToCases, function(args is array) { return conformsTo(args[0], args[1]); });
 }
 
@@ -157,7 +157,7 @@ export const ConstantCases = [
   [[constant(5)],           5],
   [[constant({ "a": 1 })], { "a": 1 }],
 ];
-export function runConstantTests(context is Context, verbose is boolean) returns map {
+function runConstantTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "constant", verbose, ConstantCases, function(args is array) { return args[0]("ignored", undefined); });
 }
 
@@ -168,7 +168,7 @@ export const IdentityCases = [
   [[{ "a": 1 }], { "a": 1 }],
   [[[1, 2, 3]],  [1, 2, 3]],
 ];
-export function runIdentityTests(context is Context, verbose is boolean) returns map {
+function runIdentityTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "identity", verbose, IdentityCases, function(args is array) { return identity(args[0], undefined); });
 }
 
@@ -179,7 +179,7 @@ export const IterateeCases = [
   [[{ "a": 1 },  { "a": 1, "b": 2 }],    true, 'map spec becomes a matches predicate'],
   [[identity,    5],                     5,    'function spec passes through unchanged'],
 ];
-export function runIterateeTests(context is Context, verbose is boolean) returns map {
+function runIterateeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "iteratee", verbose, IterateeCases, function(args is array) { return iteratee(args[0])(args[1], 0); });
 }
 
@@ -189,7 +189,7 @@ export const MatchesCases = [
   [[{ "a": 1 }, { "a": 1, "b": 2 }], true],
   [[{ "a": 1 }, { "a": 2, "b": 2 }], false],
 ];
-export function runMatchesTests(context is Context, verbose is boolean) returns map {
+function runMatchesTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "matches", verbose, MatchesCases, function(args is array) { return matches(args[0])(args[1], 0); });
 }
 
@@ -197,7 +197,7 @@ export const MatchesPropertyCases = [
   [["a.b", 1, { "a": { "b": 1 } }], true],
   [["a.b", 2, { "a": { "b": 1 } }], false],
 ];
-export function runMatchesPropertyTests(context is Context, verbose is boolean) returns map {
+function runMatchesPropertyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "matchesProperty", verbose, MatchesPropertyCases, function(args is array) { return matchesProperty(args[0], args[1])(args[2], 0); });
 }
 
@@ -206,7 +206,7 @@ export function runMatchesPropertyTests(context is Context, verbose is boolean) 
 export const OverCases = [
   [[[(val, _seq) => val + 1, (val, _seq) => val - 1], 5], [6, 4]],
 ];
-export function runOverTests(context is Context, verbose is boolean) returns map {
+function runOverTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "over", verbose, OverCases, function(args is array) { return over(args[0])(args[1], 0); });
 }
 
@@ -214,7 +214,7 @@ export const OverEveryCases = [
   [[[(val, _seq) => val > 0, (val, _seq) => val < 10], 5],  true],
   [[[(val, _seq) => val > 0, (val, _seq) => val < 10], 15], false],
 ];
-export function runOverEveryTests(context is Context, verbose is boolean) returns map {
+function runOverEveryTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "overEvery", verbose, OverEveryCases, function(args is array) { return overEvery(args[0])(args[1], 0); });
 }
 
@@ -222,7 +222,7 @@ export const OverSomeCases = [
   [[[(val, _seq) => val < 0, (val, _seq) => val > 10], 5],  false],
   [[[(val, _seq) => val < 0, (val, _seq) => val > 10], 15], true],
 ];
-export function runOverSomeTests(context is Context, verbose is boolean) returns map {
+function runOverSomeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "overSome", verbose, OverSomeCases, function(args is array) { return overSome(args[0])(args[1], 0); });
 }
 
@@ -232,14 +232,14 @@ export const PropertyCases = [
   [["a.b", { "a": { "b": 1 } }], 1],
   [["a.c", { "a": { "b": 1 } }], undefined],
 ];
-export function runPropertyTests(context is Context, verbose is boolean) returns map {
+function runPropertyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "property", verbose, PropertyCases, function(args is array) { return property(args[0])(args[1], 0); });
 }
 
 export const PropertyOfCases = [
   [[{ "a": { "b": 1 } }, "a.b"], 1],
 ];
-export function runPropertyOfTests(context is Context, verbose is boolean) returns map {
+function runPropertyOfTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "propertyOf", verbose, PropertyOfCases, function(args is array) { return propertyOf(args[0])(args[1], 0); });
 }
 
@@ -250,7 +250,7 @@ export const TimesCases = [
   [[3],                         [0, 1, 2], 'no func given defaults to identity'],
   [[0, identity],               []],
 ];
-export function runTimesTests(context is Context, verbose is boolean) returns map {
+function runTimesTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "times", verbose, TimesCases, function(args is array) {
     return (size(args) == 1) ? times(args[0]) : times(args[0], args[1]);
   });

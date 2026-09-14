@@ -27,6 +27,7 @@ precondition {
     runIfZeroNumberTests(context, verbose);
     runIfZeroVWUTests(context, verbose);
     runIsEmptyTests(context, verbose);
+    runSizeofTests(context, verbose);
     runVector2Tests(context, verbose);
     runCastArrayTests(context, verbose);
     //
@@ -133,6 +134,32 @@ export const IsEmptyCases = [
 ];
 export function runIsEmptyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "isEmpty", verbose, IsEmptyCases, function(args is array) { return isEmpty(args[0]); });
+}
+
+const SizeofCases = [
+  [[ []                             ],  0],
+  [[ {}                             ],  0],
+  [[ undefined                      ],  0],
+  [[ ""                             ],  0],
+  // arrays
+  [[ [[]]                           ],  1],
+  [[ [{}]                           ],  1],
+  [[ [undefined]                    ],  1],
+  [[ [0]                            ],  1],
+  [[ [0, 1, 2]                      ],  3],
+  // keys with undefined values are removed!!
+  [[ { a: undefined }               ],  0],
+  [[ { a: undefined, b: [], c: "" } ],  2],
+  //
+  [[ { a: 1 }                       ],  1],
+  [[ { a: 1, b: 2 }                 ],  2],
+  // strings
+  [[ "12345"                        ],  5],
+];
+
+
+export function runSizeofTests(context is Context, verbose is boolean) returns map {
+    return runTests(context, "sizeof", verbose, SizeofCases, function(args is array) { return sizeof(args[0]); });
 }
 
 // == [vector2] ==

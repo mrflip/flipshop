@@ -26,7 +26,6 @@ precondition {
   try {
     const verbose = ifNil(definition.verbose, false);
     runLanguageStupiditiesTests(context, verbose);
-    runSizeofTests(context, verbose);
     runRegexTests(context, verbose);
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -43,8 +42,8 @@ function wthComparison(aa, bb) {
   }
 }
 
+// NOTE! this is not how you use runTests, it is generating the value *in* the fixture, not args to a function
 function runLanguageStupiditiesTests(context is Context, verbose is boolean) returns map {
-
   return runTests(context, "testLanguageStupidities", verbose, [
       [[{ a: undefined }],          {},                    'keys with undefined values are silently dropped'],
       [[splitByRegexp("!!!", "!")], ["", "", ""],          'should have four segments; terminal empty segment discarded'],
@@ -64,29 +63,6 @@ function runLanguageStupiditiesTests(context is Context, verbose is boolean) ret
 
       [[mergeMaps({ foo: { a: 1, b: 1 } }, { foo: { b: 2, c: 2 } })], { foo: { b:2, c: 2 } }, "mergeMaps does not merge maps, it clobbers any keys that collide even if their values are maps"],
   ], (args) => args[0]);
-}
-
-export function runSizeofTests(context is Context, verbose is boolean) returns map {
-    return runTests(context, "sizeof", verbose, [
-        [[ []                             ],  0],
-        [[ {}                             ],  0],
-        [[ undefined                      ],  0],
-        [[ ""                             ],  0],
-        // arrays
-        [[ [[]]                           ],  1],
-        [[ [{}]                           ],  1],
-        [[ [undefined]                    ],  1],
-        [[ [0]                            ],  1],
-        [[ [0, 1, 2]                      ],  3],
-        // keys with undefined values are removed!!
-        [[ { a: undefined }               ],  0],
-        [[ { a: undefined, b: [], c: "" } ],  2],
-        //
-        [[ { a: 1 }                       ],  1],
-        [[ { a: 1, b: 2 }                 ],  2],
-        // strings
-        [[ "12345"                        ],  5],
-    ], function(args is array) { return sizeof(args[0]); });
 }
 
 function runRegexTests(context is Context, verbose is boolean) returns map {

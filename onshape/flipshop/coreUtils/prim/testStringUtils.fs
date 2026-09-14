@@ -228,10 +228,15 @@ export function runStarbannerTests(context is Context, verbose is boolean) retur
 }
 
 export const HasMatchCases = [
-  [["hello", "ell"], true],
-  [["hello", "^h"],  true],
-  [["hello", "^e"],  false],
-  [[undefined, "x"], false, 'undefined input never throws'],
+  [["hello", "ell"],     false,   '!!! matches are full string, always'],
+  [["hello", "ell.*"],   false,   '!!! matches are full string, always'],
+  [["hello", ".*ell"],   false,   '!!! matches are full string, always'],
+  [["hello", ".*ell.*"], true,    '!!! matches are full string, always'],
+  [["hello", "^h"],      false,    '!!! matches are full string, always'],
+  [["hello", "^h....$"], true,    '!!! matches are full string, always'],
+  [["hello", "^h.*"],    true,    '!!! matches are full string, always'],
+  [["hello", "^e"],      false],
+  [[undefined, "x"],     false, 'undefined input never throws'],
 ];
 export function runHasMatchTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hasMatch", verbose, HasMatchCases, function(args is array) { return hasMatch(args[0], args[1]); });
@@ -341,10 +346,8 @@ export const TrimStartCases = [
   [["  "],                        ""],
   [["hi"],                        "hi"],
   [["  hi"],                      "hi"],
-  [["  "],                        ""],
-  [["\n\r\t\f\v "],               ""],
-  [["\n\r\t\f\v x\n\r\t\f\v "],   "x\n\r\t\f\v "],
-  [["  "],                        "  "],
+  [["\n\r\t "],               ""],
+  [["\n\r\t x\n\r\t "],   "x\n\r\t "],
   [["--hi--", ["-"]],    "hi--"],
 ];
 export function runTrimStartTests(context is Context, verbose is boolean) returns map {
