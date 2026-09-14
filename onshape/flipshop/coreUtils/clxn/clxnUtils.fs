@@ -450,24 +450,28 @@ export function boxarrUnshift(arrRef is box, val) {
 // == [Lodash Collection ports] -- countBy, find, findLast, flatMap*, forEachRight, groupBy, partition, reduceRight, reject
 
 /**
- * Map of `iteratee(val, seq)` (array) / `iteratee(val, key)` (map) results to how many elements
- * of `arr`/`bag` produced that result — `seq`/`key` match `forEach`'s split between index and key.
+ * Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to how many
+ * elements of `arr`/`bag` produced that result — `seq`/`key` match `forEach`'s split between
+ * index and key. `iterateeSpec` is coerced through `iteratee`, so a property-path string,
+ * `[path, srcValue]` array, or partial-match map works in place of a literal function.
  * @example
  *   countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
  *   countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }
  */
-export function countBy(arr is array, iteratee is function) returns map {
+export function countBy(arr is array, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
   var result = {};
   for (var seq = 0; seq < size(arr); seq += 1) {
-    const key = iteratee(arr[seq], seq);
+    const key = fn(arr[seq], seq);
     result[key] = ifNil(result[key], 0) + 1;
   }
   return result;
 }
-export function countBy(bag is map, iteratee is function) returns map {
+export function countBy(bag is map, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
   var result = {};
   for (var key in keys(bag)) {
-    const groupKey = iteratee(bag[key], key);
+    const groupKey = fn(bag[key], key);
     result[groupKey] = ifNil(result[groupKey], 0) + 1;
   }
   return result;
@@ -476,31 +480,35 @@ export function countBy(bag is map, iteratee is function) returns map {
 /**
  * First element of `bag`/`arr` for which `rule` holds, or `undefined` if none does — the array
  * form dereferences `arrayUtils`' `findIndex`; the map form walks `keys(bag)` and hands `rule`
- * the key as a second argument. `findLast` scans from the end instead.
+ * the key as a second argument. `findLast` scans from the end instead. `rule` is coerced through
+ * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
+ * place of a literal function.
  * @example
  *   find([1, 2, 3], (val) => val > 1); // => 2
  *   find({ a: 1, b: 2 }, (val, key) => key == "b"); // => 2
  */
-export function find(arr is array, rule is function) {
-  const seq = findIndex(arr, rule);
+export function find(arr is array, rule) {
+  const seq = findIndex(arr, iteratee(rule));
   return (seq == -1) ? undefined : arr[seq];
 }
-export function find(bag is map, rule is function) {
+export function find(bag is map, rule) {
+  const fn = iteratee(rule);
   for (var key in keys(bag)) {
-    if (rule(bag[key], key)) { return bag[key]; }
+    if (fn(bag[key], key)) { return bag[key]; }
   }
   return undefined;
 }
 /** `find`, scanning from the end — `findLastIndex`, dereferenced, or `keys(bag)` walked in reverse. */
-export function findLast(arr is array, rule is function) {
-  const seq = findLastIndex(arr, rule);
+export function findLast(arr is array, rule) {
+  const seq = findLastIndex(arr, iteratee(rule));
   return (seq == -1) ? undefined : arr[seq];
 }
-export function findLast(bag is map, rule is function) {
+export function findLast(bag is map, rule) {
+  const fn = iteratee(rule);
   const keylist = keys(bag);
   for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
     const key = keylist[seq];
-    if (rule(bag[key], key)) { return bag[key]; }
+    if (fn(bag[key], key)) { return bag[key]; }
   }
   return undefined;
 }
@@ -557,24 +565,28 @@ export function forEachRight(bag is map, func is function) {
 }
 
 /**
- * Map of `iteratee(val, seq)` (array) / `iteratee(val, key)` (map) results to the elements of
- * `arr`/`bag` that produced each one, via std's `insertIntoMapOfArrays`.
+ * Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to the
+ * elements of `arr`/`bag` that produced each one, via std's `insertIntoMapOfArrays`.
+ * `iterateeSpec` is coerced through `iteratee`, so a property-path string, `[path, srcValue]`
+ * array, or partial-match map works in place of a literal function.
  * @example
  *   groupBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd");
  *   // => { "odd": [1, 3], "even": [2, 4] }
  */
-export function groupBy(arr is array, iteratee is function) returns map {
+export function groupBy(arr is array, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
   var result = {};
   for (var seq = 0; seq < size(arr); seq += 1) {
     const val = arr[seq];
-    result = insertIntoMapOfArrays(result, iteratee(val, seq), val);
+    result = insertIntoMapOfArrays(result, fn(val, seq), val);
   }
   return result;
 }
-export function groupBy(bag is map, iteratee is function) returns map {
+export function groupBy(bag is map, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
   var result = {};
   for (var key in keys(bag)) {
-    result = insertIntoMapOfArrays(result, iteratee(bag[key], key), bag[key]);
+    result = insertIntoMapOfArrays(result, fn(bag[key], key), bag[key]);
   }
   return result;
 }
@@ -582,16 +594,19 @@ export function groupBy(bag is map, iteratee is function) returns map {
 /**
  * `[passed, failed]` — `bag`/`arr` split into the elements for which `rule` holds and the ones
  * for which it doesn't, keeping visiting order. `rule` gets `(val, seq)` (array) or `(val, key)`
- * (map); the map form returns values only, same as lodash's collection form.
+ * (map); the map form returns values only, same as lodash's collection form. `rule` is coerced
+ * through `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map
+ * works in place of a literal function.
  * @example
  *   partition([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [[2, 4], [1, 3]]
  */
-export function partition(arr is array, rule is function) returns array {
+export function partition(arr is array, rule) returns array {
+  const fn = iteratee(rule);
   var passed = [];
   var failed = [];
   for (var seq = 0; seq < size(arr); seq += 1) {
     const val = arr[seq];
-    if (rule(val, seq)) {
+    if (fn(val, seq)) {
       passed = append(passed, val);
     } else {
       failed = append(failed, val);
@@ -599,11 +614,12 @@ export function partition(arr is array, rule is function) returns array {
   }
   return [passed, failed];
 }
-export function partition(bag is map, rule is function) returns array {
+export function partition(bag is map, rule) returns array {
+  const fn = iteratee(rule);
   var passed = [];
   var failed = [];
   for (var key in keys(bag)) {
-    if (rule(bag[key], key)) {
+    if (fn(bag[key], key)) {
       passed = append(passed, bag[key]);
     } else {
       failed = append(failed, bag[key]);
@@ -656,21 +672,25 @@ export function reduceRight(bag is map, foldFunction is function) {
 /**
  * Elements of `bag`/`arr` for which `rule` does *not* hold — the inverse of `filter` *(std)*, whose
  * `filterFunction` only ever gets one argument, so this walks `arr` by index instead in order to
- * hand `rule` `(val, seq)`; the map form gets `(val, key)` and returns values only.
+ * hand `rule` `(val, seq)`; the map form gets `(val, key)` and returns values only. `rule` is
+ * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-
+ * match map works in place of a literal function.
  * @example
  *   reject([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [1, 3]
  */
-export function reject(arr is array, rule is function) returns array {
+export function reject(arr is array, rule) returns array {
+  const fn = iteratee(rule);
   var result = [];
   for (var seq = 0; seq < size(arr); seq += 1) {
-    if (! rule(arr[seq], seq)) { result = append(result, arr[seq]); }
+    if (! fn(arr[seq], seq)) { result = append(result, arr[seq]); }
   }
   return result;
 }
-export function reject(bag is map, rule is function) returns array {
+export function reject(bag is map, rule) returns array {
+  const fn = iteratee(rule);
   var result = [];
   for (var key in keys(bag)) {
-    if (! rule(bag[key], key)) { result = append(result, bag[key]); }
+    if (! fn(bag[key], key)) { result = append(result, bag[key]); }
   }
   return result;
 }
@@ -1282,28 +1302,34 @@ export function zipWith(arrList is array, iteratee is function) returns array {
 
 /**
  * First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findLastKey` scans in the reverse of `keys(bag)` order.
+ * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`,
+ * so a property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal function.
  * @example
  *   findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
  */
-export function findKey(bag is map, rule is function) {
+export function findKey(bag is map, rule) {
+  const fn = iteratee(rule);
   for (var key in keys(bag)) {
-    if (rule(bag[key], key)) { return key; }
+    if (fn(bag[key], key)) { return key; }
   }
   return undefined;
 }
 
 /**
  * Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findKey` scans in the reverse of `keys(bag)` order.
+ * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal function.
  * @example
  *   findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
  */
-export function findLastKey(bag is map, rule is function) {
+export function findLastKey(bag is map, rule) {
+  const fn = iteratee(rule);
   const keylist = keys(bag);
   for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
     const key = keylist[seq];
-    if (rule(bag[key], key)) { return key; }
+    if (fn(bag[key], key)) { return key; }
   }
   return undefined;
 }
