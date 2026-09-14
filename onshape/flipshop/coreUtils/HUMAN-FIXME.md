@@ -86,10 +86,12 @@ inside `iteratee()` itself, plus every affected caller:
 
 ### `clxn/clxnUtils.fs` (beyond the iteratee-coercion item above)
 
-* `take`/`takeRight`/`takeWhile`/`takeRightWhile` have no default-argument overload — their
-  siblings do (`drop`/`dropRight` default count to `1`; `dropWhile`/`dropRightWhile` default the
-  rule to `truthy`), matching lodash's `[n=1]`/`[predicate=_.identity]` defaults on all eight
-  functions, but only the `drop*` half of the family got the convenience overload here.
+* ~~`take`/`takeRight`/`takeWhile`/`takeRightWhile` have no default-argument overload~~ —
+  resolved: all four now default the same way their `drop*` siblings already did (count to `1`,
+  rule to `truthy`). Fixing this also surfaced a real arity bug in `dropWhile`/`dropRightWhile`'s
+  own 1-arg overloads — they called their default `truthy` with `(val, seq)`, but `truthy` is a
+  1-arg function; fixed by defaulting to `curry2to1(truthy)` instead, same fix applied to the new
+  `takeWhile`/`takeRightWhile` 1-arg overloads.
 * `chunk(arr, chunkSize)` requires `chunkSize`; lodash's `chunk(array, [size=1])` defaults it.
 * `pick`/`omit` only accept a literal top-level key list; lodash's `_.pick`/`_.omit` accept a
   dotted/deep path (`_.pick(obj, ['a.b.c'])`) the way this project's own `getAt`/`setAt`

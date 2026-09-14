@@ -89,10 +89,10 @@ The ones with a `3` suffix (eg mapValues3) will call `func(val, seq, iteration i
 | ------------------------------------------ | ---------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `chunk`                                    | ≡          | Split an array into groups of `chunkSize` elements.                           | Last group holds the remainder; `chunkSize < 1` → `[]`.                          |
 | `compact`                                  | ≡          | Remove falsey values from an array.                                           | Only `undefined`/`false` are falsey in FeatureScript, so `0` and `""` survive.   |
-| `drop` / `dropRight`                       | ≡          | Drop `n` elements from the front/back.                                        |                                                                                  |
-| `dropWhile` / `dropRightWhile`             | ≡          | Drop elements from the front/back while a rule holds.                         |                                                                                  |
-| `take` / `takeRight`                       | ≡          | Take `n` elements from the front/back.                                        |                                                                                  |
-| `takeWhile` / `takeRightWhile`             | ≡          | Take elements from the front/back while a rule holds.                         |                                                                                  |
+| `drop` / `dropRight`                       | ≡          | Drop `n` elements from the front/back.                                        | `n` defaults to `1`.                                                            |
+| `dropWhile` / `dropRightWhile`             | ≡          | Drop elements from the front/back while a rule holds.                         | Rule defaults to `truthy`.                                                      |
+| `take` / `takeRight`                       | ≡          | Take `n` elements from the front/back.                                        | `n` defaults to `1`, matching `drop`/`dropRight`.                               |
+| `takeWhile` / `takeRightWhile`             | ≡          | Take elements from the front/back while a rule holds.                         | Rule defaults to `truthy`, matching `dropWhile`/`dropRightWhile`.               |
 | `findIndex` / `findLastIndex`              | ≡          | Index of the first/last element matching a rule, or `-1`.                     | No `fromIndex` argument.                                                         |
 | `lastIndexOf`                              | ≡          | Index of the last occurrence of a value, or `-1`.                             | No `fromIndex` argument.                                                         |
 | `flatten` / `flattenDeep` / `flattenDepth` | ≡          | Flatten an array one level / fully / `n` levels deep.                         |                                                                                  |
@@ -405,6 +405,12 @@ No lodash correspondence — viewport highlighting.
   rejecting them. `setAt(arr, "5", val)` on a shorter array would have received `Sentinel.ABSENT`
   as the placement index instead of `5`, rather than padding the array as documented. Fixed to
   call `seqForPlacement(arr, stringToNumber(seq))`.
+* **`clxn/clxnUtils.fs`:** `dropWhile`/`dropRightWhile`'s 1-arg overloads defaulted their rule to
+  bare `truthy` — a 1-arg function — but their own bodies call `rule(val, seq)` with two
+  arguments, an arity mismatch that would throw the moment either 1-arg overload actually ran.
+  Surfaced while adding the matching `take`/`takeRight`/`takeWhile`/`takeRightWhile` default
+  overloads. Fixed to default to `curry2to1(truthy)` instead, applied to the new `takeWhile`/
+  `takeRightWhile` 1-arg overloads too.
 * **`fancy/testColorUtils.fs`:** the whole file was replaced — `runColorRoundtripTests` wrapped
   its body in a bare `try { }` with no `catch`, which isn't valid FeatureScript (only `try silent
   { }` and `try { } catch (error) { }` are), and even if it had compiled, the mismatches it

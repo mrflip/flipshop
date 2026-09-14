@@ -838,7 +838,7 @@ export function dropRightWhile(arr is array, rule is function) returns array {
   }
   return subArray(arr, 0, seq);
 }
-export function dropRightWhile(arr is array) returns array { return dropRightWhile(arr, truthy); }
+export function dropRightWhile(arr is array) returns array { return dropRightWhile(arr, curry2to1(truthy)); }
 
 /**
  * `arr` with elements dropped from the beginning for as long as `rule` holds.
@@ -852,7 +852,7 @@ export function dropWhile(arr is array, rule is function) returns array {
   }
   return subArray(arr, seq);
 }
-export function dropWhile(arr is array) returns array { return dropWhile(arr, truthy); }
+export function dropWhile(arr is array) returns array { return dropWhile(arr, curry2to1(truthy)); }
 
 /**
  * Index of the first element of `arr` for which `rule` holds, or `-1` if none does.
@@ -1100,25 +1100,32 @@ export function tail(arr is array) returns array {
 }
 
 /**
- * First `takeCount` elements of `arr`; `takeCount <= 0` returns `[]`.
+ * First `takeCount` elements of `arr`; `takeCount <= 0` returns `[]`. With no `takeCount` given,
+ * defaults to `1`, matching `drop`'s own default.
  * @example
  *   take([1, 2, 3], 2); // => [1, 2]
+ *   take([1, 2, 3]);    // => [1]
  */
 export function take(arr is array, takeCount is number) returns array {
   return subArray(arr, 0, clamp(takeCount, 0, size(arr)));
 }
+export function take(arr is array) returns array { return take(arr, 1); }
 
 /**
- * Last `takeCount` elements of `arr`; `takeCount <= 0` returns `[]`.
+ * Last `takeCount` elements of `arr`; `takeCount <= 0` returns `[]`. With no `takeCount` given,
+ * defaults to `1`, matching `dropRight`'s own default.
  * @example
  *   takeRight([1, 2, 3], 2); // => [2, 3]
+ *   takeRight([1, 2, 3]);    // => [3]
  */
 export function takeRight(arr is array, takeCount is number) returns array {
   return subArray(arr, size(arr) - clamp(takeCount, 0, size(arr)));
 }
+export function takeRight(arr is array) returns array { return takeRight(arr, 1); }
 
 /**
- * Elements taken from the end of `arr` for as long as `rule` holds.
+ * Elements taken from the end of `arr` for as long as `rule` holds. With no `rule` given,
+ * defaults to `truthy`, matching `dropRightWhile`'s own default.
  * @example
  *   takeRightWhile([1, 2, 3, 4], (val) => val > 2); // => [3, 4]
  */
@@ -1129,9 +1136,11 @@ export function takeRightWhile(arr is array, rule is function) returns array {
   }
   return subArray(arr, seq);
 }
+export function takeRightWhile(arr is array) returns array { return takeRightWhile(arr, curry2to1(truthy)); }
 
 /**
- * Elements taken from the beginning of `arr` for as long as `rule` holds.
+ * Elements taken from the beginning of `arr` for as long as `rule` holds. With no `rule` given,
+ * defaults to `truthy`, matching `dropWhile`'s own default.
  * @example
  *   takeWhile([1, 2, 3, 4], (val) => val < 3); // => [1, 2]
  */
@@ -1142,6 +1151,7 @@ export function takeWhile(arr is array, rule is function) returns array {
   }
   return subArray(arr, 0, seq);
 }
+export function takeWhile(arr is array) returns array { return takeWhile(arr, curry2to1(truthy)); }
 
 /**
  * Deduplicated concatenation of every array in `arrList`, ordered by first occurrence.
