@@ -1003,17 +1003,20 @@ export function lastIndexOf(arr is array, val) returns number {
 }
 
 /**
- * Element of `arr` for which `iteratee(val)` is greatest, or `undefined` for an empty `arr` —
- * std's array `max` picks the greatest value itself; this picks the element behind the greatest
- * *computed* value.
+ * Element of `arr` for which `iterateeSpec(val, seq)` is greatest, or `undefined` for an empty
+ * `arr` — std's array `max` picks the greatest value itself; this picks the element behind the
+ * greatest *computed* value. `iterateeSpec` is coerced through `iteratee`, so a property-path
+ * string, `[path, srcValue]` array, or partial-match map works in place of a literal function.
  * @example
  *   maxBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 3 }
  */
-export function maxBy(arr is array, iteratee is function) {
+export function maxBy(arr is array, iterateeSpec) {
+  const fn = iteratee(iterateeSpec);
   var bestVal = undefined;
   var bestKey = undefined;
-  for (var val in arr) {
-    const key = iteratee(val);
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    const key = fn(val, seq);
     if (bestKey == undefined || key > bestKey) {
       bestVal = val;
       bestKey = key;
@@ -1023,25 +1026,31 @@ export function maxBy(arr is array, iteratee is function) {
 }
 
 /**
- * Average of `iteratee(val)` across `arr` — `average` *(std)*, iteratee-mapped.
+ * Average of `iterateeSpec(val, seq)` across `arr` — `average` *(std)*, mapped via `mapValues`,
+ * which also supplies `mapValues`' own `iteratee` coercion: a property-path string,
+ * `[path, srcValue]` array, or partial-match map works in place of a literal function.
  * @example
  *   meanBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 3
  */
-export function meanBy(arr is array, iteratee is function) {
-  return average(mapArray(arr, iteratee));
+export function meanBy(arr is array, iterateeSpec) {
+  return average(mapValues(arr, iterateeSpec));
 }
 
 /**
- * `maxBy`'s counterpart: element of `arr` for which `iteratee(val)` is least, or `undefined` for
- * an empty `arr`.
+ * `maxBy`'s counterpart: element of `arr` for which `iterateeSpec(val, seq)` is least, or
+ * `undefined` for an empty `arr`. `iterateeSpec` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal function.
  * @example
  *   minBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 1 }
  */
-export function minBy(arr is array, iteratee is function) {
+export function minBy(arr is array, iterateeSpec) {
+  const fn = iteratee(iterateeSpec);
   var bestVal = undefined;
   var bestKey = undefined;
-  for (var val in arr) {
-    const key = iteratee(val);
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    const key = fn(val, seq);
     if (bestKey == undefined || key < bestKey) {
       bestVal = val;
       bestKey = key;
@@ -1063,12 +1072,14 @@ export function nth(arr is array, seq is number) {
 }
 
 /**
- * Sum of `iteratee(val)` across `arr` — `sum` *(std)*, iteratee-mapped.
+ * Sum of `iterateeSpec(val, seq)` across `arr` — `sum` *(std)*, mapped via `mapValues`, which
+ * also supplies `mapValues`' own `iteratee` coercion: a property-path string,
+ * `[path, srcValue]` array, or partial-match map works in place of a literal function.
  * @example
  *   sumBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 6
  */
-export function sumBy(arr is array, iteratee is function) {
-  return sum(mapArray(arr, iteratee));
+export function sumBy(arr is array, iterateeSpec) {
+  return sum(mapValues(arr, iterateeSpec));
 }
 
 
@@ -1356,8 +1367,10 @@ export function findLastKey(bag is map, rule) {
  * `bag` with its keys and values swapped: `{"a": "x", "b": "x"}` → `{"x": "b"}` — a value that
  * occurs more than once keeps only its last key, same as lodash. A non-string value is
  * stringified into its new key, matching how lodash's own object keys coerce. `invertBy` collects
- * every key instead of just the last one, grouped under `iteratee(val, key)` rather than `val`
- * itself — the same two-argument shape every iterator in this file uses.
+ * every key instead of just the last one, grouped under `iterateeSpec(val, key)` rather than
+ * `val` itself — the same two-argument shape every iterator in this file uses. `iterateeSpec` is
+ * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or
+ * partial-match map works in place of a literal function.
  * @example
  *   invert({ "a": 1, "b": 2, "c": 1 }); // => { "1": "c", "2": "b" }
  */
@@ -1368,24 +1381,28 @@ export function invert(bag is map) returns map {
   }
   return result;
 }
-export function invertBy(bag is map, iteratee is function) returns map {
+export function invertBy(bag is map, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
   var result = {};
   for (var key in keys(bag)) {
-    result = insertIntoMapOfArrays(result, iteratee(bag[key], key), key);
+    result = insertIntoMapOfArrays(result, fn(bag[key], key), key);
   }
   return result;
 }
 
 /**
- * `bag`'s values, replacing each key with `iteratee(val, key)` — `mapValues`' sibling for keys
- * instead of values. A collision on the computed key keeps the last entry that produced it.
+ * `bag`'s values, replacing each key with `iterateeSpec(val, key)` — `mapValues`' sibling for
+ * keys instead of values. A collision on the computed key keeps the last entry that produced it.
+ * `iterateeSpec` is coerced through `iteratee`, so a property-path string, `[path, srcValue]`
+ * array, or partial-match map works in place of a literal function.
  * @example
  *   mapKeys({ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }); // => { "a1": 1, "b2": 2 }
  */
-export function mapKeys(bag is map, iteratee is function) returns map {
+export function mapKeys(bag is map, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
   var result = {};
   for (var key in keys(bag)) {
-    result[iteratee(bag[key], key)] = bag[key];
+    result[fn(bag[key], key)] = bag[key];
   }
   return result;
 }
@@ -1393,7 +1410,9 @@ export function mapKeys(bag is map, iteratee is function) returns map {
 /**
  * `bag` without the entries at `keylist` — the inverse of `pick`. `omitBy` instead drops any
  * entry for which `rule(val, key)` holds, the inverse of `pickDefined`'s spirit but with a
- * caller-supplied rule rather than a fixed "is defined" check.
+ * caller-supplied rule rather than a fixed "is defined" check. `rule` is coerced through
+ * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
+ * place of a literal function.
  * @example
  *   omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }
  */
@@ -1404,10 +1423,11 @@ export function omit(bag is map, keylist is array) returns map {
   }
   return result;
 }
-export function omitBy(bag is map, rule is function) returns map {
+export function omitBy(bag is map, rule) returns map {
+  const fn = iteratee(rule);
   var result = {};
   for (var key in keys(bag)) {
-    if (! rule(bag[key], key)) { result[key] = bag[key]; }
+    if (! fn(bag[key], key)) { result[key] = bag[key]; }
   }
   return result;
 }
