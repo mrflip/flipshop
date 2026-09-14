@@ -2,6 +2,7 @@ FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
+import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53"); // helperFuncs, for iteratee
 
 // boolean, number, string, array, map, box, function, builtin, and undefined
 
@@ -311,74 +312,85 @@ export function forEach3(arr is array, func is function) {
  * (for an array, `seq` fills both slots) when a map form needs to distinguish visit order from
  * key order. The `keylist` and `missingPolicy` overloads follow `forEach`'s rules: a `keylist`
  * walks exactly those keys, and `missingPolicy` decides whether an `undefined` value is mapped
- * (`USE_UNDEFINED`, the default) or its key dropped from the result entirely (`SKIP`).
+ * (`USE_UNDEFINED`, the default) or its key dropped from the result entirely (`SKIP`). `func` is
+ * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-
+ * match map works in place of a literal function — `mapValues(users, 'name')` extracts a `name`
+ * field from each.
  *
  * @example
  *   mapValues({ "fred": 40, "pebbles": 1 }, function(age) { return age * 2; });
  *   // => { "fred": 80, "pebbles": 2 }
  *   mapValues([4, 8], function(n) { return n * n; }); // => [16, 64]
  */
-export function mapValues(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) returns map {
+export function mapValues(bag is map, keylist is array, missingPolicy is MissingPolicy, func) returns map {
+  const fn = iteratee(func);
   const result = new box({});
-  forEach(bag, keylist, missingPolicy, (val, key is string) => { result[][key] = func(val, key); });
+  forEach(bag, keylist, missingPolicy, (val, key is string) => { result[][key] = fn(val, key); });
   return result[];
 }
-export function mapValues3(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) returns map {
+export function mapValues3(bag is map, keylist is array, missingPolicy is MissingPolicy, func) returns map {
+  const fn = iteratee(func);
   const result = new box({});
-  forEach3(bag, keylist, missingPolicy, (val, key is string, seq is number) => { result[][key] = func(val, key, seq); });
+  forEach3(bag, keylist, missingPolicy, (val, key is string, seq is number) => { result[][key] = fn(val, key, seq); });
   return result[];
 }
 
-export function mapValues(bag is map, keylist is array, func is function) returns map {
+export function mapValues(bag is map, keylist is array, func) returns map {
+  const fn = iteratee(func);
   const result = new box({});
-  forEach(bag, keylist, (val, key is string) => { result[][key] = func(val, key); });
+  forEach(bag, keylist, (val, key is string) => { result[][key] = fn(val, key); });
   return result[];
 }
-export function mapValues3(bag is map, keylist is array, func is function) returns map {
+export function mapValues3(bag is map, keylist is array, func) returns map {
+  const fn = iteratee(func);
   const result = new box({});
-  forEach3(bag, keylist, (val, key is string, seq is number) => { result[][key] = func(val, key, seq); });
+  forEach3(bag, keylist, (val, key is string, seq is number) => { result[][key] = fn(val, key, seq); });
   return result[];
 }
-export function mapValues(bag is map, missingPolicy is MissingPolicy, func is function) returns map {
+export function mapValues(bag is map, missingPolicy is MissingPolicy, func) returns map {
   return mapValues(bag, keys(bag), missingPolicy, func);
 }
-export function mapValues3(bag is map, missingPolicy is MissingPolicy, func is function) returns map {
+export function mapValues3(bag is map, missingPolicy is MissingPolicy, func) returns map {
   return mapValues3(bag, keys(bag), missingPolicy, func);
 }
-export function mapValues(bag is map, func is function) returns map {
+export function mapValues(bag is map, func) returns map {
   return mapValues(bag, keys(bag), func);
 }
-export function mapValues3(bag is map, func is function) returns map {
+export function mapValues3(bag is map, func) returns map {
   return mapValues3(bag, keys(bag), func);
 }
 
-export function mapValues(arr is array, missingPolicy is MissingPolicy, func is function) returns array {
+export function mapValues(arr is array, missingPolicy is MissingPolicy, func) returns array {
+  const fn = iteratee(func);
   var result = new box(makeArray(size(arr)));
   forEach(arr, missingPolicy, (val, seq is number) => {
-      result[][seq] = func(val, seq);
+      result[][seq] = fn(val, seq);
   });
   return result[];
 }
 
-export function mapValues3(arr is array, missingPolicy is MissingPolicy, func is function) returns array {
+export function mapValues3(arr is array, missingPolicy is MissingPolicy, func) returns array {
+  const fn = iteratee(func);
   var result = new box(makeArray(size(arr)));
   forEach(arr, missingPolicy, (val, seq is number) => {
-      result[][seq] = func(val, seq, seq);
+      result[][seq] = fn(val, seq, seq);
   });
   return result[];
 }
 
-export function mapValues(arr is array, func is function) returns array {
+export function mapValues(arr is array, func) returns array {
+  const fn = iteratee(func);
   var result = makeArray(size(arr));
   for (var seq = 0; seq < size(arr); seq += 1) {
-    result[seq] = func(arr[seq], seq);
+    result[seq] = fn(arr[seq], seq);
   }
   return result;
 }
-export function mapValues3(arr is array, func is function) returns array {
+export function mapValues3(arr is array, func) returns array {
+  const fn = iteratee(func);
   var result = makeArray(size(arr));
   for (var seq = 0; seq < size(arr); seq += 1) {
-    result[seq] = func(arr[seq], seq, seq);
+    result[seq] = fn(arr[seq], seq, seq);
   }
   return result;
 }
