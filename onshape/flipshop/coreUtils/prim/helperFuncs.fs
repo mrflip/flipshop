@@ -28,13 +28,13 @@ export function idsFor(id is Id, tags is array) returns map {
  *   curry2to0(function() { return "called"; })("ignored1", "ignored2"); // => "called"
  *   curry3to1(function(val) { return val; })(1, 2, 3);                  // => 1
  */
-export function curry3to0(func is function) { return (_arg1, _arg2, _arg3) => func();               }
-export function curry3to1(func is function) { return (arg1,  _arg2, _arg3) => func(arg1);           }
-export function curry3to2(func is function) { return (arg1,  arg2,  _arg3) => func(arg1, arg2);     }
+export function curry3to0(func is function) returns function { return (_arg1, _arg2, _arg3) => func();               }
+export function curry3to1(func is function) returns function { return (arg1,  _arg2, _arg3) => func(arg1);           }
+export function curry3to2(func is function) returns function { return (arg1,  arg2,  _arg3) => func(arg1, arg2);     }
 
-export function curry2to0(func is function) { return (_arg1, _arg2) => func();           }
-export function curry2to1(func is function) { return (arg1,  _arg2) => func(arg1);       }
-export function curry2to2(func is function) { return (arg1,  arg2) => func(arg1, arg2);  }
+export function curry2to0(func is function) returns function { return (_arg1, _arg2) => func();           }
+export function curry2to1(func is function) returns function { return (arg1,  _arg2) => func(arg1);       }
+export function curry2to2(func is function) returns function { return (arg1,  arg2) => func(arg1, arg2);  }
 // --
 
 // == [JSON parsing] ==
@@ -192,16 +192,18 @@ export function inRange(num is number, end is number) returns boolean {
 
 /**
  * Coerces `spec` into a callable iteratee: a function passes through unchanged, a map becomes a
- * `matches` rule, a string becomes a `property` accessor, and anything else falls back to
- * `identity`.
+ * `matches` rule, a string becomes a `property` accessor, a `[path, srcValue]` array becomes a
+ * `matchesProperty` rule, and anything else falls back to `identity`.
  * @example
- *   iteratee("a")({ "a": 1 });               // => 1
- *   iteratee({ "a": 1 })({ "a": 1, "b": 2 }); // => true
+ *   iteratee("a")({ "a": 1 });                    // => 1
+ *   iteratee({ "a": 1 })({ "a": 1, "b": 2 });      // => true
+ *   iteratee(["a", 1])({ "a": 1, "b": 2 });        // => true
  */
 export function iteratee(spec) returns function {
   if (spec is function) { return spec; }
   if (spec is map)      { return matches(spec); }
   if (spec is string)   { return property(spec); }
+  if (spec is array)    { return matchesProperty(spec[0], spec[1]); }
   return identity;
 }
 
@@ -318,23 +320,30 @@ export const doMany = (function(count is number, func is function) returns array
 
 export const UtilsFuncs = {
   "attempt":         attempt,
+  "attemptLoudly":   attemptLoudly,
   "cond":            cond,
   "conforms":        conforms,
   "conformsTo":      conformsTo,
   "constant":        constant,
+  "doMany":          (count, func)    => doMany(count, func),
   "identity":        identity,
+  "identity1":       identity1,
   "identity2":       identity2,
   "identity3":       identity3,
+  "idsFor":          (id, tags)       => idsFor(id, tags),
+  "inRange":         inRange,
   "iteratee":        (spec)           => iteratee(spec),
   "matches":         (source)         => matches(source),
   "matchesProperty": (path, srcValue) => matchesProperty(path, srcValue),
   "noop":            noop,
+  "noop0":           noop0,
   "noop1":           noop1,
   "noop2":           noop2,
   "noop3":           noop3,
   "over":            (funcs)          => over(funcs),
   "overEvery":       (funcs)          => overEvery(funcs),
   "overSome":        (funcs)          => overSome(funcs),
+  "parseJsonSafely": (rawjson, opts)  => parseJsonSafely(rawjson, opts),
   "property":        (path)           => property(path),
   "propertyOf":      (obj)            => propertyOf(obj),
   "rangeRight":      (from, to)       => rangeRight(from, to),
