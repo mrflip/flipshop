@@ -157,12 +157,25 @@ export const noop2 = noop;
 export const noop3 = ((val1, val2, val3) => undefined);
 
 /**
- * Whether `num` falls in `[start, end)` (or `[end, start)` if `end < start`) — the bounds are
- * always ordered before checking, matching lodash's own auto-swap.
- * @example
- *   inRange(3, 5);     // => true  (implicit start of 0)
- *   inRange(3, 1, 5);  // => true
- *   inRange(5, 1, 5);  // => false, upper bound is exclusive
+ * Whether `num` falls in `[start, end)` (or `[end, start)` if `end < start`). If
+ * `end` is not specified, it's set to `start` with `start` then set to `0`.
+ * If `start` is greater than `end` the params are swapped to support
+ * negative ranges.
+ * @param {number} number The number to check.
+ * @param {number} [start=0] The start of the range.
+ * @param {number} end The end of the range.
+ * @returns {boolean} Returns `true` if `number` is in the range, else `false`.
+ * @example `inRange(3, 5);       // => true  (implicit start of 0)
+ * @example `inRange(3, 1, 5);    // => true
+ * @example `inRange(5, 1, 5);    // => false, upper bound is exclusive
+ * @example `inRange(3, 2, 4);    // => true
+ * @example `inRange(4, 8);       // => true
+ * @example `inRange(4, 2);       // => false
+ * @example `inRange(2, 2);       // => false
+ * @example `inRange(1.2, 2);     // => true
+ * @example `inRange(5.2, 4);     // => false
+ * @example `inRange(-3, -2, -6); // => true
+ * @see _.range, _.rangeRight
  */
 export function inRange(num is number, start is number, end is number) returns boolean {
   return (num >= min(start, end)) && (num < max(start, end));

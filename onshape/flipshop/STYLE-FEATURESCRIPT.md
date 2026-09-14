@@ -5,9 +5,9 @@ working in this codebase; the sections are ordered by how expensive it is to get
 
 > **Read this first.** Rules that cause the most damage when ignored:
 > 1. **Do not invent stdlib functions.** See [Language Limitations](#language-limitations).
-> 2. **Apart from a few language requirements, follow modern Typescript style conventions and approach**
+> 2. **Apart from a few language requirements, follow modern TypeScript style conventions and approach.**
 > 3. **Quote map keys where scope demands.** A bare key collides with in-scope variable names.
-> 4. **Do not built Contraptions, do not bang rocks together**. If you run up against one of featurescript's weird limitations, do not start implementing complicated workarounds, rethinking your whole approach, or banging out ad-hoc MacGuyvers. Either carry on, documenting the edge case; stop, and ask for help; or write a function fooFacade(...) that has no essential complications past calling foo, but gives us a hook to address whatever friction you've encountered.
+> 4. **Do not build Contraptions, do not bang rocks together**. If you run up against one of featurescript's weird limitations, do not start implementing complicated workarounds, rethinking your whole approach, or banging out ad-hoc MacGuyvers. Either carry on, documenting the edge case; stop, and ask for help; or write a function fooFacade(...) that has no essential complications past calling foo, but gives us a hook to address whatever friction you've encountered.
 >
 
 The files in `coreUtils` are good exemplars
@@ -27,7 +27,7 @@ aliasing. Function parameters are immutable, so mutating one starts with `var re
 `undefined`; storing `undefined` under a key of a map gives you the same reading back. There is no
 key-existence test beyond comparing against `undefined` (`isPresent`).
 
-**random number generation is weird**; it's generally discouraged as a practice in CAD, but it can be done with a workaround not yet implemented.
+**Random number generation is weird**; it's generally discouraged as a practice in CAD, but it can be done with a workaround not yet implemented.
 
 **`==` is deep structural equality** on maps and arrays. This is what makes table-driven tests
 viable — compare whole result maps, don't walk them field by field.
@@ -52,8 +52,13 @@ segments. There is no string interpolation, but everything pretty-prints nicely.
   - No Possessive Quantifiers: It lacks advanced control features like ++ or *+ to stop the engine from trying too hard to find matches
   - No Unicode character groups
 
-**cannot compare two strings** using the builtin `<`, '>', `<=`, `>=` operators. We have a more expensive `cmpStr` and `cmp` workaround. Similarly, **sorting strings is weird**; the coreUtils/sortUtils file has workarounds with caveats
+**Cannot order two strings natively** using the builtin `<`, `>`, `<=`, `>=` operators. We have a more expensive `cmp`/`cmpTo` workaround, built on `strOrderBy`. It will partially order anything comparable (`true > false`, `undefined == undefined`, `"hell" < "hello"`, `[1, 2] < [1, 2, 3] == [1, 2, 3] < [1, 3, 0]`, etc), handles ValueWithUnits, and compares with tolerance.
 
+**Sorting** Use one of these, as appropriate:
+* `orderBy`    -- accepts a custom iteratee, direction, comparator. sorts array or map values, comparing recursively. Preferred in most cases
+* `orderByAny` -- accepts a custom iteratee, direction; will not fail even if the data is heterogenous. Use this only if that laxity is desireable
+* `sort` (*std*) -- a builtin, but requires you to make your own comparator
+* `tolerantSort` (*std*) -- a builtin that (like our default) uses tolerant ordering by default.
 
 **Errors.** `throw regenError(...)` is what Onshape renders properly in the feature tree; a
 thrown bare string works but surfaces differently, so use it only where a caller is catching the
@@ -224,11 +229,11 @@ Here is the updated guide. It includes the exact FeatureScript typename or inter
 
 | Concept           | What it is                               | Role in FeatureScript                                | typename / Data Type                                |
 | ----------------- | ---------------------------------------- | ---------------------------------------------------- | --------------------------------------------------- |
-| Query             | A selection rule or criteria to dynamically find geometry                   | Query                                               |
-| Entity            | A specific geometric component (can be many of the below)         | Handled via Query                                   |
-| Body              | An independent geometric container                 | Handled via Query                                   |
-| Solid             | A 3D volumetric single continuous mass         | Handled via Query (with BodyType.SOLID)             |
-| Part              | A user-facing 3D solid body.                      | Handled via Query                                   |
+| Query             | A selection rule or criteria to dynamically find geometry | Used to select and pass around geometry references throughout a feature. | Query                                               |
+| Entity            | A specific geometric component (can be many of the below) | Selected and operated on via a Query; never held as a bare value. | Handled via Query                                   |
+| Body              | An independent geometric container                 | Selected and grouped via a Query, same as any other entity. | Handled via Query                                   |
+| Solid             | A 3D volumetric single continuous mass         | Selected via a Query filtered to `BodyType.SOLID`. | Handled via Query (with BodyType.SOLID)             |
+| Part              | A user-facing 3D solid body.                      | Selected via a Query; the top-level entity shown in the Parts list. | Handled via Query                                   |
 | Point             | A 0D coordinate location.                | A single spot in 3D space [x, y, z].                 | Vector (array of 3 numbers)                         |
 | Vector            | Coordinate tuple; specify if it's a `dir`ection, `offset`, `pos`ition, `gap`, repetition `spc`ing, etc           | Vector                                              |
 | Distance          | Length measurement; specify instead eg `thk`ness, `offset`, `size`, etc              | ValueWithUnits (a number with units)                |
@@ -580,10 +585,3 @@ Make the visual tempo of the code match what you're trying to communicate:
     [["hello world", 12, "!!!"],    "!hello world",        'string, length one more than its own, with three pad characters: adds one character of padding'],
   ]
 ```
-
-(queued prompts)
-
-Next: the code in cadsharp/ has a ton of useful add-ons to featurescript, is written by one of its most knowledgeable programmers, and spans probably the entire history of FeatureScript's API — meaning that some stuff in it might now be one-liners from the standard library, or use deprecated methods.
-Similar to your earlier census, triage the functions he leverages most often, internally or from onshape/std. if there are functions from the cadsharp collection you think I should regard as part of the standard library, add them to a Cadsharp table.
-
-To be sure I'm clear: we're not looking to document the cadsharp collection; we're (a) using it as a further refinement of what tools I *should* be reaching for, and (b) noting where he has patched some of the yawning gaps (eg.

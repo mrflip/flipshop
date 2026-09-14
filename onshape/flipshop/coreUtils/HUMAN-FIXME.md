@@ -1,5 +1,14 @@
+# Process Updates from Agent and Human Go Here When Reasonable
 
-## Lodash no-go list
+## Pre-release TODO:
+
+* pickBy and setAtWith (clxnGetset.fs) have no tests at all.
+* doMany, attemptLoudly (helperFuncs.fs) — untested.
+* features/jsonVarF.fs has no test file — all five exported Features (jsonVarF, keylistF, sizeofF, valuesAtF, splatF) are uncovered.
+* setColor and the getAttrs/getName* family (metadataUtils.fs) are untested, but plausibly out of scope for a pure-function harness since they need a live Context/Query.
+* runSetAtThrowsTests/runUndotMapThrowsTests only run if (verbose) — worth confirming that's deliberate, since it means the default run skips them.
+
+## Thinking about what to exclude from the lodash translation:
 
 Fuller reasoning for the categories in [README.md](README.md)'s "Decisions: not planned" table
 that need more than a one-word reason.
@@ -17,23 +26,6 @@ that need more than a one-word reason.
 * **chaining**: `chain`, `tap`, `thru`, `VERSION`, and lodash's entire `Seq` category — the
   wrap-in-an-object-and-call-methods API, not a plumbing gap.
 
-## Resolved, no longer excluded
-
-An earlier pass filed `assign`, `assignIn`, `extend`, `defaults`, `defaultsDeep`, `fill`, `pull`,
-`pullAll`, `pullAllBy`, `pullAllWith`, `remove`, `unset`, `update`, `updateWith`, `setWith` under
-a "modify the subject in-place" exclusion. That turned out not to be a real blocker.
-
-Lodash mutates its first argument and returns it; this project already returns a new value from
-everything instead (`setAt` vs. lodash's mutating `set` is the pattern the rest of `clxnGetset.fs`
-follows), and FeatureScript's copy-on-write map/array semantics make that substitution free — there's
-no shared mutable reference to lose by not mutating in place. Once you stop requiring the *same*
-object identity back out, every function in that bucket turns out to be either already covered by
-an existing pure function (`mergeMaps`/`deepMerge` cover `assign`/`defaults` once you flip an
-argument order) or a short, unbuilt, pure one (`update`, `fill`, …). See the Object and Array
-sections of README.md for the specifics, function by function.
-
----
-
 ## Missing lodash conveniences on existing ports
 
 A 2026-09 pass through every non-test coreUtils file (excluding `sortUtils.fs`) checked each
@@ -42,35 +34,6 @@ missing function (those are the struck-through/"Possible, not yet built" rows in
 Menu), but a flexibility lodash's own version offers that this port's implementation doesn't.
 Nothing below has been implemented; this is a punch list for a future pass, roughly in order of
 how many call sites it would touch.
-
-### Iteratee-shorthand coercion — the systemic one
-
-`prim/helperFuncs.fs` already built the coercion this needs: `iteratee(spec)` turns a function
-through unchanged, a map into a `matches` partial-match rule, and a string into a `property`
-accessor — lodash calls this same mechanism internally (`getIteratee`) on every predicate/iteratee
-argument it accepts. Almost none of the predicate-taking functions in this codebase actually call
-`iteratee()` on what they're handed; they all require a literal function value instead. Two gaps
-inside `iteratee()` itself, plus every affected caller:
-
-* ~~`iteratee(spec)` (`prim/helperFuncs.fs`) doesn't handle an **array** shorthand~~ — resolved:
-  a `[path, srcValue]` array now builds a `matchesProperty` rule, matching lodash's
-  `_.iteratee(['user', 'fred'])`.
-* ~~`cond(pairs)` (`prim/helperFuncs.fs`)~~ — resolved: each pair's predicate is now coerced
-  through `iteratee`, for both the array-of-pairs and map-keyed-by-rule overloads.
-* ~~`over`/`overEvery`/`overSome` (`prim/helperFuncs.fs`)~~ — resolved: every element of
-  `funcs`/`predicates` is now coerced through `iteratee`, once per call rather than per
-  `(val, seq)` invocation.
-* ~~`clxn/clxnUtils.fs` — every one of these called `func`/`rule`/`iteratee` directly rather than
-  through `iteratee()`~~ — resolved for all of them: `find`, `findLast`, `findKey`, `findLastKey`,
-  `countBy`, `groupBy`, `partition`, `reject`, `flatMap`/`flatMapDeep`/`flatMapDepth`, `unionBy`,
-  `intersectionBy`, `differenceBy`, `xorBy`, `uniqBy`, `maxBy`, `minBy`, `meanBy`, `sumBy`,
-  `mapKeys`, `invertBy`, `mapValues`/`mapValues3`, `omitBy`. Params literally named `iteratee`
-  (which shadowed the `iteratee()` function itself) were renamed to `iterateeSpec`; `meanBy`/
-  `sumBy` were rerouted from std's single-arg `mapArray` to this file's own `mapValues`, which
-  picks up both the coercion and the `(val, seq)` shape `iteratee()`'s output functions expect;
-  `maxBy`/`minBy` switched from a `for (var val in arr)` walk to an index-based one so they could
-  supply `seq`. `pick`/`omit`'s deep-path support (below) and `pickBy` (new, alongside `omitBy`)
-  were built in the same pass.
 
 ### `prim/stringUtils.fs`
 
@@ -90,24 +53,12 @@ inside `iteratee()` itself, plus every affected caller:
 
 ### `clxn/clxnUtils.fs` (beyond the iteratee-coercion item above)
 
-* ~~`take`/`takeRight`/`takeWhile`/`takeRightWhile` have no default-argument overload~~ —
-  resolved: all four now default the same way their `drop*` siblings already did (count to `1`,
-  rule to `truthy`). Fixing this also surfaced a real arity bug in `dropWhile`/`dropRightWhile`'s
-  own 1-arg overloads — they called their default `truthy` with `(val, seq)`, but `truthy` is a
-  1-arg function; fixed by defaulting to `curry2to1(truthy)` instead, same fix applied to the new
-  `takeWhile`/`takeRightWhile` 1-arg overloads.
+
 * `chunk(arr, chunkSize)` requires `chunkSize`; lodash's `chunk(array, [size=1])` defaults it.
-* ~~`pick`/`omit` only accept a literal top-level key list~~ — resolved: each `keylist` entry now
-  resolves through `getAt`/`setAt`, so a dotted string or key-path array reaches into nested
-  structure the way lodash's `_.pick(obj, ['a.b.c'])` does — `pick` rebuilds the same nesting in
-  its result, `omit` skips a path with nothing currently at it rather than autovivifying empty
-  maps along the way.
 * `arrayIncludes(collection, value)` has no `fromIndex` parameter; lodash's
   `includes(collection, value, [fromIndex=0])` does.
 * `find`/`findLast` have no `fromIndex` parameter either — the README already tracks this gap for
   `findIndex`/`findLastIndex`/`lastIndexOf`, but not for `find`/`findLast` themselves.
-* ~~`pickDefined` hardcodes "keep defined values" with no way to supply a different rule~~ —
-  resolved: `pickBy(bag, rule)` now exists alongside `omitBy`.
 
 ### `clxn/clxnGetset.fs`
 
@@ -127,8 +78,3 @@ inside `iteratee()` itself, plus every affected caller:
   `testClxnGetset.fs`'s `UpdateWithCases`, which documents that meaning as intentional.
 * `pathForKey` has no `a[0].b` bracket-syntax parsing like lodash's `toPath` — already documented
   in its own docstring.
-* ~~`deepMerge`/`mergeWith` replace arrays wholesale rather than merging index-by-index~~ —
-  resolved: both now merge two arrays index by index like lodash's `merge`, with `existing`'s tail
-  past `size(incoming)` surviving untouched. `MergeCases`' array-replace row in
-  `testClxnGetset.fs` was updated to the new expected result (`[3, 2]`, not `[3]`) since it had
-  explicitly encoded the old wholesale-replace behavior as correct.

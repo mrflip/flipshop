@@ -13,8 +13,15 @@ Each module lives next to its own tests, grouped by role:
 * `features/` — variable-producing Features: `jsonVarF.fs`.
 * `lib/` — the `runTests` test harness itself.
 
-`coreUtils.fs` itself has no functions of its own — it just re-exports the other files in this
-directory, so other features can `import` this one file for all of it.
+`coreUtils.fs` itself has no functions of its own — it's meant as a single-file re-export of
+everything else in this directory, so other features can `import` just this one file for all of
+it. **It's currently out of date**: it only re-exports `clxnUtils.fs`, `clxnReshape.fs`,
+`clxnGetset.fs`, `stringUtils.fs`, and `typeUtils.fs` — `helperFuncs.fs`, `sortUtils.fs`,
+`colorUtils.fs`, `metadataUtils.fs`, `debugUtils.fs`, and `jsonVarF.fs` are missing from its
+export list and need to be added. (There's also an older, differently-scoped aggregator,
+`mrflipUtils.fs`, left over from before this directory's reorg — it re-exports a different subset
+still and predates several files entirely; it should probably be retired once `coreUtils.fs` is
+complete, rather than kept as a second, inconsistent entry point.)
 
 ## Tests
 
@@ -187,18 +194,22 @@ buckets above.
 | `maxBy` / `minBy`  | `*By` family | Element of an array for which a computed value is greatest/least. | `undefined` for an empty array — std's array `max`/`min` pick the value itself, these pick the element behind it. |
 | `meanBy` / `sumBy` | `*By` family | `average`/`sum`, func-mapped.                                     |                                                                                                                   |
 
-### Sort (TODO)
+### Sort
 
-Sorting is the one corner of this port that's still mostly a stub — `sortUtils.fs` has a working
-string-comparator workaround but no general `sortBy`, and `cmp` is an empty placeholder.
+`cmp`/`cmpTo` give every FeatureScript type a total-ish ordering (comparing incompatible types
+throws, except through `cmpAny`), and `orderBy`/`orderAnyBy` sort a collection by a computed key
+on top of that — lodash's `sortBy` is the single-iteratee case of `orderBy` with no `comparator`
+override, so it isn't ported separately.
 
 | Function Name    | Lodash         | Description                                                                                                 | Caveats                                                                                                       |
 | ---------------- | -------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `strOrderBy`     | —              | Sorts an array of values by their stringified form, via a bucket-count trick rather than a real comparator. | Values with equal string forms all sort together but keep no defined relative order.                          |
 | `strOrderByUniq` | —              | `strOrderBy`, deduplicated.                                                                                 |                                                                                                               |
-| `cmp`            | ≈              | Three-way comparison (`-1`/`0`/`1`); comparing different types will throw | comparing strings is nutty in featurescript -- it's not built in so we have a hack |
-| `cmpAny`         | ≈              | Three-way comparison (`-1`/`0`/`1`), returns a total order on any combination of values | comparing strings is nutty in featurescript -- it's not built in so we have a hack |
-| ~~sortBy~~ / ~~orderBy~~ | ≡ | Sort by one or more iteratees, each with its own direction. | std `sort(arr, compareFunction)` takes an arbitrary comparator, so a *numeric* func already sorts today; a *string* func needs a character-ordinal lookup table first, the same technique `upcaseChar`/`downcaseChar` use. |
+| `cmp` / `cmpTo`  | ≈              | Three-way comparison (`-1`/`0`/`1`) between two values of the same type. | Comparing incompatible types throws; comparing strings is nutty in FeatureScript -- it's not built in so we have a hack, via `strOrderBy`. |
+| `cmpAny`         | ≈              | Three-way comparison (`-1`/`0`/`1`), returns a total order on any combination of values — falls back to comparing by type when the types themselves differ. | Never throws, unlike `cmp`. |
+| `cmpMapByKeysOnly` | —            | Compares two maps by their key lists alone, ignoring values. | `cmpTo` on two maps uses this first, then breaks ties by comparing values. |
+| `orderBy` / `sortBy` | ≡          | `vals` (array or map, keys discarded) stably sorted by a computed key. | Lodash's `orderBy` accepts one-or-many iteratees and orders; this accepts just one of each — the single-iteratee case is what lodash calls `sortBy`, so there's no separate port of that name. |
+| `orderAnyBy`     | —              | `orderBy`, with `cmpAny` as the comparator, so mixed/incompatible types across results never throw. | |
 | ~~sortedUniq~~ / ~~sortedUniqBy~~ | ≡ | `uniq`/`uniqBy`, optimized for sorted input. | Redundant with `uniqBy`/std `deduplicate` at this project's scale. |
 | ~~sortedIndex~~ / ~~sortedIndexBy~~ / ~~sortedIndexOf~~ / ~~sortedLastIndex~~ / ~~sortedLastIndexBy~~ / ~~sortedLastIndexOf~~ | `sortedIndex*` family | Binary-search insertion points into an already-sorted array. | std's `sort(arr, compareFunction)` makes this possible for numbers, but the 6-function family is a lot of surface for an optimization this codebase has no hot path for. |
 

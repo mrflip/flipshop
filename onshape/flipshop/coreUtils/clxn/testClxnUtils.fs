@@ -65,6 +65,10 @@ precondition {
     runGetAtArrTests(context, verbose);
     runSetAtTests(context, verbose);
     if (verbose) { runSetAtThrowsTests(context, verbose); }
+    runUpdateTests(context, verbose);
+    runUpdateWithTests(context, verbose);
+    runAssignWithTests(context, verbose);
+    runMergeWithTests(context, verbose);
     //
     runCountByTests(context, verbose);
     runFindTests(context, verbose);
