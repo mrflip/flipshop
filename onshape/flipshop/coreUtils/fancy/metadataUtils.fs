@@ -22,7 +22,7 @@ export const tinySizeVal = 0.001;
  * @param attrName {string} : attribute key to mirror the value under
  * @param value {string} : the value to set
  */
-export function setPropAndAttribute(context is Context, entities is Query, propType, attrName is string, value is string) returns string {
+export function setPropAndAttribute(context is Context, entities is Query, propType is PropertyType, attrName is string, value is string) returns string {
   setProperty(context,  { "entities": entities, "propertyType": propType, "value":     value });
   setAttribute(context, { "entities": entities, "name":         attrName, "attribute": value });
   return value;
@@ -149,7 +149,7 @@ export function getNameProp(context is Context, query is Query) {
 }
 
 /** `"Name"` attribute directly on `body` (not its best/first entity), or `defaultVal` if unset. */
-export function getNameOfBody(context is Context, body is Query, defaultVal is string) {
+export function getNameOfBody(context is Context, body is Query, defaultVal is string) returns string {
   const nameAttr = getAttributes(context, { "entities" : body, "name": "Name" });
   if ((size(nameAttr) == 0) || (nameAttr[0] == undefined)) { return defaultVal; }
   return nameAttr[0];
@@ -212,3 +212,22 @@ export function sanitize_varname(varname is string) returns string {
 export function field_varname(varname is string, fieldname is string) returns string {
     return varname ~ '_' ~ sanitize_varname(fieldname);
 }
+
+// == [Function values] --
+
+export const MetadataUtilsFuncs = {
+  "setPropAndAttribute": (context, entities, propType, attrName, value) => setPropAndAttribute(context, entities, propType, attrName, value),
+  "setName":             (context, entities, nameText)                  => setName(context, entities, nameText),
+  "setReadableName":     (context, entities, nameText)                  => setReadableName(context, entities, nameText),
+  "getAttrs":            (context, query, attrName, defaultVal)         => getAttrs(context, query, attrName, defaultVal),
+  "getAllAttrs":         (context, entity)                              => getAllAttrs(context, entity),
+  "getBestAttr":         (context, query, attrName, ignoredVal)         => getBestAttr(context, query, attrName, ignoredVal),
+  "getNameProps":        (context, query, ignoredVal)                   => getNameProps(context, query, ignoredVal),
+  "getNames":            (context, query, ignoredVal)                   => getNames(context, query, ignoredVal),
+  "getName":             (context, query)                               => getName(context, query),
+  "getNameProp":         (context, query)                               => getNameProp(context, query),
+  "getNameOfBody":       (context, body, defaultVal)                    => getNameOfBody(context, body, defaultVal),
+  "defaultMaybe":        (oldDefinition, newDefinition, basekey, destkey, valfunc) => defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc),
+  "sanitize_varname":    (varname)                                      => sanitize_varname(varname),
+  "field_varname":       (varname, fieldname)                           => field_varname(varname, fieldname),
+};

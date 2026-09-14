@@ -16,7 +16,7 @@ export enum Sentinel { ABSENT }
  * @example
  *   vector2(vector(1, 2, 3)); // => vector(1, 2)
  */
-export const vector2 = (function(vec is Vector) {
+export const vector2 = (function(vec is Vector) returns Vector {
   return vector(vec[0], vec[1]);
 });
 
@@ -44,15 +44,15 @@ export const ifBlank = (function(val, fallback) {
 });
 
 /** Whether `val` is neither `undefined` nor `false` — everything else, `0` and `""` included, is truthy. */
-export const truthy = (function(val)    { return (val != undefined) && (val != false); });
+export const truthy = (function(val) returns boolean    { return (val != undefined) && (val != false); });
 
 /** Whether `val` is not `undefined`. */
-export const isPresent = (function(val) { return (val != undefined); });
+export const isPresent = (function(val) returns boolean { return (val != undefined); });
 /** Whether `val` is `undefined` — lodash's `isNil`, narrowed to the one nullish value FeatureScript actually has. */
-export const isNil = (function(val)     { return (val == undefined); });
+export const isNil = (function(val) returns boolean     { return (val == undefined); });
 
 /** Whether `val` is `undefined` or an empty string. */
-export const strBlank = (function(val)  { return isUndefinedOrEmptyString(val); });
+export const strBlank = (function(val) returns boolean  { return isUndefinedOrEmptyString(val); });
 
 /**
  * `val`, or `fallback` if `val` is `undefined` or (within tolerance) zero.
@@ -119,16 +119,19 @@ export function sizeof(val is undefined) returns number {
     return 0;
 }
 
-export const TypeUtils = {
-  "isEqual":         isEqual,
-  "sizeof":          (val) => sizeof(val),
-  "castArray":       castArray,
-  "ifNil":           ifNil,
-  "ifBlank":         ifBlank,
-  "truthy":          truthy,
-  "isPresent":       isPresent,
-  "isNil":           isNil,
-  "strBlank":        strBlank,
-  "ifZero":          (val, fallback) => ifZero(val, fallback),
-  "isEmpty":         isEmpty,
+// == [Function values] --
+
+export const TypeUtilsFuncs = {
+  "vector2":    (vec)           => vector2(vec),
+  "isEqual":    (aa, bb)        => isEqual(aa, bb),
+  "sizeof":     (val)           => sizeof(val),
+  "castArray":  (val)           => castArray(val),
+  "ifNil":      (val, fallback) => ifNil(val, fallback),
+  "ifBlank":    (val, fallback) => ifBlank(val, fallback),
+  "truthy":     (val)           => truthy(val),
+  "isPresent":  (val)           => isPresent(val),
+  "isNil":      (val)           => isNil(val),
+  "strBlank":   (val)           => strBlank(val),
+  "ifZero":     (val, fallback) => ifZero(val, fallback),
+  "isEmpty":    (val)           => isEmpty(val),
 };

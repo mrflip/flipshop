@@ -57,3 +57,11 @@ export function errorFromThrow(testfunc is function, args is array) {
   }
   throw 'Expected a throw, got ' ~ [actual];
 }
+
+// == [Function values] --
+
+export const RunTestsFuncs = {
+  "runTests":       (context, testname, verbose, testCases, testfunc) => runTests(context, testname, verbose, testCases, testfunc),
+  "assertThrows":   (testfunc)       => assertThrows(testfunc),
+  "errorFromThrow": (testfunc, args) => errorFromThrow(testfunc, args),
+};

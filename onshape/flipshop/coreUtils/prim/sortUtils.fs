@@ -1,9 +1,10 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "54590bc1c9cee0141b968fbb", version : "f6c85f00e1e98aac16a46b86"); // clxn for flatMap
+import(path : "54590bc1c9cee0141b968fbb", version : "f6c85f00e1e98aac16a46b86"); // clxn for flatMap, mapValues
 import(path : "66e287bede293cb227dfb89c", version : "45a94191721a0bfb1372b8e5"); // ifNil &c
 import(path : "dd812faf6ff4099cda4aa0eb", version : "c0a5224fc8bc4e948d503ecb"); // strUtils for hasNatch
+import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53"); // helperFuncs, for iteratee & identity
 
 export function strOrderBy(vals is array) returns array {
   var bucket = {};
@@ -122,6 +123,70 @@ export function cmpTo(aa is box, bb is box, cf is function) returns number {
   return cmpTo(aa[], bb[], cf);
 }
 export function cmpTo(aa is box, bb is box) returns number { return cmpTo(aa, bb, cmp); }
+
+/**
+ * `sort` *(std)*, extended with `pairs`' criteria already computed: sorts `pairs` (each a
+ * `[criteria, val]`) by their `criteria` slot and returns just the `val`s, in `order`'s direction.
+ * The multiply-by-`order` trick works for any comparator, not just a `-1/0/1` one: `order`'s sign
+ * flips or keeps `comparator`'s sign, and `order == 0` collapses every comparison to `0`, which
+ * `sort`'s stable merge leaves in `pairs`' original order -- a "neuter" pass-through.
+ * @param pairs {array}: `[criteria, val]` tuples.
+ * @param order {number}: Positive sorts ascending by `criteria`, negative descending, zero leaves `pairs` in their original order.
+ * @param comparator {function}: `(criteriaA, criteriaB) => number`.
+ */
+function sortPairsBy(pairs is array, order is number, comparator is function) returns array {
+  const sortedPairs = sort(pairs, function(pairA is array, pairB is array) returns number {
+    return order * comparator(pairA[0], pairB[0]);
+  });
+  return mapValues(sortedPairs, function(pair is array, _seq is number) { return pair[1]; });
+}
+
+/**
+ * `vals`, ordered by `iterateeSpec`: `vals`'s elements (array) or values (map, keys discarded),
+ * stably sorted by `iteratee(iterateeSpec)`'s result for each, compared with `comparator`.
+ * Defaults to `cmp`, so an `iterateeSpec` producing incompatible types across elements -- e.g. a
+ * mix of numbers and strings -- throws exactly as `cmp` does; @see `orderAnyBy` for a version that
+ * never throws. Lodash's `orderBy` accepts one-or-many iteratees and orders; this accepts just one
+ * of each.
+ * @param vals {array|map}: Collection to sort.
+ * @param iterateeSpec: Ducktyped @see `iteratee` -- a function `(val, seq|key) => criteria`, a map
+ *   (matches predicate), or a string (property path). Defaults to `identity`.
+ * @param order {number}: Positive sorts ascending, negative descending, zero leaves `vals` in its
+ *   original order regardless of `iterateeSpec`. Defaults to `1`.
+ * @param comparator {function}: `(criteriaA, criteriaB) => number`, applied to pairs of
+ *   `iterateeSpec`'s results. Defaults to `cmp`.
+ * @example
+ *   orderBy([3, 1, 2]);                                // => [1, 2, 3]
+ *   orderBy([{ "n": 3 }, { "n": 1 }], "n");             // => [{ "n": 1 }, { "n": 3 }]
+ *   orderBy([1, 2, 3], identity, -1);                   // => [3, 2, 1]
+ *   orderBy({ "a": 3, "b": 1 }, identity);              // => [1, 3]
+ */
+export function orderBy(vals is array, iterateeSpec, order is number, comparator is function) returns array {
+  const keyFn = iteratee(iterateeSpec);
+  const pairs = mapValues(vals, function(val, seq is number) { return [keyFn(val, seq), val]; });
+  return sortPairsBy(pairs, order, comparator);
+}
+export function orderBy(vals is map, iterateeSpec, order is number, comparator is function) returns array {
+  const keyFn = iteratee(iterateeSpec);
+  const pairs = mapValues(keys(vals), function(key is string, _seq is number) { return [keyFn(vals[key], key), vals[key]]; });
+  return sortPairsBy(pairs, order, comparator);
+}
+export function orderBy(vals, iterateeSpec, order is number) returns array { return orderBy(vals, iterateeSpec, order, cmp); }
+export function orderBy(vals, iterateeSpec) returns array { return orderBy(vals, iterateeSpec, 1, cmp); }
+export function orderBy(vals) returns array { return orderBy(vals, identity, 1, cmp); }
+
+/**
+ * `orderBy`, with `cmpAny` as the comparator -- a total ordering even across mixed/incompatible
+ * types in `iterateeSpec`'s results, so this never throws where `orderBy` might.
+ * @param vals {array|map}: Collection to sort.
+ * @param iterateeSpec: @see `orderBy`. Defaults to `identity`.
+ * @param order {number}: @see `orderBy`. Defaults to `1`.
+ * @example
+ *   orderAnyBy([1, "2", 0]); // => [0, 1, "2"] -- number sorts before string, per cmpAny's fstypenum fallback
+ */
+export function orderAnyBy(vals, iterateeSpec, order is number) returns array { return orderBy(vals, iterateeSpec, order, cmpAny); }
+export function orderAnyBy(vals, iterateeSpec) returns array { return orderAnyBy(vals, iterateeSpec, 1); }
+export function orderAnyBy(vals) returns array { return orderAnyBy(vals, identity, 1); }
 
 // • undefined: Represents an unassigned or empty value, with only one possible value ().
 // • boolean: A logical truth value, limited to  and .

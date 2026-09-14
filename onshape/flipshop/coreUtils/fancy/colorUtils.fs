@@ -167,7 +167,7 @@ export function hexpairToInt(hexpair is string, fallback) {
 export function hexpairToInt(hexpair is string) { return hexpairToInt(hexpair, undefined); }
 
 /** Lowercase 2-character hex string for `num`, a 0–255 integer. */
-export function intToHexpair(num is number) {
+export function intToHexpair(num is number) returns string {
   return IntToHexpair[num];
 }
 
@@ -176,17 +176,17 @@ export function intToHexpair(num is number) {
  * color that round-tripped through an 8-bit tuple still compares equal). A missing `alpha` on
  * either side is treated as `1.0`.
  */
-export function sameColor(c1 is Color, c2 is Color, tol is number) {
+export function sameColor(c1 is Color, c2 is Color, tol is number) returns boolean {
   const alpha1 = ifNil(c1.alpha, 1.0);
   const alpha2 = ifNil(c2.alpha, 1.0);
   return tolerantEquals(c1.red, c2.red, tol) && tolerantEquals(c1.green, c2.green, tol) && tolerantEquals(c1.blue, c2.blue, tol) && tolerantEquals(alpha1, alpha2, tol);
 }
-export function sameColor(c1 is Color, c2 is Color) {
+export function sameColor(c1 is Color, c2 is Color) returns boolean {
   return sameColor(c1, c2, 0.999999999 / 255);
 }
 
 /** Whether `str` is a hexcolor string @see `hexcolorToColor` would accept. */
-export function isHexcolor(str) {
+export function isHexcolor(str) returns boolean {
   if (! (str is string)) { return false; }
   return hasMatch(str, HexcolorRE);
 }
@@ -251,3 +251,20 @@ const IntToHexpair = [
   'e0', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'e9', 'ea', 'eb', 'ec', 'ed', 'ee', 'ef',
   'f0', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'fa', 'fb', 'fc', 'fd', 'fe', 'ff',
 ];
+
+// == [Function values] --
+
+export const ColorUtilsFuncs = {
+  "setColor":         (context, qq, cmap) => setColor(context, qq, cmap),
+  "hexcolorToColor":  (hexcolor)          => hexcolorToColor(hexcolor),
+  "tuplestrToColor":  (tuplestr)          => tuplestrToColor(tuplestr),
+  "unitcolorToColor": (unitcolor)         => unitcolorToColor(unitcolor),
+  "toColor":          (val)               => toColor(val),
+  "toHexcolor":       (cmap)              => toHexcolor(cmap),
+  "toUnitcolor":      (cmap)              => toUnitcolor(cmap),
+  "toTuplecolor":     (cmap)              => toTuplecolor(cmap),
+  "hexpairToInt":     (hexpair, fallback) => hexpairToInt(hexpair, fallback),
+  "intToHexpair":     (num)               => intToHexpair(num),
+  "sameColor":        (c1, c2)            => sameColor(c1, c2),
+  "isHexcolor":       (str)               => isHexcolor(str),
+};

@@ -156,3 +156,11 @@ function buildChoicesRecursive(levels is array, levelIdx is number, currentTree 
   }
   return result;
 }
+
+// == [Function values] --
+
+export const ClxnReshapeFuncs = {
+  "undotMap":            (obj, onCollision) => undotMap(obj, onCollision),
+  "dotMap":              (obj, options)     => dotMap(obj, options),
+  "buildNestedChoices":  (levels, tree)     => buildNestedChoices(levels, tree),
+};

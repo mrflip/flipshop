@@ -17,3 +17,9 @@ export function highlightQuery(context is Context, qq is Query, debugColor is De
   addDebugEntities(context, qUnion([qq, debugEdges]), debugColor);
 }
 export function highlightQuery(context is Context, qq is Query, debugColor is DebugColor) { return highlightQuery(context, qq, debugColor, true); }
+
+// == [Function values] --
+
+export const DebugUtilsFuncs = {
+  "highlightQuery": (context, qq, debugColor, debugMe) => highlightQuery(context, qq, debugColor, debugMe),
+};

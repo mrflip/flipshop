@@ -3,12 +3,6 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "66e287bede293cb227dfb89c", version : "7ad52f18be252f35a5ea9f6d"); // typeUtils
 
-/**
- * Sentinel for "nothing at that step", so a fallback that is itself a map or an array can
- * never be mistaken for something found in the bag and descended into.
- */
-export enum Sentinel { ABSENT }
-
 // lodash flattens to Infinity by default; FeatureScript has no Infinity literal, so this stands in
 export const UnboundedDotDepth = 1000000000;
 
@@ -318,7 +312,7 @@ function seqForSegment(arr is array, seq is string) {
  * An index for writing: past the end is fine, since setAt grows the array, but a segment that
  * is not an index at all has nowhere to go in an array and one before the start has no meaning.
  */
-function seqForPlacement(arr is array, seq is number) {
+function seqForPlacement(arr is array, seq is number) returns number {
   const realSeq = (seq < 0) ? (size(arr) + seq) : seq;
   if (realSeq >= size(arr)) { return realSeq; }                     // past the end, we handle by padding
   if (realSeq < 0)          { throw beforeStartMessage(seq, arr); } // negative index pointing before the start, no way to interpret that as meaningful
@@ -331,7 +325,7 @@ function seqForPlacement(arr is array, seq is number) {
  */
 function seqForPlacement(arr is array, seq is string) {
   if (! match(seq, "^-?\\d+$").hasMatch) { throw nonkeyIndexMessage(seq, arr); }
-  return seqForSegment(arr, stringToNumber(seq));
+  return seqForPlacement(arr, stringToNumber(seq));
 }
 
 function beforeStartMessage(seq, arr is array) returns string {
@@ -341,3 +335,17 @@ function beforeStartMessage(seq, arr is array) returns string {
 function nonkeyIndexMessage(seq, subj) returns string {
   return 'Index ' ~ seq ~ ' is not a valid key for ' ~ subj;
 }
+
+// == [Function values] --
+
+export const ClxnGetsetFuncs = {
+  "lastInWins": lastInWins,
+  "getAt":      (bag, path, fallback) => getAt(bag, path, fallback),
+  "setAt":      (bag, path, val, onCollision) => setAt(bag, path, val, onCollision),
+  "update":     (bag, keyStrOrPath, updater) => update(bag, keyStrOrPath, updater),
+  "updateWith": (bag, keyStrOrPath, updater, onCollision) => updateWith(bag, keyStrOrPath, updater, onCollision),
+  "deepMerge":  (existing, incoming) => deepMerge(existing, incoming),
+  "assignWith": (existing, incoming, combine) => assignWith(existing, incoming, combine),
+  "mergeWith":  (existing, incoming, combine) => mergeWith(existing, incoming, combine),
+  "pathForKey": (keyStr) => pathForKey(keyStr),
+};

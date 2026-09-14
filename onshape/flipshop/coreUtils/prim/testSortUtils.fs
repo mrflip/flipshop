@@ -33,6 +33,9 @@ precondition {
     runCmpErrorTests(context, verbose);
     runCmpAnyTests(context, verbose);
     runCmpThreadingTests(context, verbose);
+    runOrderByTests(context, verbose);
+    runOrderByErrorTests(context, verbose);
+    runOrderAnyByTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -279,5 +282,78 @@ export function runCmpThreadingTests(context is Context, verbose is boolean) ret
     const counter = new box(0);
     const result = cmpTo(args[0], args[1], (aa, bb) => countingCmp(counter, aa, bb));
     return [result, counter[]];
+  });
+}
+
+// == [orderBy] ==
+// orderBy(vals, iterateeSpec?, order?, comparator?) sorts an array's elements, or a map's values
+// (keys discarded), by iterateeSpec's result for each -- defaulting to identity, ascending, and
+// cmp. Every arity below the full 4 is a plain defaulting wrapper, so exercising each arity once
+// is exercising the whole chain; the bulk of these cases instead probe iterateeSpec's three forms
+// (function/string/map), the order sign (including the order=0 neuter case), stability of ties,
+// and that the comparator is handed iterateeSpec's *results*, not the original elements.
+
+export const OrderByCases = [
+  [[[3, 1, 2]],                                   [1, 2, 3],  'default: ascending, by identity, via cmp -- the 1-arg form'],
+  [[[3, 1, 2], identity, -1],                     [3, 2, 1],  'order = -1 sorts descending'],
+  [[[3, 1, 2], identity, 0],                      [3, 1, 2],  'order = 0 is a neuter pass-through -- stable, so the input comes back unchanged'],
+  [[[10, 5, 20], (val, _seq) => -val],            [20, 10, 5], 'function iterateeSpec: ascending by -val sorts descending by val -- the 2-arg form'],
+  [
+    [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n"],
+    [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
+    'string iterateeSpec is a property accessor',
+  ],
+  [
+    [[{ "a": 1, "b": "X" }, { "a": 9, "b": "Y" }, { "a": 1, "b": "Z" }], { "a": 1 }],
+    [{ "a": 9, "b": "Y" }, { "a": 1, "b": "X" }, { "a": 1, "b": "Z" }],
+    'map iterateeSpec is a matches predicate; false sorts before true; elements with equal criteria keep their original relative order (stability)',
+  ],
+  [
+    [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n", 1, (aa, bb) => aa - bb],
+    [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
+    'the 4-arg form: a custom comparator receives the already-extracted numeric criteria, not the original maps -- subtracting a map would throw',
+  ],
+  [[{ "z": 3, "a": 1, "m": 2 }],                  [1, 2, 3],  'a map is sorted by its values; keys are discarded'],
+  [
+    [{ "aaa": 1, "b": 2, "c": 3 }, (val, key) => length(key)],
+    [2, 3, 1],
+    'the map form hands the iteratee (val, key), not (val, seq) -- sorting by key length puts "b" and "c" (length 1) '
+    ~ 'before "aaa" (length 3); if a numeric position were passed instead of the string key, length(...) would throw',
+  ],
+  [[[3 * meter, 1 * meter, 2 * meter]],           [1 * meter, 2 * meter, 3 * meter], 'ValueWithUnits sort via the default cmp comparator'],
+  [[[]],                                          [],         'empty array sorts to an empty array'],
+  [[{}],                                          [],         'empty map sorts to an empty array'],
+];
+export function runOrderByTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "orderBy", verbose, OrderByCases, function(args is array) {
+    if (size(args) == 1) { return orderBy(args[0]); }
+    if (size(args) == 2) { return orderBy(args[0], args[1]); }
+    if (size(args) == 3) { return orderBy(args[0], args[1], args[2]); }
+    return orderBy(args[0], args[1], args[2], args[3]);
+  });
+}
+
+export const OrderByErrorCases = [
+  [[[1, "2", 3]], "Execution error", 'the default comparator is cmp, so mixed number/string criteria throws exactly as cmp does; see orderAnyBy for a version that never throws'],
+];
+export function runOrderByErrorTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "orderBy errors", verbose, OrderByErrorCases, function(args is array) { return attempt(() => orderBy(args[0])); });
+}
+
+// == [orderAnyBy] ==
+// orderBy with cmpAny as the comparator -- same iterateeSpec/order handling, but never throws on
+// mixed-type criteria, falling back to fstypenum order instead.
+
+export const OrderAnyByCases = [
+  [[[1, "2", 0]],              [0, 1, "2"], 'never throws on mixed types -- falls back to fstypenum order, matching cmpAny (number sorts before string)'],
+  [[[3, 1, 2]],                [1, 2, 3],   'same-type values still sort ascending, same as orderBy'],
+  [[[3, 1, 2], identity, -1],  [3, 2, 1],   'order still controls direction'],
+  [[{ "a": "x", "b": 1 }],     [1, "x"],    'map values sorted via cmpAny, discarding keys -- number sorts before string'],
+];
+export function runOrderAnyByTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "orderAnyBy", verbose, OrderAnyByCases, function(args is array) {
+    if (size(args) == 1) { return orderAnyBy(args[0]); }
+    if (size(args) == 2) { return orderAnyBy(args[0], args[1]); }
+    return orderAnyBy(args[0], args[1], args[2]);
   });
 }

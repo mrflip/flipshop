@@ -149,7 +149,7 @@ export function strRepeat(str is string, reps is number) returns string {
  * @example
  *   starbanner("hi"); // => "\n**\nhi\n**\n\n"
  */
-export function starbanner(str is string) {
+export function starbanner(str is string) returns string {
   const stars = strRepeat("*", length(str));
   return "\n" ~ stars ~ "\n" ~ str ~ "\n" ~ stars ~ "\n\n";
 }
@@ -449,3 +449,36 @@ export function upperCase(str is string) returns string {
 export function upperFirst(str is string) returns string {
   return upcase(strTake(str, 1)) ~ strSlice(str, 1);
 }
+
+// == [Function values] --
+
+export const StringUtilsFuncs = {
+  "strSlice":               (str, begseq, endseq) => strSlice(str, begseq, endseq),
+  "rangedSequencePosition": (pos, beg, end)       => rangedSequencePosition(pos, beg, end),
+  "strTake":                (str, len)            => strTake(str, len),
+  "strTakeRight":           (str, len)            => strTakeRight(str, len),
+  "paddingFor":             (padstr, neededLen)   => paddingFor(padstr, neededLen),
+  "padLeft":                (str, minlen, padstr) => padLeft(str, minlen, padstr),
+  "padRight":               (str, minlen, padstr) => padRight(str, minlen, padstr),
+  "strRepeat":              (str, reps)           => strRepeat(str, reps),
+  "starbanner":             (str)                 => starbanner(str),
+  "hasMatch":               (str, regex)          => hasMatch(str, regex),
+  "downcase":               (str)                 => downcase(str),
+  "upcase":                 (str)                 => upcase(str),
+  "titleCase":              (str, opts)           => titleCase(str, opts),
+  "words":                  (str)                 => words(str),
+  "camelCase":              (str)                 => camelCase(str),
+  "capitalize":             (str)                 => capitalize(str),
+  "escapeRegExp":           (str)                 => escapeRegExp(str),
+  "kebabCase":              (str)                 => kebabCase(str),
+  "lowerCase":              (str)                 => lowerCase(str),
+  "lowerFirst":             (str)                 => lowerFirst(str),
+  "pad":                    (str, minlen, padstr) => pad(str, minlen, padstr),
+  "snakeCase":              (str)                 => snakeCase(str),
+  "trimStart":              (str, chars)          => trimStart(str, chars),
+  "trimEnd":                (str, chars)          => trimEnd(str, chars),
+  "trim":                   (str, chars)          => trim(str, chars),
+  "truncate":               (str, opts)           => truncate(str, opts),
+  "upperCase":              (str)                 => upperCase(str),
+  "upperFirst":             (str)                 => upperFirst(str),
+};

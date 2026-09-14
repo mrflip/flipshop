@@ -320,23 +320,23 @@ export function forEach3(arr is array, func is function) {
  */
 export function mapValues(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) returns map {
   const result = new box({});
-  forEach(bag, keylist, missingPolicy, (val, key) => { result[][key] = func(val, key); });
+  forEach(bag, keylist, missingPolicy, (val, key is string) => { result[][key] = func(val, key); });
   return result[];
 }
 export function mapValues3(bag is map, keylist is array, missingPolicy is MissingPolicy, func is function) returns map {
   const result = new box({});
-  forEach3(bag, keylist, missingPolicy, (val, key, seq) => { result[][key] = func(val, key, seq); });
+  forEach3(bag, keylist, missingPolicy, (val, key is string, seq is number) => { result[][key] = func(val, key, seq); });
   return result[];
 }
 
 export function mapValues(bag is map, keylist is array, func is function) returns map {
   const result = new box({});
-  forEach(bag, keylist, (val, key) => { result[][key] = func(val, key); });
+  forEach(bag, keylist, (val, key is string) => { result[][key] = func(val, key); });
   return result[];
 }
 export function mapValues3(bag is map, keylist is array, func is function) returns map {
   const result = new box({});
-  forEach3(bag, keylist, (val, key, seq) => { result[][key] = func(val, key, seq); });
+  forEach3(bag, keylist, (val, key is string, seq is number) => { result[][key] = func(val, key, seq); });
   return result[];
 }
 export function mapValues(bag is map, missingPolicy is MissingPolicy, func is function) returns map {
@@ -354,7 +354,7 @@ export function mapValues3(bag is map, func is function) returns map {
 
 export function mapValues(arr is array, missingPolicy is MissingPolicy, func is function) returns array {
   var result = new box(makeArray(size(arr)));
-  forEach(arr, missingPolicy, (val, seq) => {
+  forEach(arr, missingPolicy, (val, seq is number) => {
       result[][seq] = func(val, seq);
   });
   return result[];
@@ -362,7 +362,7 @@ export function mapValues(arr is array, missingPolicy is MissingPolicy, func is 
 
 export function mapValues3(arr is array, missingPolicy is MissingPolicy, func is function) returns array {
   var result = new box(makeArray(size(arr)));
-  forEach(arr, missingPolicy, (val, seq) => {
+  forEach(arr, missingPolicy, (val, seq is number) => {
       result[][seq] = func(val, seq, seq);
   });
   return result[];
@@ -407,12 +407,12 @@ export function objectify(arr is array, func is function) returns map {
  */
 export function rebag(arr is array, func is function) returns map {
     var result = new box({});
-    forEach(arr, (val, seq) => { const kv = func(val, seq); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
+    forEach(arr, (val, seq is number) => { const kv = func(val, seq); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
     return result[];
 }
 export function rebag(bag is map, func is function) returns map {
     var result = new box({});
-    forEach(bag, (val, key) => { const kv = func(val, key); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
+    forEach(bag, (val, key is string) => { const kv = func(val, key); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
     return result[];
 }
 // --
@@ -506,19 +506,19 @@ export function flatMap(arr is array, iteratee is function) returns array {
   return flatten(mapValues(arr, iteratee));
 }
 export function flatMap(bag is map, iteratee is function) returns array {
-  return flatten(mapValues(keys(bag), (key, _seq) => iteratee(bag[key], key)));
+  return flatten(mapValues(keys(bag), (key is string, _seq is number) => iteratee(bag[key], key)));
 }
 export function flatMapDeep(arr is array, iteratee is function) returns array {
   return flattenDeep(mapValues(arr, iteratee));
 }
 export function flatMapDeep(bag is map, iteratee is function) returns array {
-  return flattenDeep(mapValues(keys(bag), (key, _seq) => iteratee(bag[key], key)));
+  return flattenDeep(mapValues(keys(bag), (key is string, _seq is number) => iteratee(bag[key], key)));
 }
 export function flatMapDepth(arr is array, iteratee is function, depth is number) returns array {
   return flattenDepth(mapValues(arr, iteratee), depth);
 }
 export function flatMapDepth(bag is map, iteratee is function, depth is number) returns array {
-  return flattenDepth(mapValues(keys(bag), (key, _seq) => iteratee(bag[key], key)), depth);
+  return flattenDepth(mapValues(keys(bag), (key is string, _seq is number) => iteratee(bag[key], key)), depth);
 }
 
 /**
@@ -910,7 +910,7 @@ export function intersection(arrList is array) returns array {
   if (size(arrList) == 0) { return []; }
   const first = arrList[0];
   const rest = subArray(arrList, 1);
-  const kept = filter(first, (val) => all(rest, (other) => arrayIncludes(other, val)));
+  const kept = filter(first, (val) => all(rest, (other is array) => arrayIncludes(other, val)));
   return deduplicate(kept);
 }
 
@@ -924,11 +924,11 @@ export function intersection(arrList is array) returns array {
 export function intersectionBy(arrList is array, iteratee is function) returns array {
   if (size(arrList) == 0) { return []; }
   const first = arrList[0];
-  const restKeys = mapValues(subArray(arrList, 1), (other, _seq) => mapValues(other, iteratee));
+  const restKeys = mapValues(subArray(arrList, 1), (other is array, _seq is number) => mapValues(other, iteratee));
   var kept = [];
   for (var seq = 0; seq < size(first); seq += 1) {
     const val = first[seq];
-    if (all(restKeys, (otherKeys) => arrayIncludes(otherKeys, iteratee(val, seq)))) { kept = append(kept, val); }
+    if (all(restKeys, (otherKeys is array) => arrayIncludes(otherKeys, iteratee(val, seq)))) { kept = append(kept, val); }
   }
   return uniqBy(kept, iteratee);
 }
@@ -943,7 +943,7 @@ export function intersectionWith(arrList is array, comparator is function) retur
   if (size(arrList) == 0) { return []; }
   const first = arrList[0];
   const rest = subArray(arrList, 1);
-  const kept = filter(first, (val) => all(rest, (other) => any(other, (otherVal) => comparator(val, otherVal))));
+  const kept = filter(first, (val) => all(rest, (other is array) => any(other, (otherVal) => comparator(val, otherVal))));
   return uniqWith(kept, comparator);
 }
 
@@ -1214,7 +1214,7 @@ export function xorBy(arrList is array, iteratee is function) returns array {
     const key = iteratee(val, seq);
     var count = 0;
     for (var other in arrList) {
-      if (findIndex(other, (otherVal, otherSeq) => (iteratee(otherVal, otherSeq) == key)) != -1) { count += 1; }
+      if (findIndex(other, (otherVal, otherSeq is number) => (iteratee(otherVal, otherSeq) == key)) != -1) { count += 1; }
     }
     if (count == 1) { result = append(result, val); }
   }
@@ -1364,7 +1364,90 @@ export function omitBy(bag is map, rule is function) returns map {
  *   toPairs({ "a": 1, "b": 2 }); // => [["a", 1], ["b", 2]]
  */
 export function toPairs(bag is map) returns array {
-  return mapValues(keys(bag), (key, _seq) => [key, bag[key]]);
+  return mapValues(keys(bag), (key is string, _seq is number) => [key, bag[key]]);
 }
 
 // --
+
+// == [Function values] --
+
+export const ClxnUtilsFuncs = {
+  "hasKey":            (obj, key)                      => hasKey(obj, key),
+  "hasPresentKey":     (obj, key)                      => hasPresentKey(obj, key),
+  "pick":              (bag, keylist)                  => pick(bag, keylist),
+  "pickDefined":       (bag, keylist)                  => pickDefined(bag, keylist),
+  "arrLast":           (arr)                           => arrLast(arr),
+  "arrFirst":          (arr)                           => arrFirst(arr),
+  "valuesAt":          (bagOrArr, keylist)             => valuesAt(bagOrArr, keylist),
+  "forEach":           (bagOrArr, func)                => forEach(bagOrArr, func),
+  "forEach3":          (bagOrArr, func)                => forEach3(bagOrArr, func),
+  "mapValues":         (bagOrArr, func)                => mapValues(bagOrArr, func),
+  "mapValues3":        (bagOrArr, func)                => mapValues3(bagOrArr, func),
+  "objectify":         (arr, func)                     => objectify(arr, func),
+  "rebag":             (arrOrBag, func)                => rebag(arrOrBag, func),
+  "boxarrPush":        (arrRef, val)                   => boxarrPush(arrRef, val),
+  "boxarrUnshift":     (arrRef, val)                   => boxarrUnshift(arrRef, val),
+  "countBy":           (arrOrBag, iteratee)            => countBy(arrOrBag, iteratee),
+  "find":              (arrOrBag, rule)                => find(arrOrBag, rule),
+  "findLast":          (arrOrBag, rule)                => findLast(arrOrBag, rule),
+  "flatMap":           (arrOrBag, iteratee)            => flatMap(arrOrBag, iteratee),
+  "flatMapDeep":       (arrOrBag, iteratee)            => flatMapDeep(arrOrBag, iteratee),
+  "flatMapDepth":      (arrOrBag, iteratee, depth)     => flatMapDepth(arrOrBag, iteratee, depth),
+  "forEachRight":      (arrOrBag, func)                => forEachRight(arrOrBag, func),
+  "groupBy":           (arrOrBag, iteratee)            => groupBy(arrOrBag, iteratee),
+  "partition":         (arrOrBag, rule)                => partition(arrOrBag, rule),
+  "reduceRight":       (arrOrBag, seed, foldFunction)  => reduceRight(arrOrBag, seed, foldFunction),
+  "reject":            (arrOrBag, rule)                => reject(arrOrBag, rule),
+  "arrayIncludes":     (arrOrBag, target)              => arrayIncludes(arrOrBag, target),
+  "chunk":             (arr, chunkSize)                => chunk(arr, chunkSize),
+  "compact":           (arr)                           => compact(arr),
+  "difference":        (arr, excludeArr)               => difference(arr, excludeArr),
+  "differenceBy":      (arr, excludeArr, iteratee)     => differenceBy(arr, excludeArr, iteratee),
+  "differenceWith":    (arr, excludeArr, comparator)   => differenceWith(arr, excludeArr, comparator),
+  "drop":              (arr, dropCount)                => drop(arr, dropCount),
+  "dropRight":         (arr, dropCount)                => dropRight(arr, dropCount),
+  "dropRightWhile":    (arr, rule)                     => dropRightWhile(arr, rule),
+  "dropWhile":         (arr, rule)                     => dropWhile(arr, rule),
+  "findIndex":         (arr, rule)                     => findIndex(arr, rule),
+  "findLastIndex":     (arr, rule)                     => findLastIndex(arr, rule),
+  "flatten":           (arr)                           => flatten(arr),
+  "flattenDeep":       (arr)                           => flattenDeep(arr),
+  "flattenDepth":      (arr, depth)                    => flattenDepth(arr, depth),
+  "fromPairs":         (pairs)                         => fromPairs(pairs),
+  "initial":           (arr)                           => initial(arr),
+  "intersection":      (arrList)                       => intersection(arrList),
+  "intersectionBy":    (arrList, iteratee)             => intersectionBy(arrList, iteratee),
+  "intersectionWith":  (arrList, comparator)           => intersectionWith(arrList, comparator),
+  "lastIndexOf":       (arr, val)                      => lastIndexOf(arr, val),
+  "maxBy":             (arr, iteratee)                 => maxBy(arr, iteratee),
+  "meanBy":            (arr, iteratee)                 => meanBy(arr, iteratee),
+  "minBy":             (arr, iteratee)                 => minBy(arr, iteratee),
+  "nth":               (arr, seq)                      => nth(arr, seq),
+  "sumBy":             (arr, iteratee)                 => sumBy(arr, iteratee),
+  "tail":              (arr)                           => tail(arr),
+  "take":              (arr, takeCount)                => take(arr, takeCount),
+  "takeRight":         (arr, takeCount)                => takeRight(arr, takeCount),
+  "takeRightWhile":    (arr, rule)                     => takeRightWhile(arr, rule),
+  "takeWhile":         (arr, rule)                     => takeWhile(arr, rule),
+  "union":             (arrList)                       => union(arrList),
+  "unionBy":           (arrList, iteratee)             => unionBy(arrList, iteratee),
+  "unionWith":         (arrList, comparator)           => unionWith(arrList, comparator),
+  "uniqBy":            (arr, iteratee)                 => uniqBy(arr, iteratee),
+  "uniqWith":          (arr, comparator)               => uniqWith(arr, comparator),
+  "unzip":             (arr)                           => unzip(arr),
+  "unzipWith":         (arr, iteratee)                 => unzipWith(arr, iteratee),
+  "without":           (arr, excludeArr)               => without(arr, excludeArr),
+  "xor":               (arrList)                       => xor(arrList),
+  "xorBy":             (arrList, iteratee)             => xorBy(arrList, iteratee),
+  "xorWith":           (arrList, comparator)           => xorWith(arrList, comparator),
+  "zipObject":         (keylist, valuelist)            => zipObject(keylist, valuelist),
+  "zipWith":           (arrList, iteratee)             => zipWith(arrList, iteratee),
+  "findKey":           (bag, rule)                     => findKey(bag, rule),
+  "findLastKey":       (bag, rule)                     => findLastKey(bag, rule),
+  "invert":            (bag)                           => invert(bag),
+  "invertBy":          (bag, iteratee)                 => invertBy(bag, iteratee),
+  "mapKeys":           (bag, iteratee)                 => mapKeys(bag, iteratee),
+  "omit":              (bag, keylist)                  => omit(bag, keylist),
+  "omitBy":            (bag, rule)                     => omitBy(bag, rule),
+  "toPairs":           (bag)                           => toPairs(bag),
+};

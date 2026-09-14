@@ -397,6 +397,13 @@ No lodash correspondence — viewport highlighting.
   *destination* variable being written) when reporting that the *source* variable wasn't a bag or
   array — a debugging-time red herring, since the name in the error never matched the variable
   actually at fault. Now names `bagname`, the variable that was actually checked.
+* **`clxn/clxnGetset.fs`:** the string-keyed overload of the private write-path helper
+  `seqForPlacement(arr, seq is string)` called `seqForSegment` — the *read*-path helper, which
+  returns `Sentinel.ABSENT` for an out-of-range index — instead of recursing into its own
+  numeric-argument overload, the *write*-path helper that pads past-the-end indices instead of
+  rejecting them. `setAt(arr, "5", val)` on a shorter array would have received `Sentinel.ABSENT`
+  as the placement index instead of `5`, rather than padding the array as documented. Fixed to
+  call `seqForPlacement(arr, stringToNumber(seq))`.
 * **`fancy/testColorUtils.fs`:** the whole file was replaced — `runColorRoundtripTests` wrapped
   its body in a bare `try { }` with no `catch`, which isn't valid FeatureScript (only `try silent
   { }` and `try { } catch (error) { }` are), and even if it had compiled, the mismatches it
