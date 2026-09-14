@@ -514,31 +514,36 @@ export function findLast(bag is map, rule) {
 }
 
 /**
- * `bag`/`arr` mapped through `iteratee`, then flattened one level — @see `arrayUtils`' `flatten`.
- * The map form walks `keys(bag)`, hands `iteratee` the key as a second argument, and always
- * returns an array, same as lodash's collection form. `flatMapDeep`/`flatMapDepth` flatten fully
- * / to `depth` levels instead.
+ * `bag`/`arr` mapped through `iterateeSpec`, then flattened one level — @see `arrayUtils`'
+ * `flatten`. The map form walks `keys(bag)`, hands `iterateeSpec` the key as a second argument,
+ * and always returns an array, same as lodash's collection form. `flatMapDeep`/`flatMapDepth`
+ * flatten fully / to `depth` levels instead. `iterateeSpec` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal function.
  * @example
  *   flatMap([1, 2], (val) => [val, val]); // => [1, 1, 2, 2]
  *   flatMap({ a: 1, b: 2 }, (val) => [val, val]); // => [1, 1, 2, 2]
  */
-export function flatMap(arr is array, iteratee is function) returns array {
-  return flatten(mapValues(arr, iteratee));
+export function flatMap(arr is array, iterateeSpec) returns array {
+  return flatten(mapValues(arr, iteratee(iterateeSpec)));
 }
-export function flatMap(bag is map, iteratee is function) returns array {
-  return flatten(mapValues(keys(bag), (key is string, _seq is number) => iteratee(bag[key], key)));
+export function flatMap(bag is map, iterateeSpec) returns array {
+  const fn = iteratee(iterateeSpec);
+  return flatten(mapValues(keys(bag), (key is string, _seq is number) => fn(bag[key], key)));
 }
-export function flatMapDeep(arr is array, iteratee is function) returns array {
-  return flattenDeep(mapValues(arr, iteratee));
+export function flatMapDeep(arr is array, iterateeSpec) returns array {
+  return flattenDeep(mapValues(arr, iteratee(iterateeSpec)));
 }
-export function flatMapDeep(bag is map, iteratee is function) returns array {
-  return flattenDeep(mapValues(keys(bag), (key is string, _seq is number) => iteratee(bag[key], key)));
+export function flatMapDeep(bag is map, iterateeSpec) returns array {
+  const fn = iteratee(iterateeSpec);
+  return flattenDeep(mapValues(keys(bag), (key is string, _seq is number) => fn(bag[key], key)));
 }
-export function flatMapDepth(arr is array, iteratee is function, depth is number) returns array {
-  return flattenDepth(mapValues(arr, iteratee), depth);
+export function flatMapDepth(arr is array, iterateeSpec, depth is number) returns array {
+  return flattenDepth(mapValues(arr, iteratee(iterateeSpec)), depth);
 }
-export function flatMapDepth(bag is map, iteratee is function, depth is number) returns array {
-  return flattenDepth(mapValues(keys(bag), (key is string, _seq is number) => iteratee(bag[key], key)), depth);
+export function flatMapDepth(bag is map, iterateeSpec, depth is number) returns array {
+  const fn = iteratee(iterateeSpec);
+  return flattenDepth(mapValues(keys(bag), (key is string, _seq is number) => fn(bag[key], key)), depth);
 }
 
 /**
@@ -761,18 +766,21 @@ export function difference(arr is array, excludeArr is array) returns array {
 }
 
 /**
- * `difference`, comparing `arr` and `excludeArr` by `iteratee(val, seq)` instead of `val` itself
- * — `iteratee` gets the same two-argument shape every iterator in this file uses; `filter` *(std)*
- * only ever hands a callback one argument, so this walks `arr` by index instead.
+ * `difference`, comparing `arr` and `excludeArr` by `iterateeSpec(val, seq)` instead of `val`
+ * itself — the same two-argument shape every iterator in this file uses; `filter` *(std)* only
+ * ever hands a callback one argument, so this walks `arr` by index instead. `iterateeSpec` is
+ * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or
+ * partial-match map works in place of a literal function.
  * @example
  *   differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]
  */
-export function differenceBy(arr is array, excludeArr is array, iteratee is function) returns array {
-  const excludeKeys = mapValues(excludeArr, iteratee);
+export function differenceBy(arr is array, excludeArr is array, iterateeSpec) returns array {
+  const fn = iteratee(iterateeSpec);
+  const excludeKeys = mapValues(excludeArr, fn);
   var result = [];
   for (var seq = 0; seq < size(arr); seq += 1) {
     const val = arr[seq];
-    if (! arrayIncludes(excludeKeys, iteratee(val, seq))) { result = append(result, val); }
+    if (! arrayIncludes(excludeKeys, fn(val, seq))) { result = append(result, val); }
   }
   return result;
 }
@@ -947,22 +955,25 @@ export function intersection(arrList is array) returns array {
 }
 
 /**
- * `intersection`, comparing elements by `iteratee(val, seq)` instead of `val` itself — the same
- * two-argument shape every iterator in this file uses; `filter` *(std)* only ever hands a
- * callback one argument, so `first` is walked by index instead.
+ * `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself — the
+ * same two-argument shape every iterator in this file uses; `filter` *(std)* only ever hands a
+ * callback one argument, so `first` is walked by index instead. `iterateeSpec` is coerced through
+ * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
+ * place of a literal function.
  * @example
  *   intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]
  */
-export function intersectionBy(arrList is array, iteratee is function) returns array {
+export function intersectionBy(arrList is array, iterateeSpec) returns array {
   if (size(arrList) == 0) { return []; }
+  const fn = iteratee(iterateeSpec);
   const first = arrList[0];
-  const restKeys = mapValues(subArray(arrList, 1), (other is array, _seq is number) => mapValues(other, iteratee));
+  const restKeys = mapValues(subArray(arrList, 1), (other is array, _seq is number) => mapValues(other, fn));
   var kept = [];
   for (var seq = 0; seq < size(first); seq += 1) {
     const val = first[seq];
-    if (all(restKeys, (otherKeys is array) => arrayIncludes(otherKeys, iteratee(val, seq)))) { kept = append(kept, val); }
+    if (all(restKeys, (otherKeys is array) => arrayIncludes(otherKeys, fn(val, seq)))) { kept = append(kept, val); }
   }
-  return uniqBy(kept, iteratee);
+  return uniqBy(kept, fn);
 }
 
 /**
@@ -1124,12 +1135,14 @@ export function union(arrList is array) returns array {
 }
 
 /**
- * `union`, deduplicating by `iteratee(val)` instead of `val` itself.
+ * `union`, deduplicating by `iterateeSpec(val)` instead of `val` itself. `iterateeSpec` is
+ * coerced through `iteratee` (by `uniqBy`, which this delegates to), so a property-path string,
+ * `[path, srcValue]` array, or partial-match map works in place of a literal function.
  * @example
  *   unionBy([[2.1], [1.2, 2.3]], (val) => floor(val)); // => [2.1, 1.2]
  */
-export function unionBy(arrList is array, iteratee is function) returns array {
-  return uniqBy(concatenateArrays(arrList), iteratee);
+export function unionBy(arrList is array, iterateeSpec) returns array {
+  return uniqBy(concatenateArrays(arrList), iterateeSpec);
 }
 
 /**
@@ -1144,17 +1157,20 @@ export function unionWith(arrList is array, comparator is function) returns arra
 
 /**
  * `arr` with duplicate elements removed, keeping the first occurrence — like std's
- * `deduplicate`, but comparing `iteratee(val, seq)` instead of `val` itself — the same
- * two-argument shape every iterator in this file uses.
+ * `deduplicate`, but comparing `iterateeSpec(val, seq)` instead of `val` itself — the same
+ * two-argument shape every iterator in this file uses. `iterateeSpec` is coerced through
+ * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
+ * place of a literal function.
  * @example
  *   uniqBy([2.1, 1.2, 2.3], (val, _seq) => floor(val)); // => [2.1, 1.2]
  */
-export function uniqBy(arr is array, iteratee is function) returns array {
+export function uniqBy(arr is array, iterateeSpec) returns array {
+  const fn = iteratee(iterateeSpec);
   var seenKeys = [];
   var result = [];
   for (var seq = 0; seq < size(arr); seq += 1) {
     const val = arr[seq];
-    const key = iteratee(val, seq);
+    const key = fn(val, seq);
     if (! arrayIncludes(seenKeys, key)) {
       seenKeys = append(seenKeys, key);
       result = append(result, val);
@@ -1231,22 +1247,24 @@ export function xor(arrList is array) returns array {
 }
 
 /**
- * `xor`, comparing by `iteratee(val, seq)` instead of `val` itself — the same two-argument shape
- * every iterator in this file uses; `filter`/`any` *(std)* only ever hand a callback one
+ * `xor`, comparing by `iterateeSpec(val, seq)` instead of `val` itself — the same two-argument
+ * shape every iterator in this file uses; `filter`/`any` *(std)* only ever hand a callback one
  * argument, so this walks `allVals` and each candidate `other` array by index instead, via
- * `findIndex`.
+ * `findIndex`. `iterateeSpec` is coerced through `iteratee`, so a property-path string,
+ * `[path, srcValue]` array, or partial-match map works in place of a literal function.
  * @example
  *   xorBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [1.2, 3.4]
  */
-export function xorBy(arrList is array, iteratee is function) returns array {
-  const allVals = uniqBy(concatenateArrays(arrList), iteratee);
+export function xorBy(arrList is array, iterateeSpec) returns array {
+  const fn = iteratee(iterateeSpec);
+  const allVals = uniqBy(concatenateArrays(arrList), fn);
   var result = [];
   for (var seq = 0; seq < size(allVals); seq += 1) {
     const val = allVals[seq];
-    const key = iteratee(val, seq);
+    const key = fn(val, seq);
     var count = 0;
     for (var other in arrList) {
-      if (findIndex(other, (otherVal, otherSeq is number) => (iteratee(otherVal, otherSeq) == key)) != -1) { count += 1; }
+      if (findIndex(other, (otherVal, otherSeq is number) => (fn(otherVal, otherSeq) == key)) != -1) { count += 1; }
     }
     if (count == 1) { result = append(result, val); }
   }
