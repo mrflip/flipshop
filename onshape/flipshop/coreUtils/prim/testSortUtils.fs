@@ -1,10 +1,10 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "f6ab954150609e1e2e014a1e", version : "6ba02745556af8f5a28d90b1"); // runTests
+import(path : "f6ab954150609e1e2e014a1e", version : "4aa5dee775898ca8543bc9fc"); // runTests
 // Testing this:
-import(path : "dcee57677ef58f0c8e045269", version : "c70dd1c7645b5d26dc729c85"); // sortUtils <- testing this
-import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53");
+import(path : "dcee57677ef58f0c8e045269", version : "1b435d947cb9e47cf0480a69"); // sortUtils <- testing this
+import(path : "08b6ba15b8255611bafe7520", version : "1e6e0baae135d1e3f89931d2");
 
 const SuiteTitle = "Sort Utils";
 
@@ -206,7 +206,9 @@ export function runCmpErrorTests(context is Context, verbose is boolean) returns
 // it falls back to fstypenum order. It is the same kind of end-user entry point as cmp is; cmpTo
 // stays mostly behind the veil for both of them.
 
-export const CmpAnyCases = [
+
+export function runCmpAnyTests(context is Context, verbose is boolean) returns map {
+  const CmpAnyCases = [
   // same type: equal values short-circuit, otherwise delegates to cmpTo, exactly like cmp does
   [[5, 5],                    0,  'equal values short-circuit before any type dispatch happens'],
   [[1, 2],                   -1,  'same type: delegates to cmpTo, just like cmp'],
@@ -228,7 +230,6 @@ export const CmpAnyCases = [
   [[5, "5"],                 -1,  'number sorts before string, even though the values print the same'],
   [[[1], { "a": 1 }],        -1,  'array sorts before map'],
 ];
-export function runCmpAnyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpAny", verbose, CmpAnyCases, function(args is array) { return cmpAny(args[0], args[1]); });
 }
 
@@ -250,7 +251,9 @@ function countingCmp(counterBox is box, aa, bb) returns number {
   return cmpTo(aa, bb, (xx, yy) => countingCmp(counterBox, xx, yy));
 }
 
-export const CmpThreadingCases = [
+
+export function runCmpThreadingTests(context is Context, verbose is boolean) returns map {
+     const CmpThreadingCases = [
   [
     [
       // array of maps of maps of boxes of arrays of mixed scalar type
@@ -277,7 +280,6 @@ export const CmpThreadingCases = [
     ~ 'comparing them would throw, and cmpMapByKeysOnly short-circuits before that can happen',
   ],
 ];
-export function runCmpThreadingTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "comparator threading", verbose, CmpThreadingCases, function(args is array) {
     const counter = new box(0);
     const result = cmpTo(args[0], args[1], (aa, bb) => countingCmp(counter, aa, bb));

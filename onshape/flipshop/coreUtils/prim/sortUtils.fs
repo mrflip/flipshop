@@ -1,10 +1,10 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "54590bc1c9cee0141b968fbb", version : "f6c85f00e1e98aac16a46b86"); // clxn for flatMap, mapValues
-import(path : "66e287bede293cb227dfb89c", version : "45a94191721a0bfb1372b8e5"); // ifNil &c
-import(path : "dd812faf6ff4099cda4aa0eb", version : "c0a5224fc8bc4e948d503ecb"); // strUtils for hasNatch
-import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53"); // helperFuncs, for iteratee & identity
+import(path : "54590bc1c9cee0141b968fbb", version : "c6288b0ee53a3fd79915562f"); // clxn for flatMap, mapValues
+import(path : "66e287bede293cb227dfb89c", version : "fdb086499ae795a21af26725"); // ifNil &c
+import(path : "dd812faf6ff4099cda4aa0eb", version : "fe205ef425e3a7b0e6f43229"); // strUtils for hasNatch
+import(path : "08b6ba15b8255611bafe7520", version : "1e6e0baae135d1e3f89931d2"); // helperFuncs, for iteratee & identity
 
 export function strOrderBy(vals is array) returns array {
   var bucket = {};
@@ -53,8 +53,8 @@ export const cmpAny = (function(aa, bb) returns number {
   const atype = fstypename(aa);
   if (atype == fstypename(bb)) {
     if (atype == FSTypename.VALUEWITHUNITS) {
-      if (aa.units == bb.units) { return cmpTo(aa.value, bb.value); }
-      return cmpTo(aa.units, bb.units);
+      if (aa.unit == bb.unit) { return cmpTo(aa.value, bb.value); }
+      return cmpTo(aa.unit, bb.unit);
     }
     return cmpTo(aa, bb, cmpAny);
   }
@@ -243,5 +243,5 @@ export const BaseUnitsRE = "^(?!^,)(?:,?(ampere|kelvin|kilogram|meter|radian|sec
 
 export function isReallyValueWithUnits(val is ValueWithUnits) returns boolean {
   if (size(val) != 2) { return false; }
-  return hasMatch(val.units, BaseUnitsRE);
+  return hasMatch(val.unit, BaseUnitsRE);
 }
