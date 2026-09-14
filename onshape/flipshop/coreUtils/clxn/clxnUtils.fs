@@ -85,9 +85,8 @@ export function hasPresentKey(obj is array, key is number) returns boolean {
  *
  * `pickDefined` additionally drops a key whose value is `undefined` — for a map this is the same
  * result as `pick`, since a map can never hold an `undefined` value to differ over. Unlike
- * lodash's `pickBy`, the rule isn't customizable and the keys considered are exactly
- * `keylist`, not every key of `bag`. `pickDefined` only accepts a literal top-level key, not a
- * dotted path.
+ * `pickBy`, the rule isn't customizable and the keys considered are exactly `keylist`, not every
+ * key of `bag`. `pickDefined` only accepts a literal top-level key, not a dotted path.
  *
  * @example
  *   pick({ "a": 1, "b": 2, "c": 3 }, ["a", "c"]); // => { "a": 1, "c": 3 }
@@ -1447,6 +1446,24 @@ export function omitBy(bag is map, rule) returns map {
 }
 
 /**
+ * `bag`'s entries for which `rule(val, key)` holds — the inverse of `omitBy`, and the
+ * generic-rule sibling of `pickDefined`'s fixed "is defined" check, matching lodash's
+ * `pickBy(object, [predicate=_.identity])`. `rule` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal function.
+ * @example
+ *   pickBy({ "a": 1, "b": 2, "c": 3 }, (val, _key) => val > 1); // => { "b": 2, "c": 3 }
+ */
+export function pickBy(bag is map, rule) returns map {
+  const fn = iteratee(rule);
+  var result = {};
+  for (var key in keys(bag)) {
+    if (fn(bag[key], key)) { result[key] = bag[key]; }
+  }
+  return result;
+}
+
+/**
  * `bag` flattened into `[[key, val], ...]` pairs, in `keys(bag)` order — the inverse of
  * `fromPairs` *(arrayUtils)*. FeatureScript maps have no own/inherited distinction, so this
  * covers lodash's `entries`, `entriesIn`, and `toPairsIn` as well as `toPairs`.
@@ -1539,5 +1556,6 @@ export const ClxnUtilsFuncs = {
   "mapKeys":           (bag, iteratee)                 => mapKeys(bag, iteratee),
   "omit":              (bag, keylist)                  => omit(bag, keylist),
   "omitBy":            (bag, rule)                     => omitBy(bag, rule),
+  "pickBy":            (bag, rule)                     => pickBy(bag, rule),
   "toPairs":           (bag)                           => toPairs(bag),
 };

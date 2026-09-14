@@ -98,9 +98,8 @@ inside `iteratee()` itself, plus every affected caller:
   `includes(collection, value, [fromIndex=0])` does.
 * `find`/`findLast` have no `fromIndex` parameter either — the README already tracks this gap for
   `findIndex`/`findLastIndex`/`lastIndexOf`, but not for `find`/`findLast` themselves.
-* `pickDefined` hardcodes "keep defined values" with no way to supply a different rule; `omitBy`
-  has that generic-rule sibling (`omit` + a `rule`), but there's no `pickBy(bag, rule)` on the
-  pick side.
+* ~~`pickDefined` hardcodes "keep defined values" with no way to supply a different rule~~ —
+  resolved: `pickBy(bag, rule)` now exists alongside `omitBy`.
 
 ### `clxn/clxnGetset.fs`
 
