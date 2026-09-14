@@ -3,6 +3,7 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
 import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53"); // helperFuncs, for iteratee
+import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340"); // clxnGetset, for getAt/setAt
 
 // boolean, number, string, array, map, box, function, builtin, and undefined
 
@@ -76,21 +77,28 @@ export function hasPresentKey(obj is array, key is number) returns boolean {
 
 /**
  * A map with just `bag`'s entries at `keylist` — like lodash's `pick`, an absent key is simply
- * missing from the result rather than present with an `undefined` value.
+ * missing from the result rather than present with an `undefined` value. Each entry of `keylist`
+ * is resolved via `getAt`/`setAt`, so a dotted string or key-path array reaches into a nested
+ * structure and rebuilds the same nesting in the result — `pick({ "a": { "b": 1 } }, ["a.b"])` is
+ * `{ "a": { "b": 1 } }`, not a flat `{ "a.b": 1 }`. This is lossy against a key that already
+ * contains a literal dot, same caveat as `dotMap`/`undotMap`.
  *
  * `pickDefined` additionally drops a key whose value is `undefined` — for a map this is the same
  * result as `pick`, since a map can never hold an `undefined` value to differ over. Unlike
  * lodash's `pickBy`, the rule isn't customizable and the keys considered are exactly
- * `keylist`, not every key of `bag`.
+ * `keylist`, not every key of `bag`. `pickDefined` only accepts a literal top-level key, not a
+ * dotted path.
  *
  * @example
  *   pick({ "a": 1, "b": 2, "c": 3 }, ["a", "c"]); // => { "a": 1, "c": 3 }
+ *   pick({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "b": 1 } }
  *   pickDefined({ "a": 1, "b": undefined, "c": 3 }, ["a", "b", "c"]); // => { "a": 1, "c": 3 }
  */
 export function pick(bag is map, keylist is array) returns map {
     var result = {};
-    for (var kk in keylist) {
-      result[kk] = bag[kk];
+    for (var pathSpec in keylist) {
+      const val = getAt(bag, pathSpec, Sentinel.ABSENT);
+      if (val != Sentinel.ABSENT) { result = setAt(result, pathSpec, val); }
     }
     return result;
 }
@@ -1408,18 +1416,24 @@ export function mapKeys(bag is map, iterateeSpec) returns map {
 }
 
 /**
- * `bag` without the entries at `keylist` — the inverse of `pick`. `omitBy` instead drops any
- * entry for which `rule(val, key)` holds, the inverse of `pickDefined`'s spirit but with a
- * caller-supplied rule rather than a fixed "is defined" check. `rule` is coerced through
- * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
- * place of a literal function.
+ * `bag` without the entries at `keylist` — the inverse of `pick`. Each entry of `keylist` is
+ * resolved via `getAt`/`setAt`, same as `pick`, so a dotted string or key-path array deletes a
+ * nested leaf without disturbing its siblings; a path with nothing currently at it is skipped
+ * rather than autovivifying empty maps along the way. `omitBy` instead drops any entry for which
+ * `rule(val, key)` holds, the inverse of `pickDefined`'s spirit but with a caller-supplied rule
+ * rather than a fixed "is defined" check. `rule` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal function.
  * @example
  *   omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }
+ *   omit({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "c": 2 } }
  */
 export function omit(bag is map, keylist is array) returns map {
-  var result = {};
-  for (var key in keys(bag)) {
-    if (! arrayIncludes(keylist, key)) { result[key] = bag[key]; }
+  var result = bag;
+  for (var pathSpec in keylist) {
+    if (getAt(result, pathSpec, Sentinel.ABSENT) != Sentinel.ABSENT) {
+      result = setAt(result, pathSpec, undefined);
+    }
   }
   return result;
 }
