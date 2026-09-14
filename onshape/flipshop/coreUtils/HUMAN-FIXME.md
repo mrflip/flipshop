@@ -52,21 +52,25 @@ argument it accepts. Almost none of the predicate-taking functions in this codeb
 `iteratee()` on what they're handed; they all require a literal function value instead. Two gaps
 inside `iteratee()` itself, plus every affected caller:
 
-* `iteratee(spec)` (`prim/helperFuncs.fs`) doesn't handle an **array** shorthand — lodash's
-  `_.iteratee(['user', 'fred'])` builds a `matchesProperty` rule; here an array silently falls
-  through to `identity`.
-* `cond(pairs)` (`prim/helperFuncs.fs`): lodash coerces each pair's *predicate* through
-  `_.iteratee`, so a map or string can stand in for a function; here `pair[0]` must already be
-  callable.
-* `over`/`overEvery`/`overSome` (`prim/helperFuncs.fs`): lodash coerces every element of
-  `funcs`/`predicates` through the iteratee shorthand (documented in lodash's own docblocks for
-  `overEvery`/`overSome`); here every element must already be a literal function.
-* `clxn/clxnUtils.fs` — every one of these calls `func`/`rule`/`iteratee` directly rather than
-  through `iteratee()`, so none accept a property-path string or a partial-match map where lodash
-  does: `find`, `findLast`, `findKey`, `findLastKey`, `countBy`, `groupBy`, `partition`, `reject`,
-  `flatMap`/`flatMapDeep`/`flatMapDepth`, `unionBy`, `intersectionBy`, `differenceBy`, `xorBy`,
-  `uniqBy`, `maxBy`, `minBy`, `meanBy`, `sumBy`, `mapKeys`, `invertBy`, `mapValues`/`mapValues3`,
-  `omitBy`.
+* ~~`iteratee(spec)` (`prim/helperFuncs.fs`) doesn't handle an **array** shorthand~~ — resolved:
+  a `[path, srcValue]` array now builds a `matchesProperty` rule, matching lodash's
+  `_.iteratee(['user', 'fred'])`.
+* ~~`cond(pairs)` (`prim/helperFuncs.fs`)~~ — resolved: each pair's predicate is now coerced
+  through `iteratee`, for both the array-of-pairs and map-keyed-by-rule overloads.
+* ~~`over`/`overEvery`/`overSome` (`prim/helperFuncs.fs`)~~ — resolved: every element of
+  `funcs`/`predicates` is now coerced through `iteratee`, once per call rather than per
+  `(val, seq)` invocation.
+* ~~`clxn/clxnUtils.fs` — every one of these called `func`/`rule`/`iteratee` directly rather than
+  through `iteratee()`~~ — resolved for all of them: `find`, `findLast`, `findKey`, `findLastKey`,
+  `countBy`, `groupBy`, `partition`, `reject`, `flatMap`/`flatMapDeep`/`flatMapDepth`, `unionBy`,
+  `intersectionBy`, `differenceBy`, `xorBy`, `uniqBy`, `maxBy`, `minBy`, `meanBy`, `sumBy`,
+  `mapKeys`, `invertBy`, `mapValues`/`mapValues3`, `omitBy`. Params literally named `iteratee`
+  (which shadowed the `iteratee()` function itself) were renamed to `iterateeSpec`; `meanBy`/
+  `sumBy` were rerouted from std's single-arg `mapArray` to this file's own `mapValues`, which
+  picks up both the coercion and the `(val, seq)` shape `iteratee()`'s output functions expect;
+  `maxBy`/`minBy` switched from a `for (var val in arr)` walk to an index-based one so they could
+  supply `seq`. `pick`/`omit`'s deep-path support (below) and `pickBy` (new, alongside `omitBy`)
+  were built in the same pass.
 
 ### `prim/stringUtils.fs`
 
@@ -93,9 +97,11 @@ inside `iteratee()` itself, plus every affected caller:
   1-arg function; fixed by defaulting to `curry2to1(truthy)` instead, same fix applied to the new
   `takeWhile`/`takeRightWhile` 1-arg overloads.
 * `chunk(arr, chunkSize)` requires `chunkSize`; lodash's `chunk(array, [size=1])` defaults it.
-* `pick`/`omit` only accept a literal top-level key list; lodash's `_.pick`/`_.omit` accept a
-  dotted/deep path (`_.pick(obj, ['a.b.c'])`) the way this project's own `getAt`/`setAt`
-  (`clxn/clxnGetset.fs`) already do for a single path.
+* ~~`pick`/`omit` only accept a literal top-level key list~~ — resolved: each `keylist` entry now
+  resolves through `getAt`/`setAt`, so a dotted string or key-path array reaches into nested
+  structure the way lodash's `_.pick(obj, ['a.b.c'])` does — `pick` rebuilds the same nesting in
+  its result, `omit` skips a path with nothing currently at it rather than autovivifying empty
+  maps along the way.
 * `arrayIncludes(collection, value)` has no `fromIndex` parameter; lodash's
   `includes(collection, value, [fromIndex=0])` does.
 * `find`/`findLast` have no `fromIndex` parameter either — the README already tracks this gap for
