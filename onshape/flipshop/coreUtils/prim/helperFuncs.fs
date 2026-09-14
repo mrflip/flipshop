@@ -90,9 +90,22 @@ export const attemptLoudly = (function(func is function) {
   }
 });
 
+/** Shared closure body for both `cond` overloads, once `pairs` is a `[rule, handler]` array with each `rule` already coerced through `iteratee`. */
+function condClosure(pairs is array) returns function {
+  return function(val, seq) {
+    for (var pair in pairs) {
+      if (pair[0](val, seq)) { return pair[1](val, seq); }
+    }
+    return Sentinel.ABSENT;
+  };
+}
+
 /**
- * Builds a function that tries `pairs` (`[rule(val, seq) => boolean, handler(val, seq) => any]`) in order, calling and returning
- * the first `handler` whose `rule` holds `val`, or `undefined` if none does
+ * Builds a function that tries `pairs` in order, calling and returning the first `handler` whose
+ * `rule` holds `val`, or `undefined` if none does. Each `rule` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * literal `rule(val, seq) => boolean` function — matching lodash's own `_.cond`, which runs
+ * `_.iteratee` on every predicate.
  * @example
  *   const grade = cond([
  *     [(score, _seq) => score >= 90, constant("A")],
@@ -103,20 +116,18 @@ export const attemptLoudly = (function(func is function) {
  *   grade(70, 0); // => "F"
  */
 export function cond(pairs is array) returns function {
-  return function(val, seq) {
-    for (var pair in pairs) {
-      if (pair[0](val, seq)) { return pair[1](val, seq); }
-    }
-    return Sentinel.ABSENT;
-  };
+  return condClosure(mapValues(pairs, (pair, _seq) => [iteratee(pair[0]), pair[1]]));
 }
+/**
+ * `cond`, keyed by rule instead of ordered by array position — each map key doubles as its own
+ * `rule` (coerced through `iteratee`, so a key is naturally a property-path string), paired with
+ * its value as the `handler`.
+ * @example
+ *   const speak = cond({ "isDog": constant("Woof"), "isCat": constant("Meow") });
+ *   speak({ "isDog": true, "isCat": false }, 0); // => "Woof"
+ */
 export function cond(pairs is map) returns function {
-  return function(val, seq) {
-    for (var rule, handler in pairs) {
-      if (rule(val, seq)) { return handler(val, seq); }
-    }
-    return Sentinel.ABSENT;
-  };
+  return condClosure(mapValues(keys(pairs), (rule is string, _seq) => [iteratee(rule), pairs[rule]]));
 }
 
 /**
