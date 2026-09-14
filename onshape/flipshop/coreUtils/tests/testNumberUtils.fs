@@ -4,7 +4,7 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 import(path : "4ebdc64943b566160ea5cc28", version : "49324f8ccdd2bc8f00f68a0f");
 import(path : "f6ab954150609e1e2e014a1e", version : "17748a1c9444555f3047e363");
 //
-import(path : "c6c66ffbc9a017f4d26adb08", version : "bc443926a8055a7e94712dd6"); // testing this
+import(path : "54590bc1c9cee0141b968fbb", version : "502cf2d68de5897e8d3b8586"); // clxnUtils
 
 const SuiteTitle = "Number Utils";
 

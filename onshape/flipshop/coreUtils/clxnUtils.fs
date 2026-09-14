@@ -108,10 +108,22 @@ export function pickDefined(bag is map, keylist is array) returns map {
  *   arrLast([1, 2, 3]); // => 3
  *   arrLast([]);        // => undefined
  */
-export function arrLast(arr is array) {
+export const arrLast = (function(arr is array) {
     if (size(arr) <= 0) { return undefined; }
     return arr[size(arr) - 1];
-}
+});
+
+/**
+ * First element of `arr`, or `undefined` if it's empty.
+ * @example
+ *   arrFirst([1, 2, 3]); // => 1
+ *   arrFirst([]);        // => undefined
+ */
+export const arrFirst = (function(arr is array) {
+    if (size(arr) <= 0) { return undefined; }
+    return arr[0];
+});
+
 // --
 
 // == [valuesAt]
@@ -753,6 +765,7 @@ export function differenceWith(arr is array, excludeArr is array, comparator is 
 export function drop(arr is array, dropCount is number) returns array {
   return subArray(arr, clamp(dropCount, 0, size(arr)));
 }
+export function drop(arr is array) returns array { return drop(arr, 1); }
 
 /**
  * `arr` with the last `dropCount` elements removed; `dropCount <= 0` returns `arr` unchanged.
@@ -763,6 +776,7 @@ export function drop(arr is array, dropCount is number) returns array {
 export function dropRight(arr is array, dropCount is number) returns array {
   return subArray(arr, 0, size(arr) - clamp(dropCount, 0, size(arr)));
 }
+export function dropRight(arr is array) returns array { return dropRight(arr, 1); }
 
 /**
  * `arr` with elements dropped from the end for as long as `rule` holds; the first
@@ -777,6 +791,7 @@ export function dropRightWhile(arr is array, rule is function) returns array {
   }
   return subArray(arr, 0, seq);
 }
+export function dropRightWhile(arr is array) returns array { return dropRightWhile(arr, truthy); }
 
 /**
  * `arr` with elements dropped from the beginning for as long as `rule` holds.
@@ -790,6 +805,7 @@ export function dropWhile(arr is array, rule is function) returns array {
   }
   return subArray(arr, seq);
 }
+export function dropWhile(arr is array) returns array { return dropWhile(arr, truthy); }
 
 /**
  * Index of the first element of `arr` for which `rule` holds, or `-1` if none does.
@@ -944,6 +960,53 @@ export function lastIndexOf(arr is array, val) returns number {
 }
 
 /**
+ * Element of `arr` for which `iteratee(val)` is greatest, or `undefined` for an empty `arr` —
+ * std's array `max` picks the greatest value itself; this picks the element behind the greatest
+ * *computed* value.
+ * @example
+ *   maxBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 3 }
+ */
+export function maxBy(arr is array, iteratee is function) {
+  var bestVal = undefined;
+  var bestKey = undefined;
+  for (var val in arr) {
+    const key = iteratee(val);
+    if (bestKey == undefined || key > bestKey) {
+      bestVal = val;
+      bestKey = key;
+    }
+  }
+  return bestVal;
+}
+
+/**
+ * Average of `iteratee(val)` across `arr` — `average` *(std)*, iteratee-mapped.
+ * @example
+ *   meanBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 3
+ */
+export function meanBy(arr is array, iteratee is function) {
+  return average(mapArray(arr, iteratee));
+}
+
+/**
+ * `maxBy`'s counterpart: element of `arr` for which `iteratee(val)` is least, or `undefined` for
+ * an empty `arr`.
+ * @example
+ *   minBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 1 }
+ */
+export function minBy(arr is array, iteratee is function) {
+  var bestVal = undefined;
+  var bestKey = undefined;
+  for (var val in arr) {
+    const key = iteratee(val);
+    if (bestKey == undefined || key < bestKey) {
+      bestVal = val;
+      bestKey = key;
+    }
+  }
+  return bestVal;
+}
+/**
  * Element of `arr` at `seq`; a negative `seq` counts back from the end. `undefined` if `seq`,
  * after that adjustment, is out of bounds.
  * @example
@@ -955,6 +1018,16 @@ export function nth(arr is array, seq is number) {
   if (idx < 0 || idx >= size(arr)) { return undefined; }
   return arr[idx];
 }
+
+/**
+ * Sum of `iteratee(val)` across `arr` — `sum` *(std)*, iteratee-mapped.
+ * @example
+ *   sumBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 6
+ */
+export function sumBy(arr is array, iteratee is function) {
+  return sum(mapArray(arr, iteratee));
+}
+
 
 /**
  * `arr` without its first element; `[]` for an empty or single-element `arr`.

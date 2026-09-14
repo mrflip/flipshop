@@ -1,10 +1,9 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "4ebdc64943b566160ea5cc28", version : "49324f8ccdd2bc8f00f68a0f");
-import(path : "f6ab954150609e1e2e014a1e", version : "17748a1c9444555f3047e363");
+import(path : "f6ab954150609e1e2e014a1e", version : "b9858c5393cd4cad1c091a6d");
 //
-import(path : "c6c66ffbc9a017f4d26adb08", version : "bc443926a8055a7e94712dd6"); // testing this
+import(path : "54590bc1c9cee0141b968fbb", version : "f6c85f00e1e98aac16a46b86"); // clxnUtils: testing this
 
 const SuiteTitle = "Array Utils";
 
@@ -124,9 +123,31 @@ export const DropCases = [
   [[[1, 2, 3], 2],  [3]],
   [[[1, 2, 3], 5],  []],
   [[[1, 2, 3], 0],  [1, 2, 3]],
+  [[ [],                   2 ],  [],                    'empty input returns empty array'],
+  [[ ["a", "b", "c", "d"]    ],  ["b", "c", "d"],       'n defaults to 1'],
+  [[ ["a", "b", "c", "d"], 0 ],  ["a", "b", "c", "d"],  'n == 0 returns a (shallow) copy of its input'],
+  [[ ["a", "b", "c", "d"], 1 ],  ["b", "c", "d"]],
+  [[ ["a", "b", "c", "d"], 2 ],  ["c", "d"]],
+  [[ ["a", "b", "c", "d"], 4 ],  [],                    'n == array length returns an empty array'],
+  [[ ["a", "b", "c", "d"], 5 ],  [],                    'n > array length returns an empty array'],
+  [[ ["a", "b", "c", "d"], -1 ], ["a", "b", "c", "d"],  'n < 0 is treated as 0: nothing is dropped'],
+  [[ [1, [], {}, 9],       2 ],  [{}, 9]],
+  [[ [[], [[1]], [1, []]], 1 ],  [[[1]], [1, []]]],
+  [[ [],                 2 ],  []],
+  [[ ["a", "b", "c"]       ],  ["b", "c"],       'n defaults to 1'],
+  [[ ["a", "b", "c"],    0 ],  ["a", "b", "c"],  'n == 0 returns its input'],
+  [[ ["a", "b", "c"],    1 ],  ["b", "c"]],
+  [[ ["a", "b", "c"],    2 ],  ["c"]],
+  [[ ["a", "b", "c"],    3 ],  [],               'n == array length returns an empty array'],
+  [[ ["a", "b", "c"],    5 ],  [],               'n > array length returns an empty array'],
+  [[ ["a", "b", "c"],   -1 ],  ["a", "b", "c"],  'n < 0 is treated as 0'],
+  [[ [1, [], {}, 9],     2 ],  [{}, 9]],
+  [[ [[], [[1]], [1, []]], 1 ],  [[[1]], [1, []]],  'nested arrays are kept by reference, not flattened'],
+  // [[ ["a", "b", "c", "d"], 1.9 ],["b", "c", "d"],       'n is truncated toward zero (toInteger)'],
+  // [[ ["a", "b", "c"],  1.7 ],  ["b", "c"],       'fractional n is truncated toward zero'],
 ];
 export function runDropTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "drop", verbose, DropCases, function(args is array) { return drop(args[0], args[1]); });
+  return runTests(context, "drop", verbose, DropCases, function(args is array) { return (size(args) == 1 ? drop(args[0]) : drop(args[0], args[1])); });
 }
 
 export const DropRightCases = [
@@ -135,7 +156,7 @@ export const DropRightCases = [
   [[[1, 2, 3], 0],  [1, 2, 3]],
 ];
 export function runDropRightTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "dropRight", verbose, DropRightCases, function(args is array) { return dropRight(args[0], args[1]); });
+  return runTests(context, "dropRight", verbose, DropRightCases, function(args is array) { return (size(args) == 1 ? dropRight(args[0]) : dropRight(args[0], args[1])); });
 }
 
 export const DropRightWhileCases = [
@@ -144,7 +165,7 @@ export const DropRightWhileCases = [
   [[[1, 2, 3, 4], function(val, _seq) { return val > 0; }],  []],
 ];
 export function runDropRightWhileTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "dropRightWhile", verbose, DropRightWhileCases, function(args is array) { return dropRightWhile(args[0], args[1]); });
+  return runTests(context, "dropRightWhile", verbose, DropRightWhileCases, function(args is array) { return (size(args) == 1 ? dropRightWhile(args[0]) : dropRightWhile(args[0], args[1])); });
 }
 
 export const DropWhileCases = [
@@ -152,7 +173,7 @@ export const DropWhileCases = [
   [[[1, 2, 3, 4], function(val, _seq) { return val < 0; }],  [1, 2, 3, 4]],
 ];
 export function runDropWhileTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "dropWhile", verbose, DropWhileCases, function(args is array) { return dropWhile(args[0], args[1]); });
+  return runTests(context, "dropWhile", verbose, DropWhileCases, function(args is array) { return (size(args) == 1 ? dropWhile(args[0]) : dropWhile(args[0], args[1])); });
 }
 
 // == [findIndex / findLastIndex] ==
@@ -257,13 +278,35 @@ export function runLastIndexOfTests(context is Context, verbose is boolean) retu
 // == [nth] ==
 
 export const NthCases = [
-  [[[1, 2, 3], 1],   2],
-  [[[1, 2, 3], -1],  3],
-  [[[1, 2, 3], 9],   undefined],
+  [[[1, 2, 3],            1],              2],
+  [[[1, 2, 3],            -1],             3],
+  [[[1, 2, 3],            9],              undefined],
+  [[ [],                   0 ],  undefined,           'empty input returns undefined'],
+  [[ ["a", "b", "c", "d"], 0 ],  "a"],
+  [[ ["a", "b", "c", "d"], 2 ],  "c"],
+  [[ ["a", "b", "c", "d"], 3 ],  "d",                 'n == length - 1 returns the last element'],
+  [[ ["a", "b", "c", "d"], 4 ],  undefined,           'n >= array length returns undefined'],
+  [[ ["a", "b", "c", "d"], -1 ], "d",                 'negative n counts back from the end'],
+  [[ ["a", "b", "c", "d"], -4 ], "a",                 'n == -length returns the first element'],
+  [[ ["a", "b", "c", "d"], -5 ], undefined,           'n < -length returns undefined'],
+  [[ [1, [], {}, 9],       1 ],  []],
+  [[ [[], [[1]], [1, []]], 2 ],  [1, []]],
+  // [[ ["a", "b", "c", "d"], 1.7 ],"b",                 'n is truncated toward zero (toInteger)'],
 ];
 export function runNthTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "nth", verbose, NthCases, function(args is array) { return nth(args[0], args[1]); });
 }
+
+// export function dispatchArity(base is number, args is array, funcs is array) {
+//   const argCount = size(args);
+//   const func = funcs[argCount - base];
+//   if (argCount == 0) { return func(); }
+//   if (argCount == 1) { return func(args[0]); }
+//   if (argCount == 2) { return func(args[0], args[1]); }
+//   if (argCount == 3) { return func(args[0], args[1], args[2]); }
+//   if (argCount == 4) { return func(args[0], args[1], args[2], args[3]); }
+//   return func(args[0], args[1], args[2], args[3], args[4]);
+// }
 
 // == [tail] ==
 
@@ -271,6 +314,15 @@ export const TailCases = [
   [[[1, 2, 3]],  [2, 3]],
   [[[1]],        []],
   [[[]],         []],
+  [[ []                   ],  [],                     'empty input returns empty array'],
+  [[ ["a"]                ],  [],                     'single element returns empty array'],
+  [[ ["a", "b"]           ],  ["b"]],
+  [[ ["a", "b", "c", "d"] ],  ["b", "c", "d"]],
+  [[ [1, [], {}, 9]       ],  [[], {}, 9]],
+  [[ [[], [[1]], [1, []]] ],  [[[1]], [1, []]]],
+  [[ [undefined, "a"]     ],  ["a"],                  'first element being undefined is still dropped'],
+  [[ ["a", "b", "c"]  ],  ["b", "c"]],
+  [[ [[[]], [1, []]]  ],  [[1, []]]],
 ];
 export function runTailTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "tail", verbose, TailCases, function(args is array) { return tail(args[0]); });
@@ -377,8 +429,25 @@ export function runWithoutTests(context is Context, verbose is boolean) returns 
 // == [xor] ==
 
 export const XorCases = [
-  [[[[2, 1], [2, 3]]],  [1, 3]],
-  [[[[1], [1]]],        []],
+  [[ [[2, 1],       [2, 3]            ] ], [1, 3]],
+  [[ [[1],          [1]               ] ], []],
+  [[ [                                ] ], [],               'no arrays returns empty array'],
+  [[ [[]                              ] ], []],
+  [[ [[],           []                ] ], []],
+  [[ [[1, 2],       []                ] ], [1, 2],           'xor with empty array returns (uniq of) the other'],
+  [[ [[2, 1],       [2, 3]            ] ], [1, 3],           'result order follows first occurrence across the arrays'],
+  [[ [[1, 2],       [1, 2]            ] ], [],               'identical arrays cancel out'],
+  [[ [[1, 2],       [3, 4]            ] ], [1, 2, 3, 4],     'disjoint arrays: everything survives'],
+  [[ [[1, 1, 2],    [2]               ] ], [1],              'result is deduplicated'],
+  [[ [[1, 1, 2, 2]                    ] ], [1, 2],           'single array acts like uniq'],
+  [[ [ [1, 2],       [2, 3],  [3, 4]  ] ], [1, 4]],
+  [[ [ [1],          [1],     [1]     ] ], [],               'NOT a true symmetric difference: an element in 3 arrays is dropped, not kept'],
+  [[ [ [1, 2],       [2, 3],  [1, 3]  ] ], [],               'only elements found in exactly one array survive'],
+  [[ [ [[]],         [[]]             ] ], [],             'objects/arrays are compared by value, so result is emtpy'],
+  [[ [ [{}],         [{}]             ] ], [],             'objects/arrays are compared by value, so result is emtpy'],
+  [[ [ [[], {}],         [{}, []]     ] ], [],             'objects/arrays are compared by value, so result is emtpy'],
+  [[ [ [1, [], {}],  [1]              ] ], [[], {}]],
+  // [[ [NaN],        [NaN]        ],  [],               'SameValueZero: NaN equals NaN'],
 ];
 export function runXorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "xor", verbose, XorCases, function(args is array) { return xor(args[0]); });

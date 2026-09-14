@@ -337,7 +337,14 @@ export function runSnakeCaseTests(context is Context, verbose is boolean) return
 }
 
 export const TrimStartCases = [
-  [["  hi  "],           "hi  "],
+  [[""],                          ""],
+  [["  "],                        ""],
+  [["hi"],                        "hi"],
+  [["  hi"],                      "hi"],
+  [["  "],                        ""],
+  [["\n\r\t\f\v "],               ""],
+  [["\n\r\t\f\v x\n\r\t\f\v "],   "x\n\r\t\f\v "],
+  [["  "],                        "  "],
   [["--hi--", ["-"]],    "hi--"],
 ];
 export function runTrimStartTests(context is Context, verbose is boolean) returns map {

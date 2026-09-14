@@ -366,37 +366,52 @@ export function snakeCase(str is string) returns string {
   return join(mapArray(words(str), (word) => downcase(word)), "_");
 }
 
+
 /** Whitespace characters `trim`/`trimStart`/`trimEnd` strip by default. */
-const WhitespaceChars = [" ", "\t", "\n", "\r"];
+export const WhitespaceChars    is array  = [" ", "\t", "\n", "\r"];
+export const WhitespaceCharsStr is string = " \t\n\r";
 
 /**
  * `str` with any character in `chars` (default whitespace) removed from the front.
  * @example
  *   trimStart("  hi  "); // => "hi  "
  */
+export function trimStart(str is string, chars is string) returns string {
+  if (length(chars) == 0) { return str; }
+  const regex = "^[" ~ escapeRegExp(chars) ~ "]+";
+  return replace(str, regex, "");
+}
 export function trimStart(str is string, chars is array) returns string {
   if (size(chars) == 0) { return str; }
-  return replace(str, "^[" ~ join(mapArray(chars, escapeRegExp), "") ~ "]+", "");
+  return trimStart(str, join(chars));
 }
 export function trimStart(str is string) returns string {
-  return trimStart(str, WhitespaceChars);
+  return trimStart(str, WhitespaceCharsStr);
 }
 
 /** `trimStart`'s counterpart: strips from the back instead of the front. */
+export function trimEnd(str is string, chars is string) returns string {
+  if (length(chars) == 0) { return str; }
+  const regex = "[" ~ escapeRegExp(chars) ~ "]+$";
+  return replace(str, regex, "");
+}
 export function trimEnd(str is string, chars is array) returns string {
   if (size(chars) == 0) { return str; }
-  return replace(str, "[" ~ join(mapArray(chars, escapeRegExp), "") ~ "]+$", "");
+  return trimEnd(str, join(chars));
 }
 export function trimEnd(str is string) returns string {
-  return trimEnd(str, WhitespaceChars);
+  return trimEnd(str, WhitespaceCharsStr);
 }
 
 /** `trimStart` and `trimEnd` together: strips from both ends. */
+export function trim(str is string, chars is string) returns string {
+  return trimEnd(trimStart(str, chars), chars);
+}
 export function trim(str is string, chars is array) returns string {
   return trimEnd(trimStart(str, chars), chars);
 }
 export function trim(str is string) returns string {
-  return trim(str, WhitespaceChars);
+  return trim(str, WhitespaceCharsStr);
 }
 
 /**

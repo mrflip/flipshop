@@ -81,6 +81,14 @@ export function attempt(func is function) {
     return error;
   }
 }
+/** attempt, but it leaves the error in the log */
+export function attemptLoudly(func is function) {
+  try {
+    return func();
+  } catch (err) {
+    return err;
+  }
+}
 
 /**
  * Builds a function that tries `pairs` (`[predicate, handler]`) in order, calling and returning
@@ -161,6 +169,21 @@ export const noop0 = (()                 => undefined);
 export const noop1 = ((val)              => undefined);
 export const noop2 = noop;
 export const noop3 = ((val1, val2, val3) => undefined);
+
+/**
+ * Whether `num` falls in `[start, end)` (or `[end, start)` if `end < start`) — the bounds are
+ * always ordered before checking, matching lodash's own auto-swap.
+ * @example
+ *   inRange(3, 5);     // => true  (implicit start of 0)
+ *   inRange(3, 1, 5);  // => true
+ *   inRange(5, 1, 5);  // => false, upper bound is exclusive
+ */
+export function inRange(num is number, start is number, end is number) returns boolean {
+  return (num >= min(start, end)) && (num < max(start, end));
+}
+export function inRange(num is number, end is number) returns boolean {
+  return inRange(num, 0, end);
+}
 
 /**
  * Coerces `spec` into a callable iteratee: a function passes through unchanged, a map becomes a

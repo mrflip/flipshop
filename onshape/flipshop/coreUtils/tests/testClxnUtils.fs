@@ -44,6 +44,7 @@ precondition {
     //
     runPickTests(context,        verbose);
     runPickDefinedTests(context, verbose);
+    runArrFirstTests(context,    verbose);
     runArrLastTests(context,     verbose);
     //
     runMapValuesTests(context,  verbose);
@@ -331,6 +332,7 @@ export const ObjectifyCases = [
   [[ ["a", "b", "c"], (val, seq) => seq ], { a: 0, b: 1, c: 2 }, 'keys the result by the array values themselves'],
   [[ [],              (val, seq) => seq ], {} ],
   [[ ["x", "x"],      (val, seq) => seq ], { x: 1 },             'a repeated value collides on the same key; the later one wins'],
+  [[ ["a", "b"],      (val, seq) => val ~ seq ], { a: "a0", b: "b1" }, 'func may combine val and seq into the result'],
 ];
 export function runObjectifyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "objectify", verbose, ObjectifyCases, function(args is array) { return objectify(args[0], args[1]); });
@@ -367,6 +369,8 @@ export const HasPresentKeyArrCases = [
   [[ [1, 2, 3], 1 ],          true ],
   [[ [1, undefined, 3], 1 ], false ],
   [[ [1, 2, 3], 5 ],          false ],
+  [[ [1, 2, 3], -1 ],         false, 'no negative-index support here, unlike getAt'],
+  [[ [],         0 ],         false, 'empty array: nothing is in bounds'],
 ];
 export const ArrayIncludesCases = [
   [[ [1, 2, 3], 2 ], true ],
@@ -374,6 +378,7 @@ export const ArrayIncludesCases = [
   [[ [], 1 ],        false ],
   [[ [undefined, 1], undefined ], true ],
   [[ [{ a: 1 }], { a: 1 } ],      true, '`==` is deep structural equality, so a matching map counts'],
+  [[ [[1, 2]], [1, 2] ],          true, 'deep structural equality also applies to nested arrays'],
   //
   [[ { a: 1, b: 2, c: 3 }, 2 ], true,  'map form searches values, not keys'],
   [[ { a: 1, b: 2, c: 3 }, "b" ], false ],
@@ -406,15 +411,43 @@ export const PickCases = [
   [[ { a: 1, b: 2, c: 3 }, ["a", "c"] ],  { a: 1, c: 3 } ],
   [[ { a: 1 },             [] ],          {} ],
   [[ { a: 1 },             ["missing"] ], {}, 'a key absent from bag is elided from the result rather than set to undefined'],
+  [[ {},                   ["a"] ],       {}, 'empty bag: every key is absent'],
+  [[ { a: 1, b: 2 },       ["a", "missing"] ], { a: 1 }, 'present keys are kept, absent ones dropped, in the same call'],
+  [[ { a: 1, b: 2 },       ["a", "a"] ],  { a: 1 },       'a keylist entry repeated twice just writes the same key twice'],
 ];
 export const PickDefinedCases = [
   [[ { a: 1, b: undefined, c: 3 }, ["a", "b", "c"] ], { a: 1, c: 3 } ],
   [[ { a: 1 },                     ["missing"] ],     {} ],
+  [[ {},                           [] ],               {}, 'empty bag and empty keylist'],
+  [[ { a: 1, b: 2 },               [] ],               {}, 'empty keylist returns empty map regardless of bag contents'],
+];
+
+export const ArrFirstCases = [
+  [[ []                   ],  undefined,              'empty input returns undefined'],
+  [[ ["a"]                ],  "a"],
+  [[ ["a", "b", "c", "d"] ],  "a"],
+  [[ [undefined, "b"]     ],  undefined,              'undefined as a real first element is indistinguishable from the empty case'],
+  [[ [[], "b"]            ],  []],
+  [[ [[1, []], "b"]       ],  [1, []]],
+  [[ [{}, 9]              ],  {}],
+  [[ []               ],  undefined,  'empty array returns undefined'],
+  [[ ["a"]            ],  "a"],
+  [[ ["a", "b", "c"]  ],  "a"],
+  [[ [undefined, "b"] ],  undefined,  'a genuine undefined first element is indistinguishable from empty'],
+  [[ [[], {}, 9]      ],  []],
+  [[ [[[1]], 2]       ],  [[1]]],
 ];
 export const ArrLastCases = [
   [[ [1, 2, 3] ], 3 ],
   [[ [1] ],       1 ],
   [[ [] ],        undefined ],
+  [[ []                   ],  undefined,              'empty input returns undefined'],
+  [[ ["a"]                ],  "a"],
+  [[ ["a", "b", "c", "d"] ],  "d"],
+  [[ ["a", undefined]     ],  undefined,              'undefined as a real last element is indistinguishable from the empty case'],
+  [[ ["a", []]            ],  []],
+  [[ ["a", [1, []]]       ],  [1, []]],
+  [[ [1, [], {}, 9]       ],  9],
 ];
 
 export function runPickTests(context is Context, verbose is boolean) returns map {
@@ -423,19 +456,25 @@ export function runPickTests(context is Context, verbose is boolean) returns map
 export function runPickDefinedTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "pickDefined", verbose, PickDefinedCases, function(args is array) { return pickDefined(args[0], args[1]); });
 }
+export function runArrFirstTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "arrFirst", verbose, ArrFirstCases, function(args is array) { return arrFirst(args[0]); });
+}
 export function runArrLastTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "arrLast", verbose, ArrLastCases, function(args is array) { return arrLast(args[0]); });
 }
-
 // == [boxarrPush / boxarrUnshift] ==
 
 export const BoxarrPushCases = [
   [[ [1, 2], 3 ], [3, [1, 2, 3]] ],
   [[ [],     1 ], [1, [1]] ],
+  [[ [1],    undefined ], [undefined, [1, undefined]], 'pushing undefined still appends a slot to the array'],
+  [[ [1],    [2, 3] ],     [[2, 3], [1, [2, 3]]],       'val is appended as a single element, not spread'],
 ];
 export const BoxarrUnshiftCases = [
   [[ [1, 2], 3 ], [3, [3, 1, 2]] ],
   [[ [],     1 ], [1, [1]] ],
+  [[ [1],    undefined ], [undefined, [undefined, 1]], 'unshifting undefined still prepends a slot to the array'],
+  [[ [1],    [2, 3] ],     [[2, 3], [[2, 3], 1]],       'val is prepended as a single element, not spread'],
 ];
 
 export function runBoxarrPushTests(context is Context, verbose is boolean) returns map {
@@ -464,9 +503,18 @@ export const ForEachBreakCases = [
   [[ { a: 1, b: 2, c: 3 }, "zz" ],
    [["a", 1], ["b", 2], ["c", 3]],
    'map: never matches, so every entry is visited'],
+  [[ {}, "zz" ],
+   [],
+   'map: empty bag is never visited'],
   [[ ["x", "y", "z"], "y" ],
    [["x", 0], ["y", 1]],
    'array: stops right after the matching value, "z" is never visited'],
+  [[ ["x", "y", "z"], "zz" ],
+   [["x", 0], ["y", 1], ["z", 2]],
+   'array: never matches, so every entry is visited'],
+  [[ [], "zz" ],
+   [],
+   'array: empty input is never visited'],
 ];
 export function runForEachBreakTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "forEach BREAK", verbose, ForEachBreakCases, function(args is array) {
@@ -503,6 +551,12 @@ export const ForEachKeylistBreakCases = [
   [[ { a: 1, b: undefined, c: 3 }, ["a", "b", "c"], MissingPolicy.SKIP, "c" ],
    [["a", 1, 0], ["c", 3, 1]],
    'SKIP passes over the undefined "b" entry without counting it toward seq, then stops at "c"'],
+  [[ { a: 1, b: undefined, c: 3 }, ["a", "b", "c"], MissingPolicy.USE_UNDEFINED, "b" ],
+   [["a", 1, 0], ["b", undefined, 1]],
+   'USE_UNDEFINED visits the undefined "b" entry (consuming a seq slot) and can still match on it'],
+  [[ { a: 1, b: 2 }, ["a", "a", "b"], "a" ],
+   [["a", 1, 0], ["a", 1, 1]],
+   'a keylist entry repeated twice is visited (and can match) twice, each consuming its own seq slot'],
 ];
 export function runForEachKeylistBreakTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "forEach(keylist) BREAK", verbose, ForEachKeylistBreakCases, function(args is array) {
@@ -531,6 +585,8 @@ const parityKey = function(val, seq) { return isEven(val, seq) ? "even" : "odd";
 export const CountByCases = [
   [[ [1, 2, 3, 4], parityKey ], { "odd": 2, "even": 2 } ],
   [[ [],           parityKey ], {} ],
+  [[ [1],          parityKey ], { "odd": 1 },  'single element' ],
+  [[ [2, 4, 6],    parityKey ], { "even": 3 }, 'every element lands in the same bucket'],
   //
   [[ { a: 1, b: 2, c: 3, d: 4 }, parityKey ], { "odd": 2, "even": 2 }, 'map form counts values the same way'],
   [[ {},                         parityKey ], {} ],
@@ -542,9 +598,13 @@ export function runCountByTests(context is Context, verbose is boolean) returns 
 export const FindCases = [
   [[ [1, 2, 3], function(val, _seq) { return val > 1; } ], 2 ],
   [[ [1, 2, 3], function(val, _seq) { return val > 9; } ], undefined ],
+  [[ [],        function(val, _seq) { return true; } ],   undefined, 'empty array: never matches'],
+  [[ [1, 2, 3], function(val, _seq) { return val > 0; } ], 1,         'multiple matches: returns the first'],
   //
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 1; } ], 2, 'map form returns the value, not the key'],
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 9; } ], undefined ],
+  [[ {},                   function(val, _seq) { return true; } ],   undefined, 'empty map: never matches'],
+  [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 0; } ], 1,         'multiple matches: returns the first in keys(bag) order'],
 ];
 export function runFindTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "find", verbose, FindCases, function(args is array) { return find(args[0], args[1]); });
@@ -553,9 +613,13 @@ export function runFindTests(context is Context, verbose is boolean) returns map
 export const FindLastCases = [
   [[ [1, 2, 3], function(val, _seq) { return val < 3; } ], 2 ],
   [[ [1, 2, 3], function(val, _seq) { return val > 9; } ], undefined ],
+  [[ [],        function(val, _seq) { return true; } ],   undefined, 'empty array: never matches'],
+  [[ [1, 2, 3], function(val, _seq) { return val > 0; } ], 3,         'multiple matches: returns the last'],
   //
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val < 3; } ], 2 ],
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 9; } ], undefined ],
+  [[ {},                   function(val, _seq) { return true; } ],   undefined, 'empty map: never matches'],
+  [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 0; } ], 3,         'multiple matches: returns the last in keys(bag) order'],
 ];
 export function runFindLastTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findLast", verbose, FindLastCases, function(args is array) { return findLast(args[0], args[1]); });
@@ -566,8 +630,11 @@ const nestedPair = function(val, _seq) { return [[val], [val]]; };
 
 export const FlatMapCases = [
   [[ [1, 2], duplicated ], [1, 1, 2, 2] ],
+  [[ [],     duplicated ], [] ],
+  [[ [1, 2], function(val, _seq) { return []; } ], [], 'an iteratee returning [] contributes nothing to the result'],
   //
   [[ { a: 1, b: 2 }, duplicated ], [1, 1, 2, 2], 'map form flattens over values in keys(bag) order'],
+  [[ {},             duplicated ], [] ],
 ];
 export function runFlatMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatMap", verbose, FlatMapCases, function(args is array) { return flatMap(args[0], args[1]); });
@@ -575,8 +642,10 @@ export function runFlatMapTests(context is Context, verbose is boolean) returns 
 
 export const FlatMapDeepCases = [
   [[ [1, 2], nestedPair ], [1, 1, 2, 2] ],
+  [[ [],     nestedPair ], [] ],
   //
   [[ { a: 1, b: 2 }, nestedPair ], [1, 1, 2, 2] ],
+  [[ {},             nestedPair ], [] ],
 ];
 export function runFlatMapDeepTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatMapDeep", verbose, FlatMapDeepCases, function(args is array) { return flatMapDeep(args[0], args[1]); });
@@ -584,8 +653,11 @@ export function runFlatMapDeepTests(context is Context, verbose is boolean) retu
 
 export const FlatMapDepthCases = [
   [[ [1, 2], nestedPair, 1 ], [[1], [1], [2], [2]] ],
+  [[ [1, 2], nestedPair, 0 ], [[[1], [1]], [[2], [2]]], 'depth 0 leaves the mapped-but-unflattened result unchanged'],
+  [[ [],     nestedPair, 1 ], [] ],
   //
   [[ { a: 1, b: 2 }, nestedPair, 1 ], [[1], [1], [2], [2]] ],
+  [[ {},             nestedPair, 1 ], [] ],
 ];
 export function runFlatMapDepthTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatMapDepth", verbose, FlatMapDepthCases, function(args is array) { return flatMapDepth(args[0], args[1], args[2]); });
@@ -608,8 +680,11 @@ export function runForEachRightTests(context is Context, verbose is boolean) ret
 
 export const GroupByCases = [
   [[ [1, 2, 3, 4], parityKey ], { "odd": [1, 3], "even": [2, 4] } ],
+  [[ [],           parityKey ], {} ],
+  [[ [2, 4],       parityKey ], { "even": [2, 4] }, 'every element lands in the same group'],
   //
   [[ { a: 1, b: 2, c: 3, d: 4 }, parityKey ], { "odd": [1, 3], "even": [2, 4] }, 'map form groups values in keys(bag) order'],
+  [[ {},                         parityKey ], {} ],
 ];
 export function runGroupByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "groupBy", verbose, GroupByCases, function(args is array) { return groupBy(args[0], args[1]); });
@@ -617,8 +692,12 @@ export function runGroupByTests(context is Context, verbose is boolean) returns 
 
 export const PartitionCases = [
   [[ [1, 2, 3, 4], isEven ], [[2, 4], [1, 3]] ],
+  [[ [],           isEven ], [[], []] ],
+  [[ [2, 4],       isEven ], [[2, 4], []], 'every element passes: the failed side is empty'],
+  [[ [1, 3],       isEven ], [[], [1, 3]], 'no elements pass: the passed side is empty'],
   //
   [[ { a: 1, b: 2, c: 3, d: 4 }, isEven ], [[2, 4], [1, 3]], 'map form partitions values, keys(bag) order'],
+  [[ {},                         isEven ], [[], []] ],
 ];
 export function runPartitionTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "partition", verbose, PartitionCases, function(args is array) { return partition(args[0], args[1]); });
@@ -627,9 +706,15 @@ export function runPartitionTests(context is Context, verbose is boolean) return
 const concatString = function(acc, val, _seq) { return acc ~ val; };
 export const ReduceRightCases = [
   [[ [1, 2, 3], "", concatString ],           "321" ],
+  [[ [],        "seed", concatString ],       "seed", 'empty array with a seed: the seed passes through unchanged'],
+  [[ [],        concatString ],               undefined, 'empty array, no seed: nothing to fold, returns undefined'],
+  [[ ["1"],     concatString ],               "1",       'single-element array: no-seed overload just returns that element'],
   [[ ["1", "2", "3"], concatString ],         "321", 'no-seed overload starts from the last element'],
   //
   [[ { a: 1, b: 2, c: 3 }, "", concatString ],              "321", 'map form folds keys(bag) in reverse'],
+  [[ {},                   "seed", concatString ],          "seed", 'empty map with a seed: the seed passes through unchanged'],
+  [[ {},                   concatString ],                  undefined, 'empty map, no seed: nothing to fold, returns undefined'],
+  [[ { a: "1" },           concatString ],                  "1",       'single-entry map: no-seed overload just returns that value'],
   [[ { a: "1", b: "2", c: "3" }, concatString ],            "321", 'no-seed overload (map) starts from the last-keyed element'],
 ];
 export function runReduceRightTests(context is Context, verbose is boolean) returns map {
@@ -640,8 +725,12 @@ export function runReduceRightTests(context is Context, verbose is boolean) retu
 
 export const RejectCases = [
   [[ [1, 2, 3, 4], isEven ], [1, 3] ],
+  [[ [],           isEven ], [] ],
+  [[ [2, 4],       isEven ], [], 'every element rejected: nothing survives'],
+  [[ [1, 3],       isEven ], [1, 3], 'nothing rejected: input survives unchanged'],
   //
   [[ { a: 1, b: 2, c: 3, d: 4 }, isEven ], [1, 3], 'map form rejects by value, returns an array'],
+  [[ {},                         isEven ], [] ],
 ];
 export function runRejectTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "reject", verbose, RejectCases, function(args is array) { return reject(args[0], args[1]); });

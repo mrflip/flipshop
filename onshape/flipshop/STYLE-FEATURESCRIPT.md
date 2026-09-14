@@ -43,6 +43,14 @@ give a parameter a default — there are no default argument values. What Onshap
 **Strings.** `~` concatenates. `splitByRegexp(str, pattern)` splits; note it drops trailing empty
 segments. There is no string interpolation, but everything pretty-prints nicely. Don't start banging rocks together if you hit an edge case with regex: work around it or prompt for help.
 
+
+**Regular Expressions**: are passed as strings, so carry extra backslashes in your toolbag. The engine is the C++ ECMAScript Engine https://en.cppreference.com/cpp/regex/ecmascript -- which
+  - No Lookbehind Assertions: You cannot use lookbehinds (like (?<=a)b or (?<!a)b). Only lookaheads are supported.
+  - No Named Capture Groups: You cannot name your groups (like (?<name>\w+)). You must use numbers like \1 or $1.
+  - No Inline Modifiers: You cannot change settings inside the text pattern (like typing (?i) to ignore capital letters). Instead, you must set these options in your C++ code when you make the regex object.
+  - No Possessive Quantifiers: It lacks advanced control features like ++ or *+ to stop the engine from trying too hard to find matches
+  - No Unicode character groups
+
 **cannot compare two strings** using the builtin `<`, '>', `<=`, `>=` operators. We have a more expensive `cmpStr` and `cmp` workaround. Similarly, **sorting strings is weird**; the coreUtils/sortUtils file has workarounds with caveats
 
 
