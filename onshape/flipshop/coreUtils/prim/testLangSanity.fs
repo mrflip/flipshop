@@ -1,11 +1,11 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "f6ab954150609e1e2e014a1e", version : "6ba02745556af8f5a28d90b1"); // runTests
+import(path : "f6ab954150609e1e2e014a1e", version : "d514ce6f977d6c411ee07659"); // runTests
 // Testing this:
-import(path : "dcee57677ef58f0c8e045269", version : "6b050b58cb3fc28908e8906f");
-import(path : "54590bc1c9cee0141b968fbb", version : "f6c85f00e1e98aac16a46b86"); // clxnUtils: flatten
-import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53");
+import(path : "dcee57677ef58f0c8e045269", version : "95fce9e9c733cad8fcc1da28");
+import(path : "54590bc1c9cee0141b968fbb", version : "9353a2660fe770844332b092"); // clxnUtils: flatten
+import(path : "08b6ba15b8255611bafe7520", version : "e13611047ebf5355c1139c85");
 
 
 const SuiteTitle = "Core Utils";
@@ -70,10 +70,11 @@ function runLanguageStupiditiesTests(context is Context, verbose is boolean) ret
       [[replace("hello", "[hl]+",  "<$&>")], "<h>e<ll>o"],
       //
       [["" ~ { "meter": 1, "kilogram": 1, "second": 1 }], '{ "kilogram" : 1 , "meter" : 1 , "second" : 1 }', 'concatenation of units'],
+
       //
       [[ isEqual(() => "a", () => "a") ], false],
-      //
-      [[mergeMaps({ foo: { a: 1, b: 1 } }, { foo: { b: 2, c: 2 } })], { foo: { b:2, c: 2 } }, "mergeMaps does not merge maps, it clobbers any keys that collide even if their values are maps"],
+
+      [[mergeMaps({ foo: { a: 1, b: 1 } }, { foo: { b: 2, c: 2 } })], { foo: { b:2, c: 2 } }, "mergeMaps ddoes not merge maps, it clobbers any keys that collide even if their values are maps"],
   ], (args) => args[0]);
 }
 
