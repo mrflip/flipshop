@@ -176,6 +176,8 @@ function pathArrayFor(keyStrOrPath) returns array {
   return (keyStrOrPath is string) ? pathForKey(keyStrOrPath) : keyStrOrPath;
 }
 
+// == [Collection merging] -- deepMerge, assignWith, mergeWith
+
 /**
  * Recursively merges `incoming` into `existing`: two maps combine key by key all the way down;
  * two arrays combine index by index, `existing`'s tail past `size(incoming)` surviving untouched,
@@ -402,18 +404,239 @@ function beforeStartMessage(seq, arr is array) returns string {
 function nonkeyIndexMessage(seq, subj) returns string {
   return 'Index ' ~ seq ~ ' is not a valid key for ' ~ subj;
 }
+// --
+
+// == [Collection Inspection] -- hasKey
+
+/**
+ * Whether `key` is present in `obj`. Unlike lodash's `has`, `key` is a single literal key or
+ * index — never a dotted path — and a map only ever contains `key` when its value isn't
+ * `undefined`, since FeatureScript elides one on the way in.
+ *
+ * For an array, `missingPolicy` decides whether an in-bounds slot holding `undefined` counts:
+ * `MissingPolicy.USE_UNDEFINED` (the default) says yes; `MissingPolicy.SKIP` says no, the same as
+ * `hasPresentKey`. Neither array overload accepts a negative index, unlike @see `getAt`.
+ *
+ * `hasPresentKey` is `hasKey` pinned to the stricter policy.
+ *
+ * @example
+ *   hasKey({ "a": 1 }, "a");         // => true
+ *   hasKey({ "a": undefined }, "a"); // => false
+ *   hasKey([1, 2, 3], 2);            // => true
+ *   hasKey([1, 2, 3], -1);           // => false
+ *   hasKey([1, undefined, 3], 1, MissingPolicy.SKIP); // => false
+ */
+export function hasKey(obj is map, key is string) returns boolean {
+    return (obj[key] != undefined);
+}
+export function hasKey(obj is map, key is string, missingPolicy is MissingPolicy) returns boolean {
+    return (obj[key] != undefined); // offered for symmetry with the array case
+}
+export function hasPresentKey(obj is map, key is string) returns boolean {
+  return hasKey(obj, key); // FS does not retain keys with undefined values
+}
+
+export function hasKey(obj is array, key is number, missingPolicy is MissingPolicy) returns boolean {
+  if (missingPolicy == MissingPolicy.SKIP) { return hasPresentKey(obj, key); }
+  return (key >= 0) && (key < size(obj));
+}
+export function hasKey(obj is array, key is number) returns boolean {
+  return (key >= 0) && (key < size(obj));
+}
+export function hasPresentKey(obj is array, key is number) returns boolean {
+  return (key >= 0) && (key < size(obj)) && (obj[key] != undefined);
+}
+
+/**
+ * Coerces `spec` into a callable iteratee: a function passes through unchanged, a map becomes a
+ * `matches` rule, a string becomes a `property` accessor, a `[path, srcValue]` array becomes a
+ * `matchesProperty` rule, and anything else falls back to `identity`.
+ * @example
+ *   iteratee("a")({ "a": 1 });                    // => 1
+ *   iteratee({ "a": 1 })({ "a": 1, "b": 2 });      // => true
+ *   iteratee(["a", 1])({ "a": 1, "b": 2 });        // => true
+ */
+export const iteratee = (function(spec) returns function {
+  if (spec is function) { return spec; }
+  if (spec is map)      { return matches(spec); }
+  if (spec is string)   { return property(spec); }
+  if (spec is array)    { return matchesProperty(spec[0], spec[1]); }
+  return (val, _seq) => val;
+});
+
+/**
+ * Builds a rule that's `true` for any map holding `source`'s entries — a partial deep match.
+ * `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
+ * @example
+ *   matches({ "a": 1 })({ "a": 1, "b": 2 }, 0); // => true
+ *   matches({ "a": 1 })({ "a": 2, "b": 2 }, 0); // => false
+ */
+export function matches(source is map) returns function {
+  return (obj is map, _seq) => (pick(obj, keys(source)) == source);
+}
+/**
+ * Builds a rule that's `true` when `path` of a given object equals `srcValue`; `path` can be a
+ * string/dotpath/pathlist @see `getAt`. `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
+ * @example
+ *   matchesProperty("a.b", 1)({ "a": { "b": 1 } }, 0); // => true
+ */
+export function matchesProperty(path, srcValue) returns function {
+  return (obj, _seq) => (getAt(obj, path) == srcValue);
+}
+
+/**
+ * Builds a function that reads `path` off whatever it's given; `path` can be a
+ * string/dotpath/pathlist @see `getAt`. `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
+ * @example
+ *   property("a.b")({ "a": { "b": 1 } }, 0); // => 1
+ */
+export const property = (function(path) returns function {
+  return (obj, _seq) => getAt(obj, path);
+});
+
+/**
+ * The reverse of `property`: fixes the object up front and builds a function that reads whatever
+ * path it's given off of it.
+ * @example
+ *   propertyOf({ "a": { "b": 1 } })("a.b", 0); // => 1
+ */
+export const propertyOf = (function(obj) returns function {
+  return (path, _seq) => getAt(obj, path);
+});
+
+// --
+
+// == [Collection retrieve many] -- pick, pickDefined, arrLast, omit, omitBy, pickBy
+
+/**
+ * A map with just `bag`'s entries at `keylist` — like lodash's `pick`, an absent key is simply
+ * missing from the result rather than present with an `undefined` value. Each entry of `keylist`
+ * can be a dotted string or key-path array @see `getAt`, reaching into a nested structure and
+ * rebuilding the same nesting in the result — `pick({ "a": { "b": 1 } }, ["a.b"])` is
+ * `{ "a": { "b": 1 } }`, not a flat `{ "a.b": 1 }`. This is lossy against a key that already
+ * contains a literal dot, same caveat as `dotMap`/`undotMap`.
+ *
+ * `pickDefined` additionally drops a key whose value is `undefined` — for a map this is the same
+ * result as `pick`, since a map can never hold an `undefined` value to differ over. Unlike
+ * `pickBy`, the rule isn't customizable and the keys considered are exactly `keylist`, not every
+ * key of `bag`. `pickDefined` only accepts a literal top-level key, not a dotted path.
+ *
+ * @example
+ *   pick({ "a": 1, "b": 2, "c": 3 }, ["a", "c"]); // => { "a": 1, "c": 3 }
+ *   pick({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "b": 1 } }
+ *   pickDefined({ "a": 1, "b": undefined, "c": 3 }, ["a", "b", "c"]); // => { "a": 1, "c": 3 }
+ */
+export function pick(bag is map, keylist is array) returns map {
+    var result = {};
+    for (var pathSpec in keylist) {
+      const val = getAt(bag, pathSpec, Sentinel.ABSENT);
+      if (val != Sentinel.ABSENT) { result = setAt(result, pathSpec, val); }
+    }
+    return result;
+}
+
+export function pickDefined(bag is map, keylist is array) returns map {
+    var result = {};
+    for (var k in keylist) {
+      if (bag[k] != undefined) { result[k] = bag[k]; }
+    }
+    return result;
+}
+
+/**
+ * Last element of `arr`, or `undefined` if it's empty.
+ * @example
+ *   arrLast([1, 2, 3]); // => 3
+ *   arrLast([]);        // => undefined
+ */
+export const arrLast = (function(arr is array) {
+    if (size(arr) <= 0) { return undefined; }
+    return arr[size(arr) - 1];
+});
+
+/**
+ * First element of `arr`, or `undefined` if it's empty.
+ * @example
+ *   arrFirst([1, 2, 3]); // => 1
+ *   arrFirst([]);        // => undefined
+ */
+export const arrFirst = (function(arr is array) {
+    if (size(arr) <= 0) { return undefined; }
+    return arr[0];
+});
+
+/**
+ * `bag` without the entries at `keylist` — the inverse of `pick`. Each entry of `keylist` can be
+ * a dotted string or key-path array @see `getAt`, deleting a nested leaf without disturbing its
+ * siblings; a path with nothing currently at it is skipped rather than autovivifying empty maps
+ * along the way. `omitBy` instead drops any entry for which `rule(val, key)` holds, the inverse
+ * of `pickDefined`'s spirit but with a caller-supplied rule rather than a fixed "is defined"
+ * check. `rule` is coerced through `iteratee` @see `iteratee`.
+ * @example
+ *   omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }
+ *   omit({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "c": 2 } }
+ */
+export function omit(bag is map, keylist is array) returns map {
+  var result = bag;
+  for (var pathSpec in keylist) {
+    if (getAt(result, pathSpec, Sentinel.ABSENT) != Sentinel.ABSENT) {
+      result = setAt(result, pathSpec, undefined);
+    }
+  }
+  return result;
+}
+export function omitBy(bag is map, rule) returns map {
+  const fn = iteratee(rule);
+  var result = {};
+  for (var key in keys(bag)) {
+    if (! fn(bag[key], key)) { result[key] = bag[key]; }
+  }
+  return result;
+}
+
+/**
+ * `bag`'s entries for which `rule(val, key)` holds — the inverse of `omitBy`, and the
+ * generic-rule sibling of `pickDefined`'s fixed "is defined" check, matching lodash's
+ * `pickBy(object, [predicate=_.identity])`. `rule` is coerced through `iteratee` @see `iteratee`.
+ * @example
+ *   pickBy({ "a": 1, "b": 2, "c": 3 }, (val, _key) => val > 1); // => { "b": 2, "c": 3 }
+ */
+export function pickBy(bag is map, rule) returns map {
+  const fn = iteratee(rule);
+  var result = {};
+  for (var key in keys(bag)) {
+    if (fn(bag[key], key)) { result[key] = bag[key]; }
+  }
+  return result;
+}
+
+// --
 
 // == [Function values] --
 
 export const ClxnGetsetFuncs = {
   "lastInWins": lastInWins,
-  "getAt":      (bag, path, fallback) => getAt(bag, path, fallback),
-  "setAt":      (bag, path, val, onCollision) => setAt(bag, path, val, onCollision),
-  "update":     (bag, keyStrOrPath, updater) => update(bag, keyStrOrPath, updater),
-  "updateWith": (bag, keyStrOrPath, updater, onCollision) => updateWith(bag, keyStrOrPath, updater, onCollision),
-  "setAtWith":  (bag, keyStrOrPath, val, segmentFor) => setAtWith(bag, keyStrOrPath, val, segmentFor),
-  "deepMerge":  (existing, incoming) => deepMerge(existing, incoming),
-  "assignWith": (existing, incoming, combine) => assignWith(existing, incoming, combine),
-  "mergeWith":  (existing, incoming, combine) => mergeWith(existing, incoming, combine),
-  "pathForKey": (keyStr) => pathForKey(keyStr),
+  "getAt":             (bag, path, fallback)                     => getAt(bag, path, fallback),
+  "setAt":             (bag, path, val, onCollision)             => setAt(bag, path, val, onCollision),
+  "update":            (bag, keyStrOrPath, updater)              => update(bag, keyStrOrPath, updater),
+  "updateWith":        (bag, keyStrOrPath, updater, onCollision) => updateWith(bag, keyStrOrPath, updater, onCollision),
+  "setAtWith":         (bag, keyStrOrPath, val, segmentFor)      => setAtWith(bag, keyStrOrPath, val, segmentFor),
+  "deepMerge":         (existing, incoming)                      => deepMerge(existing, incoming),
+  "assignWith":        (existing, incoming, combine)             => assignWith(existing, incoming, combine),
+  "mergeWith":         (existing, incoming, combine)             => mergeWith(existing, incoming, combine),
+  "pathForKey":        (keyStr)                                  => pathForKey(keyStr),
+  "arrLast":           (arr)                                     => arrLast(arr),
+  "arrFirst":          (arr)                                     => arrFirst(arr),
+  "hasKey":            (obj, key)                                => hasKey(obj, key),
+  "hasPresentKey":     (obj, key)                                => hasPresentKey(obj, key),
+  "iteratee":          (spec)                                    => iteratee(spec),
+  "matches":           (source)                                  => matches(source),
+  "matchesProperty":   (path, srcValue)                          => matchesProperty(path, srcValue),
+  "property":          (path)                                    => property(path),
+  "propertyOf":        (obj)                                     => propertyOf(obj),
+  "pick":              (bag, keylist)                            => pick(bag, keylist),
+  "pickDefined":       (bag, keylist)                            => pickDefined(bag, keylist),
+  "omit":              (bag, keylist)                            => omit(bag, keylist),
+  "omitBy":            (bag, rule)                               => omitBy(bag, rule),
+  "pickBy":            (bag, rule)                               => pickBy(bag, rule),
 };

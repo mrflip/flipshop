@@ -18,9 +18,9 @@ export const tinySizeVal = 0.001;
  * Onshape does not allow reading properties until the full part studio has rendered.
  * @param context {Context}
  * @param entities {Query}
- * @param propType {PropertyType} : e.g. PropertyType.NAME
- * @param attrName {string} : attribute key to mirror the value under
- * @param value {string} : the value to set
+ * @param propType {PropertyType}: e.g. PropertyType.NAME
+ * @param attrName {string}: attribute key to mirror the value under
+ * @param value {string}: the value to set
  */
 export function setPropAndAttribute(context is Context, entities is Query, propType is PropertyType, attrName is string, value is string) returns string {
   setProperty(context,  { "entities": entities, "propertyType": propType, "value":     value });
@@ -62,7 +62,7 @@ export function setReadableName(context is Context, entities is Query, nameText 
  * @param context {Context}
  * @param query {Query}
  * @param attrName {string}
- * @param defaultVal : fallback value when the attribute is absent
+ * @param defaultVal: fallback value when the attribute is absent
  * @returns {array}
  */
 export function getAttrs(context is Context, query is Query, attrName is string, defaultVal) returns array {
@@ -96,7 +96,7 @@ export function getAllAttrs(context is Context, entity is Query) returns map {
  * @param context {Context}
  * @param query {Query}
  * @param attrName {string}
- * @param defaultVal : sentinel value for "not set"
+ * @param defaultVal: sentinel value for "not set"
  * @returns map with fields `{ thing, attrName, thingIndex, val }`, or undefined
  */
 export function getBestAttr(context is Context, query is Query, attrName is string, ignoredVal) {
@@ -213,6 +213,17 @@ export function field_varname(varname is string, fieldname is string) returns st
     return varname ~ '_' ~ sanitize_varname(fieldname);
 }
 
+/**
+ * Map of `tags` to a same-named child of `id`: `idsFor(id, ["a", "b"])` is
+ * `{ "a": id + "a", "b": id + "b" }` — the `ids` map every multi-sketch/multi-op feature
+ * declares up front, built in one call instead of one line per key.
+ * @param id {Id}: Base id.
+ * @param tags {array}: Id-suffix strings, one per key.
+ */
+export function idsFor(id is Id, tags is array) returns map {
+    return objectify(tags, (tag, _) => id + tag);
+}
+
 // == [Function values] --
 
 export const MetadataUtilsFuncs = {
@@ -230,4 +241,5 @@ export const MetadataUtilsFuncs = {
   "defaultMaybe":        (oldDefinition, newDefinition, basekey, destkey, valfunc) => defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc),
   "sanitize_varname":    (varname)                                      => sanitize_varname(varname),
   "field_varname":       (varname, fieldname)                           => field_varname(varname, fieldname),
+  "idsFor":              (id, tags)                                      => idsFor(id, tags),
 };

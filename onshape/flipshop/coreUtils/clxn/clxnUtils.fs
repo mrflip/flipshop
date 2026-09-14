@@ -5,135 +5,6 @@ import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd");
 import(path : "08b6ba15b8255611bafe7520", version : "1bac0c6e6336bad36c5a5a53"); // helperFuncs, for iteratee
 import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340"); // clxnGetset, for getAt/setAt
 
-// boolean, number, string, array, map, box, function, builtin, and undefined
-
-/**
- * Sentinel a `forEach`/`mapValues`/etc. callback returns to stop the walk early — whatever
- * hasn't been visited yet is simply skipped, not visited-and-discarded.
- */
-export enum NextStepAction {
-    annotation { "Name": "Break out of the loop early" }
-    BREAK
-}
-
-/**
- * How the walking functions below treat an entry whose value is `undefined` — because it's
- * missing outright, or because it's present and genuinely set to `undefined`.
- */
-export enum MissingPolicy {
-    annotation { "Name": "Treat set-but-undefined values the same as absent values: they should not appear in the result" }
-    SKIP,
-    annotation { "Name": "Treat set-but-undefined values as present (include them in results)" }
-    USE_UNDEFINED
-}
-
-// == [Collection Inspection] -- hasKey
-
-/**
-
-/**
- * Whether `key` is present in `obj`. Unlike lodash's `has`, `key` is a single literal key or
- * index — never a dotted path — and a map only ever contains `key` when its value isn't
- * `undefined`, since FeatureScript elides one on the way in; the `missingPolicy` map overload
- * exists only for symmetry with the array one below and never changes the answer.
- *
- * For an array, `missingPolicy` decides whether an in-bounds slot holding `undefined` counts:
- * `MissingPolicy.USE_UNDEFINED` (the default) says yes; `MissingPolicy.SKIP` says no, the same as
- * `hasPresentKey`. Neither array overload accepts a negative index, unlike @see `getAt`.
- *
- * `hasPresentKey` is `hasKey` pinned to the stricter policy.
- *
- * @example
- *   hasKey({ "a": 1 }, "a");         // => true
- *   hasKey({ "a": undefined }, "a"); // => false
- *   hasKey([1, 2, 3], 2);            // => true
- *   hasKey([1, 2, 3], -1);           // => false
- *   hasKey([1, undefined, 3], 1, MissingPolicy.SKIP); // => false
- */
-export function hasKey(obj is map, key is string) returns boolean {
-    return (obj[key] != undefined);
-}
-export function hasKey(obj is map, key is string, missingPolicy is MissingPolicy) returns boolean {
-    return (obj[key] != undefined); // offered for symmetry with the array case
-}
-export function hasPresentKey(obj is map, key is string) returns boolean {
-  return hasKey(obj, key); // FS does not retain keys with undefined values
-}
-
-export function hasKey(obj is array, key is number, missingPolicy is MissingPolicy) returns boolean {
-  if (missingPolicy == MissingPolicy.SKIP) { return hasPresentKey(obj, key); }
-  return (key >= 0) && (key < size(obj));
-}
-export function hasKey(obj is array, key is number) returns boolean {
-  return (key >= 0) && (key < size(obj));
-}
-export function hasPresentKey(obj is array, key is number) returns boolean {
-  return (key >= 0) && (key < size(obj)) && (obj[key] != undefined);
-}
-
-// --
-
-// == [Collection retrieve many] -- pick, pickDefined, arrLast
-
-/**
- * A map with just `bag`'s entries at `keylist` — like lodash's `pick`, an absent key is simply
- * missing from the result rather than present with an `undefined` value. Each entry of `keylist`
- * is resolved via `getAt`/`setAt`, so a dotted string or key-path array reaches into a nested
- * structure and rebuilds the same nesting in the result — `pick({ "a": { "b": 1 } }, ["a.b"])` is
- * `{ "a": { "b": 1 } }`, not a flat `{ "a.b": 1 }`. This is lossy against a key that already
- * contains a literal dot, same caveat as `dotMap`/`undotMap`.
- *
- * `pickDefined` additionally drops a key whose value is `undefined` — for a map this is the same
- * result as `pick`, since a map can never hold an `undefined` value to differ over. Unlike
- * `pickBy`, the rule isn't customizable and the keys considered are exactly `keylist`, not every
- * key of `bag`. `pickDefined` only accepts a literal top-level key, not a dotted path.
- *
- * @example
- *   pick({ "a": 1, "b": 2, "c": 3 }, ["a", "c"]); // => { "a": 1, "c": 3 }
- *   pick({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "b": 1 } }
- *   pickDefined({ "a": 1, "b": undefined, "c": 3 }, ["a", "b", "c"]); // => { "a": 1, "c": 3 }
- */
-export function pick(bag is map, keylist is array) returns map {
-    var result = {};
-    for (var pathSpec in keylist) {
-      const val = getAt(bag, pathSpec, Sentinel.ABSENT);
-      if (val != Sentinel.ABSENT) { result = setAt(result, pathSpec, val); }
-    }
-    return result;
-}
-
-export function pickDefined(bag is map, keylist is array) returns map {
-    var result = {};
-    for (var k in keylist) {
-      if (bag[k] != undefined) { result[k] = bag[k]; }
-    }
-    return result;
-}
-
-/**
- * Last element of `arr`, or `undefined` if it's empty.
- * @example
- *   arrLast([1, 2, 3]); // => 3
- *   arrLast([]);        // => undefined
- */
-export const arrLast = (function(arr is array) {
-    if (size(arr) <= 0) { return undefined; }
-    return arr[size(arr) - 1];
-});
-
-/**
- * First element of `arr`, or `undefined` if it's empty.
- * @example
- *   arrFirst([1, 2, 3]); // => 1
- *   arrFirst([]);        // => undefined
- */
-export const arrFirst = (function(arr is array) {
-    if (size(arr) <= 0) { return undefined; }
-    return arr[0];
-});
-
-// --
-
 // == [valuesAt]
 
 /**
@@ -182,9 +53,8 @@ export function valuesAt(bag is map, keylist is array) returns array {
 
 /**
  * Iterates over `bag`/`arr`, invoking `func` for each entry as `func(val, key)` (map) or
- * `func(val, seq)` (array) — the same two-argument shape every iterator in this file uses.
- * Unlike lodash's `forEach`, where an iteratee may exit early by returning `false`, iteration
- * here stops only when `func` returns `NextStepAction.BREAK`.
+ * `func(val, seq)` (array). Unlike lodash's `forEach`, where an iteratee may exit early by
+ * returning `false`, iteration here stops only when `func` returns `NextStepAction.BREAK`.
  *
  * `missingPolicy` (`USE_UNDEFINED`, the default, or `SKIP`) decides whether an entry whose value
  * is `undefined` gets visited at all. A `keylist` overload walks exactly those keys, in that
@@ -313,15 +183,13 @@ export function forEach3(arr is array, func is function) {
 /**
  * `bag`/`arr` with every value replaced by `func`'s result. Lodash splits this into two
  * functions — `mapValues` keeps an object's keys, `map` returns a new array — unified here under
- * one dispatch, since they share every other behavior: `func` is `func(val, key)` for a map or
- * `func(val, seq)` for an array, the same two-argument shape every iterator in this file uses.
+ * one dispatch: `func` is `func(val, key)` for a map or `func(val, seq)` for an array.
  * `mapValues3` instead hands `func` all three of `val`, `key`, and a 0-based visit-count `seq`
  * (for an array, `seq` fills both slots) when a map form needs to distinguish visit order from
  * key order. The `keylist` and `missingPolicy` overloads follow `forEach`'s rules: a `keylist`
  * walks exactly those keys, and `missingPolicy` decides whether an `undefined` value is mapped
  * (`USE_UNDEFINED`, the default) or its key dropped from the result entirely (`SKIP`). `func` is
- * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-
- * match map works in place of a literal function — `mapValues(users, 'name')` extracts a `name`
+ * coerced through `iteratee` @see `iteratee` — `mapValues(users, 'name')` extracts a `name`
  * field from each.
  *
  * @example
@@ -418,11 +286,10 @@ export function objectify(arr is array, func is function) returns map {
 
 /**
  * Rebuilds a map (from a map or an array) by asking `func(val, key?)` — `func(val, seq)` for an
- * array, `func(val, key)` for a map, the same two-argument shape every iterator in this file
- * uses — for the `[newKey, newVal]` pair each entry becomes; an entry where `func` returns
- * `undefined` (rather than a pair) is dropped rather than written under an `undefined` key.
- * Where two entries land on the same `newKey`, the later one wins — `keys(bag)` order for a map,
- * index order for an array.
+ * array, `func(val, key)` for a map — for the `[newKey, newVal]` pair each entry becomes; an
+ * entry where `func` returns `undefined` (rather than a pair) is dropped rather than written
+ * under an `undefined` key. Where two entries land on the same `newKey`, the later one wins —
+ * `keys(bag)` order for a map, index order for an array.
  */
 export function rebag(arr is array, func is function) returns map {
     var result = new box({});
@@ -439,9 +306,9 @@ export function rebag(bag is map, func is function) returns map {
 // == [Box Array Utils]
 
 /**
- * Mutates the array inside `arrRef` in place and returns `val` — a pair so a `forEach`/
- * `mapValues` callback can accumulate into an outer array without a `var` the closure would
- * have to capture and reassign. `boxarrPush` appends; `boxarrUnshift` prepends.
+ * Mutates the array inside `arrRef` in place and returns `val`, for accumulating into an outer
+ * array from within a `forEach`/`mapValues` callback. `boxarrPush` appends; `boxarrUnshift`
+ * prepends.
  */
 export function boxarrPush(arrRef is box, val) {
   arrRef[] = append(arrRef[], val);
@@ -458,9 +325,8 @@ export function boxarrUnshift(arrRef is box, val) {
 
 /**
  * Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to how many
- * elements of `arr`/`bag` produced that result — `seq`/`key` match `forEach`'s split between
- * index and key. `iterateeSpec` is coerced through `iteratee`, so a property-path string,
- * `[path, srcValue]` array, or partial-match map works in place of a literal function.
+ * elements of `arr`/`bag` produced that result. `iterateeSpec` is coerced through `iteratee`
+ * @see `iteratee`.
  * @example
  *   countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
  *   countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }
@@ -485,11 +351,9 @@ export function countBy(bag is map, iterateeSpec) returns map {
 }
 
 /**
- * First element of `bag`/`arr` for which `rule` holds, or `undefined` if none does — the array
- * form dereferences `arrayUtils`' `findIndex`; the map form walks `keys(bag)` and hands `rule`
- * the key as a second argument. `findLast` scans from the end instead. `rule` is coerced through
- * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
- * place of a literal function.
+ * First element of `bag`/`arr` for which `rule` holds, or `undefined` if none does. The map form
+ * hands `rule` the key as a second argument. `findLast` scans from the end instead. `rule` is
+ * coerced through `iteratee` @see `iteratee`.
  * @example
  *   find([1, 2, 3], (val) => val > 1); // => 2
  *   find({ a: 1, b: 2 }, (val, key) => key == "b"); // => 2
@@ -505,7 +369,7 @@ export function find(bag is map, rule) {
   }
   return undefined;
 }
-/** `find`, scanning from the end — `findLastIndex`, dereferenced, or `keys(bag)` walked in reverse. */
+/** `find`, scanning from the end. */
 export function findLast(arr is array, rule) {
   const seq = findLastIndex(arr, iteratee(rule));
   return (seq == -1) ? undefined : arr[seq];
@@ -521,12 +385,10 @@ export function findLast(bag is map, rule) {
 }
 
 /**
- * `bag`/`arr` mapped through `iterateeSpec`, then flattened one level — @see `arrayUtils`'
- * `flatten`. The map form walks `keys(bag)`, hands `iterateeSpec` the key as a second argument,
- * and always returns an array, same as lodash's collection form. `flatMapDeep`/`flatMapDepth`
- * flatten fully / to `depth` levels instead. `iterateeSpec` is coerced through `iteratee`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal function.
+ * `bag`/`arr` mapped through `iterateeSpec`, then flattened one level @see `flatten`. The map form
+ * hands `iterateeSpec` the key as a second argument, and always returns an array, same as lodash's
+ * collection form. `flatMapDeep`/`flatMapDepth` flatten fully / to `depth` levels instead.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   flatMap([1, 2], (val) => [val, val]); // => [1, 1, 2, 2]
  *   flatMap({ a: 1, b: 2 }, (val) => [val, val]); // => [1, 1, 2, 2]
@@ -555,8 +417,7 @@ export function flatMapDepth(bag is map, iterateeSpec, depth is number) returns 
 
 /**
  * `forEach`, back-to-front — otherwise identical, including the `NextStepAction.BREAK` early
- * exit. The map form walks `keys(bag)` in reverse and hands `func` the key where the array form
- * hands the index.
+ * exit.
  * @example
  *   forEachRight([1, 2, 3], function(val, seq) { debug(context, val); }); // visits 3, then 2, then 1
  *   forEachRight({ a: 1, b: 2 }, function(val, key) { debug(context, key); }); // visits "b", then "a"
@@ -578,9 +439,8 @@ export function forEachRight(bag is map, func is function) {
 
 /**
  * Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to the
- * elements of `arr`/`bag` that produced each one, via std's `insertIntoMapOfArrays`.
- * `iterateeSpec` is coerced through `iteratee`, so a property-path string, `[path, srcValue]`
- * array, or partial-match map works in place of a literal function.
+ * elements of `arr`/`bag` that produced each one. `iterateeSpec` is coerced through `iteratee`
+ * @see `iteratee`.
  * @example
  *   groupBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd");
  *   // => { "odd": [1, 3], "even": [2, 4] }
@@ -607,8 +467,7 @@ export function groupBy(bag is map, iterateeSpec) returns map {
  * `[passed, failed]` — `bag`/`arr` split into the elements for which `rule` holds and the ones
  * for which it doesn't, keeping visiting order. `rule` gets `(val, seq)` (array) or `(val, key)`
  * (map); the map form returns values only, same as lodash's collection form. `rule` is coerced
- * through `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map
- * works in place of a literal function.
+ * through `iteratee` @see `iteratee`.
  * @example
  *   partition([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [[2, 4], [1, 3]]
  */
@@ -641,9 +500,8 @@ export function partition(bag is map, rule) returns array {
 }
 
 /**
- * `bag`/`arr` reduced right-to-left through `foldFunction(accumulator, val, seq|key)` — a manual
- * reversed walk rather than std's `foldArray`, which only ever hands `foldFunction` two arguments,
- * so that both forms uniformly offer the index/key as a third argument.
+ * `bag`/`arr` reduced right-to-left through `foldFunction(accumulator, val, seq|key)` — unlike
+ * std's `foldArray`, `foldFunction` also gets the index/key as a third argument.
  * @example
  *   reduceRight([1, 2, 3], "", function(acc, val, _seq) { return acc ~ val; }); // => "321"
  */
@@ -682,11 +540,9 @@ export function reduceRight(bag is map, foldFunction is function) {
 }
 
 /**
- * Elements of `bag`/`arr` for which `rule` does *not* hold — the inverse of `filter` *(std)*, whose
- * `filterFunction` only ever gets one argument, so this walks `arr` by index instead in order to
- * hand `rule` `(val, seq)`; the map form gets `(val, key)` and returns values only. `rule` is
- * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-
- * match map works in place of a literal function.
+ * Elements of `bag`/`arr` for which `rule` does *not* hold — the inverse of `filter` *(std)*.
+ * `rule` gets `(val, seq)` (array) or `(val, key)` (map); the map form returns values only.
+ * `rule` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   reject([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [1, 3]
  */
@@ -734,7 +590,8 @@ export function arrayIncludes(bag is map, target) returns boolean {
 
 /**
  * Splits `arr` into groups of `chunkSize` elements each; the last group holds whatever's left
- * over. `chunkSize < 1` returns an empty array.
+ * over. `chunkSize < 1` returns an empty array. Unlike lodash, `chunkSize` has no default of `1`
+ * — it's always required here.
  * @example
  *   chunk(["a", "b", "c", "d"], 2); // => [["a", "b"], ["c", "d"]]
  *   chunk(["a", "b", "c", "d"], 3); // => [["a", "b", "c"], ["d"]]
@@ -774,10 +631,7 @@ export function difference(arr is array, excludeArr is array) returns array {
 
 /**
  * `difference`, comparing `arr` and `excludeArr` by `iterateeSpec(val, seq)` instead of `val`
- * itself — the same two-argument shape every iterator in this file uses; `filter` *(std)* only
- * ever hands a callback one argument, so this walks `arr` by index instead. `iterateeSpec` is
- * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or
- * partial-match map works in place of a literal function.
+ * itself. `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]
  */
@@ -793,8 +647,7 @@ export function differenceBy(arr is array, excludeArr is array, iterateeSpec) re
 }
 
 /**
- * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==` —
- * the same argument order every comparator in this file uses.
+ * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==`.
  * @example
  *   differenceWith([{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], (aa, bb) => aa.x == bb.x);
  *   // => [{ "x": 2 }]
@@ -962,11 +815,8 @@ export function intersection(arrList is array) returns array {
 }
 
 /**
- * `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself — the
- * same two-argument shape every iterator in this file uses; `filter` *(std)* only ever hands a
- * callback one argument, so `first` is walked by index instead. `iterateeSpec` is coerced through
- * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
- * place of a literal function.
+ * `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]
  */
@@ -1012,8 +862,7 @@ export function lastIndexOf(arr is array, val) returns number {
 /**
  * Element of `arr` for which `iterateeSpec(val, seq)` is greatest, or `undefined` for an empty
  * `arr` — std's array `max` picks the greatest value itself; this picks the element behind the
- * greatest *computed* value. `iterateeSpec` is coerced through `iteratee`, so a property-path
- * string, `[path, srcValue]` array, or partial-match map works in place of a literal function.
+ * greatest *computed* value. `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   maxBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 3 }
  */
@@ -1033,9 +882,8 @@ export function maxBy(arr is array, iterateeSpec) {
 }
 
 /**
- * Average of `iterateeSpec(val, seq)` across `arr` — `average` *(std)*, mapped via `mapValues`,
- * which also supplies `mapValues`' own `iteratee` coercion: a property-path string,
- * `[path, srcValue]` array, or partial-match map works in place of a literal function.
+ * Average of `iterateeSpec(val, seq)` across `arr` — `average` *(std)*, mapped via `mapValues`.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   meanBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 3
  */
@@ -1045,9 +893,7 @@ export function meanBy(arr is array, iterateeSpec) {
 
 /**
  * `maxBy`'s counterpart: element of `arr` for which `iterateeSpec(val, seq)` is least, or
- * `undefined` for an empty `arr`. `iterateeSpec` is coerced through `iteratee`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal function.
+ * `undefined` for an empty `arr`. `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   minBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 1 }
  */
@@ -1079,9 +925,8 @@ export function nth(arr is array, seq is number) {
 }
 
 /**
- * Sum of `iterateeSpec(val, seq)` across `arr` — `sum` *(std)*, mapped via `mapValues`, which
- * also supplies `mapValues`' own `iteratee` coercion: a property-path string,
- * `[path, srcValue]` array, or partial-match map works in place of a literal function.
+ * Sum of `iterateeSpec(val, seq)` across `arr` — `sum` *(std)*, mapped via `mapValues`.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   sumBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 6
  */
@@ -1163,9 +1008,8 @@ export function union(arrList is array) returns array {
 }
 
 /**
- * `union`, deduplicating by `iterateeSpec(val)` instead of `val` itself. `iterateeSpec` is
- * coerced through `iteratee` (by `uniqBy`, which this delegates to), so a property-path string,
- * `[path, srcValue]` array, or partial-match map works in place of a literal function.
+ * `union`, deduplicating by `iterateeSpec(val)` instead of `val` itself. `iterateeSpec` is coerced
+ * through `iteratee` @see `iteratee`.
  * @example
  *   unionBy([[2.1], [1.2, 2.3]], (val) => floor(val)); // => [2.1, 1.2]
  */
@@ -1185,10 +1029,8 @@ export function unionWith(arrList is array, comparator is function) returns arra
 
 /**
  * `arr` with duplicate elements removed, keeping the first occurrence — like std's
- * `deduplicate`, but comparing `iterateeSpec(val, seq)` instead of `val` itself — the same
- * two-argument shape every iterator in this file uses. `iterateeSpec` is coerced through
- * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map works in
- * place of a literal function.
+ * `deduplicate`, but comparing `iterateeSpec(val, seq)` instead of `val` itself. `iterateeSpec` is
+ * coerced through `iteratee` @see `iteratee`.
  * @example
  *   uniqBy([2.1, 1.2, 2.3], (val, _seq) => floor(val)); // => [2.1, 1.2]
  */
@@ -1209,8 +1051,7 @@ export function uniqBy(arr is array, iterateeSpec) returns array {
 
 /**
  * `arr` with duplicate elements removed, keeping the first occurrence, where two elements count
- * as duplicates when `comparator(val, kept)` is `true` — the same argument order every
- * comparator in this file uses.
+ * as duplicates when `comparator(val, kept)` is `true`.
  * @example
  *   uniqWith([{ "x": 1 }, { "x": 1 }, { "x": 2 }], (aa, bb) => aa.x == bb.x);
  *   // => [{ "x": 1 }, { "x": 2 }]
@@ -1275,11 +1116,8 @@ export function xor(arrList is array) returns array {
 }
 
 /**
- * `xor`, comparing by `iterateeSpec(val, seq)` instead of `val` itself — the same two-argument
- * shape every iterator in this file uses; `filter`/`any` *(std)* only ever hand a callback one
- * argument, so this walks `allVals` and each candidate `other` array by index instead, via
- * `findIndex`. `iterateeSpec` is coerced through `iteratee`, so a property-path string,
- * `[path, srcValue]` array, or partial-match map works in place of a literal function.
+ * `xor`, comparing by `iterateeSpec(val, seq)` instead of `val` itself. `iterateeSpec` is coerced
+ * through `iteratee` @see `iteratee`.
  * @example
  *   xorBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [1.2, 3.4]
  */
@@ -1348,9 +1186,8 @@ export function zipWith(arrList is array, iteratee is function) returns array {
 
 /**
  * First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`,
- * so a property-path string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal function.
+ * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
+ * @see `iteratee`.
  * @example
  *   findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
  */
@@ -1364,9 +1201,8 @@ export function findKey(bag is map, rule) {
 
 /**
  * Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal function.
+ * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
+ * @see `iteratee`.
  * @example
  *   findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
  */
@@ -1385,9 +1221,7 @@ export function findLastKey(bag is map, rule) {
  * occurs more than once keeps only its last key, same as lodash. A non-string value is
  * stringified into its new key, matching how lodash's own object keys coerce. `invertBy` collects
  * every key instead of just the last one, grouped under `iterateeSpec(val, key)` rather than
- * `val` itself — the same two-argument shape every iterator in this file uses. `iterateeSpec` is
- * coerced through `iteratee`, so a property-path string, `[path, srcValue]` array, or
- * partial-match map works in place of a literal function.
+ * `val` itself. `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   invert({ "a": 1, "b": 2, "c": 1 }); // => { "1": "c", "2": "b" }
  */
@@ -1410,8 +1244,7 @@ export function invertBy(bag is map, iterateeSpec) returns map {
 /**
  * `bag`'s values, replacing each key with `iterateeSpec(val, key)` — `mapValues`' sibling for
  * keys instead of values. A collision on the computed key keeps the last entry that produced it.
- * `iterateeSpec` is coerced through `iteratee`, so a property-path string, `[path, srcValue]`
- * array, or partial-match map works in place of a literal function.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
  *   mapKeys({ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }); // => { "a1": 1, "b2": 2 }
  */
@@ -1420,55 +1253,6 @@ export function mapKeys(bag is map, iterateeSpec) returns map {
   var result = {};
   for (var key in keys(bag)) {
     result[fn(bag[key], key)] = bag[key];
-  }
-  return result;
-}
-
-/**
- * `bag` without the entries at `keylist` — the inverse of `pick`. Each entry of `keylist` is
- * resolved via `getAt`/`setAt`, same as `pick`, so a dotted string or key-path array deletes a
- * nested leaf without disturbing its siblings; a path with nothing currently at it is skipped
- * rather than autovivifying empty maps along the way. `omitBy` instead drops any entry for which
- * `rule(val, key)` holds, the inverse of `pickDefined`'s spirit but with a caller-supplied rule
- * rather than a fixed "is defined" check. `rule` is coerced through `iteratee`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal function.
- * @example
- *   omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }
- *   omit({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "c": 2 } }
- */
-export function omit(bag is map, keylist is array) returns map {
-  var result = bag;
-  for (var pathSpec in keylist) {
-    if (getAt(result, pathSpec, Sentinel.ABSENT) != Sentinel.ABSENT) {
-      result = setAt(result, pathSpec, undefined);
-    }
-  }
-  return result;
-}
-export function omitBy(bag is map, rule) returns map {
-  const fn = iteratee(rule);
-  var result = {};
-  for (var key in keys(bag)) {
-    if (! fn(bag[key], key)) { result[key] = bag[key]; }
-  }
-  return result;
-}
-
-/**
- * `bag`'s entries for which `rule(val, key)` holds — the inverse of `omitBy`, and the
- * generic-rule sibling of `pickDefined`'s fixed "is defined" check, matching lodash's
- * `pickBy(object, [predicate=_.identity])`. `rule` is coerced through `iteratee`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal function.
- * @example
- *   pickBy({ "a": 1, "b": 2, "c": 3 }, (val, _key) => val > 1); // => { "b": 2, "c": 3 }
- */
-export function pickBy(bag is map, rule) returns map {
-  const fn = iteratee(rule);
-  var result = {};
-  for (var key in keys(bag)) {
-    if (fn(bag[key], key)) { result[key] = bag[key]; }
   }
   return result;
 }
@@ -1489,12 +1273,6 @@ export function toPairs(bag is map) returns array {
 // == [Function values] --
 
 export const ClxnUtilsFuncs = {
-  "hasKey":            (obj, key)                      => hasKey(obj, key),
-  "hasPresentKey":     (obj, key)                      => hasPresentKey(obj, key),
-  "pick":              (bag, keylist)                  => pick(bag, keylist),
-  "pickDefined":       (bag, keylist)                  => pickDefined(bag, keylist),
-  "arrLast":           (arr)                           => arrLast(arr),
-  "arrFirst":          (arr)                           => arrFirst(arr),
   "valuesAt":          (bagOrArr, keylist)             => valuesAt(bagOrArr, keylist),
   "forEach":           (bagOrArr, func)                => forEach(bagOrArr, func),
   "forEach3":          (bagOrArr, func)                => forEach3(bagOrArr, func),
@@ -1564,8 +1342,5 @@ export const ClxnUtilsFuncs = {
   "invert":            (bag)                           => invert(bag),
   "invertBy":          (bag, iteratee)                 => invertBy(bag, iteratee),
   "mapKeys":           (bag, iteratee)                 => mapKeys(bag, iteratee),
-  "omit":              (bag, keylist)                  => omit(bag, keylist),
-  "omitBy":            (bag, rule)                     => omitBy(bag, rule),
-  "pickBy":            (bag, rule)                     => pickBy(bag, rule),
   "toPairs":           (bag)                           => toPairs(bag),
 };

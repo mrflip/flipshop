@@ -43,6 +43,7 @@ give a parameter a default — there are no default argument values. What Onshap
 **Strings.** `~` concatenates. `splitByRegexp(str, pattern)` splits; note it drops trailing empty
 segments. There is no string interpolation, but everything pretty-prints nicely. Don't start banging rocks together if you hit an edge case with regex: work around it or prompt for help.
 
+**No circular imports**, and import strings are opaque. Don't try to fix that or work around it, but do be aware. Add an import if it's obvious what the path is fom a neighboring file, but don't bother with guessing or stubbing a new or unknown one, it's easy to add by me.
 
 **Regular Expressions**: are passed as strings, so carry extra backslashes in your toolbag. The engine is the C++ ECMAScript Engine https://en.cppreference.com/cpp/regex/ecmascript -- which
   - No Lookbehind Assertions: You cannot use lookbehinds (like (?<=a)b or (?<!a)b). Only lookaheads are supported.

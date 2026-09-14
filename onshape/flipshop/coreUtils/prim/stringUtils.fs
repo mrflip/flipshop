@@ -14,18 +14,16 @@ export const UpperToLowercase = {
 };
 
 /**
- * Extracts the text from `begseq` up to, but not including, `endseq`, and returns it as a new
- * string — the semantics of JS's `String.prototype.slice`.
+ * Text of `str` from `begseq` up to, but not including, `endseq` — the semantics of JS's
+ * `String.prototype.slice`.
  *
- * If `begseq >= length(str)`, an empty string is returned. If `begseq < 0`, it's treated as
- * `max(length(str) + begseq, 0)` — counted from the end of the string; `endseq` follows the same
- * rule when negative. If `endseq` is omitted, or `>= length(str)`, this extracts to the end of
- * the string. If, after normalizing negative values, `endseq <= begseq`, an empty string is
- * returned.
+ * A negative `begseq`/`endseq` counts back from the end of the string (`max(length(str) +
+ * begseq, 0)`); an omitted or too-large `endseq` extracts to the end of the string; if, after
+ * normalizing, `endseq <= begseq`, the result is `""`.
  *
- * FeatureScript has no omitted-argument default the way JS does, so `SequencePosition.END` is an
- * explicit stand-in for "to the end of the string" at a call site that must supply all three
- * arguments (e.g. inside a fixed-arity callback).
+ * `SequencePosition.END` is an explicit stand-in for "to the end of the string" at a call site
+ * that must supply all three arguments (e.g. inside a fixed-arity callback), since FeatureScript
+ * has no omitted-argument default.
  *
  * @example
  *   strSlice("hello world", 0, 3);     // => "hel"
@@ -314,10 +312,7 @@ export function capitalize(str is string) returns string {
 /**
  * `str` with every regex metacharacter (`\ ^ $ . * + ? ( ) [ ] { } |`) preceded by a backslash,
  * so it can be dropped into `match`/`replace`/`splitByRegexp`'s `regExp` argument and matched
- * literally instead of interpreted. One `replace`, using `$&` to echo back whatever matched —
- * unlike lodash, which tests for a metacharacter before replacing so it can skip the replace when
- * there's nothing to do; skipped here since there'd be nothing to save by scanning `str` twice
- * instead of once.
+ * literally instead of interpreted.
  * @example
  *   escapeRegExp("[lodash](https://lodash.com/)"); // => "\\[lodash\\]\\(https://lodash\\.com/\\)"
  */

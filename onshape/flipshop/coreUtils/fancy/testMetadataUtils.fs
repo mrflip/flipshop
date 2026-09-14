@@ -29,6 +29,7 @@ precondition {
     runDefaultMaybeTests(context, verbose);
     runSanitizeVarnameTests(context, verbose);
     runFieldVarnameTests(context, verbose);
+    runIdsForTests(context, verbose);
     //
     if (! verbose) { debug(context, starbanner('** ' ~ SuiteTitle ~ ' Tests ran successfully **')); }
   } catch (err) {
@@ -79,4 +80,17 @@ export const FieldVarnameCases = [
 ];
 export function runFieldVarnameTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "field_varname", verbose, FieldVarnameCases, function(args is array) { return field_varname(args[0], args[1]); });
+}
+
+// == [idsFor] ==
+// Id has no documented equality via `==`, so these check the key set idsFor produces rather
+// than the Id values themselves.
+
+export const IdsForCases = [
+  [[newId(), ["a", "b", "c"]], ["a", "b", "c"]],
+  [[newId(), []],              []],
+  [[newId(), ["only"]],        ["only"]],
+];
+function runIdsForTests(context is Context, verbose is boolean) returns map {
+  return runTests(context, "idsFor", verbose, IdsForCases, function(args is array) { return keys(idsFor(args[0], args[1])); });
 }

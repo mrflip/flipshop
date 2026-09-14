@@ -12,6 +12,26 @@ export const zero = 0 * mm;
 export enum Sentinel { ABSENT }
 
 /**
+ * Sentinel a `forEach`/`mapValues`/etc. callback returns to stop the walk early — whatever
+ * hasn't been visited yet is simply skipped, not visited-and-discarded.
+ */
+export enum NextStepAction {
+    annotation { "Name": "Break out of the loop early" }
+    BREAK
+}
+
+/**
+ * How the walking functions below treat an entry whose value is `undefined` — because it's
+ * missing outright, or because it's present and genuinely set to `undefined`.
+ */
+export enum MissingPolicy {
+    annotation { "Name": "Treat set-but-undefined values the same as absent values: they should not appear in the result" }
+    SKIP,
+    annotation { "Name": "Treat set-but-undefined values as present (include them in results)" }
+    USE_UNDEFINED
+}
+
+/**
  * Drops `vec`'s z component.
  * @example
  *   vector2(vector(1, 2, 3)); // => vector(1, 2)
@@ -97,6 +117,8 @@ export const castArray = (function(val) returns array {
   return [val];
 });
 
+// == [sizeof]
+
 /**
  * Size of `val`: length for a string, element count for an array, key count for a map, `0` for
  * `undefined`.
@@ -118,6 +140,26 @@ export function sizeof(val is array) returns number {
 export function sizeof(val is undefined) returns number {
     return 0;
 }
+// --
+
+// == [Function arity currying] ==
+
+/**
+ * `curryNtoM` wraps `func` to accept `N` arguments but call `func` with only the first `M` of
+ * them — dropping trailing arguments so a fixed-arity callback (`func()`, `func(val)`, …) can sit
+ * in a slot that always calls with `N` arguments, like a `forEach`/`mapValues` iteratee.
+ * @example
+ *   curry2to0(function() { return "called"; })("ignored1", "ignored2"); // => "called"
+ *   curry3to1(function(val) { return val; })(1, 2, 3);                  // => 1
+ */
+export function curry3to0(func is function) returns function { return (_arg1, _arg2, _arg3) => func();               }
+export function curry3to1(func is function) returns function { return (arg1,  _arg2, _arg3) => func(arg1);           }
+export function curry3to2(func is function) returns function { return (arg1,  arg2,  _arg3) => func(arg1, arg2);     }
+
+export function curry2to0(func is function) returns function { return (_arg1, _arg2) => func();           }
+export function curry2to1(func is function) returns function { return (arg1,  _arg2) => func(arg1);       }
+export function curry2to2(func is function) returns function { return (arg1,  arg2) => func(arg1, arg2);  }
+// --
 
 // == [Function values] --
 

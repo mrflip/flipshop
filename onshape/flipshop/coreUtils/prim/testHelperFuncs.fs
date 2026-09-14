@@ -3,7 +3,8 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "f6ab954150609e1e2e014a1e", version : "939862c0f6583971525024d5"); // runTests
 // Testing this:
-import(path : "08b6ba15b8255611bafe7520", version : "25c448c89a44ac841877ddc3");
+import(path : "08b6ba15b8255611bafe7520", version : "27c996c61ebb5cf67efc0371"); // helperFuncs <- testing this
+import(path : "607f97fc690581579d1d4a08", version : "8c278aecfc38bca16e835744"); // clxnGetset <- testing this
 
 const SuiteTitle = "Misc Utils";
 
@@ -18,7 +19,6 @@ precondition {
 {
   const verbose = ifNil(definition.verbose, false);
   try {
-    runIdsForTests(context, verbose);
     runNoopTests(context, verbose);
     runCurryTests(context, verbose);
     runParseJsonSafelyTests(context, verbose);
@@ -44,19 +44,6 @@ precondition {
     debug(context, starbanner('** Error in ' ~ SuiteTitle ~ ' Tests: ' ~ err ~ ' **'));
   }
 });
-
-// == [idsFor] ==
-// Id has no documented equality via `==`, so these check the key set idsFor produces rather
-// than the Id values themselves.
-
-export const IdsForCases = [
-  [[newId(), ["a", "b", "c"]], ["a", "b", "c"]],
-  [[newId(), []],              []],
-  [[newId(), ["only"]],        ["only"]],
-];
-function runIdsForTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "idsFor", verbose, IdsForCases, function(args is array) { return keys(idsFor(args[0], args[1])); });
-}
 
 // == [noop] ==
 

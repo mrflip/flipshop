@@ -3,7 +3,8 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "f6ab954150609e1e2e014a1e", version : "fdc8b0e93654776959ce7a8a"); // runTests
 // Testing this:
-import(path : "54590bc1c9cee0141b968fbb", version : "502cf2d68de5897e8d3b8586"); // clxnUtils
+import(path : "607f97fc690581579d1d4a08", version : "941ddac27a61e6b665cfeba6"); // clxnGetset <- testing this
+import(path : "54590bc1c9cee0141b968fbb", version : "54952c334c14106eac53e310"); // clxnUtils  <- testing this
 
 const SuiteTitle = "Object Utils";
 

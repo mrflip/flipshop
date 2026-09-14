@@ -11,27 +11,25 @@ export function undotMap(obj is map) returns map {
 
 /**
  * Expands the dotted top-level keys of `obj` into nested maps: `{ "a.b": 1, "a": { "c": 2 } }`
- * becomes `{ "a": { "b": 1, "c": 2 } }`. One setAt per key, and the whole of the behavior is
- * in three choices below.
+ * becomes `{ "a": { "b": 1, "c": 2 } }`.
  *
- * Keys are applied shallowest first. That is what makes the result independent of map
- * iteration order, which FeatureScript does not promise: two keys of equal depth can never
- * have one path be a prefix of the other, so their writes cannot interact, and across depths
- * the deeper key always lands later. Shallow keys lay down structure, deeper keys refine it.
+ * Keys are applied shallowest first, so the result is independent of map iteration order (which
+ * FeatureScript does not promise): two keys of equal depth can never have one path be a prefix of
+ * the other, so their writes cannot interact, and across depths the deeper key always lands
+ * later. Shallow keys lay down structure, deeper keys refine it.
  *
- * Where two keys land on the same path, `onCollision(existing, incoming)` decides, defaulting
- * to @see `merge` so that two maps combine rather than one replacing the other. Pass
+ * Where two keys land on the same path, `onCollision(existing, incoming)` decides, defaulting to
+ * @see `deepMerge` so that two maps combine rather than one replacing the other. Pass
  * `lastInWins` for plain lodash-set behavior, or your own resolver to complain instead. The
  * resolver is a leaf rule only: a scalar in the way of a deeper key is replaced either way, so
  * `{ "foo": 1, "foo.bar": 2 }` is `{ "foo": { "bar": 2 } }` and does not report the 1.
  *
- * Only the keys of `obj` itself are split. Dots inside a value's own keys are left alone, so
- * `{ "socket_bit.inthex": { "H2.5mm": leafData } }` keeps `H2.5mm` in one piece. A key ending
- * in a dot is unhandled; @see `pathForKey`.
+ * Only the keys of `obj` itself are split; dots inside a value's own keys are left alone, so
+ * `{ "socket_bit.inthex": { "H2.5mm": leafData } }` keeps `H2.5mm` in one piece. A key ending in
+ * a dot is unhandled — @see `pathForKey`.
  *
- * If you are handing in a large map whose keys are mostly undotted, note that Onshape has an
- * `intersectMaps`, which keeps only the keys present in both of two maps. Partition with that
- * and pass in just the dotted ones.
+ * For a large map whose keys are mostly undotted, Onshape's `intersectMaps` keeps only the keys
+ * present in both of two maps; partition with that and pass in just the dotted ones.
  */
 export function undotMap(obj is map, onCollision is function) returns map {
   var pathsByKey = {};
@@ -90,7 +88,9 @@ export function dotMap(obj is map) returns map {
 }
 
 /**
- * Parses a flexible level definition array/string into a normalized map structure.
+ * Normalizes one level definition into `{ name, displayName, tr }`.
+ * @param levelDef {string|array}: `name`, `[name]`, `[name, displayName]`, `[name, tr]`, or
+ *   `[name, displayName, tr]`. `displayName` defaults to `titleCase(name)`; `tr` defaults to `{}`.
  */
 function parseLevelDef(levelDef) returns map {
   var name = "";
@@ -110,11 +110,12 @@ function parseLevelDef(levelDef) returns map {
 }
 
 /**
- * Transforms a raw nested map of uniform data types into the nested choice structure
- * required by the custom feature.
- *
- * @param levels {array}: Level configuration (e.g., ['socket_kind', ['drive_kind', { inthex: 'Int Hex' }]])
- * @param tree {map}: The raw deeply-nested map.
+ * Nested choice-list structure (`{ name, displayName, entries }` per level) built by walking
+ * `tree` according to `levels`. Returns `tree` unchanged if `levels` has fewer than 2 entries.
+ * @param levels {array}: One entry per level — @see `parseLevelDef` for the accepted shapes.
+ * @param tree {map}: Raw deeply-nested map, keyed the same way at each level as `levels` describes.
+ * @example
+ *   buildNestedChoices(['socket_kind', ['drive_kind', { "inthex": 'Int Hex' }]], tree);
  */
 export function buildNestedChoices(levels is array, tree is map) returns map {
   if (size(levels) < 2) { return tree; }

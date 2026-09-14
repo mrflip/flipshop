@@ -129,8 +129,8 @@ export function sizeofEditLogic(context is Context, id is Id, oldDefinition is m
 // == [Pick Values from a Bag] ==
 
 /**
- * Sets variable `varname` to `valuesAt(bag, keylist)` — the values of variable `bagname` at the
- * keys/indexes in `keylistJSON` (a JSON array), in that order.
+ * Sets variable `varname` to the values of variable `bagname` at the keys/indexes in
+ * `keylistJSON` (a JSON array), in that order. @see `valuesAt`.
  * @param definition {{
  *   @field bagname {string} : Name of the source map/array variable.
  *   @field keylistJSON {string} : JSON array of keys/indexes to pick out, e.g. `["a", "b"]` or `[0, 2]`.

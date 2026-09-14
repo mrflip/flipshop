@@ -1,41 +1,10 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "54590bc1c9cee0141b968fbb", version : "972034451094efe0cf2307f8"); // clxnUtiles, for objectify, pick, mapValues
-import(path : "607f97fc690581579d1d4a08", version : "7bdc77843983df15c42b55ba"); // clxnGetset, for getAt
-import(path : "dd812faf6ff4099cda4aa0eb", version : "a7311f6cf30fb8456ecc98c3"); // stringUtils, for strTake
-import(path : "66e287bede293cb227dfb89c", version : "92efbb7ccaa5d62b7bde80f1"); // typeUtils, for ifNil &c
-
-/**
- * Map of `tags` to a same-named child of `id`: `idsFor(id, ["a", "b"])` is
- * `{ "a": id + "a", "b": id + "b" }` — the `ids` map every multi-sketch/multi-op feature
- * declares up front, built in one call instead of one line per key.
- * @param id {Id}: Base id.
- * @param tags {array}: Id-suffix strings, one per key.
- */
-export function idsFor(id is Id, tags is array) returns map {
-    return objectify(tags, (tag, _) => id + tag);
-}
-
-
-// == [Function arity currying] ==
-
-/**
- * `curryNtoM` wraps `func` to accept `N` arguments but call `func` with only the first `M` of
- * them — dropping trailing arguments so a fixed-arity callback (`func()`, `func(val)`, …) can sit
- * in a slot that always calls with `N` arguments, like a `forEach`/`mapValues` iteratee.
- * @example
- *   curry2to0(function() { return "called"; })("ignored1", "ignored2"); // => "called"
- *   curry3to1(function(val) { return val; })(1, 2, 3);                  // => 1
- */
-export function curry3to0(func is function) returns function { return (_arg1, _arg2, _arg3) => func();               }
-export function curry3to1(func is function) returns function { return (arg1,  _arg2, _arg3) => func(arg1);           }
-export function curry3to2(func is function) returns function { return (arg1,  arg2,  _arg3) => func(arg1, arg2);     }
-
-export function curry2to0(func is function) returns function { return (_arg1, _arg2) => func();           }
-export function curry2to1(func is function) returns function { return (arg1,  _arg2) => func(arg1);       }
-export function curry2to2(func is function) returns function { return (arg1,  arg2) => func(arg1, arg2);  }
-// --
+import(path : "607f97fc690581579d1d4a08", version : "ddabef1e98b472ccc39c7916"); // clxnGetset, for getAt, iteratee, etc
+import(path : "54590bc1c9cee0141b968fbb", version : "7092c264891606b4352b1f0d"); // clxnUtils, for mapValues
+import(path : "dd812faf6ff4099cda4aa0eb", version : "592a13b20a544325ea81470d"); // stringUtils, for strTake
+import(path : "66e287bede293cb227dfb89c", version : "e7ae3a5f5d4835f9c96161e5"); // typeUtils, for ifNil &c
 
 // == [JSON parsing] ==
 
@@ -75,13 +44,13 @@ export function parseJsonSafely(rawjson is string) { return parseJsonSafely(rawj
  *   attempt(function() { throw "boom"; }); // => "boom"
  */
 export const attempt = (function(func is function) {
-  try {
+  try silent {
     return func();
   } catch (error) {
     return error;
   }
 });
-/** attempt, but it leaves the error in the log */
+/** Same as `attempt` — except Onshape logs the error due to the lack of the 'try silent' keyword */
 export const attemptLoudly = (function(func is function) {
   try {
     return func();
@@ -132,15 +101,15 @@ export function cond(pairs is map) returns function {
 
 /**
  * Curried `conformsTo`: builds a rule that checks whether a given map conforms to `source`'s
- * per-key rules. Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot
- * every iterator in this file does.
+ * per-key rules. Returns `(obj, seq)`, discarding `seq` — this file's iterators all take that
+ * two-argument shape so they can sit in the same callback slot.
  * @example
  *   const isAdult = conforms({ "age": (age, _key) => age >= 18 });
  *   isAdult({ "age": 20 }, 0); // => true
  */
-export function conforms(source is map) returns function {
+export const conforms = (function(source is map) returns function {
   return (obj is map, _seq) => conformsTo(obj, source);
-}
+});
 
 /**
  * Whether every rule in `rules` holds against the same-keyed value of `obj` — a key in
@@ -151,9 +120,9 @@ export function conforms(source is map) returns function {
  *   conformsTo({ "a": 1, "b": 2 }, { "b": (n, _key) => n > 1 }); // => true
  *   conformsTo({ "a": 1, "b": 2 }, { "b": (n, _key) => n > 2 }); // => false
  */
-export function conformsTo(obj is map, rules is map) returns boolean {
+export const conformsTo = (function(obj is map, rules is map) returns boolean {
   return all(keys(rules), (key) => rules[key](obj[key], key));
-}
+});
 
 /**
  * Builds a single-argument function that always returns `val`, ignoring the argument it's called
@@ -172,6 +141,7 @@ export function constant(val, arity is number) returns function {
 export function constant(val) returns function {
   return (_x, _y) => val;
 }
+export const constantFunc = (function(val, arity is number) returns function { return constant(val, arity); });
 
 /** Returns `val` unchanged — the fallback `iteratee` reaches for when nothing more specific applies. */
 export const identity  = ((val, _seq) => val);
@@ -202,51 +172,10 @@ export function inRange(num is number, end is number) returns boolean {
 }
 
 /**
- * Coerces `spec` into a callable iteratee: a function passes through unchanged, a map becomes a
- * `matches` rule, a string becomes a `property` accessor, a `[path, srcValue]` array becomes a
- * `matchesProperty` rule, and anything else falls back to `identity`.
- * @example
- *   iteratee("a")({ "a": 1 });                    // => 1
- *   iteratee({ "a": 1 })({ "a": 1, "b": 2 });      // => true
- *   iteratee(["a", 1])({ "a": 1, "b": 2 });        // => true
- */
-export function iteratee(spec) returns function {
-  if (spec is function) { return spec; }
-  if (spec is map)      { return matches(spec); }
-  if (spec is string)   { return property(spec); }
-  if (spec is array)    { return matchesProperty(spec[0], spec[1]); }
-  return identity;
-}
-
-/**
- * Builds a rule that's `true` for any map holding `source`'s entries — a partial deep match,
- * via the `pick(obj, keys(source)) == source` trick (`==` is already deep structural equality).
- * Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this
- * file does.
- * @example
- *   matches({ "a": 1 })({ "a": 1, "b": 2 }, 0); // => true
- *   matches({ "a": 1 })({ "a": 2, "b": 2 }, 0); // => false
- */
-export function matches(source is map) returns function {
-  return (obj is map, _seq) => (pick(obj, keys(source)) == source);
-}
-/**
- * Builds a rule that's `true` when `path` of a given object equals `srcValue`, via `getAt`.
- * Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this
- * file does.
- * @example
- *   matchesProperty("a.b", 1)({ "a": { "b": 1 } }, 0); // => true
- */
-export function matchesProperty(path, srcValue) returns function {
-  return (obj, _seq) => (getAt(obj, path) == srcValue);
-}
-
-/**
  * Builds a function that calls every function in `funcs` with `(val, seq)`, collecting results
- * into an array in `funcs`' order — the same two-argument shape every iterator in this file
- * uses, forwarded to each of `funcs` in turn. Each element of `funcs` is coerced through
- * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map can stand
- * in for a literal function, matching lodash's own `over`/`overEvery`/`overSome` docs.
+ * into an array in `funcs`' order. Each element of `funcs` is coerced through `iteratee`, so a
+ * property-path string, `[path, srcValue]` array, or partial-match map can stand in for a literal
+ * function, matching lodash's own `over`/`overEvery`/`overSome` docs.
  * @example
  *   over([(val, _seq) => val + 1, (val, _seq) => val - 1])(5, 0); // => [6, 4]
  */
@@ -276,29 +205,8 @@ export function overSome(funcs is array) returns function {
 }
 
 /**
- * Builds a function that reads `path` off whatever it's given, via `getAt`. Returns
- * `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this file does.
- * @example
- *   property("a.b")({ "a": { "b": 1 } }, 0); // => 1
- */
-export const property = (function(path) returns function {
-  return (obj, _seq) => getAt(obj, path);
-});
-
-/**
- * The reverse of `property`: fixes the object up front and builds a function that reads whatever
- * path it's given off of it. Returns `(path, seq)`, discarding `seq`, for the same reason.
- * @example
- *   propertyOf({ "a": { "b": 1 } })("a.b", 0); // => 1
- */
-export const propertyOf = (function(obj) returns function {
-  return (path, _seq) => getAt(obj, path);
-});
-
-/**
- * `range` *(std)*, descending, via a plain `reverse` — inherits std `range`'s own inclusive-of-
- * `to` convention rather than lodash's exclusive one, matching how `range` itself is already
- * mapped in this project.
+ * `range` *(std)*, descending — inherits std `range`'s own inclusive-of-`to` convention rather
+ * than lodash's exclusive one, matching how `range` itself is already mapped in this project.
  * @example
  *   rangeRight(0, 3); // => [3, 2, 1, 0]
  */
@@ -308,10 +216,8 @@ export const rangeRight = (function(from is number, to is number) returns array 
 
 /**
  * Calls `func(seq, seq)` for `seq` from `0` to `count - 1`, collecting results — `count < 1`
- * returns `[]`. There's no second value to offer alongside the index, so `seq` fills both slots,
- * the same two-argument shape every iterator in this file uses (a manual loop rather than std's
- * `mapArray`, which only ever hands a callback one argument). With no `func` given, defaults to
- * `identity`, so `times(3)` is just `[0, 1, 2]`.
+ * returns `[]`. There's no second value to offer alongside the index, so `seq` fills both slots.
+ * With no `func` given, defaults to `identity`, so `times(3)` is just `[0, 1, 2]`.
  * @example
  *   times(3, (seq, _seq2) => seq * seq); // => [0, 1, 4]
  *   times(3);                            // => [0, 1, 2]
@@ -335,23 +241,20 @@ export const doMany = (function(count is number, func is function) returns array
 
 // == [Function values] --
 
-export const UtilsFuncs = {
+export const HelperFuncs = {
   "attempt":         attempt,
   "attemptLoudly":   attemptLoudly,
-  "cond":            cond,
+  "cond":            (pairs)          => cond(pairs),
   "conforms":        conforms,
   "conformsTo":      conformsTo,
-  "constant":        constant,
+  "constantFunc":    constantFunc,
+  "constant":        (val)           => constant(val),
   "doMany":          (count, func)    => doMany(count, func),
   "identity":        identity,
   "identity1":       identity1,
   "identity2":       identity2,
   "identity3":       identity3,
-  "idsFor":          (id, tags)       => idsFor(id, tags),
-  "inRange":         inRange,
-  "iteratee":        (spec)           => iteratee(spec),
-  "matches":         (source)         => matches(source),
-  "matchesProperty": (path, srcValue) => matchesProperty(path, srcValue),
+  "inRange":         (num, start, end) => inRange(num, start, end),
   "noop":            noop,
   "noop0":           noop0,
   "noop1":           noop1,

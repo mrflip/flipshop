@@ -3,6 +3,7 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 //
 import(path : "f6ab954150609e1e2e014a1e", version : "939862c0f6583971525024d5"); // runTests
 import(path : "08b6ba15b8255611bafe7520", version : "25c448c89a44ac841877ddc3"); // miscUtils (For noop, curryX)
+import(path : "607f97fc690581579d1d4a08", version : "af42bc272fc425c5435bf347"); // for hasKey/hasPresentKey
 //
 import(path : "a92a3694a1d67e78c541bed5", version : "8091b95c1e95e0c9560f4c40"); // testClxnGetset: we run their tests
 import(path : "b87a9ac25313676049cf04cb", version : "bfc5deb303dfdab8392e5eba"); // testClxnReshape: we run their tests
