@@ -244,29 +244,35 @@ export function matchesProperty(path, srcValue) returns function {
 /**
  * Builds a function that calls every function in `funcs` with `(val, seq)`, collecting results
  * into an array in `funcs`' order — the same two-argument shape every iterator in this file
- * uses, forwarded to each of `funcs` in turn.
+ * uses, forwarded to each of `funcs` in turn. Each element of `funcs` is coerced through
+ * `iteratee`, so a property-path string, `[path, srcValue]` array, or partial-match map can stand
+ * in for a literal function, matching lodash's own `over`/`overEvery`/`overSome` docs.
  * @example
  *   over([(val, _seq) => val + 1, (val, _seq) => val - 1])(5, 0); // => [6, 4]
  */
 export function over(funcs is array) returns function {
-  return (val, seq) => mapValues(funcs, (func, _idx) => func(val, seq));
+  const coercedFuncs = mapValues(funcs, (func, _idx) => iteratee(func));
+  return (val, seq) => mapValues(coercedFuncs, (func, _idx) => func(val, seq));
 }
 /**
  * Builds a rule that's `true` only when every function in `funcs` returns truthy for
- * `(val, seq)`.
+ * `(val, seq)`. Each element of `funcs` is coerced through `iteratee`; @see `over`.
  * @example
  *   overEvery([(val, _seq) => val > 0, (val, _seq) => val < 10])(5, 0); // => true
  */
 export function overEvery(funcs is array) returns function {
-  return (val, seq) => all(funcs, (func) => func(val, seq));
+  const coercedFuncs = mapValues(funcs, (func, _idx) => iteratee(func));
+  return (val, seq) => all(coercedFuncs, (func) => func(val, seq));
 }
 /**
- * Builds a rule that's `true` when any function in `funcs` returns truthy for `(val, seq)`.
+ * Builds a rule that's `true` when any function in `funcs` returns truthy for `(val, seq)`. Each
+ * element of `funcs` is coerced through `iteratee`; @see `over`.
  * @example
  *   overSome([(val, _seq) => val < 0, (val, _seq) => val > 10])(5, 0); // => false
  */
 export function overSome(funcs is array) returns function {
-  return (val, seq) => any(funcs, (func) => func(val, seq));
+  const coercedFuncs = mapValues(funcs, (func, _idx) => iteratee(func));
+  return (val, seq) => any(coercedFuncs, (func) => func(val, seq));
 }
 
 /**
