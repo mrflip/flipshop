@@ -5,558 +5,399 @@ geometry-specific, just the plumbing every feature ends up needing. Style follow
 [`STYLE-Featurescript.md`](../STYLE-Featurescript.md); the standard-library map/array/string
 functions these build on are catalogued in [`onshape/README.md`](../../README.md).
 
-This is a starting summary, one line per exported function/constant, and every file in the
-directory has now had a full pass: tests wherever plain-data testing is possible, docblocks
-throughout, and a lodash correspondence table where one applies. `coreUtils.fs` itself has no
-functions of its own — it just re-exports the documents the other files in this directory compile
-into, so other features can `import` this one file for all of it.
+Each module lives next to its own tests, grouped by role:
+
+* `clxn/` — collection walking and reshaping: `clxnUtils.fs`, `clxnGetset.fs`, `clxnReshape.fs`.
+* `prim/` — primitive-value helpers: `stringUtils.fs`, `typeUtils.fs`, `helperFuncs.fs`, `sortUtils.fs`.
+* `fancy/` — Onshape-specific, needs a live `Query`/`Context`: `colorUtils.fs`, `metadataUtils.fs`, `debugUtils.fs`.
+* `features/` — variable-producing Features: `jsonVarF.fs`.
+* `lib/` — the `runTests` test harness itself.
+
+`coreUtils.fs` itself has no functions of its own — it just re-exports the other files in this
+directory, so other features can `import` this one file for all of it.
 
 ## Tests
 
-One `run<Thing>Tests` function per case list, in `tests/`. All `clxn*` suites — everything from
-`clxnUtiles.fs` and from `clxnGetset.fs`/`clxnReshape.fs` — run out of a single Feature,
-`runClxnTestsFS` in `tests/testclxnUtiles.fs`. Adding a new `clxn*` function's tests means
-adding its `run*Tests` call to that Feature, not creating a new one. Every other file gets its
-own `test<File>.fs` and `run<File>TestsFS` Feature (`sizeof`'s tests are the one exception,
-living under `runCoreUtilsTestsFS` in `tests/testCoreUtils.fs`, since `sizeof` predates the
-`clxn*` split).
-
-Three files' worth of functions have no test suite at all, and for the same underlying reason:
-`debugUtils.fs`'s `highlightQuery`, most of `metadataUtils.fs` (`setPropAndAttribute`, `setName`,
-`setReadableName`, `getAttrs`, `getAllAttrs`, `getBestAttr`, `getNameProps`, `getNames`,
-`getName`, `getNameProp`, `getNameOfBody`), and every Feature in `jsonVarF.fs`
-(`jsonVarF`/`keylistF`/`sizeofF`/`valuesAtF`/`splatF`, plus `setColor` in `colorUtils.fs`) read or
-write properties/attributes/variables on a live `Query`/`Context`, which the plain-data-table
-`runTests` harness this whole test suite is built on has no way to exercise without an actual
-part studio to run against. `metadataUtils.fs`'s three pure functions (`defaultMaybe`,
-`sanitize_varname`, `field_varname`) are tested in `testMetadataUtils.fs` despite that, and every
-other function in `colorUtils.fs` is pure and tested in `testColorUtils.fs`.
+One `run<Thing>Tests` function per case list, sitting in a `test<File>.fs` right next to the file
+it tests. Large modules may have their tests broken into separate files, as you'll see with the collection (clxn) utilties.
 
 ---
 
-## Lodash correspondence
+## Menu
 
-Much of this directory is an ongoing port of [lodash](https://lodash.com/docs)'s conveniences
-into FeatureScript, pulled in as needed from the reference copy at `lodash.js`. This section
-catalogs all ~300 of lodash's top-level public functions, organized the way lodash's own docs
-group them (Array, Collection, Function, Lang, Math, Number, Object, Seq, String, Util, plus a
-one-function Date category), and says what — if anything — covers each one on the FeatureScript
-side.
+Much of this directory is an ongoing port of [lodash](https://lodash.com/docs)'s conveniences into
+FeatureScript, pulled in as needed from the reference copy at `lodash.js`. The tables below group
+everything by what it's *for*, not by lodash's own category boundaries or which file it happens to
+live in — `union`/`intersection`/`difference` are lodash "Array" functions, for instance, but read
+better here under [Set Operations](#set-operations).
 
-**Reading the FeatureScript column:**
+**Notation used in the `Function Name` column:**
 
-| Notation                          | Means                                                                                                                                                                                                                                        |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| a plain name (`getAt`, `pick`, …) | implemented in this project's coreUtils — see the file-by-file catalogs further down                                                                                                                                                         |
-| `name` *(std)*                    | a FeatureScript standard-library builtin (`math.fs`/`string.fs`/`containers.fs`) covers it, no port needed                                                                                                                                   |
-| `` `is array` `` etc. *(lang)*    | built into the FeatureScript language itself (a type-check expression or operator), not a function call                                                                                                                                      |
-| ~~name~~                          | nothing implements it, anywhere — a real (if low-priority) porting candidate                                                                                                                                                                 |
-| a struck basket + "→ Not Planned" | consciously not planned; the full list is tabulated in [Not Planned](#not-planned) at the very bottom of this document, with the harder-to-summarize reasons (templating, chaining, async) spelled out in [`HUMAN-FIXME.md`](HUMAN-FIXME.md) |
+| Notation | Means |
+| --- | --- |
+| a plain name (`getAt`, `pick`, …) | Implemented in this project's coreUtils. |
+| `name` *(std)* | Covered by a FeatureScript standard-library builtin (`math.fs`/`string.fs`/`containers.fs`) — no port needed. |
+| `` `is array` `` etc. *(lang)* | Built into the FeatureScript language itself (a type-check expression or operator), not a function call. |
+| ~~name~~ | Nothing implements it yet — a real, if low-priority, porting candidate, listed in a "Possible, not yet built" table under the section it belongs to. |
+| a struck name in [Not Planned](#not-planned) | Consciously not planned — that table has the reason. |
 
 A function can have both a coreUtils port *and* a std builtin that inspired it, and the two can
-differ in how much they actually do — `merge` is the poster child: coreUtils' `deepMerge`
-recurses through nested maps the way lodash's `merge` does, while std's own `mergeMaps` is a
-shallower, "less functional" one-level combine. Both are noted on that row.
-
-### Collection
-
-| FeatureScript                              | Lodash                       | Does                                                  | Notes                                                                                          |
-| ------------------------------------------ | ---------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `forEach`                                  | ≡                             | Iterate a collection.                                 | Lodash also spells this `each` — see [Lodash aliases](#lodash-aliases). |
-| `mapValues3` (array form)                  | `map`                        | Map a collection to a same-shaped result.             |                                                                                                |
-| `arrayIncludes`                            | `includes`                   | Whether a value appears in a collection.              | Map or array; no substring search on a string.                                                 |
-| `objectify`                                | `keyBy`                      | Key a collection by a computed key.                   | Key/value roles swapped from lodash — see the file-by-file table below.                        |
-| `all` *(std)*                              | `every`                      | Whether every element passes a rule.             |                                                                                                |
-| `any` *(std)*                              | `some`                       | Whether any element passes a rule.               |                                                                                                |
-| `filter` *(std)*                           | ≡                            | Elements passing a rule.                         |                                                                                                |
-| `foldArray` *(std)*                        | `reduce`                     | Reduce a collection to a single value.                |                                                                                                |
-| `sizeof` / `size` *(std)*                  | `size`                       | Element/key/character count.                          |                                                                                                |
-| `countBy`                                  | ≡                            | Counts of elements, grouped by a computed key.        | Map or array, like the rest of this section.                                                   |
-| `find` / `findLast`                        | ≡                            | First/last element matching a rule.              | Array form dereferences `arrayUtils`' `findIndex`/`findLastIndex`; map form walks `keys(bag)`. |
-| `flatMap` / `flatMapDeep` / `flatMapDepth` | ≡                            | Map then flatten one/all/`n` levels.                  | Rides on `arrayUtils`' `flatten` family.                                                       |
-| `forEachRight`                             | ≡                            | Iterate a collection back-to-front.                   | Lodash also spells this `eachRight` — see [Lodash aliases](#lodash-aliases). Map form walks `keys(bag)` in reverse. |
-| `groupBy`                                  | ≡                            | Group elements by a computed key.                     | Built on std's `insertIntoMapOfArrays`.                                                        |
-| `partition`                                | ≡                            | Split into two groups by a rule.                 |                                                                                                |
-| `reduceRight`                              | ≡                            | `reduce`, back-to-front.                              | `foldArray` *(std)* over a `reverse`d array.                                                   |
-| `reject`                                   | ≡                            | Elements *failing* a rule — inverse of `filter`. |                                                                                                |
-
-Possible, not yet built — both need a workaround rather than a missing capability:
-
-| ~~sample~~ / ~~sampleSize~~ / ~~shuffle~~ | `sample` family | Random element(s) / shuffled order. | Needs a seeded pseudo-random generator — FeatureScript has no entropy source, but a plain linear-congruential generator seeded by a caller-supplied number is just arithmetic. Same workaround `random` (Number, below) is waiting on. |
-| ~~sortBy~~ / ~~orderBy~~ | ≡ | Sort by one or more iteratees, each with its own direction. | std `sort(arr, compareFunction)` takes an arbitrary comparator, so a *numeric* func already sorts today (`sort(arr, (a, b) => func(a) - func(b))`); a *string* func needs a character-ordinal lookup table first — the same technique `upcaseChar`/`downcaseChar` (`stringUtils.fs`) already use — since FeatureScript has no `<`/`>` for strings. |
-
-### Function
-
-FeatureScript functions are already first-class values with real closures — `miscUtils.fs`'s
-`curry2to0`…`curry3to2` close over `func`, and `boxarrPush` closes over a mutable `box` — so most
-of lodash's Function category turns out to be a short closure away, once you stop assuming it
-needs JS's variadic-argument or `this`-binding machinery. The two genuine gaps are things that
-need *variadic* calling (no `arguments`-style rest args in FeatureScript) and things that need
-*`this`/method* binding (no OOP here) — both filed under [Not Planned](#not-planned) at
-the bottom of this document, instead of repeated per-row here.
-
-| FeatureScript | Lodash | Does | Notes |
-|---|---|---|---|
-| `memoizeFunction` *(std)* | `memoize` | Cache a function's results by argument. | |
-| `curry2to0`…`curry3to2` *(existing, `miscUtils.fs`)* | `unary`, `ary` | Call a function with only its first `N` of `M` arguments. | Already covers `unary` (`curryXto1`) and the common `ary` shapes; a new arity just needs one more `curryNtoM` sibling, not a general variadic `ary`. |
-
-Possible, not yet built — a closure over a plain value or a `box` (for call-count/cache state)
-covers all of these; none need anything FeatureScript doesn't already have:
-
-| FeatureScript              | Lodash                    | Does                                                                      | Notes                                                                                                                                                                                          |
-| -------------------------- | ------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `flip`                     | ≡                         | Swap a 2-argument function's argument order.                              | `(func) => (a, b) => func(b, a)`.                                                                                                                                                              |
-| `flow` / `flowRight`       | ≡                         | Compose an array of unary functions, left-to-right / right-to-left.       | `foldArray` *(std)* over the function array, seeded with the input.                                                                                                                            |
-| `negate`                   | ≡                         | Boolean-invert a rule's result.                                      | `(pred) => (...) => !pred(...)`, one per arity already in use.                                                                                                                                 |
-| `once`                     | ≡                         | Call `func` at most once; return the first result on every later call.    | Needs a `box` to remember "already called" plus the cached result — the same closure-over-`box` idiom `boxarrPush` already uses, just holding a flag instead of an array.                      |
-| `before` / `after`         | ≡                         | Call `func` only until / starting at the `n`th call.                      | Same `box`-counter idiom as `once`. (An earlier pass filed these under "related to Date" in HUMAN-FIXME.md — that was a miscategorization; they're plain call-count wrappers.)                 |
-| `partial` / `partialRight` | ≡                         | Fix some leading/trailing arguments, return a function awaiting the rest. | The value-fixing sibling of `curryNtoM` (which drops args instead of fixing them) — same fixed-arity-per-shape approach. Also covers `wrap` (`wrap(value, fn)` ≡ `partial(fn, value)`).        |
-| ~~curry~~ / ~~curryRight~~ | ≡                         | General auto-curry of any arity.                                          | `curry2to0`…`curry3to2` already solve the one shape this project needed; a fully generic curry needs variadic arity, which FeatureScript doesn't have — low value beyond what's already there. |
-
-### Lang
-
-| FeatureScript                            | Lodash                           | Does                                         | Notes                                                                                                                                                                 |
-| ---------------------------------------- | -------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `isNil`                                  | `isNil`, `isNull`, `isUndefined` | Is the value absent?                         | FeatureScript has no `null`, so all three JS distinctions collapse into one `undefined` check — also expressible as the language operator `== undefined`.             |
-| `isEmpty`                                | ≡                                | Is the value empty?                          | Restricted to the map/string/array/`undefined` cases FeatureScript actually has.                                                                                      |
-| `ifNil`                                  | `defaultTo`                      | Value, or a fallback if nil.                 |                                                                                                                                                                       |
-| `==` *(lang)*                            | `isEqual`, `isEqualWith`         | Deep structural equality.                    | FeatureScript's `==` already does deep value comparison on maps/arrays — this is the default equality operator, not a function.                                       |
-| `>` / `>=` / `<` / `<=` *(lang)*         | `gt`, `gte`, `lt`, `lte`         | Numeric comparison.                          | Plain comparison operators, numbers only — no lodash-style mixed-type coercion.                                                                                       |
-| `toString` *(std)*                       | ≡                                | Converts a value to its string form.         |                                                                                                                                                                       |
-| `isInteger` *(std, `math.fs`)*           | ≡                                | Whether a number has no fractional part.     | Already a `math.fs` builtin — just missing from this table until now.                                                                                                 |
-| `castArray` *(existing, `typeUtils.fs`)* | ≡                                | Wrap a non-array value in a 1-element array. | Already implemented — earlier passes of this doc mis-filed it as unported below.                                                                                      |
-| `toNumber`                               | ≡                                | Coerce a value to a number.                  | Mostly covered already: `stringToNumber` *(std)* handles the one real case (parsing a numeric string) — nothing else in this codebase needs coercing toward a number. |
-| `` `is array`/`is map`/`is string`/`is number`/`is boolean`/`is function` `` *(lang)* | `isArray`, `isBoolean`, `isFunction`, `isMap`, `isObject`, `isPlainObject`, `isNumber`, `isString` | Type-check a value.                  | FeatureScript's `is <Type>` is a language expression, not a function call — this is the basket the styling of `isArray … isUndefined` in this doc's own intro refers to. |
-
-Possible, not yet built:
-
-| FeatureScript                           | Lodash                                  | Does                                 | Notes                                                                                                                                                                    |
-| ---------------------------------------- | ---------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ~~isMatch~~ / ~~isMatchWith~~ | ≡ | Whether an object has the same values as a partial "source" object, at the source's keys. | `pick(obj, keys(source)) == source` covers `isMatch` today, since `==` (row above) is already deep equality; `isMatchWith`'s per-key customizer is the one open piece. |
-| ~~toInteger~~ | ≡ | Coerce a value to an integer. | A one-line `floor`/`round` over `toNumber` (above). |
-
-### Math
-
-| FeatureScript          | Lodash       | Does                    | Notes                                                                         |
-| ---------------------- | ------------ | ----------------------- | ----------------------------------------------------------------------------- |
-| `ceil` *(std)*         | ≡            | Round up.               |                                                                               |
-| `floor` *(std)*        | ≡            | Round down.             |                                                                               |
-| `round` / `roundToPrecision` *(std)*   | `round`      | Round to the nearest integer, or `n` decimal places. | lodash's optional precision argument becomes a second, separate std function. |
-| `min` *(std)*          | ≡            | Smaller of two values.  | std offers `min(aa, bb)` and `min([value])`; value must be comparable (number, ValueWithUnits, etc). See cmp and minBy/maxBy |
-| `max` *(std)*          | ≡            | Larger of two values.   | Same differences as `min`.                                       |
-| `average` *(std)*      | `mean`       | Average of an array.    |                                                                               |
-| `sum` *(std)*          | ≡            | Sum of an array.        |                                                                               |
-| `maxBy` / `meanBy` / `minBy` / `sumBy` | `*By` family | func-mapped versions of the row above.           | In `numberUtils.fs`.                                                          |
-| ~~add~~ / ~~divide~~ / ~~multiply~~ / ~~subtract~~ | arithmetic-as-functions | `+ - * /` as callables. | FeatureScript just uses the operators directly. |
-
-### Number
-
-| FeatureScript   | Lodash    | Does                                    | Notes                                                                                                                                                                                                                                                                         |
-| --------------- | --------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `clamp` *(std)* | ≡         | Constrain a number to `[lower, upper]`. |                                                                                                                                                                                                                                                                               |
-| `inRange`       | ≡         | Whether a number falls within a range.  | Bounds auto-swap if `start > end`, matching lodash.                                                                                                                                                                                                                           |
-| ~~random~~      | ≡         | Random number in a range.               | Possible, not implemented: FeatureScript has no entropy source, but a seeded linear-congruential generator is just arithmetic — needs a caller-supplied seed rather than true randomness. Same workaround `sample`/`sampleSize`/`shuffle` (Collection, above) are waiting on. |
-
-### Object
-
-| FeatureScript                     | Lodash          | Does                                                                 | Notes                                                                                                                                                                                     |
-| --------------------------------- | --------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `getAt`                           | `get`           | Path-based read from a map/array.                                    |                                                                                                                                                                                           |
-| `setAt`                           | `set`           | Path-based write.                                                    | lodash's `set` mutates; `setAt` returns a new value.                                                                                                                                      |
-| `deepMerge` / `mergeMaps` *(std)* | `merge`         | Recursively combine two maps.                                        | The headline "weird/less-functional builtin" case: std's `mergeMaps` is a shallow, one-level combine; coreUtils' `deepMerge` is the fuller recursive port lodash's `merge` actually does. |
-| `pick`                            | ≡               | Map of just the given keys.                                          |                                                                                                                                                                                           |
-| `pickDefined`                     | `pickBy`        | `pick`, keeping only defined values.                                 |                                                                                                                                                                                           |
-| `valuesAt`                        | `at`            | Values at several keys/indices, in order.                            |                                                                                                                                                                                           |
-| `hasKey`                          | `has`           | Whether a key/path resolves to something.                            |                                                                                                                                                                                           |
-| `mapValues`                       | ≡               | Map a map's values, keys unchanged.                                  |                                                                                                                                                                                           |
-| `keys` *(std)*                    | ≡               | A map's keys.                                                        |                                                                                                                                                                                           |
-| `values` *(std)*                  | ≡               | A map's values.                                                      |                                                                                                                                                                                           |
-| ~~transform~~                     | ≡               | `reduce`-like, but building up a map/array accumulator.              | Not yet built, but `foldArray` *(std)* already reduces to any accumulator shape, map or array included — this is a thin rename, not new capability.                                       |
-| ~~functions~~                     | ≡               | Names of an object's function-valued properties.                     | Not yet built, but plain: `keys(pickBy(bag, (val) => val is function))`.                                                                                                                  |
-| `toPairs`                         | ≡               | Map → `[[k,v], …]`.                                                  | Lodash also spells this `entries` — see [Lodash aliases](#lodash-aliases). In `objectUtils.fs`.                                                                                           |
-| `findKey` / `findLastKey`         | ≡               | First/last key whose value matches a rule.                      | In `objectUtils.fs`.                                                                                                                                                                      |
-| `invert` / `invertBy`             | `invert` family | Swap an object's keys and values.                                    | In `objectUtils.fs`.                                                                                                                                                                      |
-| `mapKeys`                         | ≡               | Map a map's keys, values unchanged.                                  | In `objectUtils.fs`.                                                                                                                                                                      |
-| `omit` / `omitBy`                 | `omit` family   | Inverse of `pick`/`pickBy` above — all keys *except* the given ones. | In `objectUtils.fs`.                                                                                                                                                                      |
-| ~~result~~                        | ≡               | Like `get`, but invokes a function value found at the path.          | Marginal over `getAt` plus a manual call at the call site.                                                                                                                                |
-| ~~invoke~~                        | ≡               | Call a method found at a path, with arguments.                       | Same marginal-over-`getAt` judgment as `result`, just curried with call args.                                                                                                             |
-
-`assign`, `assignWith`, `defaults`, `defaultsDeep`, `unset`, `update`, `updateWith`, `setWith`, and
-`mergeWith` all mutate their first argument in place in lodash — see
-[Mutating (in-place) Functions](#mutating-in-place-functions), below. `assignIn`, `assignInWith`,
-`extend`, `extendWith`, `hasIn`, `valuesIn`, `forIn`/`forInRight`/`forOwn`/`forOwnRight`,
-`functionsIn`, and `entriesIn`/`toPairsIn` are filed under [Not Planned](#not-planned) (reason: JS
-Properties).
-
-### String
-
-## `stringUtils.fs` — string slicing, padding, and case conversion
-
-| Export                                                                                       | Does                                                                                                                                                                  |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `strSlice(str, begseq, endseq?)`                                                             | JS-style slice: negative indexes count from the end, either index clamps into range. `endseq` accepts `SequencePosition.END` in place of a literal length.            |
-| `strTake(str, len)` / `strTakeRight(str, len)`                                               | First/last `len` characters; `len <= 0` is `""`.                                                                                                                      |
-| `padLeft(str\|num, minlen, padstr?)`                                                         | Pads to `minlen` with `padstr` (default `" "`), truncating the padding if it overshoots; a `number` overload stringifies first.                                       |
-| `padRight(str, minlen, padstr?)`                                                             | Same as `padLeft`, right-padded — but no numeric overload; a `number` must be stringified by the caller.                                                              |
-| `strRepeat(str, reps)`                                                                       | `str` repeated `reps` times.                                                                                                                                          |
-| `starbanner(str)`                                                                            | Wraps `str` in a `***`-bordered banner, for a `debug()` call that wants to stand out.                                                                                 |
-| `hasMatch(str, regex)`                                                                       | Whether `regex` matches anywhere in `str`; `false` (not a throw) on `undefined` input or a bad pattern.                                                               |
-| `upcase(str)` / `downcase(str)`                                                              | ASCII-only case flip via an explicit character lookup; a non-letter passes through unchanged.                                                                         |
-| `titleCase(str, opts?)`                                                                      | Splits on `opts.spaces` (default `-_`), capitalizes each word's first letter, lower-cases the rest; `opts.tr` translates individual characters before capitalization. |
-| `words(str)`                                                                                 | `str` split into words on runs of non-alphanumeric characters — the shared primitive behind the case-convention functions below.                                      |
-| `capitalize(str)`                                                                            | First character uppercased, the rest lowercased.                                                                                                                      |
-| `escapeRegExp(str)`                                                                          | Backslash-escapes `str`'s regex metacharacters, so it matches literally when dropped into `match`/`replace`/`splitByRegexp`.                                          |
-| `upperFirst(str)` / `lowerFirst(str)`                                                        | Only the first character's case changed; everything else left as-is.                                                                                                  |
-| `pad(str, minlen, padstr?)`                                                                  | Pads both sides if shorter than `minlen`, splitting as evenly as possible (right side gets the extra character when odd).                                             |
-| `trimStart(str, chars?)` / `trimEnd(str, chars?)` / `trim(str, chars?)`                      | Strips `chars` (default whitespace) from the front / back / both ends.                                                                                                |
-| `truncate(str, opts?)`                                                                       | `str` cut to at most `opts.length` (default `30`) characters, omission marker included, replacing the cut tail with `opts.omission` (default `"..."`).                |
-
-| FeatureScript               | Lodash      | Does                                                         | Notes                                                                                                                                    |
-| --------------------------- | ----------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `padLeft`                   | `padStart`  | Pad a string/number on the left.                             |                                                                                                                                          |
-| `padRight`                  | `padEnd`    | Pad on the right.                                            |                                                                                                                                          |
-| `upcase`                    | `toUpper`   | ASCII-only uppercase.                                        |                                                                                                                                          |
-| `downcase`                  | `toLower`   | ASCII-only lowercase.                                        |                                                                                                                                          |
-| `titleCase`                 | `startCase` | Word-boundary capitalization.                                |                                                                                                                                          |
-| `startsWith` *(std)*        | ≡           | Whether a string starts with a substring.                    |                                                                                                                                          |
-| `endsWith` *(std)*          | ≡           | Whether a string ends with a substring.                      |                                                                                                                                          |
-| `replace` *(std)*           | ≡           | Replace matches in a string.                                 |                                                                                                                                          |
-| `stringToNumber` *(std)*    | `parseInt`  | Parse a string as a number.                                  |                                                                                                                                          |
-| `camelCase`                 | ≡           | Words joined with no separator; first word lower, the rest capitalized. | Built on `words` — see its note on the simplified word-boundary rule.                                                                    |
-| `kebabCase`                 | ≡           | Words joined with `-`, all lowercase.                        | Built on `words`.                                                                                                                        |
-| `snakeCase`                 | ≡           | Words joined with `_`, all lowercase.                        | Built on `words`.                                                                                                                        |
-| `lowerCase`                 | ≡           | Words joined with a space, all lowercase.                    | Built on `words`.                                                                                                                        |
-| `upperCase`                 | ≡           | Words joined with a space, all uppercase.                    | Built on `words`.                                                                                                                        |
-| `capitalize`                | ≡           | First character uppercased, the rest lowercased.             |                                                                                                                                          |
-| `escapeRegExp`               | ≡           | Backslash-escape a string's regex metacharacters.             | `trimStart`/`trimEnd` use it to build a safe `[...]` class from a caller-supplied `chars` array.                                        |
-| `lowerFirst` / `upperFirst` | ≡           | Only the first character's case changed; everything else left as-is.        |                                                                                                                                          |
-| `pad`                       | ≡           | Pad on both sides.                                           | `padLeft`/`padRight` remain the one-sided originals.                                                                                     |
-| `trim` / `trimEnd` / `trimStart` | ≡      | Strip whitespace (or a given character set) from either end. |                                                                                                                                          |
-| `truncate`                  | ≡           | Truncate a string to a length, with an omission marker.      | No `separator` option to break at a word/regex boundary instead of an exact count.                                                       |
-| `words`                     | ≡           | Split a string into words.                                   | Simplified: splits only on non-alphanumeric delimiter runs, not on camelCase boundaries or digit runs the way lodash's own `words` does. |
-| `repeatString` *(std)*      | `repeat`    | Repeat a string `n` times.                                                  |                                                                                                                                          |
-| `splitByRegexp` / `splitIntoCharacters` *(std)*                     | `split`                      | Split a string.                                                                                | std splits by regexp or into characters — no plain-substring/limit split like lodash's.                                                  |
-
-Possible, not yet built:
-
-| FeatureScript    | Lodash         | Does                                        | Notes                                                                                                                                                                                        |
-| ---------------- | -------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~deburr~~       | ≡              | Strip Latin-1 diacritics (`café` → `cafe`). | Same technique as `upcaseChar`/`downcaseChar`'s explicit lookup table — just a bigger one, mapping every accented Latin-1 character to its bare-ASCII form.                                  |
-
-### Util
-
-Most of this category is "build a small function from a piece of data" — a string path, a
-rule map, a value to always return. FeatureScript already has everything that needs:
-functions are values, `getAt`/`==` already do path-reads and deep equality, and `all`/`any`
-*(std)* already fold a list of predicates into one. This is composition, not metaprogramming —
-the "metaprogramming" label an earlier pass used undersold it.
-
-| FeatureScript   | Lodash       | Does                                          | Notes                                                                                  |
-| --------------- | ------------ | --------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `noop`               | ≡            | Does nothing, returns `undefined`.            |                                                                                        |
-| `pathForKey`         | `toPath`     | Split a dotted-key string into path segments. |                                                                                        |
-| `range` / `rangeRight` *(std/existing)* | ≡ | Array of numbers from `start` to `end`, ascending / descending. | `rangeRight` is `reverse` *(std)* over std's own `range` — inherits its inclusive-of-`end` convention. |
-| `constant`                        | ≡          | Always return a fixed value, ignoring any arguments.                                               | `(val) => (() => val)`. In `miscUtils.fs`. |
-| `identity`                        | ≡          | Return the argument unchanged.                                                                     | `(val) => val`. In `miscUtils.fs`. |
-| `times`                           | ≡          | Call a function `n` times, collecting results.                                                     | `mapArray` *(std)* over `range(0, n - 1)` — a loop, not metaprogramming. `n < 1` returns `[]`. In `miscUtils.fs`. |
-| `attempt`                         | ≡          | Call a function, returning its result or the caught error instead of throwing.                     | `try { return func(); } catch (error) { return error; }` — the same shape `parseJsonSafely` already uses. No argument-forwarding: FeatureScript has no variadic call syntax. In `miscUtils.fs`. |
-| `property` / `propertyOf`         | ≡          | Build a function that reads one path off whatever it's given.                                      | `(path) => (obj) => getAt(obj, path)`, and the argument-order flip for `propertyOf`. In `miscUtils.fs`. |
-| `matches` / `matchesProperty`     | ≡          | Build a rule checking an object against a partial shape / one path against a value.           | Rides on the same `pick(obj, keys(source)) == source` trick as `isMatch` (Lang, above). In `miscUtils.fs`. |
-| `cond`                            | ≡          | Build a function trying `[rule, handler]` pairs in order, running the first match.            | A single-argument version — lodash's `cond` forwards every argument it receives to both, which needs the variadic call syntax FeatureScript doesn't have. In `miscUtils.fs`. |
-| `conforms` / `conformsTo`         | ≡          | Build a rule / test a map against a map of per-key predicates.                            | `all` *(std)* over `keys(source)`, each checked as `source[key](obj[key])`. In `miscUtils.fs`. |
-| `over` / `overEvery` / `overSome` | `overXXXX` | Run several functions against the same argument; collect results / require all / require any.     | `mapValues`/`all`/`any` over the function array, each called with the same argument. In `miscUtils.fs`. |
-| `iteratee`                        | ≡          | Coerce a string/map/function "shorthand" into a real function — `property`/`matches`/pass-through. | The dispatcher tying `property` and `matches` together; anything else falls back to `identity`. In `miscUtils.fs`. |
-
-Possible, not yet built:
-
-| FeatureScript | Lodash | Does                                      | Notes                                                                                                                                                                                                                                                                                        |
-| ------------- | ------ | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~uniqueId~~  | ≡      | Generate a monotonically-increasing id.   | Needs a workaround: lodash keeps a module-global counter, which FeatureScript has no equivalent of — the counter would have to live in the `Context` (`setVariable`/`getVariable`, the way `jsonVarF.fs`'s Features already thread state through a context) rather than as a plain variable. |
-
-### Date, Seq
-
-Date functions, and the Seq API, are not contemplated to be written at the moment.
-
-### Other
-`debugUtils.fs` and `metadataUtils.fs` have no entries in the tables above — neither has a lodash
-counterpart for anything they export (Onshape-specific viewport/attribute plumbing).
+differ in how much each actually does — `deepMerge` vs. `mergeMaps` *(std)* is the clearest case,
+noted where it comes up.
 
 ---
 
-## `arrayUtils.fs` — lodash-style array helpers
+## Collection
 
-Straightforward ports from lodash's Array category; anything needing varargs takes an array of
-arrays/values instead (`difference(arr, excludeArr)`, `union(arrList)`, …). Alphabetical order.
+### Collection Walking
+
+These functions accept an iterator, `func(val, key is string)` for maps, `func(val, idx is number)` for arrays.
+The ones with a `3` suffix (eg mapValues3) will call `func(val, seq, iteration is number)` -- where seq is the map key or array iterator and iteration is the index of the given element.
+
+| Function Name                              | Lodash  | Description                                                                           | Caveats                                                                                                                                                                                                                                                   |
+| ------------------------------------------ | ------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `forEach` / `forEach3`                     | ≡       | Call the function for each element, in array or (alphabetic) key order                | Stops early only when `func` returns `NextStepAction.BREAK`, not `false` like lodash. A `keylist` overload walks exactly those keys, in order; `MissingPolicy` (`USE_UNDEFINED` default / `SKIP`) decides whether a set-but-`undefined` entry is visited. |
+| `forEachRight`                             | ≡       | `forEach`, back-to-front.                                                             | Map form walks `keys(bag)` in reverse.                                                                                                                                                                                                                    |
+| `mapValues` / `mapValues3`                 | `map`   | Map a collection to a same-shaped result -- array->array, map->map.                   | Same `keylist`/`missingPolicy` overloads as `forEach`.                                                                                                                                                                                                    |
+| `find` / `findLast`                        | ≡       | First/last element matching a rule.                                                   | Array form dereferences `findIndex`/`findLastIndex`; map form walks `keys(bag)`.                                                                                                                                                                          |
+| `flatMap` / `flatMapDeep` / `flatMapDepth` | ≡       | Map then flatten one/all/`n` levels.                                                  | Rides on the `flatten` family (Array, below).                                                                                                                                                                                                             |
+| `countBy`                                  | ≡       | Counts of elements, grouped by a computed key.                                        |                                                                                                                                                                                                                                                           |
+| `groupBy`                                  | ≡       | Group elements by a computed key.                                                     | Built on std's `insertIntoMapOfArrays`.                                                                                                                                                                                                                   |
+| `partition`                                | ≡       | Split into two groups by a rule.                                                      |                                                                                                                                                                                                                                                           |
+| `reduceRight`                              | ≡       | `reduce`, back-to-front.                                                              |                                                                                                                                                                                                                                                           |
+| `reject`                                   | ≡       | Elements *failing* a rule — inverse of `filter` *(std)*.                              |                                                                                                                                                                                                                                                           |
+| `objectify`                                | `keyBy` | Key a collection by a computed key.                                                   | Key/value roles are swapped from lodash's `keyBy`: `objectify` keys by the *value* and computes the result at each key, where `keyBy` keys by a computed key and keeps the value.                                                                         |
+| `rebag`                                    | —       | Rebuild a map by computing a `[newKey, newVal]` pair for every entry.                 | The general machine `objectify` is built from; a callback returning `undefined` drops that entry.                                                                                                                                                         |
+| `boxarrPush` / `boxarrUnshift`             | —       | Append/prepend into the array inside a `box`, in place.                               | For accumulating into an outer array from inside a `forEach`/`mapValues` callback.                                                                                                                                                                        |
+| `MissingPolicy`                            | —       | `SKIP` / `USE_UNDEFINED` — how the functions above treat a set-but-`undefined` entry. |                                                                                                                                                                                                                                                           |
+| `NextStepAction.BREAK`                     | —       | Sentinel a callback returns to stop a walk early.                                     |                                                                                                                                                                                                                                                           |
+
+### Set Operations
+
+| Function Name                                          | Lodash        | Description                                                              | Caveats                                                                                                             |
+| ------------------------------------------------------ | ------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `union` / `unionBy` / `unionWith`                      | ≡             | Deduplicated concatenation of several arrays.                            | Takes an array of arrays — no variadic arguments.                                                                   |
+| `intersection` / `intersectionBy` / `intersectionWith` | ≡             | Values present in every given array.                                     | Same array-of-arrays shape as `union`.                                                                              |
+| `difference` / `differenceBy` / `differenceWith`       | ≡             | Values in one array not present in another.                              | Exclusion values are one array, not trailing arguments — concatenate first to exclude from several sources at once. |
+| `without(arr, removeables)`                            | ≡             | Alias for difference                                                     | lodash splats each removeable into its own argument; this allows only one list                                      |
+| `xor` / `xorBy` / `xorWith`                            | ≡             | Symmetric difference of several arrays.                                  | Array-of-arrays shape, like `union`/`intersection`.                                                                 |
+| `uniqBy` / `uniqWith`                                  | `uniq` family | Duplicate-free version of an array, by computed key / custom comparator. | Plain `uniq` is std's `deduplicate`.                                                                                |
 
 ### Array
 
-| FeatureScript                                         | Lodash   | Does                                                             | Notes                                                                                                                                                                                        |
-| ----------------------------------------------------- | -------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `concatenateArrays` *(std)*                           | `concat` | Concatenates array(s)/value(s) into a new array.                 | std is arrays-only — no flattening of bare scalar arguments the way lodash does.                                                                                                             |
-| `chunk`                                               | ≡        | Splits an array into groups of `chunkSize`.                      |                                                                                                                                                                                              |
-| `compact`                                             | ≡        | Removes falsey values from an array.                             | Narrower than lodash: only `undefined`/`false` are falsey in FeatureScript, so `0` and `""` survive.                          |
-| `deduplicate` *(std)*                                 | `uniq`   | Duplicate-free version of an array.                              |                                                                                                                                                                                 |
-| `uniqBy` / `uniqWith`                                 | ≡        | `uniq`, func-mapped / custom comparator.                     | Plain `uniq` is std's `deduplicate`.                                                                                                                                                         |
-| `drop` / `dropRight` / `dropRightWhile` / `dropWhile` | ≡        | Drop `n` elements (or while a rule holds) from either end.  |                                                                                                                                                                                              |
-| `findIndex`                                           | ≡        | Index of the first element matching a rule.                 | No `fromIndex` argument.                                                                                                                                                                     |
-| `findLastIndex`                                       | ≡        | Index of the last element matching a rule.                  | No `fromIndex` argument.                                                                                                                                                                     |
-| `flatten` / `flattenDeep` / `flattenDepth`            | ≡        | Flatten an array one level / fully / `n` levels deep.            | `dotMap`'s `maxDepth` (coreUtils) is the map-shaped cousin, not array-shaped.                                                                                                                |
-| `indexOf` *(std)*                                     | ≡        | Index of the first occurrence of a value.                        |                                                                                                                                                                                 |
-| `join` *(std)*                                        | ≡        | Joins array elements into a string.                              |                                                                                                                                                                                 |
-| `reverse` *(std)*                                     | ≡        | Reverses an array.                                               |                                                                                                                                                                                 |
-| `lastIndexOf`                                         | ≡        | Index of the last occurrence of a value, searching from the end. | No `fromIndex` argument.                                                                                                                                                                     |
-| `removeElementAt` *(std)*                             | `pullAt` | Removes element(s) by index.                                     | std takes one index at a time and doesn't hand back what it removed, unlike lodash's variadic, removed-values-returning form.                                                                |
-| `subArray` *(std)*                                    | `slice`  | Slice of an array between two indices.                           |                                                                                                                                                                                 |
-| `without`                                             | ≡        | Values from an array excluding the given ones.                   | Identical to `difference` once variadic exclusion values collapse to one array — kept as its own name for lodash parity.                                                                     |
-| `union` / `unionBy` / `unionWith`                     | ≡        | Deduplicated concatenation of several arrays.                    | Takes an array of arrays (no varargs). `unionWith` is `uniqWith` over the concatenation, same shape as `unionBy`/`uniqBy`.                                                                    |
-| `intersection` / `intersectionBy` / `intersectionWith`| ≡        | Values present in every given array.                             | Takes an array of arrays (no varargs). `intersectionWith` takes `comparator(val, other)` in place of `==`.                                                                                    |
-| `difference` / `differenceBy` / `differenceWith`      | ≡        | Values in one array not present in another.                      | No varargs, so the exclusion values are one array, not trailing arguments — concatenate first to exclude from several sources. `differenceWith` takes `comparator(val, other)` in place of `==`. |
-| `xor` / `xorBy` / `xorWith`                           | ≡        | Symmetric difference of several arrays.                          | Takes an array of arrays (no varargs). `xorBy`/`xorWith` compare by `iteratee(val)`/`comparator(val, other)` instead of `==`, same shape as `xor` itself.                                     |
-| `first` *(std)*                                       | ≡        | First element of an array.                                       | Lodash also spells this `head` — see [Lodash aliases](#lodash-aliases).                                                                                                                      |
-| `last` *(std)* / `arrLast`                            | `last`   | Last element of an array.                                        | Both std's `last` and coreUtils' `arrLast` cover this directly.                                                                                                                              |
-| `initial`                                             | ≡        | All but the last element.                                        |                                                                                                                                                                                              |
-| `tail`                                                | ≡        | All but the first element.                                       |                                                                                                                                                                                              |
-| `nth`                                                 | ≡        | Nth element (negative counts from the end).                      |                                                                                                                                                                                              |
-| `take` / `takeRight` / `takeRightWhile` / `takeWhile` | ≡        | Take `n` elements (or while a rule holds) from either end.  | `strTake`/`strTakeRight` (coreUtils) cover the string analogue, not arrays.                                                                                                                  |
-| `fromPairs`                                           | ≡        | `[[k,v], …]` → map.                                              |                                                                                                                                                                                              |
-| `unzip` / `unzipWith`                                 | ≡        | Inverse of `zip`: an collection of pairs becomes a pair of collections.                                                | `zip`'s grouping is its own inverse, so `unzip` is a bare alias for std `zip`.                                                                                                               |
-| `zip` *(std)*                                         | ≡        | Groups the nth elements of several arrays together.              |                                                                                                                                                                                 |
-| `zipObject` / `zipWith`                               | ≡        | Build an object, or combine grouped elements with a function.    | `zipWith` and `unzipWith` are the same shape of operation, both riding on `zip`'s self-symmetry. ~~zipObjectDeep~~ not ported (needs path-based nested writes, low value here).              |
-| ~~sortedUniq~~ / ~~sortedUniqBy~~                     | ≡        | `uniq`/`uniqBy`, optimized for sorted input.                     | Redundant with `uniqBy`/std `deduplicate` at this project's scale — the "sorted" optimization buys nothing here.                                                                             |
+| Function Name                              | Lodash     | Description                                                                   | Caveats                                                                          |
+| ------------------------------------------ | ---------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `chunk`                                    | ≡          | Split an array into groups of `chunkSize` elements.                           | Last group holds the remainder; `chunkSize < 1` → `[]`.                          |
+| `compact`                                  | ≡          | Remove falsey values from an array.                                           | Only `undefined`/`false` are falsey in FeatureScript, so `0` and `""` survive.   |
+| `drop` / `dropRight`                       | ≡          | Drop `n` elements from the front/back.                                        |                                                                                  |
+| `dropWhile` / `dropRightWhile`             | ≡          | Drop elements from the front/back while a rule holds.                         |                                                                                  |
+| `take` / `takeRight`                       | ≡          | Take `n` elements from the front/back.                                        |                                                                                  |
+| `takeWhile` / `takeRightWhile`             | ≡          | Take elements from the front/back while a rule holds.                         |                                                                                  |
+| `findIndex` / `findLastIndex`              | ≡          | Index of the first/last element matching a rule, or `-1`.                     | No `fromIndex` argument.                                                         |
+| `lastIndexOf`                              | ≡          | Index of the last occurrence of a value, or `-1`.                             | No `fromIndex` argument.                                                         |
+| `flatten` / `flattenDeep` / `flattenDepth` | ≡          | Flatten an array one level / fully / `n` levels deep.                         |                                                                                  |
+| `fromPairs`                                | ≡          | `[[k, v], …]` → map.                                                          | A repeated key keeps its last pair.                                              |
+| `initial`                                  | ≡          | All but the last element.                                                     |                                                                                  |
+| `tail`                                     | ≡          | All but the first element.                                                    |                                                                                  |
+| `nth`                                      | ≡          | Nth element; negative counts from the end.                                    |                                                                                  |
+| `arrFirst` / `first` *(std)*               | `head`     | First element of an array.                                                    |                                                                                  |
+| `arrLast` / `last` *(std)*                 | ≡          | Last element of an array.                                                     |                                                                                  |
+| `concatenateArrays` *(std)*                | `concat`   | Concatenate array(s)/value(s) into a new array.                               | std is arrays-only — no flattening of bare scalar arguments the way lodash does. |
+| `indexOf` *(std)*                          | ≡          | Index of the first occurrence of a value.                                     |                                                                                  |
+| `join` *(std)*                             | ≡          | Join array elements into a string.                                            |                                                                                  |
+| `reverse` *(std)*                          | ≡          | Reverse an array.                                                             |                                                                                  |
+| `subArray` *(std)*                         | `slice`    | Slice of an array between two indices.                                        |                                                                                  |
+| `removeElementAt` *(std)*                  | ~ `pullAt` | Remove one element by index.                                                  | Takes one index at a time and doesn't hand back what it removed.                 |
+| ~~`pullAt`~~                               | ≡          | Remove elements by index, mutating the original and returning what was pulled | Not implemented yet                                                              |
+| `zipObject`                                | ≡          | Build a map pairing `keylist`/`valuelist` by position.                        | A `keylist` entry past the end of `valuelist` (or vice versa) is simply dropped. |
+| `zip` *(std)* / `zipWith`                  | ≡          | Groups N lists into a list of N-tuples.                                       |                                                                                  |
+| `unzip` / `unzipWith`                      | ≡          | Splits a list of N-tuples into N lists                                        |                                                                                  |
+| ~~`zipObjectDeep`~~                        | ≡          | ??                                                                            | Not implemented yet                                                              |
+
+### Map/Record
+
+| Function Name                      | Lodash           | Description                                                                                 | Caveats                                                                                                                                                                                                              |
+| ---------------------------------- | ---------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pick`                             | ≡                | Map of just the given keys.                                                                 |                                                                                                                                                                                                                      |
+| `pickDefined`                      | `pickBy`         | `pick`, keeping only defined values.                                                        |                                                                                                                                                                                                                      |
+| `omit`                             | ≡                | Inverse of `pick` — all keys *except* the given ones.                                       |                                                                                                                                                                                                                      |
+| `omitBy`                           | `omit` family    | `omit`, keyed by a rule instead of a key list.                                              |                                                                                                                                                                                                                      |
+| `mapKeys`                          | ≡                | Map a map's keys, values unchanged.                                                         |                                                                                                                                                                                                                      |
+| `invert` / `invertBy`              | `invert` family  | Swap a map's keys and values.                                                               | A repeated value keeps only its last key for plain `invert`; `invertBy` groups every key under its computed value instead.                                                                                           |
+| `findKey` / `findLastKey`          | ≡                | First/last key whose value matches a rule.                                                  |                                                                                                                                                                                                                      |
+| `toPairs`                          | ≡                | Map → `[[k, v], …]`.                                                                        |                                                                                                                                                                                                                      |
+| `hasKey` / `hasPresentKey`         | `has`            | Whether a key/index resolves to a value (hasKey) or a non-undefined value (hasPresentKey)   | Does not accept a path of keys, a dotted path (unlike `getAt`) or negative array index.                                                                                                                              |
+| ~~`hasKeyAt` / `hasPresentKeyAt`~~ | `has`            | Whether a key/index/[path of keys]/dotpath string resolves to something.                    |                                                                                                                                                                                                                      |
+| `valuesAt` (may rename to getMany) | `at`             | Values at several keys/indices, in order.                                                   | No path traversal — each entry of the key list is a literal key or index.                                                                                                                                            |
+| ~~`getManyAt`~~                    | `at`             | like `valuesAt` but may supply a key/keypath/dotpath/index/-index                           | Not implemented                                                                                                                                                                                                      |
+| `keys` *(std)* / `values` *(std)*  | ≡                | A map's keys / values. Note that FS returns keys always in alphabetic, not insertion, order |                                                                                                                                                                                                                      |
+| `getAt`                            | `get`            | Path-based read from a map/array.                                                           | Dotted string, literal key-list array, or a single array index (negative counts from the end).                                                                                                                       |
+| `setAt`                            | `set`            | Path-based write.                                                                           | Returns a new value rather than mutating; missing steps autovivify as maps; `onCollision(existing, incoming)` resolves an already-occupied leaf.                                                                     |
+| `update` / `updateWith`            | —                | Read-modify-write at a path.                                                                | `setAt(bag, path, updater(getAt(bag, path)))`; `updateWith` also takes `setAt`'s `onCollision`.                                                                                                                      |
+| `deepMerge` / `mergeMaps` *(std)*  | `merge`          | Recursively combine two maps.                                                               | The "weird/less-functional builtin" case: std's `mergeMaps` is a shallow, one-level combine; `deepMerge` is the fuller recursive port lodash's `merge` actually does. Arrays replace whole, no index-by-index merge. |
+| `assignWith`                       | —                | `mergeMaps`, with a custom per-key combiner.                                                | `undefined` from the combiner falls back to `incoming` winning.                                                                                                                                                      |
+| `mergeWith`                        | —                | `deepMerge`, with a custom per-key combiner.                                                | Combiner is consulted at every level of the recursion, not just the leaves.                                                                                                                                          |
+| `pathForKey`                       | `toPath`         | Split a dotted-key string into path segments.                                               | No `a[0].b` bracket syntax — an array index is just another dot-separated segment.                                                                                                                                   |
+| `lastInWins`                       | —                | The default `onCollision`: whatever's incoming replaces whatever's there.                   |                                                                                                                                                                                                                      |
+| `undotMap`                         | —                | Expand dotted top-level keys into nested maps.                                              | Applies shallowest-key-first so the result doesn't depend on map iteration order; `onCollision` (default `deepMerge`) resolves a leaf two keys both reach.                                                           |
+| `dotMap`                           | ≈ `flattenDepth` | Depth-first flatten of a nested map into dotted keys.                                       | `options.maxDepth` caps how many levels collapse; arrays and empty maps are leaves; lossy against a key that already contains a dot.                                                                                 |
+| `buildNestedChoices`               | —                | Build the `{name, displayName, entries}` for custom Part Features from a uniform nested map |                                                                                                                                                                                                                      |
+| ~~transform~~                      | ≡                | `reduce`-like, but building up a map/array accumulator.                                     | `foldArray` *(std)* already reduces to any accumulator shape — a thin rename, not new capability.                                                                                                                    |
+| ~~functions~~                      | ≡                | Names of a map's function-valued entries.                                                   | `keys(omitBy(bag, (val) => !(val is function)))` covers it today.                                                                                                                                                    |
+| ~~result~~                         | ≡                | Like `getAt`, but invokes a function value found at the path.                               | Marginal over `getAt` plus a manual call at the call site.                                                                                                                                                           |
+| ~~invoke~~                         | ≡                | Call a method found at a path, with arguments.                                              | Same marginal-over-`getAt` judgment as `result`.                                                                                                                                                                     |
+
+Not implemented: `assign`, `assignWith`, `defaults`, `defaultsDeep`, `unset`, `update`, `updateWith`, `setWith`, and
+`mergeWith` all mutate their first argument in place in lodash — see
+[Mutating (in-place) Functions](#mutating-in-place-functions). `assignIn`, `assignInWith`, `extend`,
+`extendWith`, `hasIn`, `valuesIn`, `forIn`/`forInRight`/`forOwn`/`forOwnRight`, `functionsIn`, and
+`entriesIn`/`toPairsIn` are [Not Planned](#not-planned) — FeatureScript maps have no
+own-vs-inherited-property distinction for those to draw.
+
+### Collection
+
+General collection predicates that don't fit Walking, Set Operations, or the more specific
+buckets above.
+
+| Function Name             | Lodash     | Description                              | Caveats                                        |
+| ------------------------- | ---------- | ---------------------------------------- | ---------------------------------------------- |
+| `sizeof` / `size` *(std)* | ≡          | Element/key/character count.             | `0` for `undefined`.                           |
+| `arrayIncludes`           | `includes` | Whether a value appears in a collection. | Map or array; no substring search on a string. |
+| `all` *(std)*             | `every`    | Whether every element passes a rule.     |                                                |
+| `any` *(std)*             | `some`     | Whether any element passes a rule.       |                                                |
+| `filter` *(std)*          | ≡          | Elements passing a rule.                 |                                                |
+| `foldArray` *(std)*       | `reduce`   | Reduce a collection to a single value.   |                                                |
+
+### Random
+
+| Function Name             | Lodash     | Description                              | Caveats                                        |
+| ------------------------- | ---------- | ---------------------------------------- | ---------------------------------------------- |
+| ~~sample~~ / ~~sampleSize~~ / ~~shuffle~~ | `sample` family | Random element(s) / shuffled order. | Needs a seeded pseudo-random generator — FeatureScript has no entropy source, but a linear-congruential generator seeded by a caller-supplied number is just arithmetic. Same workaround `random` ([Simple Types](#simple-types), below) is waiting on. |
+
+### Stats
+
+| Function Name      | Lodash       | Description                                                       | Caveats                                                                                                           |
+| ------------------ | ------------ | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `min` *(std)*      | ≡            | Smaller of two values, or of an array.                            | Value must be comparable (number, `ValueWithUnits`, etc).                                                         |
+| `max` *(std)*      | ≡            | Larger of two values, or of an array.                             | Same comparability rule as `min`.                                                                                 |
+| `average` *(std)*  | `mean`       | Average of an array.                                              |                                                                                                                   |
+| `sum` *(std)*      | ≡            | Sum of an array.                                                  |                                                                                                                   |
+| `maxBy` / `minBy`  | `*By` family | Element of an array for which a computed value is greatest/least. | `undefined` for an empty array — std's array `max`/`min` pick the value itself, these pick the element behind it. |
+| `meanBy` / `sumBy` | `*By` family | `average`/`sum`, func-mapped.                                     |                                                                                                                   |
+
+### Sort (TODO)
+
+Sorting is the one corner of this port that's still mostly a stub — `sortUtils.fs` has a working
+string-comparator workaround but no general `sortBy`, and `cmp` is an empty placeholder.
+
+| Function Name    | Lodash         | Description                                                                                                 | Caveats                                                                                                       |
+| ---------------- | -------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `strOrderBy`     | —              | Sorts an array of values by their stringified form, via a bucket-count trick rather than a real comparator. | Values with equal string forms all sort together but keep no defined relative order.                          |
+| `strOrderByUniq` | —              | `strOrderBy`, deduplicated.                                                                                 |                                                                                                               |
+| `cmp`            | ≈              | Three-way comparison (`-1`/`0`/`1`); comparing different types will throw | comparing strings is nutty in featurescript -- it's not built in so we have a hack |
+| `cmpAny`         | ≈              | Three-way comparison (`-1`/`0`/`1`), returns a total order on any combination of values | comparing strings is nutty in featurescript -- it's not built in so we have a hack |
+| ~~sortBy~~ / ~~orderBy~~ | ≡ | Sort by one or more iteratees, each with its own direction. | std `sort(arr, compareFunction)` takes an arbitrary comparator, so a *numeric* func already sorts today; a *string* func needs a character-ordinal lookup table first, the same technique `upcaseChar`/`downcaseChar` use. |
+| ~~sortedUniq~~ / ~~sortedUniqBy~~ | ≡ | `uniq`/`uniqBy`, optimized for sorted input. | Redundant with `uniqBy`/std `deduplicate` at this project's scale. |
 | ~~sortedIndex~~ / ~~sortedIndexBy~~ / ~~sortedIndexOf~~ / ~~sortedLastIndex~~ / ~~sortedLastIndexBy~~ / ~~sortedLastIndexOf~~ | `sortedIndex*` family | Binary-search insertion points into an already-sorted array. | std's `sort(arr, compareFunction)` makes this possible for numbers, but the 6-function family is a lot of surface for an optimization this codebase has no hot path for. |
 
-`pull`/`pullAll`/`pullAllBy`/`pullAllWith`, `remove`, and `fill` all mutate their array argument in
-place in lodash — see [Mutating (in-place) Functions](#mutating-in-place-functions), below.
+---
 
-| Export                                                | Does                                                                                                                |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `chunk(arr, chunkSize)`                               | Splits `arr` into `chunkSize`-length groups; the last group holds the remainder. `chunkSize < 1` → `[]`.            |
-| `difference(arr, excludeArr)` / `differenceBy` / `differenceWith` | `arr` minus anything (or anything whose `func` value, or anything `comparator`-equal) appears in `excludeArr`. |
-| `drop(arr, dropCount)` / `dropRight`                  | `arr` with `dropCount` elements removed from the front/back.                                                        |
-| `dropWhile(arr, rule)` / `dropRightWhile`             | `arr` with a leading/trailing run satisfying `rule` removed.                                                   |
-| `compact(arr)`                                        | `arr` filtered to `typeUtils.truthy` — only `undefined`/`false` drop, unlike lodash's wider falsey set.             |
-| `findIndex(arr, rule)` / `findLastIndex`              | Index of the first/last element satisfying `rule`, or `-1`.                                                    |
-| `flatten(arr)` / `flattenDeep` / `flattenDepth`       | Array nesting removed one level / fully / up to `depth` levels.                                                     |
-| `fromPairs(pairs)`                                    | `[[key, val], …]` → map; a repeated key keeps its last pair.                                                        |
-| `initial(arr)`                                        | `arr` without its last element.                                                                                     |
-| `intersection(arrList)` / `intersectionBy` / `intersectionWith` | Values (or `func` results, or `comparator`-equal values) present in every array of `arrList`, deduplicated. |
-| `lastIndexOf(arr, val)`                               | Index of the last occurrence of `val`, or `-1`.                                                                     |
-| `nth(arr, seq)`                                       | Element at `seq`; negative counts from the end; out of bounds is `undefined`.                                       |
-| `tail(arr)`                                           | `arr` without its first element.                                                                                    |
-| `take(arr, takeCount)` / `takeRight`                  | First/last `takeCount` elements of `arr`.                                                                           |
-| `takeWhile(arr, rule)` / `takeRightWhile`             | Leading/trailing run of `arr` satisfying `rule`.                                                               |
-| `union(arrList)` / `unionBy` / `unionWith`            | Deduplicated concatenation of every array in `arrList`.                                                             |
-| `uniqBy(arr, func)`                               | `arr` deduplicated by the result of `func(val)`
-| `uniqWith(arr, comparator)`                           | `arr` deduplicated by a custom equality `comparator`.                                        |
-| `unzip(arr)` / `unzipWith`                            | Ungroups `arr`'s rows into columns (an alias for std `zip`, its own inverse), optionally mapped through `func`. |
-| `without(arr, excludeArr)`                            | `arr` minus anything in `excludeArr` — identical to `difference`, under lodash's other name.                        |
-| `xor(arrList)` / `xorBy` / `xorWith`                  | Values appearing in exactly one array of `arrList` (or with the same `func` result, or `comparator`-equal).         |
-| `zipObject(keylist, valuelist)`                       | Map pairing `keylist`/`valuelist` by position.                                                                      |
-| `zipWith(arrList, func)`                          | Std `zip` on `arrList`, each grouped row passed through `func`.                                                 |
+## Basics
 
-## `clxnGetset.fs` — path-based get/set on maps and arrays
+### String
 
-Lodash's `get`/`set`/`merge`, adapted to FeatureScript's value semantics and negative-index
-convention.
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `strSlice` | `slice` | JS-style slice: negative indexes count from the end, either index clamps into range. | `endseq` accepts `SequencePosition.END` in place of a literal length, for a call site that must supply all three arguments (e.g. inside a fixed-arity callback). |
+| `strTake` / `strTakeRight` | — | First/last `len` characters of a string. | `len <= 0` is `""`. |
+| `padLeft` | `padStart` | Pad a string (or number) on the left. | Truncates the padding if it overshoots `minlen`; a `number` overload stringifies first. |
+| `padRight` | `padEnd` | Pad a string on the right. | No numeric overload — a `number` must be stringified by the caller first. |
+| `pad` | ≡ | Pad both sides, splitting as evenly as possible. | Right side gets the extra character when the padding is odd. |
+| `strRepeat` / `repeatString` *(std)* | `repeat` | Repeat a string `n` times. | |
+| `starbanner` | — | Wraps a string in a `***`-bordered banner, for a `debug()` call that wants to stand out. | |
+| `hasMatch` | — | Whether a regex matches anywhere in a string. | `false` (not a throw) on `undefined` input or a bad pattern. |
+| `upcase` | `toUpper` | ASCII-only uppercase. | Explicit character lookup; a non-letter passes through unchanged. |
+| `downcase` | `toLower` | ASCII-only lowercase. | Same lookup-table approach as `upcase`. |
+| `titleCase` | `startCase` | Word-boundary capitalization. | Splits on a configurable delimiter set (default `-_`) rather than Unicode word-boundary detection; an optional per-character translation can run ahead of capitalization. |
+| `words` | ≡ | Split a string into words. | Simplified: splits only on non-alphanumeric delimiter runs, not on camelCase boundaries or digit runs the way lodash's own `words` does. |
+| `camelCase` | ≡ | Words joined with no separator; first word lower, the rest capitalized. | Built on `words` — inherits its simplified word-boundary rule. |
+| `kebabCase` | ≡ | Words joined with `-`, all lowercase. | Built on `words`. |
+| `snakeCase` | ≡ | Words joined with `_`, all lowercase. | Built on `words`. |
+| `lowerCase` | ≡ | Words joined with a space, all lowercase. | Built on `words`. |
+| `upperCase` | ≡ | Words joined with a space, all uppercase. | Built on `words`. |
+| `capitalize` | ≡ | First character uppercased, the rest lowercased. | |
+| `upperFirst` / `lowerFirst` | ≡ | Only the first character's case changed; everything else left as-is. | |
+| `escapeRegExp` | ≡ | Backslash-escape a string's regex metacharacters. | So it matches literally when dropped into `match`/`replace`/`splitByRegexp`; `trimStart`/`trimEnd` use it to build a safe `[...]` character class from a caller-supplied `chars` argument. |
+| `trim` / `trimStart` / `trimEnd` | ≡ | Strip whitespace (or a given character set) from either/both ends. | |
+| `truncate` | ≡ | Cut a string to a length, with an omission marker. | No `separator` option to break at a word/regex boundary instead of an exact count. |
+| `startsWith` *(std)* / `endsWith` *(std)* | ≡ | Whether a string starts/ends with a substring. | |
+| `replace` *(std)* | ≡ | Replace matches in a string. | |
+| `stringToNumber` *(std)* | `parseInt` | Parse a string as a number. | |
+| `splitByRegexp` *(std)* / `splitIntoCharacters` *(std)* | `split` | Split a string. | std splits by regexp or into characters — no plain-substring/limit split like lodash's. |
 
-| Export                                                  | Does                                                                                                                                                                                                                                                                      |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `getAt(bag\|arr, keyStr\|path\|seq, fallback?)`         | Reads a dotted path (`"a.b.c"`), a literal key list (`["a.b"]`), or a single array index (negative counts from the end). Missing at any step returns `fallback` (default `undefined`); a present-but-`undefined` array element is *not* the fallback.                     |
-| `setAt(bag\|arr, keyStr\|path\|seq, val, onCollision?)` | Same path reading as `getAt`, but writes: autovivifies missing steps as maps, replaces a scalar in the way, and pads an array written past its end with `undefined`. `onCollision(existing, incoming)` resolves a leaf that's already occupied — default is `lastInWins`. |
-| `deepMerge(existing, incoming)`                         | Lodash's deep merge: two maps combine key by key all the way down; anything else, `incoming` wins; an `undefined` `incoming` leaves `existing` alone. Arrays replace whole (no index-by-index merge). The `onCollision` to pass `setAt` for merge-on-write.               |
-| `assignWith(existing, incoming, combine)`               | `mergeMaps` *(std)*, with `combine(existingVal, incomingVal, key)` deciding a key present in `incoming`; `undefined` falls back to `incoming` winning.                                                                                                                    |
-| `mergeWith(existing, incoming, combine)`                | `deepMerge`, with `combine(existingVal, incomingVal, key)` consulted at every level of the recursion, not just the leaves; `undefined` falls back to `deepMerge`'s own rule for that pair.                                                                                |
-| `update(bag\|arr, keyStr\|path\|seq, updater)`          | `setAt(bag, path, updater(getAt(bag, path)))` — read-modify-write. `updateWith` additionally takes `setAt`'s `onCollision`.                                                                                                                                                |
-| `pathForKey(keyStr)`                                    | Splits a dotted key into segments (`"a..b"` → `["a", "", "b"]`); a key with a terminal dot is unhandled and drops that last empty segment.                                                                                                                                |
-| `lastInWins`                                            | The default `onCollision`: `(existing, incoming) => incoming`.                                                                                                                                                                                                            |
-| `GetsetAtStep.MISSING`                                  | Internal sentinel for "nothing at this step" — never returned to a caller.                                                                                                                                                                                                |
+Possible, not yet built:
 
-## `clxnReshape.fs` — dotted keys ↔ nested maps, and choice-tree building
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| ~~deburr~~ | ≡ | Strip Latin-1 diacritics (`café` → `cafe`). | Same technique as `upcaseChar`/`downcaseChar`'s explicit lookup table, just a bigger one mapping every accented Latin-1 character to its bare-ASCII form. |
 
-| Export                             | Does                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `undotMap(obj, onCollision?)`      | Expands `obj`'s dotted top-level keys into nested maps (`{"a.b": 1, "a": {"c": 2}}` → `{"a": {"b": 1, "c": 2}}`). Applies shallowest-key-first so the result doesn't depend on map iteration order. `onCollision` resolves a leaf two keys both reach — default `deepMerge`, so two maps landing on the same spot combine rather than one replacing the other. Only `obj`'s own keys are split; dots already inside a value's keys are left alone. |
-| `dotMap(obj, options?)`            | The inverse: depth-first flattens a nested map into dotted keys. `options.maxDepth` caps how many levels collapse (lodash's `flattenDepth` semantics); arrays and empty maps are leaves. Lossy against a key that already contains a dot — `undotMap(dotMap(x))` isn't always `x`.                                                                                                                                                                 |
-| `buildNestedChoices(levels, tree)` | Turns a raw uniformly-nested map into the `{name, displayName, entries}` structure a custom-feature enum dialog wants, given a `levels` list like `['socket_kind', ['drive_kind', {inthex: 'Int Hex'}]]` (name, optional display name, optional key-translation map per level).                                                                                                                                                                    |
+### Simple Types
 
-## `clxnUtiles.fs` — inspecting, iterating, and reshaping maps and arrays
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `isNil` / `isPresent` | `isNil`, `isNull`, `isUndefined` | Is the value absent / present? | FeatureScript has no `null`, so all three JS distinctions collapse into one `undefined` check. |
+| `ifNil` | `defaultTo` | Value, or a fallback if nil. | |
+| `ifBlank` | — | Value, or a fallback if nil or an empty string. | |
+| `ifZero` | — | Value, or a fallback if nil or (within tolerance) zero. | Overloaded for `number` and `ValueWithUnits`. |
+| `truthy` | — | Neither `undefined` nor `false`. | `0` and `""` are truthy, unlike JS's wider falsey set. |
+| `strBlank` | — | Whether a value is `undefined` or `""`. | |
+| `isEmpty` | ≡ | Is the value empty? | Restricted to the map/string/array/`undefined` cases FeatureScript actually has; unlike lodash, a number or boolean is never empty. |
+| `castArray` | ≡ | Wrap a non-array value in a 1-element array. | Value passes through unchanged if it's already an array. |
+| `sizeof` | `size` | Key count (map) / character count (string) / element count (array) / `0` (`undefined`). | |
+| `vector2` | — | Drops a `Vector`'s z component. | |
+| `mm`, `zero` | — | `millimeter` shorthand, and `0 * mm`. | |
+| `==` *(lang)* | `isEqual`, `isEqualWith` | Deep structural equality. | FeatureScript's `==` already does deep value comparison on maps/arrays — the default equality operator, not a function. |
+| `>` / `>=` / `<` / `<=` *(lang)* | `gt`, `gte`, `lt`, `lte` | Numeric comparison. | Plain comparison operators, numbers only — no lodash-style mixed-type coercion. |
+| `toString` *(std)* | ≡ | Converts a value to its string form. | |
+| `isInteger` *(std)* | ≡ | Whether a number has no fractional part. | |
+| `stringToNumber` *(std)* | `toNumber`/`parseInt` | Coerce a value to a number. | Only the one real case (parsing a numeric string) comes up in this codebase. |
+| `` `is array`/`is map`/`is string`/`is number`/`is boolean`/`is function` `` *(lang)* | `isArray`, `isBoolean`, `isFunction`, `isMap`, `isObject`, `isPlainObject`, `isNumber`, `isString` | Type-check a value. | A language expression, not a function call. |
+| `clamp` *(std)* | ≡ | Constrain a number to `[lower, upper]`. | |
+| `inRange` | ≡ | Whether a number falls within `[start, end)`. | Bounds auto-swap if `start > end`, matching lodash; `start` defaults to `0`. |
 
-The workhorse file: `forEach` and `mapValues`/`mapValues3` are what most other collection code
-in this project is built from.
+Possible, not yet built:
 
-| Export                                              | Does                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `sizeof(val)`                                       | Key count (map) / character count (string) / element count (array) / `0` (`undefined`).                                                                                                                                                                                                                                                                                                                                                                      |
-| `hasKey(obj, key, missingPolicy?)`                  | Whether `key` resolves to something in `obj`. For a map this always means present-and-not-`undefined` (the `missingPolicy` overload exists only for symmetry and never changes the answer). For an array, `MissingPolicy.USE_UNDEFINED` (the default) checks only that the index is in bounds; `SKIP` also requires the slot not be `undefined`. Neither array overload accepts a negative index, unlike `getAt`.                                            |
-| `hasPresentKey(obj, key)`                           | `hasKey` pinned to the strict policy: in bounds (or present) *and* not `undefined`.                                                                                                                                                                                                                                                                                                                                                                          |
-| `arrayIncludes(bag\|arr, target)`                   | Whether `target` appears anywhere in `bag`'s values or `arr`'s elements (`==`, so a deep match on maps/arrays too).                                                                                                                                                                                                                                                                                                                                          |
-| `pick(bag, keylist)`                                | A map of just `bag`'s entries at `keylist`; an absent key is elided, not set to `undefined`.                                                                                                                                                                                                                                                                                                                                                                 |
-| `pickDefined(bag, keylist)`                         | Same, skipping a key whose value is `undefined` — behaviorally identical to `pick` on a map, since FeatureScript elides `undefined` on write either way.                                                                                                                                                                                                                                                                                                     |
-| `arrLast(arr)`                                      | Last element of `arr`, or `undefined` if empty.                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `valuesAt(bag\|arr, keylist, missingPolicy?)`       | Array of values at `keylist`, in that order — the plural cousin of a single lookup, with no path traversal. `USE_UNDEFINED` (default) keeps the result the same length as `keylist`; `SKIP` drops missing slots. Array indexes must be non-negative and in bounds.                                                                                                                                                                                           |
-| `forEach(bag\|arr, keylist?, missingPolicy?, func)` | Visits every entry, calling `func(val, key, seq)` (map) or `func(val, seq)` (plain array) / `func(val, seq, seq)` (array + `missingPolicy`) — `seq` is always a 0-based visit count. Returning `NextStepAction.BREAK` from `func` stops the walk immediately. `missingPolicy` (`USE_UNDEFINED` default / `SKIP`) decides whether an `undefined`-valued entry is visited at all. A `keylist` walks exactly those keys, in that order, instead of `keys(bag)`. |
-| `mapValues(bag\|arr, ...)` / `mapValues3(...)`      | `forEach`, collecting `func`'s return value back into a same-shaped map/array. `mapValues3` adds the trailing `seq` to the callback; both take the same `keylist`/`missingPolicy` overloads as `forEach`.                                                                                                                                                                                                                                                    |
-| `rebag(bag\|arr, func)`                             | Rebuilds a map by asking `func(val, key?, seq)` for the `[newKey, newVal]` pair each entry becomes; `func` returning `undefined` drops that entry. Later entries win a `newKey` collision.                                                                                                                                                                                                                                                                   |
-| `objectify(arr, func)`                              | `rebag` specialized so an array's own values become the result's keys: `objectify(arr, func)` ≡ `rebag(arr, (val, seq) => [val, func(val, seq)])`.                                                                                                                                                                                                                                                                                                           |
-| `boxarrPush(arrRef, val)` / `boxarrUnshift`         | Append / prepend `val` into the array inside a `box`, in place, returning `val` — for accumulating into an outer array from inside a `forEach`/`mapValues` callback.                                                                                                                                                                                                                                                                                         |
-| `MissingPolicy`                                     | `SKIP` / `USE_UNDEFINED` — how the functions above treat an entry whose value is `undefined`, whether that's because it's missing outright or genuinely set to `undefined`.                                                                                                                                                                                                                                                                                  |
-| `NextStepAction.BREAK`                              | Sentinel a `forEach`-family callback returns to stop the walk early.                                                                                                                                                                                                                                                                                                                                                                                         |
-| `countBy(bag\|arr, func)`                           | Map of `func(val, key?)` results to how many elements produced each one — `key` only for the map form.                                                                                                                                                                                                                                                                                                                                                       |
-| `find(bag\|arr, rule)` / `findLast(bag\|arr, rule)` | First/last element for which `rule` holds, or `undefined`. Array form dereferences `arrayUtils`' `findIndex`/`findLastIndex`; map form walks `keys(bag)` and hands `rule` the key.                                                                                                                                                                                                                                                                           |
-| `flatMap(bag\|arr, func)`                           | Mapped through `func`, then flattened one level. Map form hands `func` the key and always returns an array.                                                                                                                                                                                                                                                                                                                                                  |
-| `flatMapDeep(...)` / `flatMapDepth(..., depth)`     | Mapped through `func`, then flattened fully / `depth` levels. Map form hands `func` the key and always returns an array.                                                                                                                                                                                                                                                                                                                                     |
-| `forEachRight(bag\|arr, func)`                      | `forEach`, back-to-front — same `NextStepAction.BREAK` early exit. Map form walks `keys(bag)` in reverse.                                                                                                                                                                                                                                                                                                                                                    |
-| `groupBy(bag\|arr, func)`                           | Map of `func(val, key?)` results to the elements that produced each one, via std's `insertIntoMapOfArrays`.                                                                                                                                                                                                                                                                                                                                                  |
-| `partition(bag\|arr, rule)`                         | `[passed, failed]` — split by whether `rule` holds, keeping visiting order. Map form hands `rule` the key and returns values only.                                                                                                                                                                                                                                                                                                                           |
-| `reduceRight(bag\|arr, seed?, foldFunction)`        | `foldArray` *(std)*, back-to-front, over a `reverse`d copy of `arr`; map form walks `keys(bag)` in reverse and hands `foldFunction` the key.                                                                                                                                                                                                                                                                                                                 |
-| `reject(bag\|arr, rule)`                            | Elements for which `rule` does *not* hold — the inverse of `filter` *(std)*. Map form hands `rule` the key and returns values only.                                                                                                                                                                                                                                                                                                                          |
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| ~~random~~ | ≡ | Random number in a range. | FeatureScript has no entropy source, but a seeded linear-congruential generator is just arithmetic — needs a caller-supplied seed rather than true randomness. Same workaround `sample`/`sampleSize`/`shuffle` ([Collection](#collection-1), above) are waiting on. |
+| ~~isMatch~~ / ~~isMatchWith~~ | ≡ | Whether a map has the same values as a partial "source" map, at the source's keys. | `pick(obj, keys(source)) == source` covers `isMatch` today, since `==` is already deep equality; `isMatchWith`'s per-key customizer is the one open piece. |
+| ~~toInteger~~ | ≡ | Coerce a value to an integer. | A one-line `floor`/`round` over `stringToNumber`, above. |
 
-## `metadataUtils.fs` — entity names and attributes
+### Helper Functions
 
-Everything here but the last three rows needs a live `Query` against real geometry — there's no
-plain-data test for them; @see the Tests section above.
+FeatureScript functions are already first-class values with real closures, so most of lodash's
+Function and Util categories turn out to be a short closure away — both are folded into this one
+section. The genuine gaps need *variadic* calling or `this`/method binding, neither of which
+FeatureScript has; those are [Not Planned](#not-planned) rather than repeated per-row here.
 
-| Export | Does |
-|---|---|
-| `setPropAndAttribute(context, entities, propType, attrName, value)` | Sets a property and mirrors it into a same-named attribute, since Onshape won't let a feature read its own properties back mid-regeneration — only the attribute survives that round trip. |
-| `setName(context, entities, nameText)` | `setPropAndAttribute` for `PropertyType.NAME` / `"Name"`. |
-| `setReadableName(context, entities, nameText, maxLength?)` | `setName`, after collapsing whitespace runs to one space and truncating to `maxLength` (default `20`). |
-| `getAttrs(context, query, attrName, defaultVal)` | `{ thing, attrName, val }` for every entity in `query`, `val` falling back to `defaultVal` where the attribute is unset. |
-| `getAllAttrs(context, entity)` | Every attribute on one entity, as `{name: value}`; `{"ok": false, "err": err}` if the read throws. |
-| `getBestAttr(context, query, attrName, ignoredVal)` | The first `getAttrs` entry whose value isn't `ignoredVal`, or the first entry if every one of them is; `undefined` if `query` is empty. |
-| `getNameProps` / `getNames` / `getName` / `getNameProp` | `getAttrs`/`getBestAttr`, specialized to `"Name"`. `getName` falls back to `ignoredVal` (default `"Part"`) when `query` resolves to nothing, rather than dereferencing `undefined`. |
-| `getNameOfBody(context, body, defaultVal)` | `"Name"` attribute directly on `body`, not its best/first entity. |
-| `defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc)` | Value for `newDefinition[destkey]`: kept auto-derived from `newDefinition[basekey]` via `valfunc` for as long as it hasn't been hand-edited away from what `valfunc` would have produced from the old base. The pattern behind every `*EditLogic` function that keeps a variable name in sync with what it names. |
-| `sanitize_varname(varname)` / `field_varname(varname, fieldname)` | Turns `varname` into a legal-ish identifier (each `.` → `_`, every other non-word character → `__`, independently — no run-collapsing); `field_varname` joins two of them with `_`. |
-| `PL_TOP`, `hugeSizeVal` / `tinySizeVal` | Shorthand top-plane constant; sentinel min/max for a `LengthBoundSpec` with no practical limit. |
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `curry2to0`…`curry3to2` | `unary`, `ary` | Wraps a function to accept `N` arguments but call it with only the first `M` — for sitting a fixed-arity callback in a `forEach`/`mapValues`-shaped slot. | Covers `unary` (`curryXto1`) and the common `ary` shapes; a new arity just needs one more `curryNtoM` sibling, not a general variadic `ary`. |
+| `idsFor` | — | Map of `tags` to a same-named child of an `Id`. | The `ids` map a multi-sketch/multi-op feature declares up front, built in one call. |
+| `parseJsonSafely` | — | Parses JSON, wrapping a parse failure in a `regenError` labeled with a caller-supplied story instead of surfacing the raw throw. | `opts.detectUnits` parses unit-bearing strings (e.g. `"3 inch"`) into a `ValueWithUnits`. |
+| `attempt` | ≡ | Call a function, returning its result or the error it throws instead of propagating. | No argument-forwarding: FeatureScript has no variadic call syntax. |
+| `attemptLoudly` | — | `attempt`, but logs the caught error instead of swallowing it silently. | |
+| `constant` | ≡ | Always return a fixed value, ignoring arguments. | The single-argument form only fits a one-argument slot; an `arity` argument (1/2/3) builds the matching shape. |
+| `identity` / `identity1` / `identity2` / `identity3` | ≡ | Return the argument unchanged. | Arity variants for sitting in a 1/2/3-argument callback slot. |
+| `noop` / `noop0` / `noop1` / `noop2` / `noop3` | ≡ | Does nothing, returns `undefined`. | Arity variants, same reasoning as `identity`. |
+| `times` | ≡ | Call a function `n` times, collecting results. | `n < 1` returns `[]`; defaults to `identity` with no `func` given. |
+| `rangeRight` / `range` *(std)* | ≡ | Array of numbers from `start` to `end`, descending / ascending. | `rangeRight` inherits std `range`'s inclusive-of-`end` convention, not lodash's exclusive one. |
+| `property` / `propertyOf` | ≡ | Build a function that reads one path off whatever it's given / off a fixed object. | Via `getAt`. |
+| `matches` / `matchesProperty` | ≡ | Build a rule checking a map against a partial shape / one path against a value. | Rides on the same `pick(obj, keys(source)) == source` trick as `isMatch`. |
+| `cond` | ≡ | Build a function trying `[predicate, handler]` pairs in order, running the first match. | Single-argument version — lodash's `cond` forwards every argument it receives, which needs variadic call syntax FeatureScript doesn't have. |
+| `conforms` / `conformsTo` | ≡ | Build a rule / test a map against a map of per-key predicates. | |
+| `over` / `overEvery` / `overSome` | `overXXXX` | Run several functions against the same argument; collect results / require all / require any. | |
+| `iteratee` | ≡ | Coerce a string/map/function "shorthand" into a real function. | `property` / `matches` / pass-through, falling back to `identity`. |
 
-## `miscUtils.fs` — small combinators
+Possible, not yet built:
 
-| Export | Does |
-|---|---|
-| `idsFor(id, tags)` | `{tag: id + tag}` for each of `tags` — the `ids` map a multi-sketch/multi-op feature declares up front, built in one call. |
-| `noop` | Returns `undefined`, regardless of arguments. |
-| `curry3to0` / `curry3to1` / `curry3to2` / `curry2to0` / `curry2to1` / `curry2to2` | Wraps `func` to accept `N` arguments but call it with only the first `M`, so a fixed-arity callback can sit in a `forEach`/`mapValues`-shaped slot. |
-| `parseJsonSafely(rawjson, opts?)` | `parseJson`/`parseJsonWithUnits` (per `opts.detectUnits`), wrapping a parse failure in a `regenError` labeled with `opts.story` instead of surfacing the raw throw. |
-| `rangeRight(from, to)` | `range` *(std)*, descending, via a plain `reverse`. |
-| `attempt(func)` | `func()`'s result, or the error it throws, caught instead of propagated. No argument-forwarding. |
-| `cond(pairs)` | Function trying `[rule, handler]` pairs in order; returns the first `handler(val)` whose `rule(val)` holds. |
-| `conforms(source)` / `conformsTo(obj, source)` | Whether every predicate in `source` holds against the same-keyed value of `obj`; `conforms` is the curried, reusable form. |
-| `constant(val)` | Function that always returns `val`, ignoring its arguments. |
-| `identity(val)` | Returns `val` unchanged. |
-| `iteratee(spec)` | Coerces a function/map/string `spec` into a callable iteratee — pass-through / `matches` / `property` — falling back to `identity`. |
-| `matches(source)` / `matchesProperty(path, srcValue)` | Predicate for "has `source`'s entries" / "`path` equals `srcValue`", via `pick`/`getAt`. |
-| `over(funcs)` / `overEvery(funcs)` / `overSome(funcs)` | Call every function in `funcs` on the same value, collecting results / requiring all truthy / requiring any truthy. |
-| `property(path)` / `propertyOf(obj)` | Function reading `path` off whatever it's given / reading whatever path it's given off `obj`, via `getAt`. |
-| `times(count, func?)` | `func(seq)` for `seq` from `0` to `count - 1`, collected into an array; `count < 1` is `[]`. Defaults to `identity`. |
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `memoizeFunction` *(std)* | `memoize` | Cache a function's results by argument. | Already a std builtin. |
+| ~~flip~~ | ≡ | Swap a 2-argument function's argument order. | `(func) => (a, b) => func(b, a)`. |
+| ~~flow~~ / ~~flowRight~~ | ≡ | Compose an array of unary functions, left-to-right / right-to-left. | `foldArray` *(std)* over the function array, seeded with the input. |
+| ~~negate~~ | ≡ | Boolean-invert a rule's result. | One per arity already in use. |
+| ~~once~~ | ≡ | Call a function at most once; return the first result on every later call. | Needs a `box` to remember "already called" plus the cached result, the same closure-over-`box` idiom `boxarrPush` already uses. |
+| ~~before~~ / ~~after~~ | ≡ | Call a function only until / starting at the `n`th call. | Same `box`-counter idiom as `once`. |
+| ~~partial~~ / ~~partialRight~~ | ≡ | Fix some leading/trailing arguments, return a function awaiting the rest. | The value-fixing sibling of `curryNtoM`. Also covers `wrap` (`wrap(value, fn)` ≡ `partial(fn, value)`). |
+| ~~curry~~ / ~~curryRight~~ | ≡ | General auto-curry of any arity. | `curry2to0`…`curry3to2` already solve the one shape this project needed; a fully generic curry needs variadic arity, which FeatureScript doesn't have. |
+| ~~uniqueId~~ | ≡ | Generate a monotonically-increasing id. | Needs a counter living in the `Context` (`setVariable`/`getVariable`) rather than a plain module-global variable, which FeatureScript has no equivalent of. |
 
-## `numberUtils.fs` — range checks and func-mapped math reductions
+### Metadata
 
-| Export | Does |
-|---|---|
-| `inRange(num, start?, end)` | Whether `num` falls in `[start, end)`; `start` defaults to `0`; bounds auto-swap if `start > end`. |
-| `maxBy(arr, func)` / `minBy(arr, func)` | Element of `arr` for which `func(val)` is greatest/least, or `undefined` for an empty `arr` — std's array `max`/`min` pick the value itself, these pick the element behind it. |
-| `meanBy(arr, func)` / `sumBy(arr, func)` | `average`/`sum` *(std)*, func-mapped. |
+No lodash correspondence — Onshape-specific entity/attribute plumbing.
 
-## `objectUtils.fs` — lodash-style map helpers
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `setPropAndAttribute` | — | Sets a property and mirrors it into a same-named attribute. | Onshape won't let a feature read its own properties back mid-regeneration — only the attribute survives that round trip. |
+| `setName` | — | `setPropAndAttribute` for the Name property/attribute. | |
+| `setReadableName` | — | `setName`, after collapsing whitespace runs to one space and truncating to a max length (default `20`). | |
+| `getAttrs` | — | `{ thing, attrName, val }` for every entity in a query, falling back to a default where the attribute is unset. | |
+| `getAllAttrs` | — | Every attribute on one entity, as `{name: value}`. | `{"ok": false, "err": err}` if the read throws. |
+| `getBestAttr` | — | The first `getAttrs` entry whose value isn't the ignored sentinel, or the first entry if every one of them is. | `undefined` if the query is empty. |
+| `getNameProps` / `getNames` / `getName` / `getNameProp` | — | `getAttrs`/`getBestAttr`, specialized to `"Name"`. | `getName` falls back to `ignoredVal` (default `"Part"`) when the query resolves to nothing, rather than dereferencing `undefined`. |
+| `getNameOfBody` | — | `"Name"` attribute directly on a body, not its best/first entity. | |
+| `defaultMaybe` | — | Value for a derived field: kept auto-derived from its base field for as long as it hasn't been hand-edited away from what the derivation would have produced. | The pattern behind every `*EditLogic` function that keeps a variable name in sync with what it names. |
+| `sanitize_varname` / `field_varname` | — | Turn a string into a legal-ish identifier. | Each `.` becomes `_`; every other non-word character becomes `__`, independently — no run-collapsing. |
+| `PL_TOP`, `hugeSizeVal` / `tinySizeVal` | — | Shorthand top-plane constant; sentinel min/max for a `LengthBoundSpec` with no practical limit. | |
 
-Straightforward ports from lodash's Object category, beyond what `clxnGetset.fs`/`clxnUtiles.fs`
-already cover (`getAt`/`setAt`/`pick`/`mapValues`/`hasKey`/…).
-
-| Export | Does |
-|---|---|
-| `findKey(bag, rule)` / `findLastKey(bag, rule)` | First/last key of `bag` (in `keys(bag)` order) whose value satisfies `rule(val, key)`. |
-| `invert(bag)` | `bag` with keys and values swapped; a repeated value keeps only its last key. A non-string value is stringified into its new key. |
-| `invertBy(bag, func)` | `invert`, grouping every key (not just the last) under `func(val)`, via std's `insertIntoMapOfArrays`. |
-| `mapKeys(bag, func)` | `bag`'s values, keyed by `func(val, key)` instead of `key`. |
-| `omit(bag, keylist)` | `bag` without the entries at `keylist` — the inverse of `pick`. |
-| `omitBy(bag, rule)` | `bag` without any entry for which `rule(val, key)` holds. |
-| `toPairs(bag)` | `bag` flattened into `[[key, val], …]` pairs — the inverse of `fromPairs` *(arrayUtils)*. |
-
-## `typeUtils.fs` — presence checks and small guards
-
-| Export                          | Does                                                                                                                   |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `ifNil(val, fallback)`          | `val`, or `fallback` if `val` is `undefined`.                                                                          |
-| `ifBlank(val, fallback)`        | `val`, or `fallback` if `val` is `undefined` or `""`.                                                                  |
-| `ifZero(val, fallback)`         | `val`, or `fallback` if `val` is `undefined` or (within tolerance) zero; overloaded for `number` and `ValueWithUnits`. |
-| `truthy(val)`                   | Neither `undefined` nor `false` — `0` and `""` are truthy, unlike JS.                                                  |
-| `isPresent(val)` / `isNil(val)` | Not-`undefined` / is-`undefined`.                                                                                      |
-| `strBlank(val)`                 | `undefined` or `""`.                                                                                                   |
-| `isEmpty(val)`                  | `undefined`, or a map/string/array with nothing in it.                                                                 |
-| `castArray(val)`                | `val` unchanged if it's already an array, otherwise `[val]`.                                                           |
-| `vector2(vec)`                  | Drops `vec`'s z component.                                                                                             |
-| `mm`, `zero`                    | `millimeter`, and `0 * mm`.                                                                                            |
-
-## `debugUtils.fs` — viewport highlighting
-
-| Export | Does |
-|---|---|
-| `highlightQuery(context, qq, debugColor, debugMe?)` | `addDebugEntities` on `qq` plus the edges of its owning bodies (otherwise invisible through an occluding body's faces); a no-op unless `debugMe` is `true` (the default), so a call site can leave the call in place and flip one flag. |
-
-## `colorUtils.fs` — Color ↔ hex/tuple string conversion
+### Color
 
 No lodash correspondence — color parsing isn't something lodash does.
 
-| Export | Does |
-|---|---|
-| `setColor(context, qq, cmap)` | Sets the `APPEARANCE` property on `qq` to `cmap` — a `Color`, or anything `toColor` accepts. |
-| `hexcolorToColor(hexcolor)` | Parses `"#rrggbb"`/`"#rrggbbaa"` (leading `#` optional, either case) into a `Color`. |
-| `tuplestrToColor(tuplestr)` | Parses a 0–255 RGB(A) tuple string (`"200,99,100,33"` or `"[0, 1, 255]"`) into a `Color`. |
-| `unitcolorToColor(unitcolor)` | Parses a 0.0–1.0 RGB(A) tuple string (`"0.5, 0.1, 1.0"`) into a `Color`. |
-| `toColor(cmap\|carr\|raw)` | Dispatches to whichever of the above fits: a `Color` passes through, an array goes straight to `color(...)` (no 0–255 detection), a string is sniffed hex → unit → tuple, first match wins. `OopsColor` (bright red) if nothing matches. |
-| `toHexcolor` / `toUnitcolor` / `toTuplecolor` | The reverse conversions, `Color` → string/array. |
-| `hexpairToInt(hexpair, fallback?)` / `intToHexpair(num)` | 2-character hex string ↔ 0–255 decimal, case-insensitive going in. |
-| `sameColor(c1, c2, tol?)` | Channel-by-channel tolerant equality; default `tol` is just under `1/255`. |
-| `isHexcolor(str)` | Whether `str` is a hexcolor string `hexcolorToColor` would accept. |
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `setColor` | — | Sets the `APPEARANCE` property on a query. | Accepts a `Color`, or anything `toColor` accepts (hexcolor string, tuple string, or array). |
+| `hexcolorToColor` | — | Parses `"#rrggbb"`/`"#rrggbbaa"` into a `Color`. | Leading `#` optional, either case; `OopsColor` (bright red) on no match. |
+| `tuplestrToColor` | — | Parses a 0–255 RGB(A) tuple string (`"200,99,100,33"` or `"[0, 1, 255]"`) into a `Color`. | |
+| `unitcolorToColor` | — | Parses a 0.0–1.0 RGB(A) tuple string into a `Color`. | |
+| `toColor` | — | Dispatches to whichever of the above fits. | A `Color` passes through; an array goes straight to `color(...)` (no 0–255 detection); a string is sniffed hex → unit → tuple, first match wins. `OopsColor` if nothing matches. |
+| `toHexcolor` / `toUnitcolor` / `toTuplecolor` | — | The reverse conversions, `Color` → string/array. | |
+| `hexpairToInt` / `intToHexpair` | — | 2-character hex string ↔ 0–255 decimal. | Case-insensitive going in. |
+| `sameColor` | — | Channel-by-channel tolerant equality. | Default tolerance is just under `1/255`; a missing `alpha` on either side is treated as `1.0`. |
+| `isHexcolor` | — | Whether a string is a hexcolor string `hexcolorToColor` would accept. | |
 
-## `jsonVarF.fs` — variable-producing utility Features
+### JSON
 
-A collection of Features, not a library — each `defineFeature` body reads/writes variables on a
-live `Context`, so (per this pass's scope) none of them have plain-data tests; only docblocks and
-style got the treatment here.
+A collection of Features, not a library — each reads/writes variables on a live `Context`, so none
+of them have plain-data tests.
 
-| Export | Does |
-|---|---|
-| `jsonVarF` | Parses `definition.rawjson` and sets it as variable `varname`. |
-| `keylistF` / `keylistEditLogic` | Sets `varname` to the ordered keys of variable `bagname`. Edit logic keeps `varname` at `bagname ~ "_keys"` until hand-edited. |
-| `sizeofF` / `sizeofEditLogic` | Sets `varname` to `sizeof` of variable `objname`. Edit logic keeps `varname` at `objname ~ "_size"` until hand-edited. |
-| `valuesAtF` / `valuesAtEditLogic` | Sets `varname` to `valuesAt(bag, keylist)` for variable `bagname` and a JSON-array `keylistJSON`. Edit logic tracks both `varname` and `description`. |
-| `splatF` | Explodes variable `objname`'s value into one variable per entry — `<objname>_<00-padded index>` for an array, `<objname>_<key>` (or bare `<key>`) for a map. |
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `jsonVarF` | — | Parses a JSON string and sets it as a variable. | |
+| `keylistF` / `keylistEditLogic` | — | Sets a variable to the ordered keys of another variable. | Edit logic keeps the result variable's name tracking the source's, until hand-edited. |
+| `sizeofF` / `sizeofEditLogic` | — | Sets a variable to `sizeof` of another variable. | Same tracking-until-hand-edited edit logic. |
+| `valuesAtF` / `valuesAtEditLogic` | — | Sets a variable to `valuesAt(bag, keylist)` for a source variable and a JSON-array key list. | Edit logic tracks both the result variable's name and its description. |
+| `splatF` | — | Explodes a variable's value into one variable per entry. | `<objname>_<00-padded index>` for an array; `<objname>_<key>` (or bare `<key>` if `prefixVarnames` is turned off) for a map. |
 
-Open design questions found while documenting this file are tracked in
-[`../HUMAN-FIXME.md`](../HUMAN-FIXME.md), not here.
+### Debug
+
+No lodash correspondence — viewport highlighting.
+
+| Function Name | Lodash | Description | Caveats |
+| --- | --- | --- | --- |
+| `highlightQuery` | — | `addDebugEntities` on a query, plus the edges of its owning bodies (otherwise invisible through an occluding body's faces). | A no-op unless `debugMe` is `true` (the default), so a call site can leave the call in place and flip one flag. |
 
 ---
 
 ## Bugs found and fixed along the way
 
-* **`clxnUtiles.fs`:** `NextStepAction` (the `forEach`/`mapValues`-family early-exit sentinel)
+* **`clxn/clxnUtils.fs`:** `NextStepAction` (the `forEach`/`mapValues`-family early-exit sentinel)
   was never `export`ed, so no caller outside the file could ever actually trigger `BREAK` — every
   walk anywhere in the codebase always ran to completion. Exported now, and covered by
-  `runForEachBreakTests`/`runForEachKeylistBreakTests` in `tests/testclxnUtiles.fs`.
-* **`tests/testStringUtils.fs`:** `runPadTests` had four `return runTests(...)` statements
+  `runForEachBreakTests`/`runForEachKeylistBreakTests` in `clxn/testClxnUtils.fs`.
+* **`prim/testStringUtils.fs`:** `runPadTests` had four `return runTests(...)` statements
   stacked in a row — only the first ever ran, so `padRight` was never tested at all, and the more
   interesting padding-behavior cases (`LeftPadTestCases`/`RightPadTestCases`) silently never
   executed either.
-* **`typeUtils.fs`:** `ifZero` had two dead, unreachable private overloads after the real
+* **`prim/typeUtils.fs`:** `ifZero` had two dead, unreachable private overloads after the real
   (exported) ones — one untyped, one with the exact same `(val is ValueWithUnits, fallback)`
   signature as the exported version above it, which is either a silent duplicate-definition or a
   compile error depending on how FeatureScript resolves it. Deleted both.
-* **`metadataUtils.fs`:** `getName` called `.val` on whatever `getNameProp` returned without
+* **`fancy/metadataUtils.fs`:** `getName` called `.val` on whatever `getNameProp` returned without
   checking for `undefined` first — and `getNameProp`/`getBestAttr` return `undefined` exactly
   when `query` resolves to no entities, which is not a rare case. Fixed to fall back to
   `ignoredVal` in that case, matching every sibling function's documented contract.
-* **`colorUtils.fs`:** `HexcolorRE` only matched lowercase hex digits (`[0-9a-f]`), so
+* **`fancy/colorUtils.fs`:** `HexcolorRE` only matched lowercase hex digits (`[0-9a-f]`), so
   `hexcolorToColor`, `toColor`, and `isHexcolor` all silently failed on a perfectly standard
   uppercase or mixed-case hex string like `"#FF0000"` — falling back to `OopsColor` (or `false`
   for `isHexcolor`) instead of parsing it. Widened to `[0-9a-fA-F]`; `hexpairToInt` already
   downcased its input, so nothing else needed to change.
-* **`jsonVarF.fs`:** `keylistF`'s throw message named `definition.varname` (the *destination*
-  variable being written) when reporting that the *source* variable wasn't a bag or array — a
-  debugging-time red herring, since the name in the error never matched the variable actually at
-  fault. Now names `bagname`, the variable that was actually checked.
-* **`tests/testColorUtils.fs`:** the whole file was replaced — `runColorRoundtripTests` wrapped
+* **`features/jsonVarF.fs`:** `keylistF`'s throw message named `definition.varname` (the
+  *destination* variable being written) when reporting that the *source* variable wasn't a bag or
+  array — a debugging-time red herring, since the name in the error never matched the variable
+  actually at fault. Now names `bagname`, the variable that was actually checked.
+* **`fancy/testColorUtils.fs`:** the whole file was replaced — `runColorRoundtripTests` wrapped
   its body in a bare `try { }` with no `catch`, which isn't valid FeatureScript (only `try silent
   { }` and `try { } catch (error) { }` are), and even if it had compiled, the mismatches it
   collected into `oops` were never reported or asserted on — the function always returned `{}`
@@ -575,19 +416,19 @@ each has a pure stand-in already (or a short, unbuilt, still-pure one); a true i
 ever wanted, would be its own realm of `box`-based mutable utilities, not a retrofit onto the pure
 functions above.
 
-| Mutating function | Implemented function | Brief description |
-|---|---|---|
+| Lodash | Function Name | Description |
+| --- | --- | --- |
 | `pull`, `pullAll`, `pullAllBy` | `difference`, `differenceBy` | Remove given values from an array. |
 | `pullAllWith` | `differenceWith` | Remove given values from an array, by custom comparator. |
 | `remove` | `partition` (keep the removed half) | Split an array by a rule. |
 | `fill` | *(not built — `subArray` + `makeArray` + `concatenateArrays`)* | Overwrite a sub-range of an array with a fixed value. |
 | `assign` | `mergeMaps` *(std)* | Shallow-copy one map's keys onto another. |
-| `assignWith` | `assignWith` (`clxnGetset.fs`) | Shallow-copy, with a custom per-key combiner; `undefined` falls back to `incoming` winning. |
+| `assignWith` | `assignWith` | Shallow-copy, with a custom per-key combiner; `undefined` falls back to `incoming` winning. |
 | `defaults`, `defaultsDeep` | `deepMerge(source, dest)` *(args flipped)* | Fill in missing keys from a fallback object. |
 | `unset` | `setAt(bag, path, undefined)` | Delete whatever's at a path. |
-| `update`, `updateWith` | `update`, `updateWith` (`clxnGetset.fs`) | Read-modify-write a value at a path — `setAt(bag, path, updater(getAt(bag, path)))`. |
+| `update`, `updateWith` | `update`, `updateWith` | Read-modify-write a value at a path — `setAt(bag, path, updater(getAt(bag, path)))`. |
 | `setWith` | `setAt` (its existing `onCollision` param) | Set a path, with a customizer for autovivified segments. |
-| `mergeWith` | `mergeWith` (`clxnGetset.fs`) | Deep-merge two maps, with a per-key combiner called at every level; `undefined` falls back to `deepMerge`'s own rule. |
+| `mergeWith` | `mergeWith` | Deep-merge two maps, with a per-key combiner called at every level; `undefined` falls back to `deepMerge`'s own rule. |
 
 ## Lodash aliases
 
@@ -599,9 +440,9 @@ and `toPairs` (not `entries`).
 
 Every function that showed up in a "not yet"/"not implemented" bucket anywhere above has been
 resolved one way or the other: either it's a real (if sometimes struck-through, sometimes
-workaround-needing) row in a category table above, a row in [Mutating (in-place)
+workaround-needing) row in a section above, a row in [Mutating (in-place)
 Functions](#mutating-in-place-functions), or it's not planned, for one of a handful of recurring
-reasons tabulated here — no more scattered "→ HUMAN-FIXME.md" cross-references per row.
+reasons tabulated here — no more scattered per-row cross-references.
 
 | Realm | Reason | Function(s) |
 |---|---|---|

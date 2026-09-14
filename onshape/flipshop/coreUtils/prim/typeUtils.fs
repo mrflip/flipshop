@@ -6,6 +6,12 @@ export const mm  = millimeter;
 export const zero = 0 * mm;
 
 /**
+ * Sentinel for "nothing at that step", so a fallback that is itself a map or an array can
+ * never be mistaken for something found in the bag and descended into.
+ */
+export enum Sentinel { ABSENT }
+
+/**
  * Drops `vec`'s z component.
  * @example
  *   vector2(vector(1, 2, 3)); // => vector(1, 2)
@@ -75,6 +81,10 @@ export const isEmpty = (function(val) returns boolean {
   return false;
 });
 
+export const isEqual = (function(aa, bb) returns boolean {
+  return aa == bb;
+});
+
 /**
  * `val` unchanged if it's already an array, otherwise `[val]` — a non-array value wrapped in a
  * single-element array.
@@ -82,10 +92,10 @@ export const isEmpty = (function(val) returns boolean {
  *   castArray(1);      // => [1]
  *   castArray([1, 2]); // => [1, 2]
  */
-export function castArray(val) returns array {
+export const castArray = (function(val) returns array {
   if (val is array) { return val; }
   return [val];
-}
+});
 
 /**
  * Size of `val`: length for a string, element count for an array, key count for a map, `0` for
@@ -108,3 +118,17 @@ export function sizeof(val is array) returns number {
 export function sizeof(val is undefined) returns number {
     return 0;
 }
+
+export const TypeUtils = {
+  "isEqual":         isEqual,
+  "sizeof":          (val) => sizeof(val),
+  "castArray":       castArray,
+  "ifNil":           ifNil,
+  "ifBlank":         ifBlank,
+  "truthy":          truthy,
+  "isPresent":       isPresent,
+  "isNil":           isNil,
+  "strBlank":        strBlank,
+  "ifZero":          (val, fallback) => ifZero(val, fallback),
+  "isEmpty":         isEmpty,
+};

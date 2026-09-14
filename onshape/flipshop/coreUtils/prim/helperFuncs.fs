@@ -74,28 +74,25 @@ export function parseJsonSafely(rawjson is string) { return parseJsonSafely(rawj
  *   attempt(function() { return 42; });    // => 42
  *   attempt(function() { throw "boom"; }); // => "boom"
  */
-export function attempt(func is function) {
+export const attempt = (function(func is function) {
   try {
     return func();
   } catch (error) {
     return error;
   }
-}
+});
 /** attempt, but it leaves the error in the log */
-export function attemptLoudly(func is function) {
+export const attemptLoudly = (function(func is function) {
   try {
     return func();
   } catch (err) {
     return err;
   }
-}
+});
 
 /**
- * Builds a function that tries `pairs` (`[predicate, handler]`) in order, calling and returning
- * the first `handler` whose `predicate` holds `val`, or `undefined` if none does — `predicate`
- * and `handler` both get `(val, seq)`, the same two-argument shape every iterator in this file
- * uses, and the returned function itself takes `(val, seq)` so it can sit in that same kind of
- * slot.
+ * Builds a function that tries `pairs` (`[rule(val, seq) => boolean, handler(val, seq) => any]`) in order, calling and returning
+ * the first `handler` whose `rule` holds `val`, or `undefined` if none does
  * @example
  *   const grade = cond([
  *     [(score, _seq) => score >= 90, constant("A")],
@@ -110,13 +107,21 @@ export function cond(pairs is array) returns function {
     for (var pair in pairs) {
       if (pair[0](val, seq)) { return pair[1](val, seq); }
     }
-    return undefined;
+    return Sentinel.ABSENT;
+  };
+}
+export function cond(pairs is map) returns function {
+  return function(val, seq) {
+    for (var rule, handler in pairs) {
+      if (rule(val, seq)) { return handler(val, seq); }
+    }
+    return Sentinel.ABSENT;
   };
 }
 
 /**
- * Curried `conformsTo`: builds a predicate that checks whether a given map conforms to `source`'s
- * per-key predicates. Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot
+ * Curried `conformsTo`: builds a rule that checks whether a given map conforms to `source`'s
+ * per-key rules. Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot
  * every iterator in this file does.
  * @example
  *   const isAdult = conforms({ "age": (age, _key) => age >= 18 });
@@ -127,16 +132,16 @@ export function conforms(source is map) returns function {
 }
 
 /**
- * Whether every predicate in `source` holds against the same-keyed value of `obj` — a key in
- * `source` but absent from `obj` reads as `undefined`, same as any other missing-key read.
- * Each predicate gets `(val, key)`, matching how every other object-land iterator in this file
+ * Whether every rule in `rules` holds against the same-keyed value of `obj` — a key in
+ * `rules` but absent from `obj` reads as `undefined`, same as any other missing-key read.
+ * Each rule gets `(val, key)`, matching how every other object-land iterator in this file
  * hands a value's key as the second argument.
  * @example
  *   conformsTo({ "a": 1, "b": 2 }, { "b": (n, _key) => n > 1 }); // => true
  *   conformsTo({ "a": 1, "b": 2 }, { "b": (n, _key) => n > 2 }); // => false
  */
-export function conformsTo(obj is map, source is map) returns boolean {
-  return all(keys(source), (key) => source[key](obj[key], key));
+export function conformsTo(obj is map, rules is map) returns boolean {
+  return all(keys(rules), (key) => rules[key](obj[key], key));
 }
 
 /**
@@ -187,7 +192,7 @@ export function inRange(num is number, end is number) returns boolean {
 
 /**
  * Coerces `spec` into a callable iteratee: a function passes through unchanged, a map becomes a
- * `matches` predicate, a string becomes a `property` accessor, and anything else falls back to
+ * `matches` rule, a string becomes a `property` accessor, and anything else falls back to
  * `identity`.
  * @example
  *   iteratee("a")({ "a": 1 });               // => 1
@@ -195,13 +200,13 @@ export function inRange(num is number, end is number) returns boolean {
  */
 export function iteratee(spec) returns function {
   if (spec is function) { return spec; }
-  if (spec is map) { return matches(spec); }
-  if (spec is string) { return property(spec); }
+  if (spec is map)      { return matches(spec); }
+  if (spec is string)   { return property(spec); }
   return identity;
 }
 
 /**
- * Builds a predicate that's `true` for any map holding `source`'s entries — a partial deep match,
+ * Builds a rule that's `true` for any map holding `source`'s entries — a partial deep match,
  * via the `pick(obj, keys(source)) == source` trick (`==` is already deep structural equality).
  * Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this
  * file does.
@@ -213,7 +218,7 @@ export function matches(source is map) returns function {
   return (obj is map, _seq) => (pick(obj, keys(source)) == source);
 }
 /**
- * Builds a predicate that's `true` when `path` of a given object equals `srcValue`, via `getAt`.
+ * Builds a rule that's `true` when `path` of a given object equals `srcValue`, via `getAt`.
  * Returns `(obj, seq)`, discarding `seq`, so it can sit in the same slot every iterator in this
  * file does.
  * @example
@@ -234,7 +239,7 @@ export function over(funcs is array) returns function {
   return (val, seq) => mapValues(funcs, (func, _idx) => func(val, seq));
 }
 /**
- * Builds a predicate that's `true` only when every function in `funcs` returns truthy for
+ * Builds a rule that's `true` only when every function in `funcs` returns truthy for
  * `(val, seq)`.
  * @example
  *   overEvery([(val, _seq) => val > 0, (val, _seq) => val < 10])(5, 0); // => true
@@ -243,7 +248,7 @@ export function overEvery(funcs is array) returns function {
   return (val, seq) => all(funcs, (func) => func(val, seq));
 }
 /**
- * Builds a predicate that's `true` when any function in `funcs` returns truthy for `(val, seq)`.
+ * Builds a rule that's `true` when any function in `funcs` returns truthy for `(val, seq)`.
  * @example
  *   overSome([(val, _seq) => val < 0, (val, _seq) => val > 10])(5, 0); // => false
  */
@@ -257,18 +262,19 @@ export function overSome(funcs is array) returns function {
  * @example
  *   property("a.b")({ "a": { "b": 1 } }, 0); // => 1
  */
-export function property(path) returns function {
+export const property = (function(path) returns function {
   return (obj, _seq) => getAt(obj, path);
-}
+});
+
 /**
  * The reverse of `property`: fixes the object up front and builds a function that reads whatever
  * path it's given off of it. Returns `(path, seq)`, discarding `seq`, for the same reason.
  * @example
  *   propertyOf({ "a": { "b": 1 } })("a.b", 0); // => 1
  */
-export function propertyOf(obj) returns function {
+export const propertyOf = (function(obj) returns function {
   return (path, _seq) => getAt(obj, path);
-}
+});
 
 /**
  * `range` *(std)*, descending, via a plain `reverse` — inherits std `range`'s own inclusive-of-
@@ -277,9 +283,9 @@ export function propertyOf(obj) returns function {
  * @example
  *   rangeRight(0, 3); // => [3, 2, 1, 0]
  */
-export function rangeRight(from is number, to is number) returns array {
+export const rangeRight = (function(from is number, to is number) returns array {
   return reverse(range(from, to));
-}
+});
 
 /**
  * Calls `func(seq, seq)` for `seq` from `0` to `count - 1`, collecting results — `count < 1`
@@ -300,18 +306,22 @@ export function times(count is number, func is function) returns array {
   return result;
 }
 export function times(count is number) returns array {
-  return times(count, identity);
+  return range(0, count - 1);
 }
+export const doMany = (function(count is number, func is function) returns array {
+  return times(count, func);
+});
+
 //--
 
 // == [Function values] --
 
 export const UtilsFuncs = {
-  "attempt":         (func)           => attempt(func),
-  "cond":            (pairs)          => cond(pairs),
-  "conforms":        (source)         => conforms(source),
-  "conformsTo":      (obj, source)    => conformsTo(obj, source),
-  "constant":        (val)            => constant(val),
+  "attempt":         attempt,
+  "cond":            cond,
+  "conforms":        conforms,
+  "conformsTo":      conformsTo,
+  "constant":        constant,
   "identity":        identity,
   "identity2":       identity2,
   "identity3":       identity3,

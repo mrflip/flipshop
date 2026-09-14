@@ -7,7 +7,7 @@ import(path : "66e287bede293cb227dfb89c", version : "7ad52f18be252f35a5ea9f6d");
  * Sentinel for "nothing at that step", so a fallback that is itself a map or an array can
  * never be mistaken for something found in the bag and descended into.
  */
-export enum GetsetAtStep { MISSING }
+export enum Sentinel { ABSENT }
 
 // lodash flattens to Infinity by default; FeatureScript has no Infinity literal, so this stands in
 export const UnboundedDotDepth = 1000000000;
@@ -245,7 +245,7 @@ function valAtPath(container, keyPath is array, fallback) {
   var current = container;
   for (var segment in keyPath) {
     current = steppedInto(current, segment);
-    if (current == GetsetAtStep.MISSING) { return fallback; }
+    if (current == Sentinel.ABSENT) { return fallback; }
   }
   return current;
 }
@@ -263,7 +263,7 @@ function setAtPath(container, keyPath is array, atIndex is number, val, onCollis
 
 function placedAt(container, segment, val, onCollision is function) {
   const existing = steppedInto(container, segment);
-  const placed = (existing == GetsetAtStep.MISSING) ? val : onCollision(existing, val);
+  const placed = (existing == Sentinel.ABSENT) ? val : onCollision(existing, val);
   if (container is array) { return placedInArray(container, segment, placed); }
   var out = (container is map) ? container : {};
   out[segment] = placed;
@@ -271,19 +271,19 @@ function placedAt(container, segment, val, onCollision is function) {
 }
 
 /**
- * One step down. MISSING covers both a step that is not there and a step off the end of a
+ * One step down. ABSENT covers both a step that is not there and a step off the end of a
  * scalar; an array element that is there and undefined comes back as undefined.
  * (maps cannot hold undefined values, so there is no possible distinction)
  */
 function steppedInto(container, segment) {
   if (container is map) {
     const val = container[segment];
-    return isPresent(val) ? val : GetsetAtStep.MISSING;
+    return isPresent(val) ? val : Sentinel.ABSENT;
   } else if (container is array) {
     const realSeq = seqForSegment(container, segment);
-    return (realSeq == GetsetAtStep.MISSING) ? GetsetAtStep.MISSING : container[realSeq];
+    return (realSeq == Sentinel.ABSENT) ? Sentinel.ABSENT : container[realSeq];
   }
-  return GetsetAtStep.MISSING;
+  return Sentinel.ABSENT;
 }
 
 function placedInArray(arr is array, segment, val) returns array {
@@ -300,15 +300,15 @@ function placedInArray(arr is array, segment, val) returns array {
   return out;
 }
 
-/** An index for reading: in range, or MISSING. Never complains, since a miss is an answer. */
+/** An index for reading: in range, or ABSENT. Never complains, since a miss is an answer. */
 function seqForSegment(arr is array, seq is number)  {
   const realSeq = (seq < 0) ? (size(arr) + seq) : seq;
-  if (realSeq >= size(arr)) { return GetsetAtStep.MISSING; }
-  if (realSeq < 0)          { return GetsetAtStep.MISSING; }
+  if (realSeq >= size(arr)) { return Sentinel.ABSENT; }
+  if (realSeq < 0)          { return Sentinel.ABSENT; }
   return realSeq;
 }
 
-/** An index for reading: in range, or MISSING. Never complains, since a miss is an answer. */
+/** An index for reading: in range, or ABSENT. Never complains, since a miss is an answer. */
 function seqForSegment(arr is array, seq is string) {
   if (! match(seq, "^-?\\d+$").hasMatch) { throw nonkeyIndexMessage(seq, arr); }
   return seqForSegment(arr, stringToNumber(seq));
