@@ -1,7 +1,6 @@
 FeatureScript 3070;
 import(path : "onshape/std/common.fs", version : "3070.0");
 //
-import(path : "3b81563d40faaff8be820296", version : "95c758559e6e54348e4472ec"); // arrayUtils, for arrayIncludes
 import(path : "66e287bede293cb227dfb89c", version : "25bf5ea59817ea0aa1737abd"); // typeUtils, for ifNil &c
 
 /** ASCII lowercase → uppercase, one character to one character. */
@@ -162,13 +161,13 @@ export function starbanner(str is string) {
  *   hasMatch("hello", "ell"); // => true
  *   hasMatch("hello", "^e"); // => false
  */
-export function hasMatch(str, regex is string) {
-  if (str == undefined) { return false; }
+export function hasMatch(str is string, regex is string) returns boolean {
   try {
     const mm = match(str, regex);
     return mm.hasMatch;
   } catch(err) { println("error " ~ err ~ " matching regex /" ~ regex ~ "/ against " ~ str); return false; }
 }
+export function hasMatch(str is undefined, regex is string) returns boolean { return false; }
 
 function downcaseChar(char is string) returns string {
   const lochar = UpperToLowercase[char];
@@ -315,15 +314,15 @@ export function capitalize(str is string) returns string {
 /**
  * `str` with every regex metacharacter (`\ ^ $ . * + ? ( ) [ ] { } |`) preceded by a backslash,
  * so it can be dropped into `match`/`replace`/`splitByRegexp`'s `regExp` argument and matched
- * literally instead of interpreted. A plain per-character walk rather than lodash's test-then-
- * replace — std's `replace` has no backreference syntax to swap the whole match in one pass, so
- * there'd be nothing to save by testing first; this always walks `str` exactly once either way.
+ * literally instead of interpreted. One `replace`, using `$&` to echo back whatever matched —
+ * unlike lodash, which tests for a metacharacter before replacing so it can skip the replace when
+ * there's nothing to do; skipped here since there'd be nothing to save by scanning `str` twice
+ * instead of once.
  * @example
  *   escapeRegExp("[lodash](https://lodash.com/)"); // => "\\[lodash\\]\\(https://lodash\\.com/\\)"
  */
-const RegExpSpecialChars = ["\\", "^", "$", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "|"];
 export function escapeRegExp(str is string) returns string {
-  return join(mapArray(splitIntoCharacters(str), (ch) => arrayIncludes(RegExpSpecialChars, ch) ? ("\\" ~ ch) : ch), "");
+  return replace(str, "[\\\\^$.*+?()[\\]{}|]", "\\$&");
 }
 
 /** `str` split into words, lowercased, and joined with `-`. */
