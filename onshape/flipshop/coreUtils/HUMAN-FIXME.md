@@ -114,16 +114,21 @@ inside `iteratee()` itself, plus every affected caller:
 * `getAt`/`setAt` don't degrade gracefully on a nullish root — lodash's `_.get`/`_.set` no-op
   (`object == null ? undefined/object : …`) rather than requiring `bag is map`/`is array` at the
   type level.
-* `setAt`'s intermediate path segments always autovivify as a **map**, even when the next segment
-  looks like an array index; lodash's `baseSet` creates `[]` there instead. Already noted in
-  `setAt`'s own docstring as a caveat — restated here since it's a real missing convenience, not
-  just documentation.
-* `updateWith`'s `onCollision` customizes the already-occupied leaf (trivially true, since the
-  leaf was just read) rather than customizing how *missing intermediate segments* get created —
-  which is what lodash's real `updateWith`/`setWith` customizer does, and would be the actual hook
-  to work around the map-vs-array autovivification gap above.
+* ~~`setAt`'s intermediate path segments always autovivify as a **map**, even when the next
+  segment looks like an array index~~ — resolved: `setAt` now creates `[]` there instead, matching
+  lodash's `baseSet` heuristic, whenever the segment it's about to create is followed by a
+  non-negative-integer-looking segment (bare number or digit string).
+* ~~`updateWith`'s `onCollision` customizes the already-occupied leaf ... rather than customizing
+  how *missing intermediate segments* get created~~ — resolved by addition rather than by
+  repurposing `updateWith`: a new `setAtWith(bag, keyStrOrPath, val, segmentFor)` is the actual
+  counterpart to lodash's `setWith` customizer, consulted only where a segment doesn't already
+  resolve to a map or array. `updateWith`'s own `onCollision` keeps its existing, test-validated
+  meaning (the leaf-combine resolver) — changing what it means would have broken
+  `testClxnGetset.fs`'s `UpdateWithCases`, which documents that meaning as intentional.
 * `pathForKey` has no `a[0].b` bracket-syntax parsing like lodash's `toPath` — already documented
   in its own docstring.
-* `deepMerge`/`mergeWith` replace arrays wholesale rather than merging index-by-index like
-  lodash's `merge` — a deliberate, already-documented design choice, not an oversight; noted here
-  only for completeness.
+* ~~`deepMerge`/`mergeWith` replace arrays wholesale rather than merging index-by-index~~ —
+  resolved: both now merge two arrays index by index like lodash's `merge`, with `existing`'s tail
+  past `size(incoming)` surviving untouched. `MergeCases`' array-replace row in
+  `testClxnGetset.fs` was updated to the new expected result (`[3, 2]`, not `[3]`) since it had
+  explicitly encoded the old wholesale-replace behavior as correct.
