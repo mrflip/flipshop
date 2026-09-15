@@ -40,7 +40,7 @@ export const InRangeCases = [
   [[1, 1, 5],  true,   'lower bound is inclusive'],
   [[3, 5, 1],  true,   'bounds auto-swap when start > end'],
 ];
-export function runInRangeTests(context is Context, verbose is boolean) returns map {
+function runInRangeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "inRange", verbose, InRangeCases, function(args is array) {
     return (size(args) <= 2) ? inRange(args[0], args[1]) : inRange(args[0], args[1], args[2]);
   });
@@ -54,7 +54,7 @@ export const MaxByCases = [
   [[[{ n: 1 }, { n: 3 }, { n: 2 }], byN],  { n: 3 }],
   [[[], byN],                              undefined],
 ];
-export function runMaxByTests(context is Context, verbose is boolean) returns map {
+function runMaxByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "maxBy", verbose, MaxByCases, function(args is array) { return maxBy(args[0], args[1]); });
 }
 
@@ -62,7 +62,7 @@ export const MinByCases = [
   [[[{ n: 1 }, { n: 3 }, { n: 2 }], byN],  { n: 1 }],
   [[[], byN],                              undefined],
 ];
-export function runMinByTests(context is Context, verbose is boolean) returns map {
+function runMinByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "minBy", verbose, MinByCases, function(args is array) { return minBy(args[0], args[1]); });
 }
 
@@ -71,13 +71,13 @@ export function runMinByTests(context is Context, verbose is boolean) returns ma
 export const MeanByCases = [
   [[[{ n: 2 }, { n: 4 }], byN],  3],
 ];
-export function runMeanByTests(context is Context, verbose is boolean) returns map {
+function runMeanByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "meanBy", verbose, MeanByCases, function(args is array) { return meanBy(args[0], args[1]); });
 }
 
 export const SumByCases = [
   [[[{ n: 2 }, { n: 4 }], byN],  6],
 ];
-export function runSumByTests(context is Context, verbose is boolean) returns map {
+function runSumByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "sumBy", verbose, SumByCases, function(args is array) { return sumBy(args[0], args[1]); });
 }

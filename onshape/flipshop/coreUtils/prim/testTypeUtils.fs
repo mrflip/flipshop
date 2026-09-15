@@ -45,7 +45,7 @@ export const IfNilCases = [
   [[0,         "fallback"], 0, '0 is not nil'],
   [["",        "fallback"], "", 'empty string is not nil'],
 ];
-export function runIfNilTests(context is Context, verbose is boolean) returns map {
+function runIfNilTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "ifNil", verbose, IfNilCases, function(args is array) { return ifNil(args[0], args[1]); });
 }
 
@@ -54,7 +54,7 @@ export const IfBlankCases = [
   [["",        "fallback"], "fallback"],
   [["hi",      "fallback"], "hi"],
 ];
-export function runIfBlankTests(context is Context, verbose is boolean) returns map {
+function runIfBlankTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "ifBlank", verbose, IfBlankCases, function(args is array) { return ifBlank(args[0], args[1]); });
 }
 
@@ -67,7 +67,7 @@ export const TruthyCases = [
   [[0],         true, '0 is truthy, unlike JS'],
   [[""],        true, 'empty string is truthy, unlike JS'],
 ];
-export function runTruthyTests(context is Context, verbose is boolean) returns map {
+function runTruthyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "truthy", verbose, TruthyCases, function(args is array) { return truthy(args[0]); });
 }
 
@@ -77,7 +77,7 @@ export const IsPresentCases = [
   [[false],     true],
   [[""],        true],
 ];
-export function runIsPresentTests(context is Context, verbose is boolean) returns map {
+function runIsPresentTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "isPresent", verbose, IsPresentCases, function(args is array) { return isPresent(args[0]); });
 }
 
@@ -87,7 +87,7 @@ export const IsNilCases = [
   [[false],     false],
   [[""],        false],
 ];
-export function runIsNilTests(context is Context, verbose is boolean) returns map {
+function runIsNilTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "isNil", verbose, IsNilCases, function(args is array) { return isNil(args[0]); });
 }
 
@@ -96,7 +96,7 @@ export const StrBlankCases = [
   [[""],        true],
   [["x"],       false],
 ];
-export function runStrBlankTests(context is Context, verbose is boolean) returns map {
+function runStrBlankTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "strBlank", verbose, StrBlankCases, function(args is array) { return strBlank(args[0]); });
 }
 
@@ -107,7 +107,7 @@ export const IfZeroNumberCases = [
   [[undefined, "fallback"], "fallback"],
   [[5,         "fallback"], 5],
 ];
-export function runIfZeroNumberTests(context is Context, verbose is boolean) returns map {
+function runIfZeroNumberTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "ifZero (number)", verbose, IfZeroNumberCases, function(args is array) { return ifZero(args[0], args[1]); });
 }
 
@@ -116,7 +116,7 @@ export const IfZeroVWUCases = [
   [[undefined,              "fallback"], "fallback"],
   [[5 * millimeter,         "fallback"], 5 * millimeter],
 ];
-export function runIfZeroVWUTests(context is Context, verbose is boolean) returns map {
+function runIfZeroVWUTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "ifZero (ValueWithUnits)", verbose, IfZeroVWUCases, function(args is array) { return ifZero(args[0], args[1]); });
 }
 
@@ -132,7 +132,7 @@ export const IsEmptyCases = [
   [[true],        false, 'unlike lodash, a boolean is never empty'],
   [[1],           false, 'unlike lodash, a number is never empty'],
 ];
-export function runIsEmptyTests(context is Context, verbose is boolean) returns map {
+function runIsEmptyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "isEmpty", verbose, IsEmptyCases, function(args is array) { return isEmpty(args[0]); });
 }
 
@@ -158,7 +158,7 @@ const SizeofCases = [
 ];
 
 
-export function runSizeofTests(context is Context, verbose is boolean) returns map {
+function runSizeofTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "sizeof", verbose, SizeofCases, function(args is array) { return sizeof(args[0]); });
 }
 
@@ -169,7 +169,7 @@ export const Vector2Cases = [
   [[vector(0, 0, 5), vector(0, 0)], true],
   [[vector(1, 2, 3), vector(9, 9)], false],
 ];
-export function runVector2Tests(context is Context, verbose is boolean) returns map {
+function runVector2Tests(context is Context, verbose is boolean) returns map {
   return runTests(context, "vector2", verbose, Vector2Cases, function(args is array) { return tolerantEquals(vector2(args[0]), args[1]); });
 }
 
@@ -180,6 +180,6 @@ export const CastArrayCases = [
   [[[1, 2]],  [1, 2]],
   [[undefined], [undefined]],
 ];
-export function runCastArrayTests(context is Context, verbose is boolean) returns map {
+function runCastArrayTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "castArray", verbose, CastArrayCases, function(args is array) { return castArray(args[0]); });
 }

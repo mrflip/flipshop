@@ -55,7 +55,7 @@ export const CmpArrayDefaultCases = [
   [[["a", "b"], ["a", "c"]],         -1,  'string elements compare through cmp too, exactly like top-level cmpTo(string,string)'],
   [[[[1, 2], [3]], [[1, 2], [4]]],   -1,  'nested arrays recurse through cmp element-by-element'],
 ];
-export function runCmpArrayDefaultTests(context is Context, verbose is boolean) returns map {
+function runCmpArrayDefaultTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmp (array)", verbose, CmpArrayDefaultCases, function(args is array) { return cmp(args[0], args[1]); });
 }
 
@@ -66,7 +66,7 @@ export const CmpToArrayComparatorCases = [
   [[[1, 2], [1, 2, 3], function(aa, bb) { return 0; }],  -1,  'same all-equal comparator, but now the shorter array loses the length tiebreaker'],
   [[[5, 1], [1, 5], (aa, bb) => cmp(bb, aa)],            -1,  'a reversing comparator can change which array reads as smaller'],
 ];
-export function runCmpToArrayComparatorTests(context is Context, verbose is boolean) returns map {
+function runCmpToArrayComparatorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpTo (array, comparator)", verbose, CmpToArrayComparatorCases, function(args is array) { return cmpTo(args[0], args[1], args[2]); });
 }
 
@@ -80,7 +80,7 @@ export const CmpStringCases = [
   [["applesauce", "apple"],   1],
   [["a", "b", cmp],          -1,  'a comparator argument is accepted but ignored for strings'],
 ];
-export function runCmpStringTests(context is Context, verbose is boolean) returns map {
+function runCmpStringTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpTo (string)", verbose, CmpStringCases,
     function(args is array) { return (size(args) <= 2) ? cmpTo(args[0], args[1]) : cmpTo(args[0], args[1], args[2]); });
 }
@@ -95,7 +95,7 @@ export const CmpNumberCases = [
   [[0, -0],      0],
   [[3, 1, cmp],  1,  'a comparator argument is accepted but ignored for numbers'],
 ];
-export function runCmpNumberTests(context is Context, verbose is boolean) returns map {
+function runCmpNumberTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpTo (number)", verbose, CmpNumberCases,
     function(args is array) { return (size(args) <= 2) ? cmpTo(args[0], args[1]) : cmpTo(args[0], args[1], args[2]); });
 }
@@ -110,7 +110,7 @@ export const CmpValueWithUnitsCases = [
   [[1500 * millimeter, 1 * meter],   1,  '1.5m compares greater than 1m once converted to the same units'],
   [[1 * meter, 2 * meter, cmp],     -1,  'a comparator argument is accepted but ignored'],
 ];
-export function runCmpValueWithUnitsTests(context is Context, verbose is boolean) returns map {
+function runCmpValueWithUnitsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpTo (ValueWithUnits)", verbose, CmpValueWithUnitsCases,
     function(args is array) { return (size(args) <= 2) ? cmpTo(args[0], args[1]) : cmpTo(args[0], args[1], args[2]); });
 }
@@ -124,7 +124,7 @@ export const CmpBooleanCases = [
   [[false, true],        -1],
   [[true, false, cmp],    1,  'a comparator argument is accepted but ignored for booleans'],
 ];
-export function runCmpBooleanTests(context is Context, verbose is boolean) returns map {
+function runCmpBooleanTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpTo (boolean)", verbose, CmpBooleanCases,
     function(args is array) { return (size(args) <= 2) ? cmpTo(args[0], args[1]) : cmpTo(args[0], args[1], args[2]); });
 }
@@ -135,7 +135,7 @@ export const CmpUndefinedCases = [
   [[undefined, undefined],       0,  'undefined is equal to itself'],
   [[undefined, undefined, cmp],  0,  'a comparator argument is accepted but ignored for undefined'],
 ];
-export function runCmpUndefinedTests(context is Context, verbose is boolean) returns map {
+function runCmpUndefinedTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpTo (undefined)", verbose, CmpUndefinedCases,
     function(args is array) { return (size(args) <= 2) ? cmpTo(args[0], args[1]) : cmpTo(args[0], args[1], args[2]); });
 }
@@ -148,7 +148,7 @@ export const CmpMapByKeysOnlyCases = [
   [[{ "a": 1, "b": 1 }, { "a": 1 }],                                1,  'same shared key, but the map with the extra key is "longer" and so greater'],
   [[{ "a": 1 },         { "a": 1 }, (aa, bb) => -cmp(aa, bb)],   0,  'a comparator is honored for key comparison, though equal keys stay equal either way'],
 ];
-export function runCmpMapByKeysOnlyTests(context is Context, verbose is boolean) returns map {
+function runCmpMapByKeysOnlyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpMapByKeysOnly", verbose, CmpMapByKeysOnlyCases,
     function(args is array) { return (size(args) <= 2) ? cmpMapByKeysOnly(args[0], args[1]) : cmpMapByKeysOnly(args[0], args[1], args[2]); });
 }
@@ -162,7 +162,7 @@ export const CmpMapCases = [
   [[{ "a": 1 },         { "b": 1 }],                               -1,  'differing keys decide the whole comparison; values are never even reached'],
   [[{ "a": 1 },         { "a": 2 }, (aa, bb) => -cmpTo(aa, bb)],    1,  'a comparator is threaded through both the key comparison and the value comparison'],
 ];
-export function runCmpMapTests(context is Context, verbose is boolean) returns map {
+function runCmpMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmpMap", verbose, CmpMapCases,
     function(args is array) { return (size(args) <= 2) ? cmpTo(args[0], args[1]) : cmpTo(args[0], args[1], args[2]); });
 }
@@ -174,11 +174,11 @@ export const CmpMapGenericCases = [
   [[{ "a": 1 },         { "b": 1 }],          -1,  'differing keys decide first'],
   [[{ "a": 1, "b": 2 }, { "a": 1, "b": 3 }],  -1,  'same keys; values decide'],
 ];
-export function runCmpMapGenericTests(context is Context, verbose is boolean) returns map {
+function runCmpMapGenericTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmp (map, per doc)", verbose, CmpMapGenericCases, function(args is array) { return cmp(args[0], args[1]); });
 }
 
-export function runCmpBoxGenericTests(context is Context, verbose is boolean) returns map {
+function runCmpBoxGenericTests(context is Context, verbose is boolean) returns map {
     const CmpBoxGenericCases = [
       [[new box(1), new box(2)],                  -1,  'cmp on two boxes compares their contents'],
       [[new box(5), new box(5)],                   0],
@@ -197,7 +197,7 @@ export const CmpErrorCases = [
   [[1,          "1"         ], "Execution error", "comparing a number with a string is exactly the example cmp's own doc block gives for a method-not-found error"],
   [[[1, 2],     "12"        ], "Execution error", 'an array and a string have no obvious ordering between them either'],
 ];
-export function runCmpErrorTests(context is Context, verbose is boolean) returns map {
+function runCmpErrorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "cmp/cmpTo errors", verbose, CmpErrorCases, function(args is array) { return attempt(() => cmp(args[0], args[1])); });
 }
 
@@ -207,7 +207,7 @@ export function runCmpErrorTests(context is Context, verbose is boolean) returns
 // stays mostly behind the veil for both of them.
 
 
-export function runCmpAnyTests(context is Context, verbose is boolean) returns map {
+function runCmpAnyTests(context is Context, verbose is boolean) returns map {
   const CmpAnyCases = [
   // same type: equal values short-circuit, otherwise delegates to cmpTo, exactly like cmp does
   [[5, 5],                    0,  'equal values short-circuit before any type dispatch happens'],
@@ -252,7 +252,7 @@ function countingCmp(counterBox is box, aa, bb) returns number {
 }
 
 
-export function runCmpThreadingTests(context is Context, verbose is boolean) returns map {
+function runCmpThreadingTests(context is Context, verbose is boolean) returns map {
      const CmpThreadingCases = [
   [
     [
@@ -326,7 +326,7 @@ export const OrderByCases = [
   [[[]],                                          [],         'empty array sorts to an empty array'],
   [[{}],                                          [],         'empty map sorts to an empty array'],
 ];
-export function runOrderByTests(context is Context, verbose is boolean) returns map {
+function runOrderByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "orderBy", verbose, OrderByCases, function(args is array) {
     if (size(args) == 1) { return orderBy(args[0]); }
     if (size(args) == 2) { return orderBy(args[0], args[1]); }
@@ -338,7 +338,7 @@ export function runOrderByTests(context is Context, verbose is boolean) returns 
 export const OrderByErrorCases = [
   [[[1, "2", 3]], "Execution error", 'the default comparator is cmp, so mixed number/string criteria throws exactly as cmp does; see orderAnyBy for a version that never throws'],
 ];
-export function runOrderByErrorTests(context is Context, verbose is boolean) returns map {
+function runOrderByErrorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "orderBy errors", verbose, OrderByErrorCases, function(args is array) { return attempt(() => orderBy(args[0])); });
 }
 
@@ -352,7 +352,7 @@ export const OrderAnyByCases = [
   [[[3, 1, 2], identity, -1],  [3, 2, 1],   'order still controls direction'],
   [[{ "a": "x", "b": 1 }],     [1, "x"],    'map values sorted via cmpAny, discarding keys -- number sorts before string'],
 ];
-export function runOrderAnyByTests(context is Context, verbose is boolean) returns map {
+function runOrderAnyByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "orderAnyBy", verbose, OrderAnyByCases, function(args is array) {
     if (size(args) == 1) { return orderAnyBy(args[0]); }
     if (size(args) == 2) { return orderAnyBy(args[0], args[1]); }

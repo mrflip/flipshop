@@ -4,7 +4,7 @@ import(path : "onshape/std/common.fs", version : "3070.0");
 export import(path : "dd812faf6ff4099cda4aa0eb", version : "4f51cee26e9dac742d41aef0");
 export import(path : "66e287bede293cb227dfb89c", version : "92efbb7ccaa5d62b7bde80f1");
 
-export function runTests(context is Context, testname is string, verbose is boolean, testCases is array, testfunc is function) returns map {
+function runTests(context is Context, testname is string, verbose is boolean, testCases is array, testfunc is function) returns map {
     var results = []; var counts = { "OK": 0, "MISMATCH": 0, "ERROR": 0, total: 0 };
     for (var testCase in testCases) {
       const args        = testCase[0];

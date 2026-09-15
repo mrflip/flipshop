@@ -122,15 +122,15 @@ export const DotMapCases = [
 const runUndotMapTest = ((args is array) => undotMap(args[0]));
 const runDotMapTest   = ((args is array) => ((size(args) <= 1) ? dotMap(args[0]) : dotMap(args[0], args[1])));
 
-export function runUndotMapTests(context is Context, verbose is boolean) returns map {
+function runUndotMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "undotMap", verbose, UndotMapCases, runUndotMapTest);
 }
 
-export function runUndotMapThrowsTests(context is Context, verbose is boolean) returns map {
+function runUndotMapThrowsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "undotMap throws", verbose, UndotMapThrows, assertThrows(runUndotMapTest));
 }
 
-export function runDotMapTests(context is Context, verbose is boolean) returns map {
+function runDotMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "dotMap", verbose, DotMapCases, runDotMapTest);
 }
 
@@ -139,7 +139,7 @@ export function runDotMapTests(context is Context, verbose is boolean) returns m
  * boundary of it: your size keys hold dots of their own, so dotting down to them is lossy and
  * undotMap has no way to know it.
  */
-export function runRoundTripTests(context is Context, verbose is boolean) returns map {
+function runRoundTripTests(context is Context, verbose is boolean) returns map {
   const dotFree = {
     "socket_bit": {
       "inthex": { "metric": { "isq_0250in": { "H2mm": { "wt": 1 } } } },
@@ -232,6 +232,6 @@ export const BuildNestedChoicesCases = [
 
 const runBuildNestedChoicesTest = ((args is array) => buildNestedChoices(args[0], args[1]));
 
-export function runBuildNestedChoicesTests(context is Context, verbose is boolean) returns map {
+function runBuildNestedChoicesTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "buildNestedChoices", verbose, BuildNestedChoicesCases, runBuildNestedChoicesTest);
 }

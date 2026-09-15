@@ -91,7 +91,7 @@ precondition {
 const mapValuesInspector2 = function(val, key)      { return [val, key]; };
 const mapValuesInspector3 = function(val, key, seq) { return [val, key, seq]; };
 
-export function runMapValues3Tests(context is Context, verbose is boolean) returns map {
+function runMapValues3Tests(context is Context, verbose is boolean) returns map {
     return runTests(context, "mapValues3", verbose, [
         [[ {},                             noop3],    {} ],
         [[ {},                             mapValuesInspector3], {} ],
@@ -164,7 +164,7 @@ export function runMapValues3Tests(context is Context, verbose is boolean) retur
         //
     ], function(args is array) { return (size(args) <= 2) ? mapValues3(args[0], args[1]) : ((size(args) <= 3) ? mapValues3(args[0], args[1], args[2]) :  mapValues3(args[0], args[1], args[2], args[3])); });
 }
-export function runMapValuesTests(context is Context, verbose is boolean) returns map {
+function runMapValuesTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "mapValues", verbose, [
         [[ { fred: 40, pebbles: 1 },       function(age, _seq) { return age * 2; } ], { fred: 80, pebbles: 2 }, 'doc example: doubles each value, keys unchanged'],
         [[ [4, 8],                         function(nn, _seq) { return nn * nn; } ], [16, 64],                  'doc example: squares each element'],
@@ -241,7 +241,7 @@ export function runMapValuesTests(context is Context, verbose is boolean) return
     ], function(args is array) { return (size(args) <= 2) ? mapValues(args[0], args[1]) : ((size(args) <= 3) ? mapValues(args[0], args[1], args[2]) :  mapValues(args[0], args[1], args[2], args[3])); });
 }
 
-export function runValuesAtTests(context is Context, verbose is boolean) returns map {
+function runValuesAtTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "valuesAt", verbose, [
         //
         [[ {},               []              ], [] ],
@@ -312,7 +312,7 @@ export function runValuesAtTests(context is Context, verbose is boolean) returns
 
 const rebagArrInspector = function(val, seq is number)      { if (val == "skip") return undefined; return ["" ~ seq ~ seq, [val, seq]]; };
 const rebagMapInspector = function(val, key is string)      { if (val == "skip") return undefined; return ["" ~ key ~ key, [val, key]]; };
-export function runRebagTests(context is Context, verbose is boolean) returns map {
+function runRebagTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "rebag", verbose, [
         [[ {},                             noop2],   {} ],
         [[ { a: 11, b: 22 },               noop2],   {} ],
@@ -339,7 +339,7 @@ export const ObjectifyCases = [
   [[ ["x", "x"],      (val, seq) => seq ], { x: 1 },             'a repeated value collides on the same key; the later one wins'],
   [[ ["a", "b"],      (val, seq) => val ~ seq ], { a: "a0", b: "b1" }, 'func may combine val and seq into the result'],
 ];
-export function runObjectifyTests(context is Context, verbose is boolean) returns map {
+function runObjectifyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "objectify", verbose, ObjectifyCases, function(args is array) { return objectify(args[0], args[1]); });
 }
 
@@ -394,19 +394,19 @@ const runHasKeyTest        = ((args is array) => ((size(args) <= 2) ? hasKey(arg
 const runHasPresentKeyTest = ((args is array) => hasPresentKey(args[0], args[1]));
 const runArrayIncludesTest = ((args is array) => arrayIncludes(args[0], args[1]));
 
-export function runHasKeyMapTests(context is Context, verbose is boolean) returns map {
+function runHasKeyMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hasKey (map)", verbose, HasKeyMapCases, runHasKeyTest);
 }
-export function runHasPresentKeyMapTests(context is Context, verbose is boolean) returns map {
+function runHasPresentKeyMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hasPresentKey (map)", verbose, HasPresentKeyMapCases, runHasPresentKeyTest);
 }
-export function runHasKeyArrTests(context is Context, verbose is boolean) returns map {
+function runHasKeyArrTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hasKey (array)", verbose, HasKeyArrCases, runHasKeyTest);
 }
-export function runHasPresentKeyArrTests(context is Context, verbose is boolean) returns map {
+function runHasPresentKeyArrTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hasPresentKey (array)", verbose, HasPresentKeyArrCases, runHasPresentKeyTest);
 }
-export function runArrayIncludesTests(context is Context, verbose is boolean) returns map {
+function runArrayIncludesTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "arrayIncludes", verbose, ArrayIncludesCases, runArrayIncludesTest);
 }
 
@@ -455,16 +455,16 @@ export const ArrLastCases = [
   [[ [1, [], {}, 9]       ],  9],
 ];
 
-export function runPickTests(context is Context, verbose is boolean) returns map {
+function runPickTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "pick", verbose, PickCases, function(args is array) { return pick(args[0], args[1]); });
 }
-export function runPickDefinedTests(context is Context, verbose is boolean) returns map {
+function runPickDefinedTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "pickDefined", verbose, PickDefinedCases, function(args is array) { return pickDefined(args[0], args[1]); });
 }
-export function runArrFirstTests(context is Context, verbose is boolean) returns map {
+function runArrFirstTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "arrFirst", verbose, ArrFirstCases, function(args is array) { return arrFirst(args[0]); });
 }
-export function runArrLastTests(context is Context, verbose is boolean) returns map {
+function runArrLastTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "arrLast", verbose, ArrLastCases, function(args is array) { return arrLast(args[0]); });
 }
 // == [boxarrPush / boxarrUnshift] ==
@@ -482,14 +482,14 @@ export const BoxarrUnshiftCases = [
   [[ [1],    [2, 3] ],     [[2, 3], [[2, 3], 1]],       'val is prepended as a single element, not spread'],
 ];
 
-export function runBoxarrPushTests(context is Context, verbose is boolean) returns map {
+function runBoxarrPushTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "boxarrPush", verbose, BoxarrPushCases, function(args is array) {
     const arrRef = new box(args[0]);
     const returned = boxarrPush(arrRef, args[1]);
     return [returned, arrRef[]];
   });
 }
-export function runBoxarrUnshiftTests(context is Context, verbose is boolean) returns map {
+function runBoxarrUnshiftTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "boxarrUnshift", verbose, BoxarrUnshiftCases, function(args is array) {
     const arrRef = new box(args[0]);
     const returned = boxarrUnshift(arrRef, args[1]);
@@ -521,7 +521,7 @@ export const ForEachBreakCases = [
    [],
    'array: empty input is never visited'],
 ];
-export function runForEachBreakTests(context is Context, verbose is boolean) returns map {
+function runForEachBreakTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "forEach BREAK", verbose, ForEachBreakCases, function(args is array) {
     const container = args[0];
     const target = args[1];
@@ -563,7 +563,7 @@ export const ForEachKeylistBreakCases = [
    [["a", 1, 0], ["a", 1, 1], ["b", 2, 2]],
    'a keylist entry repeated twice is visited (and can match) twice, each consuming its own seq slot, and BREAK at the first "b" leaves the trailing "z"/"b"/"z" unvisited'],
 ];
-export function runForEachKeylistBreakTests(context is Context, verbose is boolean) returns map {
+function runForEachKeylistBreakTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "forEach(keylist) BREAK", verbose, ForEachKeylistBreakCases, function(args is array) {
     const bag = args[0];
     const keylist = args[1];
@@ -596,7 +596,7 @@ export const CountByCases = [
   [[ { a: 1, b: 2, c: 3, d: 4 }, parityKey ], { "odd": 2, "even": 2 }, 'map form counts values the same way'],
   [[ {},                         parityKey ], {} ],
 ];
-export function runCountByTests(context is Context, verbose is boolean) returns map {
+function runCountByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "countBy", verbose, CountByCases, function(args is array) { return countBy(args[0], args[1]); });
 }
 
@@ -611,7 +611,7 @@ export const FindCases = [
   [[ {},                   function(val, _seq) { return true; } ],   undefined, 'empty map: never matches'],
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 0; } ], 1,         'multiple matches: returns the first in keys(bag) order'],
 ];
-export function runFindTests(context is Context, verbose is boolean) returns map {
+function runFindTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "find", verbose, FindCases, function(args is array) { return find(args[0], args[1]); });
 }
 
@@ -626,7 +626,7 @@ export const FindLastCases = [
   [[ {},                   function(val, _seq) { return true; } ],   undefined, 'empty map: never matches'],
   [[ { a: 1, b: 2, c: 3 }, function(val, _seq) { return val > 0; } ], 3,         'multiple matches: returns the last in keys(bag) order'],
 ];
-export function runFindLastTests(context is Context, verbose is boolean) returns map {
+function runFindLastTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findLast", verbose, FindLastCases, function(args is array) { return findLast(args[0], args[1]); });
 }
 
@@ -641,7 +641,7 @@ export const FlatMapCases = [
   [[ { a: 1, b: 2 }, duplicated ], [1, 1, 2, 2], 'map form flattens over values in keys(bag) order'],
   [[ {},             duplicated ], [] ],
 ];
-export function runFlatMapTests(context is Context, verbose is boolean) returns map {
+function runFlatMapTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatMap", verbose, FlatMapCases, function(args is array) { return flatMap(args[0], args[1]); });
 }
 
@@ -652,7 +652,7 @@ export const FlatMapDeepCases = [
   [[ { a: 1, b: 2 }, nestedPair ], [1, 1, 2, 2] ],
   [[ {},             nestedPair ], [] ],
 ];
-export function runFlatMapDeepTests(context is Context, verbose is boolean) returns map {
+function runFlatMapDeepTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatMapDeep", verbose, FlatMapDeepCases, function(args is array) { return flatMapDeep(args[0], args[1]); });
 }
 
@@ -664,7 +664,7 @@ export const FlatMapDepthCases = [
   [[ { a: 1, b: 2 }, nestedPair, 1 ], [[1], [1], [2], [2]] ],
   [[ {},             nestedPair, 1 ], [] ],
 ];
-export function runFlatMapDepthTests(context is Context, verbose is boolean) returns map {
+function runFlatMapDepthTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatMapDepth", verbose, FlatMapDepthCases, function(args is array) { return flatMapDepth(args[0], args[1], args[2]); });
 }
 
@@ -675,7 +675,7 @@ export const ForEachRightCases = [
   [[ { a: 1, b: 2, c: 3 } ], [3, 2, 1], 'map form walks keys(bag) in reverse'],
   [[ {} ],                   [] ],
 ];
-export function runForEachRightTests(context is Context, verbose is boolean) returns map {
+function runForEachRightTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "forEachRight", verbose, ForEachRightCases, function(args is array) {
     const seen = new box([]);
     forEachRight(args[0], (val, seq) => { boxarrPush(seen, val); });
@@ -691,7 +691,7 @@ export const GroupByCases = [
   [[ { a: 1, b: 2, c: 3, d: 4 }, parityKey ], { "odd": [1, 3], "even": [2, 4] }, 'map form groups values in keys(bag) order'],
   [[ {},                         parityKey ], {} ],
 ];
-export function runGroupByTests(context is Context, verbose is boolean) returns map {
+function runGroupByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "groupBy", verbose, GroupByCases, function(args is array) { return groupBy(args[0], args[1]); });
 }
 
@@ -704,7 +704,7 @@ export const PartitionCases = [
   [[ { a: 1, b: 2, c: 3, d: 4 }, isEven ], [[2, 4], [1, 3]], 'map form partitions values, keys(bag) order'],
   [[ {},                         isEven ], [[], []] ],
 ];
-export function runPartitionTests(context is Context, verbose is boolean) returns map {
+function runPartitionTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "partition", verbose, PartitionCases, function(args is array) { return partition(args[0], args[1]); });
 }
 
@@ -722,7 +722,7 @@ export const ReduceRightCases = [
   [[ { a: "1" },           concatString ],                  "1",       'single-entry map: no-seed overload just returns that value'],
   [[ { a: "1", b: "2", c: "3" }, concatString ],            "321", 'no-seed overload (map) starts from the last-keyed element'],
 ];
-export function runReduceRightTests(context is Context, verbose is boolean) returns map {
+function runReduceRightTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "reduceRight", verbose, ReduceRightCases, function(args is array) {
     return (size(args) <= 2) ? reduceRight(args[0], args[1]) : reduceRight(args[0], args[1], args[2]);
   });
@@ -737,6 +737,6 @@ export const RejectCases = [
   [[ { a: 1, b: 2, c: 3, d: 4 }, isEven ], [1, 3], 'map form rejects by value, returns an array'],
   [[ {},                         isEven ], [] ],
 ];
-export function runRejectTests(context is Context, verbose is boolean) returns map {
+function runRejectTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "reject", verbose, RejectCases, function(args is array) { return reject(args[0], args[1]); });
 }

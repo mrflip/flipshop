@@ -55,7 +55,7 @@ export const DefaultMaybeCases = [
   [[{ "bagname": "foo", "varname": "myKeys" }, { "bagname": "bar", "varname": "myKeys" }, "bagname", "varname", nameKeysFn],
    "myKeys", 'dest was hand-edited away from its default: left alone even though base changed'],
 ];
-export function runDefaultMaybeTests(context is Context, verbose is boolean) returns map {
+function runDefaultMaybeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "defaultMaybe", verbose, DefaultMaybeCases, function(args is array) {
     return defaultMaybe(args[0], args[1], args[2], args[3], args[4]);
   });
@@ -69,7 +69,7 @@ export const SanitizeVarnameCases = [
   [["a..b"],     "a__b", 'each special character is replaced independently, not collapsed as a run'],
   [["plain"],    "plain"],
 ];
-export function runSanitizeVarnameTests(context is Context, verbose is boolean) returns map {
+function runSanitizeVarnameTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "sanitize_varname", verbose, SanitizeVarnameCases, function(args is array) { return sanitize_varname(args[0]); });
 }
 
@@ -78,7 +78,7 @@ export const FieldVarnameCases = [
   [["coords", "x.y"], "coords_x_y"],
   [["coords", "x y"], "coords_x__y"],
 ];
-export function runFieldVarnameTests(context is Context, verbose is boolean) returns map {
+function runFieldVarnameTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "field_varname", verbose, FieldVarnameCases, function(args is array) { return field_varname(args[0], args[1]); });
 }
 

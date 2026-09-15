@@ -67,7 +67,7 @@ export const TitleCaseCases = [
     [["a_b_c", { "tr": { "a": "X", "b": "Y" } }], "X Y C", 'translation map: replaces characters literally without capitalizing them further'],
     [[""], "", 'empty string returns empty string'],
 ];
-export function runTitleCaseTests(context is Context, verbose is boolean) returns map {
+function runTitleCaseTests(context is Context, verbose is boolean) returns map {
     return runTests(context, "titleCase", verbose, TitleCaseCases, runTitleCaseTest);
 }
 // --
@@ -120,7 +120,7 @@ const RightPadTestCases = [
   [["", 3, "1234"],                "234",                'empty string, length 3, 4 digits padding explicit: 3 digits (not four)'],
 ];
 
-export function runPadTests(context is Context, verbose is boolean) returns map {
+function runPadTests(context is Context, verbose is boolean) returns map {
   runTests(context, "padLeft (trivial cases)",  verbose, PadTestCases,      function(args is array) { return size(args) <= 2 ? padLeft(args[0],  args[1]) : padLeft(args[0],  args[1], args[2]); });
   runTests(context, "padRight (trivial cases)", verbose, PadTestCases,      function(args is array) { return size(args) <= 2 ? padRight(args[0], args[1]) : padRight(args[0], args[1], args[2]); });
   runTests(context, "padLeft (padding cases)",  verbose, LeftPadTestCases,  function(args is array) { return size(args) <= 2 ? padLeft(args[0],  args[1]) : padLeft(args[0],  args[1], args[2]); });
@@ -201,7 +201,7 @@ export const StrRepeatCases = [
   [["abc", 2], "abcabc"],
   [["abc", 0], ""],
 ];
-export function runStrRepeatTests(context is Context, verbose is boolean) returns map {
+function runStrRepeatTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "strRepeat", verbose, StrRepeatCases, function(args is array) { return strRepeat(args[0], args[1]); });
 }
 
@@ -213,17 +213,17 @@ export const DowncaseCases = [
   [["fooBar"],       "foobar"],
   [["--FOO-BAR--"],  "--foo-bar--"],
 ];
-export function runUpcaseTests(context is Context, verbose is boolean) returns map {
+function runUpcaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "upcase", verbose, UpcaseCases, function(args is array) { return upcase(args[0]); });
 }
-export function runDowncaseTests(context is Context, verbose is boolean) returns map {
+function runDowncaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "downcase", verbose, DowncaseCases, function(args is array) { return downcase(args[0]); });
 }
 
 export const StarbannerCases = [
   [["hi"], "\n**\nhi\n**\n\n"],
 ];
-export function runStarbannerTests(context is Context, verbose is boolean) returns map {
+function runStarbannerTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "starbanner", verbose, StarbannerCases, function(args is array) { return starbanner(args[0]); });
 }
 
@@ -238,7 +238,7 @@ export const HasMatchCases = [
   [["hello", "^e"],      false],
   [[undefined, "x"],     false, 'undefined input never throws'],
 ];
-export function runHasMatchTests(context is Context, verbose is boolean) returns map {
+function runHasMatchTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hasMatch", verbose, HasMatchCases, function(args is array) { return hasMatch(args[0], args[1]); });
 }
 
@@ -270,7 +270,7 @@ export const WordsCases = [
   [["  foo  "],          ["foo"]],
   [[""],                 []],
 ];
-export function runWordsTests(context is Context, verbose is boolean) returns map {
+function runWordsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "words", verbose, WordsCases, function(args is array) { return words(args[0]); });
 }
 
@@ -279,7 +279,7 @@ export const CamelCaseCases = [
   [["foo-bar"], "fooBar"],
   [["foo_bar"], "fooBar"],
 ];
-export function runCamelCaseTests(context is Context, verbose is boolean) returns map {
+function runCamelCaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "camelCase", verbose, CamelCaseCases, function(args is array) { return camelCase(args[0]); });
 }
 
@@ -288,7 +288,7 @@ export const CapitalizeCases = [
   [["fred"], "Fred"],
   [[""],     ""],
 ];
-export function runCapitalizeTests(context is Context, verbose is boolean) returns map {
+function runCapitalizeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "capitalize", verbose, CapitalizeCases, function(args is array) { return capitalize(args[0]); });
 }
 
@@ -297,7 +297,7 @@ export const EscapeRegExpCases = [
   [["fred"],                          "fred", 'no metacharacters, nothing to escape'],
   [[""],                              ""],
 ];
-export function runEscapeRegExpTests(context is Context, verbose is boolean) returns map {
+function runEscapeRegExpTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "escapeRegExp", verbose, EscapeRegExpCases, function(args is array) { return escapeRegExp(args[0]); });
 }
 
@@ -305,7 +305,7 @@ export const KebabCaseCases = [
   [["Foo Bar"], "foo-bar"],
   [["fooBar"],  "foobar", 'no camelCase-boundary splitting, unlike lodash'],
 ];
-export function runKebabCaseTests(context is Context, verbose is boolean) returns map {
+function runKebabCaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "kebabCase", verbose, KebabCaseCases, function(args is array) { return kebabCase(args[0]); });
 }
 
@@ -313,14 +313,14 @@ export const LowerCaseCases = [
   [["Foo Bar"], "foo bar"],
   [["foo-bar"], "foo bar"],
 ];
-export function runLowerCaseTests(context is Context, verbose is boolean) returns map {
+function runLowerCaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "lowerCase", verbose, LowerCaseCases, function(args is array) { return lowerCase(args[0]); });
 }
 
 export const LowerFirstCases = [
   [["Fred"], "fred"],
 ];
-export function runLowerFirstTests(context is Context, verbose is boolean) returns map {
+function runLowerFirstTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "lowerFirst", verbose, LowerFirstCases, function(args is array) { return lowerFirst(args[0]); });
 }
 
@@ -329,7 +329,7 @@ export const PadBothCases = [
   [["hi", 5],      " hi  "],
   [["hi", 1],      "hi",     'minlen shorter than str returns str unchanged'],
 ];
-export function runPadBothTests(context is Context, verbose is boolean) returns map {
+function runPadBothTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "pad", verbose, PadBothCases, function(args is array) { return pad(args[0], args[1]); });
 }
 
@@ -337,7 +337,7 @@ export const SnakeCaseCases = [
   [["Foo Bar"], "foo_bar"],
   [["foo-bar"], "foo_bar"],
 ];
-export function runSnakeCaseTests(context is Context, verbose is boolean) returns map {
+function runSnakeCaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "snakeCase", verbose, SnakeCaseCases, function(args is array) { return snakeCase(args[0]); });
 }
 
@@ -350,7 +350,7 @@ export const TrimStartCases = [
   [["\n\r\t x\n\r\t "],   "x\n\r\t "],
   [["--hi--", ["-"]],    "hi--"],
 ];
-export function runTrimStartTests(context is Context, verbose is boolean) returns map {
+function runTrimStartTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "trimStart", verbose, TrimStartCases, function(args is array) {
     return (size(args) <= 1) ? trimStart(args[0]) : trimStart(args[0], args[1]);
   });
@@ -360,7 +360,7 @@ export const TrimEndCases = [
   [["  hi  "],           "  hi"],
   [["--hi--", ["-"]],    "--hi"],
 ];
-export function runTrimEndTests(context is Context, verbose is boolean) returns map {
+function runTrimEndTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "trimEnd", verbose, TrimEndCases, function(args is array) {
     return (size(args) <= 1) ? trimEnd(args[0]) : trimEnd(args[0], args[1]);
   });
@@ -370,7 +370,7 @@ export const TrimCases = [
   [["  hi  "],           "hi"],
   [["--hi--", ["-"]],    "hi"],
 ];
-export function runTrimTests(context is Context, verbose is boolean) returns map {
+function runTrimTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "trim", verbose, TrimCases, function(args is array) {
     return (size(args) <= 1) ? trim(args[0]) : trim(args[0], args[1]);
   });
@@ -380,7 +380,7 @@ export const TruncateCases = [
   [["hello world", { "length": 8 }], "hello..."],
   [["hi"],                           "hi",  'shorter than the default length returns str unchanged'],
 ];
-export function runTruncateTests(context is Context, verbose is boolean) returns map {
+function runTruncateTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "truncate", verbose, TruncateCases, function(args is array) {
     return (size(args) <= 1) ? truncate(args[0]) : truncate(args[0], args[1]);
   });
@@ -389,14 +389,14 @@ export function runTruncateTests(context is Context, verbose is boolean) returns
 export const UpperCaseCases = [
   [["foo-bar"], "FOO BAR"],
 ];
-export function runUpperCaseTests(context is Context, verbose is boolean) returns map {
+function runUpperCaseTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "upperCase", verbose, UpperCaseCases, function(args is array) { return upperCase(args[0]); });
 }
 
 export const UpperFirstCases = [
   [["fred"], "Fred"],
 ];
-export function runUpperFirstTests(context is Context, verbose is boolean) returns map {
+function runUpperFirstTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "upperFirst", verbose, UpperFirstCases, function(args is array) { return upperFirst(args[0]); });
 }
 

@@ -42,7 +42,7 @@ export const FindKeyCases = [
   [[{ "a": 1, "b": 2, "c": 3 }, gtOne],  "b"],
   [[{ "a": 1 },                 gtOne],  undefined],
 ];
-export function runFindKeyTests(context is Context, verbose is boolean) returns map {
+function runFindKeyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findKey", verbose, FindKeyCases, function(args is array) { return findKey(args[0], args[1]); });
 }
 
@@ -50,7 +50,7 @@ export const FindLastKeyCases = [
   [[{ "a": 1, "b": 2, "c": 3 }, gtOne],  "c"],
   [[{ "a": 1 },                 gtOne],  undefined],
 ];
-export function runFindLastKeyTests(context is Context, verbose is boolean) returns map {
+function runFindLastKeyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findLastKey", verbose, FindLastKeyCases, function(args is array) { return findLastKey(args[0], args[1]); });
 }
 
@@ -59,14 +59,14 @@ export function runFindLastKeyTests(context is Context, verbose is boolean) retu
 export const InvertCases = [
   [[{ "a": 1, "b": 2, "c": 1 }],  { "1": "c", "2": "b" },  'a repeated value keeps only its last key'],
 ];
-export function runInvertTests(context is Context, verbose is boolean) returns map {
+function runInvertTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "invert", verbose, InvertCases, function(args is array) { return invert(args[0]); });
 }
 
 export const InvertByCases = [
   [[{ "a": 1, "b": 2, "c": 1 }, function(val, _key) { return "" ~ val; }],  { "1": ["a", "c"], "2": ["b"] }],
 ];
-export function runInvertByTests(context is Context, verbose is boolean) returns map {
+function runInvertByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "invertBy", verbose, InvertByCases, function(args is array) { return invertBy(args[0], args[1]); });
 }
 
@@ -75,7 +75,7 @@ export function runInvertByTests(context is Context, verbose is boolean) returns
 export const MapKeysCases = [
   [[{ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }],  { "a1": 1, "b2": 2 }],
 ];
-export function runMapKeysTests(context is Context, verbose is boolean) returns map {
+function runMapKeysTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "mapKeys", verbose, MapKeysCases, function(args is array) { return mapKeys(args[0], args[1]); });
 }
 
@@ -85,14 +85,14 @@ export const OmitCases = [
   [[{ "a": 1, "b": 2, "c": 3 }, ["b"]],  { "a": 1, "c": 3 }],
   [[{ "a": 1 },                 []],     { "a": 1 }],
 ];
-export function runOmitTests(context is Context, verbose is boolean) returns map {
+function runOmitTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "omit", verbose, OmitCases, function(args is array) { return omit(args[0], args[1]); });
 }
 
 export const OmitByCases = [
   [[{ "a": 1, "b": 2, "c": 3 }, gtOne],  { "a": 1 }],
 ];
-export function runOmitByTests(context is Context, verbose is boolean) returns map {
+function runOmitByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "omitBy", verbose, OmitByCases, function(args is array) { return omitBy(args[0], args[1]); });
 }
 
@@ -102,6 +102,6 @@ export const ToPairsCases = [
   [[{ "a": 1, "b": 2 }],  [["a", 1], ["b", 2]]],
   [[{}],                  []],
 ];
-export function runToPairsTests(context is Context, verbose is boolean) returns map {
+function runToPairsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "toPairs", verbose, ToPairsCases, function(args is array) { return toPairs(args[0]); });
 }

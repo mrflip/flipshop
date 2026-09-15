@@ -48,7 +48,7 @@ export const HexcolorToColorCases = [
   [["#00ff0080", color(0, 1, 0, 128 / 255)],      true, '8-digit form carries alpha'],
   [["not a color", color(1, 0, 0)],               true, 'no match: falls back to bright red (OopsColor)'],
 ];
-export function runHexcolorToColorTests(context is Context, verbose is boolean) returns map {
+function runHexcolorToColorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hexcolorToColor", verbose, HexcolorToColorCases, function(args is array) {
     return sameColor(hexcolorToColor(args[0]), args[1]);
   });
@@ -60,7 +60,7 @@ export const TuplestrToColorCases = [
   [["200,99,100,33",    color(200 / 255, 99 / 255, 100 / 255, 33 / 255)],   true, 'fourth value is alpha'],
   [["not a color",      color(1, 0, 0)],                                   true, 'no match: falls back to bright red'],
 ];
-export function runTuplestrToColorTests(context is Context, verbose is boolean) returns map {
+function runTuplestrToColorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "tuplestrToColor", verbose, TuplestrToColorCases, function(args is array) {
     return sameColor(tuplestrToColor(args[0]), args[1]);
   });
@@ -71,7 +71,7 @@ export const UnitcolorToColorCases = [
   [["[0.0, 0.1, 1.0, 1.0]",    color(0.0, 0.1, 1.0, 1.0)],        true],
   [["not a color",             color(1, 0, 0)],                  true, 'no match: falls back to bright red'],
 ];
-export function runUnitcolorToColorTests(context is Context, verbose is boolean) returns map {
+function runUnitcolorToColorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unitcolorToColor", verbose, UnitcolorToColorCases, function(args is array) {
     return sameColor(unitcolorToColor(args[0]), args[1]);
   });
@@ -88,7 +88,7 @@ export const ToColorCases = [
   [["1,0,0",               color(1, 0, 0)],                    true, 'ambiguous 0/1 tuple reads as a unit-scale color, not a 0-255 one'],
   [["200,99,100",          color(200 / 255, 99 / 255, 100 / 255)], true, 'tuple-scale string'],
 ];
-export function runToColorTests(context is Context, verbose is boolean) returns map {
+function runToColorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "toColor", verbose, ToColorCases, function(args is array) { return sameColor(toColor(args[0]), args[1]); });
 }
 
@@ -98,7 +98,7 @@ export const ToHexcolorCases = [
   [[color(1, 0, 0)],           "#ff0000ff"],
   [[color(0, 1, 0, 128 / 255)], "#00ff0080"],
 ];
-export function runToHexcolorTests(context is Context, verbose is boolean) returns map {
+function runToHexcolorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "toHexcolor", verbose, ToHexcolorCases, function(args is array) { return toHexcolor(args[0]); });
 }
 
@@ -106,7 +106,7 @@ export const ToUnitcolorCases = [
   [[color(0.5, 0.25, 1.0)],       [0.5, 0.25, 1.0, 1.0]],
   [[color(0, 1, 0, 0.5)],         [0, 1, 0, 0.5]],
 ];
-export function runToUnitcolorTests(context is Context, verbose is boolean) returns map {
+function runToUnitcolorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "toUnitcolor", verbose, ToUnitcolorCases, function(args is array) { return toUnitcolor(args[0]); });
 }
 
@@ -114,7 +114,7 @@ export const ToTuplecolorCases = [
   [[color(1, 0, 0)],            [255, 0, 0, 255]],
   [[color(0, 1, 0, 128 / 255)], [0, 255, 0, 128]],
 ];
-export function runToTuplecolorTests(context is Context, verbose is boolean) returns map {
+function runToTuplecolorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "toTuplecolor", verbose, ToTuplecolorCases, function(args is array) { return toTuplecolor(args[0]); });
 }
 
@@ -127,7 +127,7 @@ export const HexpairToIntCases = [
   [["a0"],  160],
   [["zz", -1], -1, 'invalid pair falls back to the given fallback'],
 ];
-export function runHexpairToIntTests(context is Context, verbose is boolean) returns map {
+function runHexpairToIntTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "hexpairToInt", verbose, HexpairToIntCases, function(args is array) {
     return (size(args) <= 1) ? hexpairToInt(args[0]) : hexpairToInt(args[0], args[1]);
   });
@@ -138,7 +138,7 @@ export const IntToHexpairCases = [
   [[0],   "00"],
   [[160], "a0"],
 ];
-export function runIntToHexpairTests(context is Context, verbose is boolean) returns map {
+function runIntToHexpairTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "intToHexpair", verbose, IntToHexpairCases, function(args is array) { return intToHexpair(args[0]); });
 }
 
@@ -150,7 +150,7 @@ export const SameColorCases = [
   [[color(1, 0, 0),                     color(1, 0, 0, 0.5)],                false, 'alpha counts too'],
   [[color(200 / 255, 0, 0),             color(200 / 255 + 0.0001 / 255, 0, 0)], true, 'within the default tolerance'],
 ];
-export function runSameColorTests(context is Context, verbose is boolean) returns map {
+function runSameColorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "sameColor", verbose, SameColorCases, function(args is array) { return sameColor(args[0], args[1]); });
 }
 
@@ -161,6 +161,6 @@ export const IsHexcolorCases = [
   [["not hex"],  false],
   [[42],         false, 'non-string input'],
 ];
-export function runIsHexcolorTests(context is Context, verbose is boolean) returns map {
+function runIsHexcolorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "isHexcolor", verbose, IsHexcolorCases, function(args is array) { return isHexcolor(args[0]); });
 }

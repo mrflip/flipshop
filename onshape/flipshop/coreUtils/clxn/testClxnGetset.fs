@@ -84,7 +84,7 @@ const GetAtTestCases = [
 
 ];
 
-export function runGetAtArrTests(context is Context, verbose is boolean) returns map {
+function runGetAtArrTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "getAt", verbose, GetAtTestCases, function(args is array) { return size(args) <= 2 ? getAt(args[0], args[1]) : getAt(args[0], args[1], args[2]); });
 }
 
@@ -160,23 +160,23 @@ const runMergeTest      = ((args is array) => deepMerge(args[0], args[1]));
 const runGetAtTest      = ((args is array) => ((size(args) <= 2) ? getAt(args[0], args[1]) : getAt(args[0], args[1], args[2])));
 const runSetAtTest      = ((args is array) => ((size(args) <= 3) ? setAt(args[0], args[1], args[2]) : setAt(args[0], args[1], args[2], args[3])));
 
-export function runPathForKeyTests(context is Context, verbose is boolean) returns map {
+function runPathForKeyTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "pathForKey", verbose, PathForKeyCases, runPathForKeyTest);
 }
 
-export function runDeepMergeTests(context is Context, verbose is boolean) returns map {
+function runDeepMergeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "merge", verbose, MergeCases, runMergeTest);
 }
 
-export function runGetAtPathTests(context is Context, verbose is boolean) returns map {
+function runGetAtPathTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "getAt paths", verbose, GetAtPathCases, runGetAtTest);
 }
 
-export function runSetAtTests(context is Context, verbose is boolean) returns map {
+function runSetAtTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "setAt", verbose, SetAtCases, runSetAtTest);
 }
 
-export function runSetAtThrowsTests(context is Context, verbose is boolean) returns map {
+function runSetAtThrowsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "setAt throws", verbose, SetAtThrows, assertThrows(runSetAtTest));
 }
 
@@ -185,7 +185,7 @@ export const UpdateCases = [
   [[{ "a": { "b": 1 } }, "a.b", function(val) { return val + 1; }],           { "a": { "b": 2 } }],
   [[{},                  "a.b", function(val) { return ifNil(val, 0) + 1; }], { "a": { "b": 1 } }, 'a missing path autovivifies, reading as undefined first'],
 ];
-export function runUpdateTests(context is Context, verbose is boolean) returns map {
+function runUpdateTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "update", verbose, UpdateCases, function(args is array) { return update(args[0], args[1], args[2]); });
 }
 
@@ -201,7 +201,7 @@ export const UpdateWithCases = [
    { "a": { "b": 1 } },
    'a freshly autovivified path never collides, so the resolver is not consulted'],
 ];
-export function runUpdateWithTests(context is Context, verbose is boolean) returns map {
+function runUpdateWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "updateWith", verbose, UpdateWithCases, function(args is array) { return updateWith(args[0], args[1], args[2], args[3]); });
 }
 
@@ -209,7 +209,7 @@ export const AssignWithCases = [
   [[{ "a": 1, "b": 2 }, { "a": 10 }, sumIfExisting], { "a": 11, "b": 2 }, 'the resolver combines a key present in both'],
   [[{ "a": 1 },         { "b": 2 },  sumIfExisting], { "a": 1, "b": 2 },  'the resolver returns undefined for a key only in incoming, which falls back to incoming winning'],
 ];
-export function runAssignWithTests(context is Context, verbose is boolean) returns map {
+function runAssignWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "assignWith", verbose, AssignWithCases, function(args is array) { return assignWith(args[0], args[1], args[2]); });
 }
 
@@ -218,6 +218,6 @@ export const MergeWithCases = [
   [[{ "a": { "x": 1 } }, { "a": { "y": 2 } }, sumIfExisting], { "a": { "x": 1, "y": 2 } }, 'a non-number pair falls back to the ordinary deep-merge rule'],
   [[{ "a": 1 },          undefined,           sumIfExisting], { "a": 1 },                  'an undefined source leaves what is there alone, same as deepMerge'],
 ];
-export function runMergeWithTests(context is Context, verbose is boolean) returns map {
+function runMergeWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "mergeWith", verbose, MergeWithCases, function(args is array) { return mergeWith(args[0], args[1], args[2]); });
 }

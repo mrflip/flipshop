@@ -79,7 +79,7 @@ export const ChunkCases = [
   [[ ["a", "b"],          -1 ],  [],                           'chunkSize < 1 returns an empty array'],
   [[ ["a", "b"],           0 ],  [],                           'chunkSize < 1 returns an empty array'],
 ];
-export function runChunkTests(context is Context, verbose is boolean) returns map {
+function runChunkTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "chunk", verbose, ChunkCases, function(args is array) { return chunk(args[0], args[1]); });
 }
 
@@ -89,7 +89,7 @@ export const CompactCases = [
   [[[0, 1, false, 2, "", 3]],  [0, 1, 2, "", 3],  'only undefined/false are dropped'],
   [[[false, undefined]],       [],                'all-falsey input compacts to empty'],
 ];
-export function runCompactTests(context is Context, verbose is boolean) returns map {
+function runCompactTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "compact", verbose, CompactCases, function(args is array) { return compact(args[0]); });
 }
 
@@ -99,21 +99,21 @@ export const DifferenceCases = [
   [[[2, 1], [2, 3]],  [1]],
   [[[1, 2], []],      [1, 2]],
 ];
-export function runDifferenceTests(context is Context, verbose is boolean) returns map {
+function runDifferenceTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "difference", verbose, DifferenceCases, function(args is array) { return difference(args[0], args[1]); });
 }
 
 export const DifferenceByCases = [
   [[[2.1, 1.2], [2.3, 3.4], function(val, _seq) { return floor(val); }],  [1.2]],
 ];
-export function runDifferenceByTests(context is Context, verbose is boolean) returns map {
+function runDifferenceByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "differenceBy", verbose, DifferenceByCases, function(args is array) { return differenceBy(args[0], args[1], args[2]); });
 }
 
 export const DifferenceWithCases = [
   [[[{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 2 }]],
 ];
-export function runDifferenceWithTests(context is Context, verbose is boolean) returns map {
+function runDifferenceWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "differenceWith", verbose, DifferenceWithCases, function(args is array) { return differenceWith(args[0], args[1], args[2]); });
 }
 
@@ -146,7 +146,7 @@ export const DropCases = [
   // [[ ["a", "b", "c", "d"], 1.9 ],["b", "c", "d"],       'n is truncated toward zero (toInteger)'],
   // [[ ["a", "b", "c"],  1.7 ],  ["b", "c"],       'fractional n is truncated toward zero'],
 ];
-export function runDropTests(context is Context, verbose is boolean) returns map {
+function runDropTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "drop", verbose, DropCases, function(args is array) { return (size(args) == 1 ? drop(args[0]) : drop(args[0], args[1])); });
 }
 
@@ -155,7 +155,7 @@ export const DropRightCases = [
   [[[1, 2, 3], 5],  []],
   [[[1, 2, 3], 0],  [1, 2, 3]],
 ];
-export function runDropRightTests(context is Context, verbose is boolean) returns map {
+function runDropRightTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "dropRight", verbose, DropRightCases, function(args is array) { return (size(args) == 1 ? dropRight(args[0]) : dropRight(args[0], args[1])); });
 }
 
@@ -164,7 +164,7 @@ export const DropRightWhileCases = [
   [[[1, 2, 3, 4], function(val, _seq) { return val > 9; }],  [1, 2, 3, 4]],
   [[[1, 2, 3, 4], function(val, _seq) { return val > 0; }],  []],
 ];
-export function runDropRightWhileTests(context is Context, verbose is boolean) returns map {
+function runDropRightWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "dropRightWhile", verbose, DropRightWhileCases, function(args is array) { return (size(args) == 1 ? dropRightWhile(args[0]) : dropRightWhile(args[0], args[1])); });
 }
 
@@ -172,7 +172,7 @@ export const DropWhileCases = [
   [[[1, 2, 3, 4], function(val, _seq) { return val < 3; }],  [3, 4]],
   [[[1, 2, 3, 4], function(val, _seq) { return val < 0; }],  [1, 2, 3, 4]],
 ];
-export function runDropWhileTests(context is Context, verbose is boolean) returns map {
+function runDropWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "dropWhile", verbose, DropWhileCases, function(args is array) { return (size(args) == 1 ? dropWhile(args[0]) : dropWhile(args[0], args[1])); });
 }
 
@@ -182,7 +182,7 @@ export const FindIndexCases = [
   [[[1, 2, 3], function(val, _seq) { return val > 1; }],  1],
   [[[1, 2, 3], function(val, _seq) { return val > 9; }],  -1],
 ];
-export function runFindIndexTests(context is Context, verbose is boolean) returns map {
+function runFindIndexTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findIndex", verbose, FindIndexCases, function(args is array) { return findIndex(args[0], args[1]); });
 }
 
@@ -190,7 +190,7 @@ export const FindLastIndexCases = [
   [[[1, 2, 3], function(val, _seq) { return val < 3; }],  1],
   [[[1, 2, 3], function(val, _seq) { return val > 9; }],  -1],
 ];
-export function runFindLastIndexTests(context is Context, verbose is boolean) returns map {
+function runFindLastIndexTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "findLastIndex", verbose, FindLastIndexCases, function(args is array) { return findLastIndex(args[0], args[1]); });
 }
 
@@ -199,14 +199,14 @@ export function runFindLastIndexTests(context is Context, verbose is boolean) re
 export const FlattenCases = [
   [[[1, [2, [3, [4]], 5]]],  [1, 2, [3, [4]], 5]],
 ];
-export function runFlattenTests(context is Context, verbose is boolean) returns map {
+function runFlattenTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flatten", verbose, FlattenCases, function(args is array) { return flatten(args[0]); });
 }
 
 export const FlattenDeepCases = [
   [[[1, [2, [3, [4]], 5]]],  [1, 2, 3, 4, 5]],
 ];
-export function runFlattenDeepTests(context is Context, verbose is boolean) returns map {
+function runFlattenDeepTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flattenDeep", verbose, FlattenDeepCases, function(args is array) { return flattenDeep(args[0]); });
 }
 
@@ -214,7 +214,7 @@ export const FlattenDepthCases = [
   [[[1, [2, [3, [4]], 5]], 2],  [1, 2, 3, [4], 5]],
   [[[1, [2, [3]]],         0],  [1, [2, [3]]],  'depth <= 0 returns arr unchanged'],
 ];
-export function runFlattenDepthTests(context is Context, verbose is boolean) returns map {
+function runFlattenDepthTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "flattenDepth", verbose, FlattenDepthCases, function(args is array) { return flattenDepth(args[0], args[1]); });
 }
 
@@ -225,7 +225,7 @@ export const FromPairsCases = [
   [[[["a", 1], ["a", 2]]],  { "a": 2 },  'a repeated key keeps the last pair'],
   [[[]],                    {}],
 ];
-export function runFromPairsTests(context is Context, verbose is boolean) returns map {
+function runFromPairsTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "fromPairs", verbose, FromPairsCases, function(args is array) { return fromPairs(args[0]); });
 }
 
@@ -236,7 +236,7 @@ export const InitialCases = [
   [[[1]],        []],
   [[[]],         []],
 ];
-export function runInitialTests(context is Context, verbose is boolean) returns map {
+function runInitialTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "initial", verbose, InitialCases, function(args is array) { return initial(args[0]); });
 }
 
@@ -247,21 +247,21 @@ export const IntersectionCases = [
   [[[[1, 2], []]],               []],
   [[[]],                         []],
 ];
-export function runIntersectionTests(context is Context, verbose is boolean) returns map {
+function runIntersectionTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "intersection", verbose, IntersectionCases, function(args is array) { return intersection(args[0]); });
 }
 
 export const IntersectionByCases = [
   [[[[2.1, 1.2], [2.3, 3.4]], function(val, _seq) { return floor(val); }],  [2.1]],
 ];
-export function runIntersectionByTests(context is Context, verbose is boolean) returns map {
+function runIntersectionByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "intersectionBy", verbose, IntersectionByCases, function(args is array) { return intersectionBy(args[0], args[1]); });
 }
 
 export const IntersectionWithCases = [
   [[[[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 2 }]],
 ];
-export function runIntersectionWithTests(context is Context, verbose is boolean) returns map {
+function runIntersectionWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "intersectionWith", verbose, IntersectionWithCases, function(args is array) { return intersectionWith(args[0], args[1]); });
 }
 
@@ -271,7 +271,7 @@ export const LastIndexOfCases = [
   [[[1, 2, 1], 1],  2],
   [[[1, 2, 3], 9],  -1],
 ];
-export function runLastIndexOfTests(context is Context, verbose is boolean) returns map {
+function runLastIndexOfTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "lastIndexOf", verbose, LastIndexOfCases, function(args is array) { return lastIndexOf(args[0], args[1]); });
 }
 
@@ -293,7 +293,7 @@ export const NthCases = [
   [[ [[], [[1]], [1, []]], 2 ],  [1, []]],
   // [[ ["a", "b", "c", "d"], 1.7 ],"b",                 'n is truncated toward zero (toInteger)'],
 ];
-export function runNthTests(context is Context, verbose is boolean) returns map {
+function runNthTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "nth", verbose, NthCases, function(args is array) { return nth(args[0], args[1]); });
 }
 
@@ -324,7 +324,7 @@ export const TailCases = [
   [[ ["a", "b", "c"]  ],  ["b", "c"]],
   [[ [[[]], [1, []]]  ],  [[1, []]]],
 ];
-export function runTailTests(context is Context, verbose is boolean) returns map {
+function runTailTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "tail", verbose, TailCases, function(args is array) { return tail(args[0]); });
 }
 
@@ -335,7 +335,7 @@ export const TakeCases = [
   [[[1, 2, 3], 0],  []],
   [[[1, 2, 3], 9],  [1, 2, 3]],
 ];
-export function runTakeTests(context is Context, verbose is boolean) returns map {
+function runTakeTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "take", verbose, TakeCases, function(args is array) { return take(args[0], args[1]); });
 }
 
@@ -343,21 +343,21 @@ export const TakeRightCases = [
   [[[1, 2, 3], 2],  [2, 3]],
   [[[1, 2, 3], 0],  []],
 ];
-export function runTakeRightTests(context is Context, verbose is boolean) returns map {
+function runTakeRightTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "takeRight", verbose, TakeRightCases, function(args is array) { return takeRight(args[0], args[1]); });
 }
 
 export const TakeRightWhileCases = [
   [[[1, 2, 3, 4], function(val, _seq) { return val > 2; }],  [3, 4]],
 ];
-export function runTakeRightWhileTests(context is Context, verbose is boolean) returns map {
+function runTakeRightWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "takeRightWhile", verbose, TakeRightWhileCases, function(args is array) { return takeRightWhile(args[0], args[1]); });
 }
 
 export const TakeWhileCases = [
   [[[1, 2, 3, 4], function(val, _seq) { return val < 3; }],  [1, 2]],
 ];
-export function runTakeWhileTests(context is Context, verbose is boolean) returns map {
+function runTakeWhileTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "takeWhile", verbose, TakeWhileCases, function(args is array) { return takeWhile(args[0], args[1]); });
 }
 
@@ -367,21 +367,21 @@ export const UnionCases = [
   [[[[2], [1, 2], [2, 3]]],  [2, 1, 3]],
   [[[]],                      []],
 ];
-export function runUnionTests(context is Context, verbose is boolean) returns map {
+function runUnionTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "union", verbose, UnionCases, function(args is array) { return union(args[0]); });
 }
 
 export const UnionByCases = [
   [[[[2.1], [1.2, 2.3]], function(val, _seq) { return floor(val); }],  [2.1, 1.2]],
 ];
-export function runUnionByTests(context is Context, verbose is boolean) returns map {
+function runUnionByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unionBy", verbose, UnionByCases, function(args is array) { return unionBy(args[0], args[1]); });
 }
 
 export const UnionWithCases = [
   [[[[{ "x": 1 }], [{ "x": 1 }, { "x": 2 }]], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 1 }, { "x": 2 }]],
 ];
-export function runUnionWithTests(context is Context, verbose is boolean) returns map {
+function runUnionWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unionWith", verbose, UnionWithCases, function(args is array) { return unionWith(args[0], args[1]); });
 }
 
@@ -390,14 +390,14 @@ export function runUnionWithTests(context is Context, verbose is boolean) return
 export const UniqByCases = [
   [[[2.1, 1.2, 2.3], function(val, _seq) { return floor(val); }],  [2.1, 1.2]],
 ];
-export function runUniqByTests(context is Context, verbose is boolean) returns map {
+function runUniqByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "uniqBy", verbose, UniqByCases, function(args is array) { return uniqBy(args[0], args[1]); });
 }
 
 export const UniqWithCases = [
   [[[{ "x": 1 }, { "x": 1 }, { "x": 2 }], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 1 }, { "x": 2 }]],
 ];
-export function runUniqWithTests(context is Context, verbose is boolean) returns map {
+function runUniqWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "uniqWith", verbose, UniqWithCases, function(args is array) { return uniqWith(args[0], args[1]); });
 }
 
@@ -406,14 +406,14 @@ export function runUniqWithTests(context is Context, verbose is boolean) returns
 export const UnzipCases = [
   [[[["a", 1, true], ["b", 2, false]]],  [["a", "b"], [1, 2], [true, false]]],
 ];
-export function runUnzipTests(context is Context, verbose is boolean) returns map {
+function runUnzipTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unzip", verbose, UnzipCases, function(args is array) { return unzip(args[0]); });
 }
 
 export const UnzipWithCases = [
   [[[[1, 10], [2, 20]], function(col, _seq) { return sum(col); }],  [3, 30]],
 ];
-export function runUnzipWithTests(context is Context, verbose is boolean) returns map {
+function runUnzipWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "unzipWith", verbose, UnzipWithCases, function(args is array) { return unzipWith(args[0], args[1]); });
 }
 
@@ -422,7 +422,7 @@ export function runUnzipWithTests(context is Context, verbose is boolean) return
 export const WithoutCases = [
   [[[2, 1, 2, 3], [1, 2]],  [3]],
 ];
-export function runWithoutTests(context is Context, verbose is boolean) returns map {
+function runWithoutTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "without", verbose, WithoutCases, function(args is array) { return without(args[0], args[1]); });
 }
 
@@ -449,21 +449,21 @@ export const XorCases = [
   [[ [ [1, [], {}],  [1]              ] ], [[], {}]],
   // [[ [NaN],        [NaN]        ],  [],               'SameValueZero: NaN equals NaN'],
 ];
-export function runXorTests(context is Context, verbose is boolean) returns map {
+function runXorTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "xor", verbose, XorCases, function(args is array) { return xor(args[0]); });
 }
 
 export const XorByCases = [
   [[[[2.1, 1.2], [2.3, 3.4]], function(val, _seq) { return floor(val); }],  [1.2, 3.4]],
 ];
-export function runXorByTests(context is Context, verbose is boolean) returns map {
+function runXorByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "xorBy", verbose, XorByCases, function(args is array) { return xorBy(args[0], args[1]); });
 }
 
 export const XorWithCases = [
   [[[[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], function(aa, bb) { return aa.x == bb.x; }],  [{ "x": 1 }]],
 ];
-export function runXorWithTests(context is Context, verbose is boolean) returns map {
+function runXorWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "xorWith", verbose, XorWithCases, function(args is array) { return xorWith(args[0], args[1]); });
 }
 
@@ -473,13 +473,13 @@ export const ZipObjectCases = [
   [[["a", "b"], [1, 2]],       { "a": 1, "b": 2 }],
   [[["a", "b"], [1]],          { "a": 1 },  'a keylist entry past valuelist is absent (FS drops undefined-valued keys)'],
 ];
-export function runZipObjectTests(context is Context, verbose is boolean) returns map {
+function runZipObjectTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "zipObject", verbose, ZipObjectCases, function(args is array) { return zipObject(args[0], args[1]); });
 }
 
 export const ZipWithCases = [
   [[[[1, 2], [10, 20]], function(row, _seq) { return sum(row); }],  [11, 22]],
 ];
-export function runZipWithTests(context is Context, verbose is boolean) returns map {
+function runZipWithTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "zipWith", verbose, ZipWithCases, function(args is array) { return zipWith(args[0], args[1]); });
 }
