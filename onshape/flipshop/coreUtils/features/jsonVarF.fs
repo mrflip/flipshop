@@ -211,13 +211,13 @@ precondition {
   //
   if (isEmpty(obj)) { return; }
   if (obj is array) {
-    forEach(obj, MissingPolicy.SKIP, (val, seq) => {
+    forEach(obj, NilPolicy.SKIP, (val, seq) => {
       const keyname = objname ~ "_" ~ padLeft(seq, 2, '0');
       setVariable(context, keyname, val, objname ~ "[" ~ keyname ~ "]");
     });
   } else {
     const prefixVarnames = ifNil(definition.prefixVarnames, true);
-    forEach(obj, MissingPolicy.SKIP, (val, keyname) => {
+    forEach(obj, NilPolicy.SKIP, (val, keyname) => {
       const fieldvar = (prefixVarnames ? field_varname(objname, keyname) : sanitize_varname(keyname));
       setVariable(context, fieldvar, val, objname ~ "." ~ keyname);
     });

@@ -34,17 +34,17 @@ export function undotMap(obj is map) returns map {
 export function undotMap(obj is map, onCollision is function) returns map {
   var pathsByKey = {};
   var deepest = 0;
-  for (var keyStr in keys(obj)) {
-    const keyPath = pathForKey(keyStr);
-    pathsByKey[keyStr] = keyPath;
-    if (size(keyPath) > deepest) { deepest = size(keyPath); }
+  for (var keyname in keys(obj)) {
+    const keypath = pathForKey(keyname);
+    pathsByKey[keyname] = keypath;
+    if (size(keypath) > deepest) { deepest = size(keypath); }
   }
   var result = {};
   for (var depth = 1; depth <= deepest; depth += 1) {
-    for (var keyStr in keys(obj)) {
-      const keyPath = pathsByKey[keyStr];
-      if (size(keyPath) != depth) { continue; }
-      result = setAt(result, keyPath, obj[keyStr], onCollision);
+    for (var keyname in keys(obj)) {
+      const keypath = pathsByKey[keyname];
+      if (size(keypath) != depth) { continue; }
+      result = setAt(result, keypath, obj[keyname], onCollision);
     }
   }
   return result;
@@ -69,15 +69,15 @@ export function dotMap(obj is map, options is map) returns map {
   const maxDepth = ifNil(options.maxDepth, UnboundedDotDepth);
   if (maxDepth <= 0) { return obj; }
   var result = {};
-  for (var keyStr in keys(obj)) {
-    const val = obj[keyStr];
+  for (var keyname in keys(obj)) {
+    const val = obj[keyname];
     if ((val is map) && (size(val) > 0)) {
       const dotted = dotMap(val, { "maxDepth": maxDepth - 1 });
       for (var innerKeyStr in keys(dotted)) {
-        result[keyStr ~ "." ~ innerKeyStr] = dotted[innerKeyStr];
+        result[keyname ~ "." ~ innerKeyStr] = dotted[innerKeyStr];
       }
     } else {
-      result[keyStr] = val;
+      result[keyname] = val;
     }
   }
   return result;
@@ -137,11 +137,11 @@ function buildChoicesRecursive(levels is array, levelIdx is number, currentTree 
   var currentDef = levels[levelIdx];
   var nextDef = levels[levelIdx + 1];
   var isLastLevel = (levelIdx == size(levels) - 2);
-  for (var keyStr, subTree in currentTree) {
+  for (var keyname, subTree in currentTree) {
     // Evaluate the key display name using the level's translation map, or fallback to titleCase
-    var translatedKey = currentDef.tr[keyStr] != undefined
-      ? currentDef.tr[keyStr]
-      : titleCase(keyStr);
+    var translatedKey = currentDef.tr[keyname] != undefined
+      ? currentDef.tr[keyname]
+      : titleCase(keyname);
     var entry = {
       "name":        nextDef.name,
       "displayName": nextDef.displayName

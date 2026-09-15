@@ -10,7 +10,7 @@ export const UnboundedDotDepth = 1000000000;
 export const lastInWins = ((existing, incoming) => incoming);
 
 /**
- * Gets the value at `keyStr`/`keyPath` of `bag`/`arr`. If the resolved value is `undefined`,
+ * Gets the value at `keyname`/`keypath` of `bag`/`arr`. If the resolved value is `undefined`,
  * `fallback` is returned in its place — except an array element that is present but genuinely
  * `undefined`, which comes back as itself; a map can't hold that case, since FeatureScript elides
  * an `undefined` value on the way in.
@@ -20,8 +20,8 @@ export const lastInWins = ((existing, incoming) => incoming);
  * contain a negative array index, which counts from the end — lodash's `get` has no such support.
  *
  * @param bag {map|array}: Container to read from.
- * @param keyStr {string}: Dotted path.
- * @param keyPath {array}: Path as literal keys/indexes.
+ * @param keyname {string}: Dotted path.
+ * @param keypath {array}: Path as literal keys/indexes.
  * @param fallback: Returned in place of an `undefined` result. Defaults to `undefined`.
  * @example
  *   getAt({ "a": { "b": 1 } }, "a.b");                            // => 1
@@ -30,12 +30,12 @@ export const lastInWins = ((existing, incoming) => incoming);
  *   getAt({ "rows": [{ "cells": [7, 8] }] }, "rows.-1.cells.-1"); // => 8
  *   getAt([1, 2, 3], -1);                                         // => 3
  */
-export function getAt(bag is map, keyStr is string, fallback) {
-  return valAtPath(bag, pathForKey(keyStr), fallback);
+export function getAt(bag is map, keyname is string, fallback) {
+  return valAtPath(bag, pathForKey(keyname), fallback);
 }
 
-export function getAt(bag is map, keyPath is array, fallback) {
-  return valAtPath(bag, keyPath, fallback);
+export function getAt(bag is map, keypath is array, fallback) {
+  return valAtPath(bag, keypath, fallback);
 }
 
 export function getAt(arr is array, seq is number, fallback) {
@@ -46,16 +46,16 @@ export function getAt(arr is array, seqStr is string, fallback) {
   return valAtPath(arr, pathForKey(seqStr), fallback);
 }
 
-export function getAt(arr is array, keyPath is array, fallback) {
-  return valAtPath(arr, keyPath, fallback);
+export function getAt(arr is array, keypath is array, fallback) {
+  return valAtPath(arr, keypath, fallback);
 }
 
-export function getAt(bag is map, keyStr is string) {
-  return valAtPath(bag, pathForKey(keyStr), undefined);
+export function getAt(bag is map, keyname is string) {
+  return valAtPath(bag, pathForKey(keyname), undefined);
 }
 
-export function getAt(bag is map, keyPath is array) {
-  return valAtPath(bag, keyPath, undefined);
+export function getAt(bag is map, keypath is array) {
+  return valAtPath(bag, keypath, undefined);
 }
 
 export function getAt(arr is array, seq is number) {
@@ -66,12 +66,12 @@ export function getAt(arr is array, seqStr is string) {
   return valAtPath(arr, pathForKey(seqStr), undefined);
 }
 
-export function getAt(arr is array, keyPath is array) {
-  return valAtPath(arr, keyPath, undefined);
+export function getAt(arr is array, keypath is array) {
+  return valAtPath(arr, keypath, undefined);
 }
 
 /**
- * Sets the value at `keyStr`/`keyPath` of `bag`/`arr`, returning the (possibly new) container.
+ * Sets the value at `keyname`/`keypath` of `bag`/`arr`, returning the (possibly new) container.
  * If a portion of the path doesn't exist, it's created as a map, unless the *next* segment looks
  * like a non-negative integer (a bare number, or a string of digits), in which case it's created
  * as an array instead — matching lodash's own `set`/`baseSet` heuristic. @see `setAtWith` to
@@ -86,8 +86,8 @@ export function getAt(arr is array, keyPath is array) {
  * `undefined` rather than throwing.
  *
  * @param bag {map|array}: Container to write into.
- * @param keyStr {string}: Dotted path.
- * @param keyPath {array}: Path as literal keys/indexes.
+ * @param keyname {string}: Dotted path.
+ * @param keypath {array}: Path as literal keys/indexes.
  * @param val: Value to place at the path's leaf.
  * @param onCollision {function}: `(existing, incoming) => merged`, called only when the leaf is already occupied. Defaults to `lastInWins`.
  * @example
@@ -97,20 +97,20 @@ export function getAt(arr is array, keyPath is array) {
  *   setAt({ "a": { "x": 1 } }, "a", { "y": 2 }, ((existing, incoming) => deepMerge(existing, incoming)));
  *                            // => { "a": { "x": 1, "y": 2 } }
  */
-export function setAt(bag is map, keyStr is string, val) returns map {
-  return setAtPath(bag, pathForKey(keyStr), 0, val, lastInWins);
+export function setAt(bag is map, keyname is string, val) returns map {
+  return setAtPath(bag, pathForKey(keyname), 0, val, lastInWins);
 }
 
-export function setAt(bag is map, keyStr is string, val, onCollision is function) returns map {
-  return setAtPath(bag, pathForKey(keyStr), 0, val, onCollision);
+export function setAt(bag is map, keyname is string, val, onCollision is function) returns map {
+  return setAtPath(bag, pathForKey(keyname), 0, val, onCollision);
 }
 
-export function setAt(bag is map, keyPath is array, val) returns map {
-  return setAtPath(bag, keyPath, 0, val, lastInWins);
+export function setAt(bag is map, keypath is array, val) returns map {
+  return setAtPath(bag, keypath, 0, val, lastInWins);
 }
 
-export function setAt(bag is map, keyPath is array, val, onCollision is function) returns map {
-  return setAtPath(bag, keyPath, 0, val, onCollision);
+export function setAt(bag is map, keypath is array, val, onCollision is function) returns map {
+  return setAtPath(bag, keypath, 0, val, onCollision);
 }
 
 export function setAt(arr is array, seq is number, val) returns array {
@@ -129,17 +129,17 @@ export function setAt(arr is array, seqStr is string, val, onCollision is functi
   return setAtPath(arr, pathForKey(seqStr), 0, val, onCollision);
 }
 
-export function setAt(arr is array, keyPath is array, val) returns array {
-  return setAtPath(arr, keyPath, 0, val, lastInWins);
+export function setAt(arr is array, keypath is array, val) returns array {
+  return setAtPath(arr, keypath, 0, val, lastInWins);
 }
 
-export function setAt(arr is array, keyPath is array, val, onCollision is function) returns array {
-  return setAtPath(arr, keyPath, 0, val, onCollision);
+export function setAt(arr is array, keypath is array, val, onCollision is function) returns array {
+  return setAtPath(arr, keypath, 0, val, onCollision);
 }
 
 /**
- * Read-modify-write: `keyStr`/`keyPath` of `bag`/`arr` becomes `updater(currentVal)`.
- * `updateWith` additionally takes an `onCollision`, called only when the leaf `keyStrOrPath`
+ * Read-modify-write: `keyname`/`keypath` of `bag`/`arr` becomes `updater(currentVal)`.
+ * `updateWith` additionally takes an `onCollision`, called only when the leaf `keynameOrPath`
  * already resolves to something — it customizes how the freshly-`updater`'d value combines with
  * what was just read, not how a missing intermediate segment gets created (@see `setAtWith` for
  * that — the actual counterpart to lodash's `setWith`/`updateWith` customizer). Since the value
@@ -148,11 +148,11 @@ export function setAt(arr is array, keyPath is array, val, onCollision is functi
  * @example
  *   update({ "a": 1 }, "a", (val) => val + 1); // => { "a": 2 }
  */
-export function update(bag, keyStrOrPath, updater is function) {
-  return setAt(bag, keyStrOrPath, updater(getAt(bag, keyStrOrPath)));
+export function update(bag, keynameOrPath, updater is function) {
+  return setAt(bag, keynameOrPath, updater(getAt(bag, keynameOrPath)));
 }
-export function updateWith(bag, keyStrOrPath, updater is function, onCollision is function) {
-  return setAt(bag, keyStrOrPath, updater(getAt(bag, keyStrOrPath)), onCollision);
+export function updateWith(bag, keynameOrPath, updater is function, onCollision is function) {
+  return setAt(bag, keynameOrPath, updater(getAt(bag, keynameOrPath)), onCollision);
 }
 
 /**
@@ -162,18 +162,18 @@ export function updateWith(bag, keyStrOrPath, updater is function, onCollision i
  * customizer provides. `segmentFor` is consulted only where a segment doesn't already resolve to
  * a map or array; returning `undefined` falls back to `setAt`'s own default for that segment.
  * @param bag {map}: Container to write into.
- * @param keyStrOrPath {string|array}: Dotted path, or path as literal keys/indexes.
+ * @param keynameOrPath {string|array}: Dotted path, or path as literal keys/indexes.
  * @param val: Value to place at the path's leaf.
  * @param segmentFor {function}: `(existingChildOrUndefined, nextSegment) => newChildContainer`.
  * @example
  *   setAtWith({}, "a.0.b", 1, (_existing, _nextSegment) => ({})); // => { "a": { "0": { "b": 1 } } }
  */
-export function setAtWith(bag is map, keyStrOrPath, val, segmentFor is function) returns map {
-  return setAtPath(bag, pathArrayFor(keyStrOrPath), 0, val, lastInWins, segmentFor);
+export function setAtWith(bag is map, keynameOrPath, val, segmentFor is function) returns map {
+  return setAtPath(bag, pathArrayFor(keynameOrPath), 0, val, lastInWins, segmentFor);
 }
 
-function pathArrayFor(keyStrOrPath) returns array {
-  return (keyStrOrPath is string) ? pathForKey(keyStrOrPath) : keyStrOrPath;
+function pathArrayFor(keynameOrPath) returns array {
+  return (keynameOrPath is string) ? pathForKey(keynameOrPath) : keynameOrPath;
 }
 
 // == [Collection merging] -- deepMerge, assignWith, mergeWith
@@ -197,8 +197,8 @@ export function deepMerge(existing, incoming) {
   if ((existing is array) && (incoming is array)) { return deepMergeArrays(existing, incoming); }
   if (! ((existing is map) && (incoming is map))) { return incoming; }
   var out = existing;
-  for (var keyStr in keys(incoming)) {
-    out[keyStr] = deepMerge(existing[keyStr], incoming[keyStr]);
+  for (var keyname in keys(incoming)) {
+    out[keyname] = deepMerge(existing[keyname], incoming[keyname]);
   }
   return out;
 }
@@ -250,8 +250,8 @@ export function mergeWith(existing, incoming, combine is function) {
   if ((existing is array) && (incoming is array)) { return mergeWithArrays(existing, incoming, combine); }
   if (! ((existing is map) && (incoming is map))) { return incoming; }
   var out = existing;
-  for (var keyStr in keys(incoming)) {
-    out[keyStr] = mergeWith(existing[keyStr], incoming[keyStr], combine);
+  for (var keyname in keys(incoming)) {
+    out[keyname] = mergeWith(existing[keyname], incoming[keyname], combine);
   }
   return out;
 }
@@ -276,42 +276,42 @@ function mergeWithArrays(existing is array, incoming is array, combine is functi
  * three steps and `".foo"` is two. A key with a terminal dot is unhandled: `"foo."` reads as
  * `"foo"`, dropping the trailing empty segment rather than keeping it as a trailing empty key.
  *
- * @param keyStr {string}: Dotted path.
+ * @param keyname {string}: Dotted path.
  * @example
  *   pathForKey("a.b.c"); // => ["a", "b", "c"]
  *   pathForKey("a..b");  // => ["a", "", "b"]
  *   pathForKey("foo.");  // => ["foo"]
  */
-export function pathForKey(keyStr is string) returns array {
-  if (keyStr == "") { return [""]; }
-  return splitByRegexp(keyStr, "\\.");
+export function pathForKey(keyname is string) returns array {
+  if (keyname == "") { return [""]; }
+  return splitByRegexp(keyname, "\\.");
 }
 
-function valAtPath(container, keyPath is array, fallback) {
+function valAtPath(container, keypath is array, fallback) {
   var current = container;
-  for (var segment in keyPath) {
+  for (var segment in keypath) {
     current = steppedInto(current, segment);
     if (current == Sentinel.ABSENT) { return fallback; }
   }
   return current;
 }
 
-function setAtPath(container, keyPath is array, atIndex is number, val, onCollision is function) {
-  return setAtPath(container, keyPath, atIndex, val, onCollision, noSegmentCustomizer);
+function setAtPath(container, keypath is array, atIndex is number, val, onCollision is function) {
+  return setAtPath(container, keypath, atIndex, val, onCollision, noSegmentCustomizer);
 }
 
-function setAtPath(container, keyPath is array, atIndex is number, val, onCollision is function, segmentFor is function) {
-  if (size(keyPath) == 0) { return container; }
-  const segment = keyPath[atIndex];
-  if (atIndex == (size(keyPath) - 1)) { return placedAt(container, segment, val, onCollision); }
+function setAtPath(container, keypath is array, atIndex is number, val, onCollision is function, segmentFor is function) {
+  if (size(keypath) == 0) { return container; }
+  const segment = keypath[atIndex];
+  if (atIndex == (size(keypath) - 1)) { return placedAt(container, segment, val, onCollision); }
   const existing = steppedInto(container, segment);
-  const nextSegment = keyPath[atIndex + 1];
+  const nextSegment = keypath[atIndex + 1];
   const customChild = segmentFor((existing == Sentinel.ABSENT) ? undefined : existing, nextSegment);
   const child = ((existing is map) || (existing is array)) ? existing
     : (isPresent(customChild) ? customChild : emptyContainerFor(nextSegment));
   // lastInWins on the way back out: the child already carries whatever was under it, so running
   // the resolver here would merge that subtree with itself
-  return placedAt(container, segment, setAtPath(child, keyPath, atIndex + 1, val, onCollision, segmentFor), lastInWins);
+  return placedAt(container, segment, setAtPath(child, keypath, atIndex + 1, val, onCollision, segmentFor), lastInWins);
 }
 
 const noSegmentCustomizer = ((_existingChildOrUndefined, _nextSegment) => undefined);
@@ -414,7 +414,7 @@ function nonkeyIndexMessage(seq, subj) returns string {
  * `undefined`, since FeatureScript elides one on the way in.
  *
  * For an array, `missingPolicy` decides whether an in-bounds slot holding `undefined` counts:
- * `MissingPolicy.USE_UNDEFINED` (the default) says yes; `MissingPolicy.SKIP` says no, the same as
+ * `NilPolicy.NIL` (the default) says yes; `NilPolicy.SKIP` says no, the same as
  * `hasPresentKey`. Neither array overload accepts a negative index, unlike @see `getAt`.
  *
  * `hasPresentKey` is `hasKey` pinned to the stricter policy.
@@ -424,20 +424,20 @@ function nonkeyIndexMessage(seq, subj) returns string {
  *   hasKey({ "a": undefined }, "a"); // => false
  *   hasKey([1, 2, 3], 2);            // => true
  *   hasKey([1, 2, 3], -1);           // => false
- *   hasKey([1, undefined, 3], 1, MissingPolicy.SKIP); // => false
+ *   hasKey([1, undefined, 3], 1, NilPolicy.SKIP); // => false
  */
 export function hasKey(obj is map, key is string) returns boolean {
     return (obj[key] != undefined);
 }
-export function hasKey(obj is map, key is string, missingPolicy is MissingPolicy) returns boolean {
+export function hasKey(obj is map, key is string, missingPolicy is NilPolicy) returns boolean {
     return (obj[key] != undefined); // offered for symmetry with the array case
 }
 export function hasPresentKey(obj is map, key is string) returns boolean {
   return hasKey(obj, key); // FS does not retain keys with undefined values
 }
 
-export function hasKey(obj is array, key is number, missingPolicy is MissingPolicy) returns boolean {
-  if (missingPolicy == MissingPolicy.SKIP) { return hasPresentKey(obj, key); }
+export function hasKey(obj is array, key is number, missingPolicy is NilPolicy) returns boolean {
+  if (missingPolicy == NilPolicy.SKIP) { return hasPresentKey(obj, key); }
   return (key >= 0) && (key < size(obj));
 }
 export function hasKey(obj is array, key is number) returns boolean {
@@ -618,13 +618,13 @@ export const ClxnGetsetFuncs = {
   "lastInWins": lastInWins,
   "getAt":             (bag, path, fallback)                     => getAt(bag, path, fallback),
   "setAt":             (bag, path, val, onCollision)             => setAt(bag, path, val, onCollision),
-  "update":            (bag, keyStrOrPath, updater)              => update(bag, keyStrOrPath, updater),
-  "updateWith":        (bag, keyStrOrPath, updater, onCollision) => updateWith(bag, keyStrOrPath, updater, onCollision),
-  "setAtWith":         (bag, keyStrOrPath, val, segmentFor)      => setAtWith(bag, keyStrOrPath, val, segmentFor),
+  "update":            (bag, keynameOrPath, updater)              => update(bag, keynameOrPath, updater),
+  "updateWith":        (bag, keynameOrPath, updater, onCollision) => updateWith(bag, keynameOrPath, updater, onCollision),
+  "setAtWith":         (bag, keynameOrPath, val, segmentFor)      => setAtWith(bag, keynameOrPath, val, segmentFor),
   "deepMerge":         (existing, incoming)                      => deepMerge(existing, incoming),
   "assignWith":        (existing, incoming, combine)             => assignWith(existing, incoming, combine),
   "mergeWith":         (existing, incoming, combine)             => mergeWith(existing, incoming, combine),
-  "pathForKey":        (keyStr)                                  => pathForKey(keyStr),
+  "pathForKey":        (keyname)                                  => pathForKey(keyname),
   "arrLast":           (arr)                                     => arrLast(arr),
   "arrFirst":          (arr)                                     => arrFirst(arr),
   "hasKey":            (obj, key)                                => hasKey(obj, key),

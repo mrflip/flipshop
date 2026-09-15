@@ -71,7 +71,7 @@ how many call sites it would touch.
   non-negative-integer-looking segment (bare number or digit string).
 * ~~`updateWith`'s `onCollision` customizes the already-occupied leaf ... rather than customizing
   how *missing intermediate segments* get created~~ — resolved by addition rather than by
-  repurposing `updateWith`: a new `setAtWith(bag, keyStrOrPath, val, segmentFor)` is the actual
+  repurposing `updateWith`: a new `setAtWith(bag, keynameOrPath, val, segmentFor)` is the actual
   counterpart to lodash's `setWith` customizer, consulted only where a segment doesn't already
   resolve to a map or array. `updateWith`'s own `onCollision` keeps its existing, test-validated
   meaning (the leaf-combine resolver) — changing what it means would have broken

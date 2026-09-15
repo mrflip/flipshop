@@ -175,10 +175,10 @@ with them when they are also map keys — same hazard as bare map keys. For `nam
 If genericity is exactly the salient feature:
 * `val` for an any-typed value. vv/kk are secondary choices in a lambda when key or val is in-scope
 * `key` for a generic map key, `keylist` for a list of keys. Use `propnames` and `props` when metaprogramming a structured object rather than a bag
-* `seq` for a generic array index
+* `idx` for a generic array index
 * `bag` for a generic key-value map (Record<string, any>); `fooBag` for a key-value map of foo's
 * `arr`, for a generic array; `foos` or `foolist` as taste informs
-* `ii`/`jj`/`kk` for array iterators, or for element indexes in a grid pattern (`row` and `col`, or `horiz` and `vert` may be more evocative but only in their precise meaning). One may use `seq`, `fooSeq`, `fooIdx`, `fooIdx0 / fooIdx1 / fooIdx2`, but ii/jj/kk are never foo'ed.
+* `ii`/`jj`/`kk` for array iterators, or for element indexes in a grid pattern (`row` and `col`, or `horiz` and `vert` may be more evocative but only in their precise meaning). One may use `iter` or `seq`, `fooIter` or `fooSeq`, `fooIter0 / fooIter1 / fooIter2`, but ii/jj/kk are never foo'ed.
 * `xx` / `yy` / `zz` for **position** values within the contextually natural coordinate system. If it's important to
 * `wd` / `dp` / `ht` / `diam` (`fooWd`, `fooDiam`) for the width (x-ish), depth (y-ish), height (z-ish), or diameter dimensions of an object.
   - `od`, `fooOD` for an outer or circumscribed or bounding-circle diameter; `fooID` for an inscribed or inner diameter of a shell/torus/disc.
@@ -188,8 +188,24 @@ If genericity is exactly the salient feature:
   - `fooCount` for the reported quantity. One may use `nFoos` for an input quantity.
 * `qy` for a truly unsalient query, but `fooQ` if there's any context to attach to it
 * `mate`
-* `from` and `onto` for initial and final state, `beg` and `end` for a directed boundary, `ante` and `post` for before/after, `curr` and `prev` for a chain
+* `from` and `onto` for initial and final position, `beg` and `end` for starting and ending points of a sequence or continuum, `ante` and `post` for before/after in time or processing steps, `prev`, `curr` and `next` for a chain or other ordered situation.
 * `loc` would be a variable describing a location; used locally it can have any convenient type, but it's often useful to follow the ducktyped-intent-map pattern described elsewhere. Use `pt` or `vertex` or `center` exactly when you want to specifically note that a location is a point, or a single-point junction, or a unique unambiguous and dominant central location.
+
+* `iter`        -- a sequence iteration counter
+* `ckey`        -- a `string|number` collection key: string for a map, index number for an array
+* `idx`         -- an array index, when it's known to be an integer array index
+* `key`         -- a map key, when it's known to be a string map key
+* `dotkey`      -- a string with dotted segments to indicate a ckey path
+* `keypath`     -- an array with string/number segments to indicate a ckey path
+* `anypath`     -- a string|array that can be either a dotkey string or a ckey path array
+* `funcOrKey`   -- a key|keypath|func iteratee value; referred to in text as an "iteratee"
+* `funcOrPath`  -- a dotkey|keypath|func iteratee value with _.get semantics; referred to in text as an "iteratee"
+* `rule`        -- a rule ("predicate" in lodash) accepting (val, ckey) and returning truthy/falsy; referred to in text as a "rule"
+* `ruleOrKey`   -- a key|keypath|rule iteratee value, generating truthy/falsy; referred to in text as a "rule iteratee"
+* `reducer`     -- a reducer function accepting (acc, val, ckey); referred to in text as a "reducer"
+* `comparator`  -- a comparator function accepting (aa, bb) and returning positive/zero/negative
+
+There was a little bit of bad search/replacing that happened -- too many instances of `iteratee` were replaced by other things such as `funcOrProp`. Do your best to replace them with the appropriate term.
 
 **Agnostic parameters** — where the function genuinely does not care what it got — are named
 `val`, `str`, `obj`, `num`, `err`.

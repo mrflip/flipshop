@@ -1,4 +1,8 @@
-!!SIG TODO-helperFuncs add(augend, addend)
+FeatureScript 3070;
+import(path : "onshape/std/common.fs", version : "3070.0");
+
+
+// TODO-helperFuncs
 /** Adds two numbers.
  *
  * @param augend {number}: The first number in an addition.
@@ -8,26 +12,32 @@
  *
  * @example `add(6, 4); // => 10`
  */
-!!EODOC
+export function add(augend, addend) {
+  if (false) { add(augend, addend); }
+  throw 'TODO: implement add';
+}
 
-!!SIG TODO-helperFuncs after(n, func)
+// TODO-helperFuncs
 /** The opposite of `before`; this method creates a function that invokes
  * `func` only after it's called `minCalls` or more times.
  *
  * @param minCalls {number}: The number of calls before `func` is invoked.
- * @param func {function}: The function to restrict.
+ * @param func {function}: Function to restrict.
  *
  * @returns {function}: the new restricted function.
  *
  * @example `var saves = ['profile', 'settings']; var done = after(saves.length, function() { println('done saving!'); }); forEach(saves, function(type) { asyncSave({ 'type': type, 'complete': done }); }); // => Logs 'done saving!' after the two async saves have completed.`
  */
-!!EODOC
+export function after(n, func) {
+  if (false) { after(n, func); }
+  throw 'TODO: implement after';
+}
 
-!!SIG lodash ary(func, n)
+// lodash
 /** Creates a function that invokes `func`, with up to `n` arguments,
  * ignoring any additional arguments.
  *
- * @param func {function}: The function to cap arguments for.
+ * @param func {function}: Function to cap arguments for.
  * @param n {number}: The arity cap; defaults to `func.length`.
  *   @optional
  *
@@ -35,55 +45,58 @@
  *
  * @example `map(['6', '8', '10'], ary(parseInt, 1)); // => [6, 8, 10]`
  */
-!!EODOC
+export function ary(func, n) {
+  if (false) { ary(func, n); }
+  throw 'TODO: implement ary';
+}
 
-!!SIG flipshop assertThrows(testfunc)
+// flipshop
 /** Wraps a test function so a suite of throw cases runs through the same harness: the wrapped
  * function hands back whatever was thrown, and throws when nothing was. Belongs next to
  * runTests rather than here, once you have somewhere to put it.
  */
-!!EODOC
+// export function assertThrows(testfunc) {}
 
-!!SIG lodash assign(object, sources)
-/** Assigns own enumerable string keyed properties of source objects to the
- * destination object. Source objects are applied from left to right.
- * Subsequent sources overwrite property assignments of previous sources.
- *
- * **Note:** This method mutates `object` and is loosely based on
- * [`Object.assign`](https://mdn.io/Object/assign).
+// lodash
+/** Copies keys of source maps onto the destination map, left to right; a later source's key
+ * overwrites an earlier one.
  *
  * @seeAlso [assignIn]
  *
- * @param object {map}: The destination object.
- * @param sources {map}: The source objects.
+ * @param object {map}: The destination map.
+ * @param sources {map}: The source maps.
  *   @optional
  *
  * @returns {map}: `object`.
  *
- * @example `function Foo() { this.a = 1; } function Bar() { this.c = 3; } Foo.prototype.b = 2; Bar.prototype.d = 4; assign({ 'a': 0 }, new Foo, new Bar); // => { 'a': 1, 'c': 3 }`
+ * @example `assign({ 'a': 0, 'b': 1 }, { 'a': 1, 'c': 3 }); // => { 'a': 1, 'b': 1, 'c': 3 }`
  */
-!!EODOC
+export function assign(object, sources) {
+  if (false) { assign(object, sources); }
+  throw 'TODO: implement assign';
+}
 
-!!SIG lodash assignIn(object, sources)
-/** This method is like `assign` except that it iterates over own and
- * inherited source properties.
- *
- * **Note:** This method mutates `object`.
+// lodash
+/** Same as `assign` -- FeatureScript maps have no own/inherited distinction, so there's no
+ * extra reach for this to have over `assign`.
  *
  * @seeAlso [assign]
  *
- * @param object {map}: The destination object.
- * @param sources {map}: The source objects.
+ * @param object {map}: The destination map.
+ * @param sources {map}: The source maps.
  *   @optional
  *
  * @returns {map}: `object`.
  *
- * @example `function Foo() { this.a = 1; } function Bar() { this.c = 3; } Foo.prototype.b = 2; Bar.prototype.d = 4; assignIn({ 'a': 0 }, new Foo, new Bar); // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4 }`
+ * @example `assignIn({ 'a': 0, 'b': 1 }, { 'a': 1, 'c': 3 }); // => { 'a': 1, 'b': 1, 'c': 3 }`
  */
-!!EODOC
+export function assignIn(object, sources) {
+  if (false) { assignIn(object, sources); }
+  throw 'TODO: implement assignIn';
+}
 
-!!SIG lodash assignInWith(object, sources, customizer)
-/** This method is like `assignIn` except that it accepts `customizer`
+// lodash
+/** Like `assignIn` except that it accepts `customizer`
  * which is invoked to produce the assigned values. If `customizer` returns
  * `undefined`, assignment is handled by the method instead. The `customizer`
  * is invoked with five arguments: (objValue, srcValue, key, object, source).
@@ -94,16 +107,19 @@
  *
  * @param object {map}: The destination object.
  * @param sources {map}: The source objects.
- * @param customizer {function}: The function to customize assigned values.
+ * @param customizer {function}: Function to customize assigned values.
  *   @optional
  *
  * @returns {map}: `object`.
  *
  * @example `function customizer(objValue, srcValue) { return isUndefined(objValue) ? srcValue : objValue; } var defaults = partialRight(assignInWith, customizer); defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 }); // => { 'a': 1, 'b': 2 }`
  */
-!!EODOC
+export function assignInWith(object, sources, customizer) {
+  if (false) { assignInWith(object, sources, customizer); }
+  throw 'TODO: implement assignInWith';
+}
 
-!!SIG flipshop assignWith(existing, incoming, combine)
+// flipshop
 /** `mergeMaps` *(std)*, with `combine(existingVal, incomingVal, key)` deciding what lands at a key
  * present in `incoming`, instead of `incoming` unconditionally winning -- returning `undefined`
  * from `combine` falls back to that default. Unlike lodash's `assignWith` customizer, `combine`
@@ -112,10 +128,10 @@
  * @example `assignWith({ "a": 1 }, { "a": 2 }, (existingVal, incomingVal) => existingVal + incomingVal);`
  * @example `// => { "a": 3 }`
  */
-!!EODOC
+// export function assignWith(existing, incoming, combine) {}
 
-!!SIG lodash assignWith(object, sources, customizer)
-/** This method is like `assign` except that it accepts `customizer`
+// lodash
+/** Like `assign` except that it accepts `customizer`
  * which is invoked to produce the assigned values. If `customizer` returns
  * `undefined`, assignment is handled by the method instead. The `customizer`
  * is invoked with five arguments: (objValue, srcValue, key, object, source).
@@ -126,33 +142,39 @@
  *
  * @param object {map}: The destination object.
  * @param sources {map}: The source objects.
- * @param customizer {function}: The function to customize assigned values.
+ * @param customizer {function}: Function to customize assigned values.
  *   @optional
  *
  * @returns {map}: `object`.
  *
  * @example `function customizer(objValue, srcValue) { return isUndefined(objValue) ? srcValue : objValue; } var defaults = partialRight(assignWith, customizer); defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 }); // => { 'a': 1, 'b': 2 }`
  */
-!!EODOC
+export function assignWith(object, sources, customizer) {
+  if (false) { assignWith(object, sources, customizer); }
+  throw 'TODO: implement assignWith';
+}
 
-!!SIG lodash at(object, paths)
-/** Creates an array of values corresponding to `paths` of `object`.
+// lodash
+/** Creates an array of values corresponding to `keylist` of `object`.
  *
- * @param object {map}: The object to iterate over.
- * @param paths {(string|string[])}: The property paths to pick.
+ * @param object {map}: The map to iterate over.
+ * @param keylist {array}: Each entry an `anypath` @see `getAt` -- a dotkey string or a keypath array.
  *   @optional
  *
  * @returns {array}: the picked values.
  *
- * @example `var object = { 'a': [{ 'b': { 'c': 3 } }, 4] }; at(object, ['a[0].b.c', 'a[1]']); // => [3, 4]`
+ * @example `var object = { 'a': [{ 'b': { 'c': 3 } }, 4] }; at(object, ['a.0.b.c', 'a.1']); // => [3, 4]`
  */
-!!EODOC
+export function at(object, keylist) {
+  if (false) { at(object, keylist); }
+  throw 'TODO: implement at';
+}
 
-!!SIG lodash attempt(func, args)
+// lodash
 /** Attempts to invoke `func`, returning either the result or the caught error
  * object. Any additional arguments are provided to `func` when it's invoked.
  *
- * @param func {function}: The function to attempt.
+ * @param func {function}: Function to attempt.
  * @param args: The arguments to invoke `func` with.
  *   @optional
  *
@@ -160,22 +182,28 @@
  *
  * @example `var elements = attempt(function(selector) { return document.querySelectorAll(selector); }, '>_>'); if (isError(elements)) { elements = []; }`
  */
-!!EODOC
+export function attempt(func, args) {
+  if (false) { attempt(func, args); }
+  throw 'TODO: implement attempt';
+}
 
-!!SIG TODO-helperFuncs before(maxCalls is number, func is function)
+// TODO-helperFuncs
 /** Creates a function that, for the first `maxCalls`, invokes `func` with the arguments it receives;
  * Subsequent calls to the created function return the result of the final `maxCalls`'th `func` invocation.
  *
  * @param maxCalls {number}: The number of calls at which `func` is no longer invoked.
- * @param func {function}: The function to restrict.
+ * @param func {function}: Function to restrict.
  *
  * @returns {function}: the new restricted function.
  *
  * @example `handler.on('click', before(5, addContactToList)); // => Allows adding up to 4 contacts to the list.`
  */
-!!EODOC
+export function before(maxCalls is number, func is function) {
+  if (false) { before(maxCalls is number, func is function); }
+  throw 'TODO: implement before';
+}
 
-!!SIG lodash bind(func, thisArg, partials)
+// lodash
 /** Creates a function that invokes `func` with the `this` binding of `thisArg`
  * and `partials` prepended to the arguments it receives.
  *
@@ -185,7 +213,7 @@
  * **Note:** Unlike native `Function#bind`, this method doesn't set the "length"
  * property of bound functions.
  *
- * @param func {function}: The function to bind.
+ * @param func {function}: Function to bind.
  * @param thisArg: The `this` binding of `func`.
  * @param partials: The arguments to be partially applied.
  *   @optional
@@ -195,9 +223,12 @@
  * @example `function greet(greeting, punctuation) { return greeting + ' ' + this.user + punctuation; } var object = { 'user': 'fred' }; var bound = bind(greet, object, 'hi'); bound('!'); // => 'hi fred!'`
  * @example `var bound = bind(greet, object, _, '!'); bound('hi'); // => 'hi fred!'`
  */
-!!EODOC
+export function bind(func, thisArg, partials) {
+  if (false) { bind(func, thisArg, partials); }
+  throw 'TODO: implement bind';
+}
 
-!!SIG lodash bindAll(object, methodNames)
+// lodash
 /** Binds methods of an object to the object itself, overwriting the existing
  * method.
  *
@@ -210,9 +241,12 @@
  *
  * @example `var view = { 'label': 'docs', 'click': function() { println('clicked ' + this.label); } }; bindAll(view, ['click']); jQuery(element).on('click', view.click); // => Logs 'clicked docs' when clicked.`
  */
-!!EODOC
+export function bindAll(object, methodNames) {
+  if (false) { bindAll(object, methodNames); }
+  throw 'TODO: implement bindAll';
+}
 
-!!SIG lodash bindKey(object, key, partials)
+// lodash
 /** Creates a function that invokes the method at `object[key]` with `partials`
  * prepended to the arguments it receives.
  *
@@ -235,16 +269,19 @@
  * @example `object.greet = function(greeting, punctuation) { return greeting + 'ya ' + this.user + punctuation; }; bound('!'); // => 'hiya fred!'`
  * @example `var bound = bindKey(object, 'greet', _, '!'); bound('hi'); // => 'hiya fred!'`
  */
-!!EODOC
+export function bindKey(object, key, partials) {
+  if (false) { bindKey(object, key, partials); }
+  throw 'TODO: implement bindKey';
+}
 
-!!SIG flipshop boxarrPush(arrRef, val)
+// flipshop
 /** Mutates the array inside `arrRef` in place and returns `val`, for accumulating into an outer
  * array from within a `forEach`/`mapValues` callback. `boxarrPush` appends; `boxarrUnshift`
  * prepends.
  */
-!!EODOC
+// export function boxarrPush(arrRef, val) {}
 
-!!SIG flipshop buildNestedChoices(levels, tree)
+// flipshop
 /** Nested choice-list structure (`{ name, displayName, entries }` per level) built by walking
  * `tree` according to `levels`. Returns `tree` unchanged if `levels` has fewer than 2 entries.
  *
@@ -253,18 +290,18 @@
  *
  * @example `buildNestedChoices(['socket_kind', ['drive_kind', { "inthex": 'Int Hex' }]], tree);`
  */
-!!EODOC
+// export function buildNestedChoices(levels, tree) {}
 
-!!SIG flipshop camelCase(str)
+// flipshop
 /** `str` split into words and rejoined in camelCase: the first word lowercased, every other word
  * capitalized, no separators.
  *
  * @example `camelCase("Foo Bar"); // => "fooBar"`
  * @example `camelCase("foo-bar"); // => "fooBar"`
  */
-!!EODOC
+// export function camelCase(str) {}
 
-!!SIG lodash camelCase(string)
+// lodash
 /** Converts `string` to [camel case](https://en.wikipedia.org/wiki/CamelCase).
  *
  * @param string {string}: The string to convert; defaults to `''`.
@@ -276,16 +313,19 @@
  * @example `camelCase('--foo-bar--'); // => 'fooBar'`
  * @example `camelCase('__FOO_BAR__'); // => 'fooBar'`
  */
-!!EODOC
+export function camelCase(string) {
+  if (false) { camelCase(string); }
+  throw 'TODO: implement camelCase';
+}
 
-!!SIG flipshop capitalize(str)
+// flipshop
 /** `str` with its first character uppercased and the rest lowercased.
  *
  * @example `capitalize("FRED"); // => "Fred"`
  */
-!!EODOC
+// export function capitalize(str) {}
 
-!!SIG lodash capitalize(string)
+// lodash
 /** Converts the first character of `string` to upper case and the remaining
  * to lower case.
  *
@@ -296,9 +336,12 @@
  *
  * @example `capitalize('FRED'); // => 'Fred'`
  */
-!!EODOC
+export function capitalize(string) {
+  if (false) { capitalize(string); }
+  throw 'TODO: implement capitalize';
+}
 
-!!SIG lodash castArray(value)
+// lodash
 /** Casts `value` as an array if it's not one.
  *
  * @param value: The value to inspect.
@@ -313,9 +356,12 @@
  * @example `castArray(); // => []`
  * @example `var array = [1, 2, 3]; println(castArray(array) === array); // => true`
  */
-!!EODOC
+export function castArray(value) {
+  if (false) { castArray(value); }
+  throw 'TODO: implement castArray';
+}
 
-!!SIG lodash ceil(number, precision)
+// lodash
 /** Computes `number` rounded up to `precision`.
  *
  * @param number {number}: The number to round up.
@@ -328,9 +374,12 @@
  * @example `ceil(6.004, 2); // => 6.01`
  * @example `ceil(6040, -2); // => 6100`
  */
-!!EODOC
+export function ceil(number, precision) {
+  if (false) { ceil(number, precision); }
+  throw 'TODO: implement ceil';
+}
 
-!!SIG lodash chain(value)
+// lodash
 /** Creates a `lodash` wrapper instance that wraps `value` with explicit method
  * chain sequences enabled. The result of such sequences must be unwrapped
  * with `_#value`.
@@ -341,9 +390,12 @@
  *
  * @example `var users = [ { 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 40 }, { 'user': 'pebbles', 'age': 1 } ]; var youngest = _ .chain(users) .sortBy('age') .map(function(o) { return o.user + ' is ' + o.age; }) .head() .value(); // => 'pebbles is 1'`
  */
-!!EODOC
+export function chain(value) {
+  if (false) { chain(value); }
+  throw 'TODO: implement chain';
+}
 
-!!SIG flipshop chunk(arr, chunkSize)
+// flipshop
 /** Splits `arr` into groups of `chunkSize` elements each; the last group holds whatever's left
  * over. `chunkSize < 1` returns an empty array. Unlike lodash, `chunkSize` has no default of `1`
  * -- it's always required here.
@@ -351,9 +403,9 @@
  * @example `chunk(["a", "b", "c", "d"], 2); // => [["a", "b"], ["c", "d"]]`
  * @example `chunk(["a", "b", "c", "d"], 3); // => [["a", "b", "c"], ["d"]]`
  */
-!!EODOC
+// export function chunk(arr, chunkSize) {}
 
-!!SIG lodash chunk(array, size)
+// lodash
 /** Creates an array of elements split into groups the length of `size`.
  * If `array` can't be split evenly, the final chunk will be the remaining
  * elements.
@@ -367,9 +419,12 @@
  * @example `chunk(['a', 'b', 'c', 'd'], 2); // => [['a', 'b'], ['c', 'd']]`
  * @example `chunk(['a', 'b', 'c', 'd'], 3); // => [['a', 'b', 'c'], ['d']]`
  */
-!!EODOC
+export function chunk(array, size) {
+  if (false) { chunk(array, size); }
+  throw 'TODO: implement chunk';
+}
 
-!!SIG lodash clamp(number, lower, upper)
+// lodash
 /** Clamps `number` within the inclusive `lower` and `upper` bounds.
  *
  * @param number {number}: The number to clamp.
@@ -382,9 +437,12 @@
  * @example `clamp(-10, -5, 5); // => -5`
  * @example `clamp(10, -5, 5); // => 5`
  */
-!!EODOC
+export function clamp(number, lower, upper) {
+  if (false) { clamp(number, lower, upper); }
+  throw 'TODO: implement clamp';
+}
 
-!!SIG lodash clone(value)
+// lodash
 /** Creates a shallow clone of `value`.
  *
  * **Note:** This method is loosely based on the
@@ -403,10 +461,13 @@
  *
  * @example `var objects = [{ 'a': 1 }, { 'b': 2 }]; var shallow = clone(objects); println(shallow[0] === objects[0]); // => true`
  */
-!!EODOC
+export function clone(value) {
+  if (false) { clone(value); }
+  throw 'TODO: implement clone';
+}
 
-!!SIG lodash cloneDeep(value)
-/** This method is like `clone` except that it recursively clones `value`.
+// lodash
+/** Like `clone` except that it recursively clones `value`.
  *
  * @seeAlso [clone]
  *
@@ -416,15 +477,18 @@
  *
  * @example `var objects = [{ 'a': 1 }, { 'b': 2 }]; var deep = cloneDeep(objects); println(deep[0] === objects[0]); // => false`
  */
-!!EODOC
+export function cloneDeep(value) {
+  if (false) { cloneDeep(value); }
+  throw 'TODO: implement cloneDeep';
+}
 
-!!SIG lodash cloneDeepWith(value, customizer)
-/** This method is like `cloneWith` except that it recursively clones `value`.
+// lodash
+/** Like `cloneWith` except that it recursively clones `value`.
  *
  * @seeAlso [cloneWith]
  *
  * @param value: The value to recursively clone.
- * @param customizer {function}: The function to customize cloning.
+ * @param customizer {function}: Function to customize cloning.
  *   @optional
  *
  * @returns: the deep cloned value.
@@ -433,10 +497,13 @@
  * @example `println(el.nodeName); // => 'BODY'`
  * @example `println(el.childNodes.length); // => 20`
  */
-!!EODOC
+export function cloneDeepWith(value, customizer) {
+  if (false) { cloneDeepWith(value, customizer); }
+  throw 'TODO: implement cloneDeepWith';
+}
 
-!!SIG lodash cloneWith(value, customizer)
-/** This method is like `clone` except that it accepts `customizer` which
+// lodash
+/** Like `clone` except that it accepts `customizer` which
  * is invoked to produce the cloned value. If `customizer` returns `undefined`,
  * cloning is handled by the method instead. The `customizer` is invoked with
  * up to four arguments; (value [, index|key, object, stack]).
@@ -444,7 +511,7 @@
  * @seeAlso [cloneDeepWith]
  *
  * @param value: The value to clone.
- * @param customizer {function}: The function to customize cloning.
+ * @param customizer {function}: Function to customize cloning.
  *   @optional
  *
  * @returns: the cloned value.
@@ -453,34 +520,37 @@
  * @example `println(el.nodeName); // => 'BODY'`
  * @example `println(el.childNodes.length); // => 0`
  */
-!!EODOC
+export function cloneWith(value, customizer) {
+  if (false) { cloneWith(value, customizer); }
+  throw 'TODO: implement cloneWith';
+}
 
-!!SIG flipshop cmpTo(aa, bb)
+// flipshop
 /** /** Undefined is equal to itself and nothing else -- comparing with anything else is an error */
  */
-!!EODOC
+// export function cmpTo(aa, bb) {}
 
-!!SIG flipshop cmpTo(aa, bb)
+// flipshop
 /** /** true is greater than false; booleans cannot compare with anything else */
  */
-!!EODOC
+// export function cmpTo(aa, bb) {}
 
-!!SIG flipshop cmpTo(aa, bb)
+// flipshop
 /** /** Compares numbers numerically using `tolerantEquals` */
  */
-!!EODOC
+// export function cmpTo(aa, bb) {}
 
-!!SIG flipshop cmpTo(aa, bb)
+// flipshop
 /** /** Compares ValueWithUnits numerically using `tolerantEquals`; the units must be compatible */
  */
-!!EODOC
+// export function cmpTo(aa, bb) {}
 
-!!SIG flipshop cmpTo(aa, bb)
+// flipshop
 /** /** Compares strings lexicographically; the strings must be compatible. String comparison is slow and stupid */
  */
-!!EODOC
+// export function cmpTo(aa, bb) {}
 
-!!SIG flipshop compact(arr)
+// flipshop
 /** `arr` with every falsey element removed, per typeUtils' `truthy` -- narrower than lodash's own
  * falsey set, since FeatureScript treats only `undefined` and `false` as falsey (`0` and `""`
  * stay truthy).
@@ -488,9 +558,9 @@
  * @example `compact([0, 1, false, 2, "", 3]); // => [0, 1, 2, "", 3]`
  * @example `compact([0, false, undefined]); // => [0]`
  */
-!!EODOC
+// export function compact(arr) {}
 
-!!SIG lodash compact(array)
+// lodash
 /** Creates an array with all falsey values removed. The values `false`, `null`,
  * `0`, `-0`, `0n`, `""`, `undefined`, and `NaN` are falsy.
  *
@@ -500,9 +570,12 @@
  *
  * @example `compact([0, 1, false, 2, '', 3]); // => [1, 2, 3]`
  */
-!!EODOC
+export function compact(array) {
+  if (false) { compact(array); }
+  throw 'TODO: implement compact';
+}
 
-!!SIG lodash concat(array, values)
+// lodash
 /** Creates a new array concatenating `array` with any additional arrays
  * and/or values.
  *
@@ -515,38 +588,41 @@
  * @example `var array = [1]; var other = concat(array, 2, [3], [[4]]); println(other); // => [1, 2, 3, [4]]`
  * @example `println(array); // => [1]`
  */
-!!EODOC
+export function concat(array, values) {
+  if (false) { concat(array, values); }
+  throw 'TODO: implement concat';
+}
 
-!!SIG flipshop cond(pairs)
+// flipshop
 /** Builds a function that tries `pairs` in order, calling and returning the first `handler` whose
  * `rule` holds `val`, or `undefined` if none does. Each `rule` is coerced through `funcOrProp`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map works in place of a
+ * dotpath string, `[path, srcValue]` array, or partial-match map works in place of a
  * literal `rule(val, seq) => boolean` function -- matching lodash's own `cond`, which runs
- * `funcOrProp` on every predicate.
+ * `funcOrProp` on every rule.
  *
  * @example `const grade = cond([ [(score, _seq) => score >= 90, constant("A")],`
  * @example `[(score, _seq) => score >= 80, constant("B")],`
  * @example `[constant(true), constant("F")] ]); grade(95, 0); // => "A"`
  * @example `grade(70, 0); // => "F"`
  */
-!!EODOC
+// export function cond(pairs) {}
 
-!!SIG flipshop cond(pairs)
+// flipshop
 /** `cond`, keyed by rule instead of ordered by array position -- each map key doubles as its own
- * `rule` (coerced through `funcOrProp`, so a key is naturally a property-path string), paired with
+ * `rule` (coerced through `funcOrProp`, so a key is naturally a dotpath string), paired with
  * its value as the `handler`.
  *
  * @example `const speak = cond({ "isDog": constant("Woof"), "isCat": constant("Meow") }); speak({ "isDog": true, "isCat": false }, 0); // => "Woof"`
  */
-!!EODOC
+// export function cond(pairs) {}
 
-!!SIG lodash cond(pairs)
+// lodash
 /** Creates a function that iterates over `pairs` and invokes the corresponding
- * function of the first predicate to return truthy. The predicate-function
+ * function of the first rule to return truthy. The rule-function
  * pairs are invoked with the `this` binding and arguments of the created
  * function.
  *
- * @param pairs {array}: The predicate-function pairs.
+ * @param pairs {array}: The rule-function pairs.
  *
  * @returns {function}: the new composite function.
  *
@@ -554,42 +630,51 @@
  * @example `func({ 'a': 0, 'b': 1 }); // => 'matches B'`
  * @example `func({ 'a': '1', 'b': '2' }); // => 'no match'`
  */
-!!EODOC
+export function cond(pairs) {
+  if (false) { cond(pairs); }
+  throw 'TODO: implement cond';
+}
 
-!!SIG lodash conforms(source)
-/** Creates a function that invokes the predicate properties of `source` with
+// lodash
+/** Creates a function that invokes the rule properties of `source` with
  * the corresponding property values of a given object, returning `true` if
- * all predicates return truthy, else `false`.
+ * all rules return truthy, else `false`.
  *
  * **Note:** The created function is equivalent to `conformsTo` with
  * `source` partially applied.
  *
- * @param source {map}: The object of property predicates to conform to.
+ * @param source {map}: The object of property rules to conform to.
  *
  * @returns {function}: the new spec function.
  *
  * @example `var objects = [ { 'a': 2, 'b': 1 }, { 'a': 1, 'b': 2 } ]; filter(objects, conforms({ 'b': function(n) { return n > 1; } })); // => [{ 'a': 1, 'b': 2 }]`
  */
-!!EODOC
+export function conforms(source) {
+  if (false) { conforms(source); }
+  throw 'TODO: implement conforms';
+}
 
-!!SIG lodash conformsTo(object, source)
-/** Checks if `object` conforms to `source` by invoking the predicate
+// lodash
+/** Checks if `object` conforms to `source` by invoking the rule
  * properties of `source` with the corresponding property values of `object`.
  *
  * **Note:** This method is equivalent to `conforms` when `source` is
  * partially applied.
  *
  * @param object {map}: The object to inspect.
- * @param source {map}: The object of property predicates to conform to.
+ * @param source {map}: The object of property rules to conform to.
  *
  * @returns {boolean}: `true` if `object` conforms, else `false`.
  *
  * @example `var object = { 'a': 1, 'b': 2 }; conformsTo(object, { 'b': function(n) { return n > 1; } }); // => true`
  * @example `conformsTo(object, { 'b': function(n) { return n > 2; } }); // => false`
  */
-!!EODOC
+export function conformsTo(object, source) {
+  if (false) { conformsTo(object, source); }
+  throw 'TODO: implement conformsTo';
+}
 
-!!SIG flipshop constant(val, arity)
+// flipshop
 /** Builds a single-argument function that always returns `val`, ignoring the argument it's called
  * with -- FeatureScript calls a function with exactly its declared arity, so unlike lodash's
  * `constant` this only fits a one-argument slot (e.g. `mapArray`/`filter`/a `cond` handler); lift
@@ -597,9 +682,9 @@
  *
  * @example `times(3, constant(0)); // => [0, 0, 0]`
  */
-!!EODOC
+// export function constant(val, arity) {}
 
-!!SIG lodash constant(value)
+// lodash
 /** Creates a function that returns `value`.
  *
  * @param value: The value to return from the new function.
@@ -609,25 +694,28 @@
  * @example `var objects = times(2, constant({ 'a': 1 })); println(objects); // => [{ 'a': 1 }, { 'a': 1 }]`
  * @example `println(objects[0] === objects[1]); // => true`
  */
-!!EODOC
+export function constant(value) {
+  if (false) { constant(value); }
+  throw 'TODO: implement constant';
+}
 
-!!SIG flipshop countBy(arr, iterateeSpec)
+// flipshop
 /** Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to how many
  * elements of `arr`/`bag` produced that result. `iterateeSpec` is coerced through `funcOrProp`
  *
  * @example `countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }`
  * @example `countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }`
  */
-!!EODOC
+// export function countBy(arr, iterateeSpec) {}
 
-!!SIG lodash countBy(collection, iteratee)
+// lodash
 /** Creates an object composed of keys generated from the results of running
  * each element of `collection` thru `funcOrProp`. The corresponding value of
  * each key is the number of times the key was returned by `funcOrProp`. The
  * iteratee is invoked (value).
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function/propname to transform keys; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname to transform keys; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the composed aggregate object.
@@ -635,9 +723,12 @@
  * @example `countBy([6.1, 4.2, 6.3], Math.floor); // => { '4': 1, '6': 2 }`
  * @example `countBy(['one', 'two', 'three'], 'length'); // => { '3': 2, '5': 1 }`
  */
-!!EODOC
+export function countBy(collection, iteratee) {
+  if (false) { countBy(collection, iteratee); }
+  throw 'TODO: implement countBy';
+}
 
-!!SIG TODO-metaprogramming curry(func, arity)
+// TODO-metaprogramming
 /** Creates a function that accepts arguments of `func` and either invokes
  * `func` returning its result, if at least `arity` number of arguments have
  * been provided, or returns a function that accepts the remaining `func`
@@ -649,7 +740,7 @@
  *
  * **Note:** This method doesn't set the "length" property of curried functions.
  *
- * @param func {function}: The function to curry.
+ * @param func {function}: Function to curry.
  * @param arity {number}: The arity of `func`; defaults to `func.length`.
  *   @optional
  *
@@ -660,9 +751,12 @@
  * @example `curried(1, 2, 3); // => [1, 2, 3]`
  * @example `curried(1)(_, 3)(2); // => [1, 2, 3]`
  */
-!!EODOC
+export function curry(func, arity) {
+  if (false) { curry(func, arity); }
+  throw 'TODO: implement curry';
+}
 
-!!SIG flipshop curry3to0(func)
+// flipshop
 /** `curryNtoM` wraps `func` to accept `N` arguments but call `func` with only the first `M` of
  * them -- dropping trailing arguments so a fixed-arity callback (`func()`, `func(val)`, …) can sit
  * in a slot that always calls with `N` arguments, like a `forEach`/`mapValues` iteratee.
@@ -670,10 +764,10 @@
  * @example `curry2to0(function() { return "called"; })("ignored1", "ignored2"); // => "called"`
  * @example `curry3to1(function(val) { return val; })(1, 2, 3); // => 1`
  */
-!!EODOC
+// export function curry3to0(func) {}
 
-!!SIG TODO-metaprogramming curryRight(func, arity)
-/** This method is like `curry` except that arguments are applied to `func`
+// TODO-metaprogramming
+/** Like `curry` except that arguments are applied to `func`
  * in the manner of `partialRight` instead of `partial`.
  *
  * The `curryRight.placeholder` value, which defaults to `_` in monolithic
@@ -681,7 +775,7 @@
  *
  * **Note:** This method doesn't set the "length" property of curried functions.
  *
- * @param func {function}: The function to curry.
+ * @param func {function}: Function to curry.
  * @param arity {number}: The arity of `func`; defaults to `func.length`.
  *   @optional
  *
@@ -692,9 +786,12 @@
  * @example `curried(1, 2, 3); // => [1, 2, 3]`
  * @example `curried(3)(1, _)(2); // => [1, 2, 3]`
  */
-!!EODOC
+export function curryRight(func, arity) {
+  if (false) { curryRight(func, arity); }
+  throw 'TODO: implement curryRight';
+}
 
-!!SIG lodash debounce(func, wait, options, options.leading, options.maxWait, options.trailing)
+// lodash
 /** Creates a debounced function that delays invoking `func` until after `wait`
  * milliseconds have elapsed since the last time the debounced function was
  * invoked. The debounced function comes with a `cancel` method to cancel
@@ -715,7 +812,7 @@
  * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
  * for details over the differences between `debounce` and `throttle`.
  *
- * @param func {function}: The function to debounce.
+ * @param func {function}: Function to debounce.
  * @param wait {number}: The number of milliseconds to delay; defaults to `0`.
  *   @optional
  * @param options {{
@@ -731,9 +828,12 @@
  *
  * @example `jQuery(window).on('resize', debounce(calculateLayout, 150)); jQuery(element).on('click', debounce(sendMail, 300, { 'leading': true, 'trailing': false })); var debounced = debounce(batchLog, 250, { 'maxWait': 1000 }); var source = new EventSource('/stream'); jQuery(source).on('message', debounced); jQuery(window).on('popstate', debounced.cancel);`
  */
-!!EODOC
+export function debounce(func, wait, options) {
+  if (false) { debounce(func, wait, options); }
+  throw 'TODO: implement debounce';
+}
 
-!!SIG lodash deburr(string)
+// lodash
 /** Deburrs `string` by converting
  * [Latin-1 Supplement](https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)#Character_table)
  * and [Latin Extended-A](https://en.wikipedia.org/wiki/Latin_Extended-A)
@@ -747,9 +847,12 @@
  *
  * @example `deburr('déjà vu'); // => 'deja vu'`
  */
-!!EODOC
+export function deburr(string) {
+  if (false) { deburr(string); }
+  throw 'TODO: implement deburr';
+}
 
-!!SIG flipshop deepMerge(existing, incoming)
+// flipshop
 /** Recursively merges `incoming` into `existing`: two maps combine key by key all the way down;
  * two arrays combine index by index, `existing`'s tail past `size(incoming)` surviving untouched,
  * matching lodash's `merge`; an `undefined` source leaves the existing value alone; anything
@@ -762,9 +865,9 @@
  * @example `deepMerge({ "a": [1, 2] }, { "a": [3] }); // => { "a": [3, 2] }`
  * @example `deepMerge({ "a": 1 }, undefined); // => { "a": 1 }`
  */
-!!EODOC
+// export function deepMerge(existing, incoming) {}
 
-!!SIG flipshop defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc)
+// flipshop
 /** Value for `newDefinition[destkey]`, keeping it auto-derived from `newDefinition[basekey]` via
  * `valfunc(baseVal, definition)` for as long as the user hasn't overridden it -- the pattern
  * behind every `*EditLogic` function in this codebase that keeps a variable name in sync with
@@ -785,9 +888,9 @@
  * @example `defaultMaybe({ "bagname": "foo", "varname": "myKeys" }, { "bagname": "bar", "varname": "myKeys" }, "bagname", "varname", (name, _) => (name ~ "_keys"));`
  * @example `// => "myKeys" -- varname was hand-edited away from its default, so it's left alone`
  */
-!!EODOC
+// export function defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc) {}
 
-!!SIG lodash defaults(object, sources)
+// lodash
 /** Assigns own and inherited enumerable string keyed properties of source
  * objects to the destination object for all destination properties that
  * resolve to `undefined`. Source objects are applied from left to right.
@@ -805,10 +908,13 @@
  *
  * @example `defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 }); // => { 'a': 1, 'b': 2 }`
  */
-!!EODOC
+export function defaults(object, sources) {
+  if (false) { defaults(object, sources); }
+  throw 'TODO: implement defaults';
+}
 
-!!SIG lodash defaultsDeep(object, sources)
-/** This method is like `defaults` except that it recursively assigns
+// lodash
+/** Like `defaults` except that it recursively assigns
  * default properties.
  *
  * **Note:** This method mutates `object`.
@@ -823,9 +929,12 @@
  *
  * @example `defaultsDeep({ 'a': { 'b': 2 } }, { 'a': { 'b': 1, 'c': 3 } }); // => { 'a': { 'b': 2, 'c': 3 } }`
  */
-!!EODOC
+export function defaultsDeep(object, sources) {
+  if (false) { defaultsDeep(object, sources); }
+  throw 'TODO: implement defaultsDeep';
+}
 
-!!SIG lodash defaultTo(value, defaultValue)
+// lodash
 /** Checks `value` to determine whether a default value should be returned in
  * its place. The `defaultValue` is returned if `value` is `NaN`, `null`,
  * or `undefined`.
@@ -838,13 +947,16 @@
  * @example `defaultTo(1, 10); // => 1`
  * @example `defaultTo(undefined, 10); // => 10`
  */
-!!EODOC
+export function defaultTo(value, defaultValue) {
+  if (false) { defaultTo(value, defaultValue); }
+  throw 'TODO: implement defaultTo';
+}
 
-!!SIG lodash defer(func, args)
+// lodash
 /** Defers invoking the `func` until the current call stack has cleared. Any
  * additional arguments are provided to `func` when it's invoked.
  *
- * @param func {function}: The function to defer.
+ * @param func {function}: Function to defer.
  * @param args: The arguments to invoke `func` with.
  *   @optional
  *
@@ -852,13 +964,16 @@
  *
  * @example `defer(function(text) { println(text); }, 'deferred'); // => Logs 'deferred' after one millisecond.`
  */
-!!EODOC
+export function defer(func, args) {
+  if (false) { defer(func, args); }
+  throw 'TODO: implement defer';
+}
 
-!!SIG lodash delay(func, wait, args)
+// lodash
 /** Invokes `func` after `wait` milliseconds. Any additional arguments are
  * provided to `func` when it's invoked.
  *
- * @param func {function}: The function to delay.
+ * @param func {function}: Function to delay.
  * @param wait {number}: The number of milliseconds to delay invocation.
  * @param args: The arguments to invoke `func` with.
  *   @optional
@@ -867,9 +982,12 @@
  *
  * @example `delay(function(text) { println(text); }, 1000, 'later'); // => Logs 'later' after one second.`
  */
-!!EODOC
+export function delay(func, wait, args) {
+  if (false) { delay(func, wait, args); }
+  throw 'TODO: implement delay';
+}
 
-!!SIG flipshop difference(arr, excludeArr)
+// flipshop
 /** `arr`'s values that don't appear in `excludeArr`, order taken from `arr`. Lodash's `difference`
  * takes the exclusion values as trailing variadic arrays; FeatureScript has no varargs, so they're
  * a single array here -- call with `concatenateArrays([...])` to exclude from several sources at
@@ -877,9 +995,9 @@
  *
  * @example `difference([2, 1], [2, 3]); // => [1]`
  */
-!!EODOC
+// export function difference(arr, excludeArr) {}
 
-!!SIG lodash difference(array, values)
+// lodash
 /** Creates an array of `array` values not included in the other given arrays
  * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons. The order and references of result values are
@@ -898,18 +1016,21 @@
  *
  * @example `difference([2, 1], [2, 3]); // => [1]`
  */
-!!EODOC
+export function difference(array, values) {
+  if (false) { difference(array, values); }
+  throw 'TODO: implement difference';
+}
 
-!!SIG flipshop differenceBy(arr, excludeArr, iterateeSpec)
+// flipshop
 /** `difference`, comparing `arr` and `excludeArr` by `iterateeSpec(val, seq)` instead of `val`
  * itself. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]`
  */
-!!EODOC
+// export function differenceBy(arr, excludeArr, iterateeSpec) {}
 
-!!SIG lodash differenceBy(array, values, iteratee)
-/** This method is like `difference` except that it accepts `funcOrProp` which
+// lodash
+/** Like `difference` except that it accepts `funcOrProp` which
  * is invoked for each element of `array` and `values` to generate the criterion
  * by which they're compared. The order and references of result values are
  * determined by the first array. The function/propname is invoked with one argument:
@@ -920,7 +1041,7 @@
  * @param array {array}: The array to inspect.
  * @param values {array}: The values to exclude.
  *   @optional
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of filtered values.
@@ -928,18 +1049,21 @@
  * @example `differenceBy([2.1, 1.2], [2.3, 3.4], Math.floor); // => [1.2]`
  * @example `differenceBy([{ 'x': 2 }, { 'x': 1 }], [{ 'x': 1 }], 'x'); // => [{ 'x': 2 }]`
  */
-!!EODOC
+export function differenceBy(array, values, iteratee) {
+  if (false) { differenceBy(array, values, iteratee); }
+  throw 'TODO: implement differenceBy';
+}
 
-!!SIG flipshop differenceWith(arr, excludeArr, comparator)
+// flipshop
 /** `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==`.
  *
  * @example `differenceWith([{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], (aa, bb) => aa.x == bb.x);`
  * @example `// => [{ "x": 2 }]`
  */
-!!EODOC
+// export function differenceWith(arr, excludeArr, comparator) {}
 
-!!SIG lodash differenceWith(array, values, comparator)
-/** This method is like `difference` except that it accepts `comparator`
+// lodash
+/** Like `difference` except that it accepts `comparator`
  * which is invoked to compare elements of `array` to `values`. The order and
  * references of result values are determined by the first array. The comparator
  * is invoked with two arguments: (arrVal, othVal).
@@ -956,9 +1080,12 @@
  *
  * @example `var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]; differenceWith(objects, [{ 'x': 1, 'y': 2 }], isEqual); // => [{ 'x': 2, 'y': 1 }]`
  */
-!!EODOC
+export function differenceWith(array, values, comparator) {
+  if (false) { differenceWith(array, values, comparator); }
+  throw 'TODO: implement differenceWith';
+}
 
-!!SIG lodash divide(dividend, divisor)
+// lodash
 /** Divide two numbers.
  *
  * @param dividend {number}: The first number in a division.
@@ -968,9 +1095,12 @@
  *
  * @example `divide(6, 4); // => 1.5`
  */
-!!EODOC
+export function divide(dividend, divisor) {
+  if (false) { divide(dividend, divisor); }
+  throw 'TODO: implement divide';
+}
 
-!!SIG flipshop dotMap(obj, options)
+// flipshop
 /** Depth-first flatten of a nested map into dotted keys: `{ "a": { "b": 1 } }` becomes
  * `{ "a.b": 1 }`.
  *
@@ -985,9 +1115,9 @@
  * ones added here, so a key like `"H2.5mm"` does not survive the round trip. See the
  * RoundTripCases in the test module.
  */
-!!EODOC
+// export function dotMap(obj, options) {}
 
-!!SIG flipshop downcase(str)
+// flipshop
 /** Converts `str`, as a whole, to lower case. ASCII-only, via an explicit character lookup --
  * unlike lodash's `toLower`, there's no Unicode case folding, but a non-letter character is left
  * untouched rather than causing an error.
@@ -995,17 +1125,17 @@
  * @example `downcase("fooBar"); // => "foobar"`
  * @example `downcase("--FOO-BAR--"); // => "--foo-bar--"`
  */
-!!EODOC
+// export function downcase(str) {}
 
-!!SIG flipshop drop(arr, dropCount)
+// flipshop
 /** `arr` with the first `dropCount` elements removed; `dropCount <= 0` returns `arr` unchanged.
  *
  * @example `drop([1, 2, 3], 2); // => [3]`
  * @example `drop([1, 2, 3], 5); // => []`
  */
-!!EODOC
+// export function drop(arr, dropCount) {}
 
-!!SIG lodash drop(array, n)
+// lodash
 /** Creates a slice of `array` with `n` elements dropped from the beginning.
  *
  * @param array {array}: The array to query.
@@ -1019,17 +1149,20 @@
  * @example `drop([1, 2, 3], 5); // => []`
  * @example `drop([1, 2, 3], 0); // => [1, 2, 3]`
  */
-!!EODOC
+export function drop(array, n) {
+  if (false) { drop(array, n); }
+  throw 'TODO: implement drop';
+}
 
-!!SIG flipshop dropRight(arr, dropCount)
+// flipshop
 /** `arr` with the last `dropCount` elements removed; `dropCount <= 0` returns `arr` unchanged.
  *
  * @example `dropRight([1, 2, 3], 2); // => [1]`
  * @example `dropRight([1, 2, 3], 5); // => []`
  */
-!!EODOC
+// export function dropRight(arr, dropCount) {}
 
-!!SIG lodash dropRight(array, n)
+// lodash
 /** Creates a slice of `array` with `n` elements dropped from the end.
  *
  * @param array {array}: The array to query.
@@ -1043,23 +1176,26 @@
  * @example `dropRight([1, 2, 3], 5); // => []`
  * @example `dropRight([1, 2, 3], 0); // => [1, 2, 3]`
  */
-!!EODOC
+export function dropRight(array, n) {
+  if (false) { dropRight(array, n); }
+  throw 'TODO: implement dropRight';
+}
 
-!!SIG flipshop dropRightWhile(arr, rule)
+// flipshop
 /** `arr` with elements dropped from the end for as long as `rule` holds; the first
  * (rightmost-scanned) element `rule` rejects, and everything before it, is kept.
  *
  * @example `dropRightWhile([1, 2, 3, 4], (val) => val > 2); // => [1, 2]`
  */
-!!EODOC
+// export function dropRightWhile(arr, rule) {}
 
-!!SIG lodash dropRightWhile(array, predicate)
+// lodash
 /** Creates a slice of `array` excluding elements dropped from the end.
- * Elements are dropped until `predicate` returns falsey. The predicate is
+ * Elements are dropped until `rule` returns falsey. The rule is
  * invoked with three arguments: (value, index, array).
  *
  * @param array {array}: The array to query.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -1069,22 +1205,25 @@
  * @example `dropRightWhile(users, ['active', false]); // => objects for ['barney']`
  * @example `dropRightWhile(users, 'active'); // => objects for ['barney', 'fred', 'pebbles']`
  */
-!!EODOC
+export function dropRightWhile(array, rule) {
+  if (false) { dropRightWhile(array, rule); }
+  throw 'TODO: implement dropRightWhile';
+}
 
-!!SIG flipshop dropWhile(arr, rule)
+// flipshop
 /** `arr` with elements dropped from the beginning for as long as `rule` holds.
  *
  * @example `dropWhile([1, 2, 3, 4], (val) => val < 3); // => [3, 4]`
  */
-!!EODOC
+// export function dropWhile(arr, rule) {}
 
-!!SIG lodash dropWhile(array, predicate)
+// lodash
 /** Creates a slice of `array` excluding elements dropped from the beginning.
- * Elements are dropped until `predicate` returns falsey. The predicate is
+ * Elements are dropped until `rule` returns falsey. The rule is
  * invoked with three arguments: (value, index, array).
  *
  * @param array {array}: The array to query.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -1094,9 +1233,12 @@
  * @example `dropWhile(users, ['active', false]); // => objects for ['pebbles']`
  * @example `dropWhile(users, 'active'); // => objects for ['barney', 'fred', 'pebbles']`
  */
-!!EODOC
+export function dropWhile(array, rule) {
+  if (false) { dropWhile(array, rule); }
+  throw 'TODO: implement dropWhile';
+}
 
-!!SIG lodash endsWith(string, target, position)
+// lodash
 /** Checks if `string` ends with the given target string.
  *
  * @param string {string}: The string to inspect; defaults to `''`.
@@ -1112,9 +1254,12 @@
  * @example `endsWith('abc', 'b'); // => false`
  * @example `endsWith('abc', 'b', 2); // => true`
  */
-!!EODOC
+export function endsWith(string, target, position) {
+  if (false) { endsWith(string, target, position); }
+  throw 'TODO: implement endsWith';
+}
 
-!!SIG lodash eq(value, other)
+// lodash
 /** Performs a
  * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * comparison between two values to determine if they are equivalent.
@@ -1130,9 +1275,12 @@
  * @example `eq('a', Object('a')); // => false`
  * @example `eq(NaN, NaN); // => true`
  */
-!!EODOC
+export function eq(value, other) {
+  if (false) { eq(value, other); }
+  throw 'TODO: implement eq';
+}
 
-!!SIG lodash escape(string)
+// lodash
 /** Converts the characters "&", "<", ">", '"', and "'" in `string` to their
  * corresponding HTML entities.
  *
@@ -1156,18 +1304,21 @@
  *
  * @example `escape('fred, barney, & pebbles'); // => 'fred, barney, &amp; pebbles'`
  */
-!!EODOC
+export function escape(string) {
+  if (false) { escape(string); }
+  throw 'TODO: implement escape';
+}
 
-!!SIG flipshop escapeRegExp(str)
+// flipshop
 /** `str` with every regex metacharacter (`\ ^ $ . * + ? ( ) [ ] { } |`) preceded by a backslash,
  * so it can be dropped into `match`/`replace`/`splitByRegexp`'s `regExp` argument and matched
  * literally instead of interpreted.
  *
  * @example `escapeRegExp("[lodash](https://lodash.com/)"); // => "\\[lodash\\]\\(https://lodash\\.com/\\)"`
  */
-!!EODOC
+// export function escapeRegExp(str) {}
 
-!!SIG lodash escapeRegExp(string)
+// lodash
 /** Escapes the `RegExp` special characters "^", "$", "\", ".", "*", "+",
  * "?", "(", ")", "[", "]", "{", "}", and "|" in `string`.
  *
@@ -1178,11 +1329,14 @@
  *
  * @example `escapeRegExp('[lodash](https://lodash.com/)'); // => '\[lodash\]\(https://lodash\.com/\)'`
  */
-!!EODOC
+export function escapeRegExp(string) {
+  if (false) { escapeRegExp(string); }
+  throw 'TODO: implement escapeRegExp';
+}
 
-!!SIG lodash every(collection, predicate)
-/** Checks if `predicate` returns truthy for **all** elements of `collection`.
- * Iteration is stopped once `predicate` returns falsey. The predicate is
+// lodash
+/** Checks if `rule` returns truthy for **all** elements of `collection`.
+ * Iteration is stopped once `rule` returns falsey. The rule is
  * invoked with three arguments: (value, index|key, collection).
  *
  * **Note:** This method returns `true` for
@@ -1191,24 +1345,27 @@
  * elements of empty collections.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
- * @returns {boolean}: `true` if all elements pass the predicate check, else `false`.
+ * @returns {boolean}: `true` if all elements pass the rule check, else `false`.
  *
  * @example `every([true, 1, null, 'yes'], Boolean); // => false`
  * @example `var users = [ { 'user': 'barney', 'age': 36, 'active': false }, { 'user': 'fred', 'age': 40, 'active': false } ]; every(users, { 'user': 'barney', 'active': false }); // => false`
  * @example `every(users, ['active', false]); // => true`
  * @example `every(users, 'active'); // => false`
  */
-!!EODOC
+export function every(collection, rule) {
+  if (false) { every(collection, rule); }
+  throw 'TODO: implement every';
+}
 
-!!SIG flipshop field_varname(varname, fieldname)
+// flipshop
 /** /** `varname ~ "_" ~ fieldname`, with `fieldname` run through `sanitize_varname` first. */
  */
-!!EODOC
+// export function field_varname(varname, fieldname) {}
 
-!!SIG lodash fill(array, value, start, end)
+// lodash
 /** Fills elements of `array` with `value` from `start` up to, but not
  * including, `end`.
  *
@@ -1227,11 +1384,14 @@
  * @example `fill(Array(3), 2); // => [2, 2, 2]`
  * @example `fill([4, 6, 8, 10], '*', 1, 3); // => [4, '*', '*', 10]`
  */
-!!EODOC
+export function fill(array, value, start, end) {
+  if (false) { fill(array, value, start, end); }
+  throw 'TODO: implement fill';
+}
 
-!!SIG lodash filter(collection, predicate)
+// lodash
 /** Iterates over elements of `collection`, returning an array of all elements
- * `predicate` returns truthy for. The predicate is invoked with three
+ * `rule` returns truthy for. The rule is invoked with three
  * arguments: (value, index|key, collection).
  *
  * **Note:** Unlike `remove`, this method returns a new array.
@@ -1239,7 +1399,7 @@
  * @seeAlso [reject]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new filtered array.
@@ -1250,9 +1410,12 @@
  * @example `filter(users, 'active'); // => objects for ['barney']`
  * @example `filter(users, overSome([{ 'age': 36 }, ['age', 40]])); // => objects for ['fred', 'barney']`
  */
-!!EODOC
+export function filter(collection, rule) {
+  if (false) { filter(collection, rule); }
+  throw 'TODO: implement filter';
+}
 
-!!SIG flipshop find(arr, rule)
+// flipshop
 /** First element of `bag`/`arr` for which `rule` holds, or `undefined` if none does. The map form
  * hands `rule` the key as a second argument. `findLast` scans from the end instead. `rule` is
  * coerced through `funcOrProp` @see `funcOrProp`.
@@ -1260,15 +1423,15 @@
  * @example `find([1, 2, 3], (val) => val > 1); // => 2`
  * @example `find({ a: 1, b: 2 }, (val, key) => key == "b"); // => 2`
  */
-!!EODOC
+// export function find(arr, rule) {}
 
-!!SIG lodash find(collection, predicate, fromIndex)
+// lodash
 /** Iterates over elements of `collection`, returning the first element
- * `predicate` returns truthy for. The predicate is invoked with three
+ * `rule` returns truthy for. The rule is invoked with three
  * arguments: (value, index|key, collection).
  *
  * @param collection {array|map}: The collection to inspect.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `0`.
  *   @optional
@@ -1280,22 +1443,25 @@
  * @example `find(users, ['active', false]); // => object for 'fred'`
  * @example `find(users, 'active'); // => object for 'barney'`
  */
-!!EODOC
+export function find(collection, rule, fromIndex) {
+  if (false) { find(collection, rule, fromIndex); }
+  throw 'TODO: implement find';
+}
 
-!!SIG flipshop findIndex(arr, rule)
+// flipshop
 /** Index of the first element of `arr` for which `rule` holds, or `-1` if none does.
  *
  * @example `findIndex([1, 2, 3], (val) => val > 1); // => 1`
  * @example `findIndex([1, 2, 3], (val) => val > 9); // => -1`
  */
-!!EODOC
+// export function findIndex(arr, rule) {}
 
-!!SIG lodash findIndex(array, predicate, fromIndex)
-/** This method is like `find` except that it returns the index of the first
- * element `predicate` returns truthy for instead of the element itself.
+// lodash
+/** Like `find` except that it returns the index of the first
+ * element `rule` returns truthy for instead of the element itself.
  *
  * @param array {array}: The array to inspect.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `0`.
  *   @optional
@@ -1307,22 +1473,25 @@
  * @example `findIndex(users, ['active', false]); // => 0`
  * @example `findIndex(users, 'active'); // => 2`
  */
-!!EODOC
+export function findIndex(array, rule, fromIndex) {
+  if (false) { findIndex(array, rule, fromIndex); }
+  throw 'TODO: implement findIndex';
+}
 
-!!SIG flipshop findKey(bag, rule)
+// flipshop
 /** First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
  * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `funcOrProp`
  *
  * @example `findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"`
  */
-!!EODOC
+// export function findKey(bag, rule) {}
 
-!!SIG lodash findKey(object, predicate)
-/** This method is like `find` except that it returns the key of the first
- * element `predicate` returns truthy for instead of the element itself.
+// lodash
+/** Like `find` except that it returns the key of the first
+ * element `rule` returns truthy for instead of the element itself.
  *
  * @param object {map}: The object to inspect.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {string|undefined}: the key of the matched element, else `undefined`.
@@ -1332,19 +1501,22 @@
  * @example `findKey(users, ['active', false]); // => 'fred'`
  * @example `findKey(users, 'active'); // => 'barney'`
  */
-!!EODOC
+export function findKey(object, rule) {
+  if (false) { findKey(object, rule); }
+  throw 'TODO: implement findKey';
+}
 
-!!SIG flipshop findLast(arr, rule)
+// flipshop
 /** /** `find`, scanning from the end. */
  */
-!!EODOC
+// export function findLast(arr, rule) {}
 
-!!SIG lodash findLast(collection, predicate, fromIndex)
-/** This method is like `find` except that it iterates over elements of
+// lodash
+/** Like `find` except that it iterates over elements of
  * `collection` from right to left.
  *
  * @param collection {array|map}: The collection to inspect.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `collection.length-1`.
  *   @optional
@@ -1353,22 +1525,25 @@
  *
  * @example `findLast([1, 2, 3, 4], function(n) { return n % 2 == 1; }); // => 3`
  */
-!!EODOC
+export function findLast(collection, rule, fromIndex) {
+  if (false) { findLast(collection, rule, fromIndex); }
+  throw 'TODO: implement findLast';
+}
 
-!!SIG flipshop findLastIndex(arr, rule)
+// flipshop
 /** `findIndex`, scanning from the end: index of the last element of `arr` for which `rule`
  * holds, or `-1` if none does.
  *
  * @example `findLastIndex([1, 2, 3], (val) => val < 3); // => 1`
  */
-!!EODOC
+// export function findLastIndex(arr, rule) {}
 
-!!SIG lodash findLastIndex(array, predicate, fromIndex)
-/** This method is like `findIndex` except that it iterates over elements
+// lodash
+/** Like `findIndex` except that it iterates over elements
  * of `collection` from right to left.
  *
  * @param array {array}: The array to inspect.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `array.length-1`.
  *   @optional
@@ -1380,22 +1555,25 @@
  * @example `findLastIndex(users, ['active', false]); // => 2`
  * @example `findLastIndex(users, 'active'); // => 0`
  */
-!!EODOC
+export function findLastIndex(array, rule, fromIndex) {
+  if (false) { findLastIndex(array, rule, fromIndex); }
+  throw 'TODO: implement findLastIndex';
+}
 
-!!SIG flipshop findLastKey(bag, rule)
+// flipshop
 /** Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
  * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `funcOrProp`
  *
  * @example `findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"`
  */
-!!EODOC
+// export function findLastKey(bag, rule) {}
 
-!!SIG lodash findLastKey(object, predicate)
-/** This method is like `findKey` except that it iterates over elements of
+// lodash
+/** Like `findKey` except that it iterates over elements of
  * a collection in the opposite order.
  *
  * @param object {map}: The object to inspect.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {string|undefined}: the key of the matched element, else `undefined`.
@@ -1405,9 +1583,12 @@
  * @example `findLastKey(users, ['active', false]); // => 'fred'`
  * @example `findLastKey(users, 'active'); // => 'pebbles'`
  */
-!!EODOC
+export function findLastKey(object, rule) {
+  if (false) { findLastKey(object, rule); }
+  throw 'TODO: implement findLastKey';
+}
 
-!!SIG flipshop flatMap(arr, iterateeSpec)
+// flipshop
 /** `bag`/`arr` mapped through `iterateeSpec`, then flattened one level @see `flatten`. The map form
  * hands `iterateeSpec` the key as a second argument, and always returns an array, same as lodash's
  * collection form. `flatMapDeep`/`flatMapDepth` flatten fully / to `depth` levels instead.
@@ -1416,43 +1597,49 @@
  * @example `flatMap([1, 2], (val) => [val, val]); // => [1, 1, 2, 2]`
  * @example `flatMap({ a: 1, b: 2 }, (val) => [val, val]); // => [1, 1, 2, 2]`
  */
-!!EODOC
+// export function flatMap(arr, iterateeSpec) {}
 
-!!SIG lodash flatMap(collection, iteratee)
+// lodash
 /** Creates a flattened array of values by running each element in `collection`
  * thru `funcOrProp` and flattening the mapped results. The function/propname is invoked
  * with three arguments: (value, index|key, collection).
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new flattened array.
  *
  * @example `function duplicate(n) { return [n, n]; } flatMap([1, 2], duplicate); // => [1, 1, 2, 2]`
  */
-!!EODOC
+export function flatMap(collection, iteratee) {
+  if (false) { flatMap(collection, iteratee); }
+  throw 'TODO: implement flatMap';
+}
 
-!!SIG lodash flatMapDeep(collection, iteratee)
-/** This method is like `flatMap` except that it recursively flattens the
+// lodash
+/** Like `flatMap` except that it recursively flattens the
  * mapped results.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new flattened array.
  *
  * @example `function duplicate(n) { return [[[n, n]]]; } flatMapDeep([1, 2], duplicate); // => [1, 1, 2, 2]`
  */
-!!EODOC
+export function flatMapDeep(collection, iteratee) {
+  if (false) { flatMapDeep(collection, iteratee); }
+  throw 'TODO: implement flatMapDeep';
+}
 
-!!SIG lodash flatMapDepth(collection, iteratee, depth)
-/** This method is like `flatMap` except that it recursively flattens the
+// lodash
+/** Like `flatMap` except that it recursively flattens the
  * mapped results up to `depth` times.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  * @param depth {number}: The maximum recursion depth; defaults to `1`.
  *   @optional
@@ -1461,16 +1648,19 @@
  *
  * @example `function duplicate(n) { return [[[n, n]]]; } flatMapDepth([1, 2], duplicate, 2); // => [[1, 1], [2, 2]]`
  */
-!!EODOC
+export function flatMapDepth(collection, iteratee, depth) {
+  if (false) { flatMapDepth(collection, iteratee, depth); }
+  throw 'TODO: implement flatMapDepth';
+}
 
-!!SIG flipshop flatten(arr)
+// flipshop
 /** `arr` with one level of array nesting removed. @see `flattenDeep`, `flattenDepth`.
  *
  * @example `flatten([1, [2, [3, [4]], 5]]); // => [1, 2, [3, [4]], 5]`
  */
-!!EODOC
+// export function flatten(arr) {}
 
-!!SIG lodash flatten(array)
+// lodash
 /** Flattens `array` a single level deep.
  *
  * @param array {array}: The array to flatten.
@@ -1479,16 +1669,19 @@
  *
  * @example `flatten([1, [2, [3, [4]], 5]]); // => [1, 2, [3, [4]], 5]`
  */
-!!EODOC
+export function flatten(array) {
+  if (false) { flatten(array); }
+  throw 'TODO: implement flatten';
+}
 
-!!SIG flipshop flattenDeep(arr)
+// flipshop
 /** `arr`, with every level of array nesting removed.
  *
  * @example `flattenDeep([1, [2, [3, [4]], 5]]); // => [1, 2, 3, 4, 5]`
  */
-!!EODOC
+// export function flattenDeep(arr) {}
 
-!!SIG lodash flattenDeep(array)
+// lodash
 /** Recursively flattens `array`.
  *
  * @param array {array}: The array to flatten.
@@ -1497,16 +1690,19 @@
  *
  * @example `flattenDeep([1, [2, [3, [4]], 5]]); // => [1, 2, 3, 4, 5]`
  */
-!!EODOC
+export function flattenDeep(array) {
+  if (false) { flattenDeep(array); }
+  throw 'TODO: implement flattenDeep';
+}
 
-!!SIG flipshop flattenDepth(arr, depth)
+// flipshop
 /** `arr` with up to `depth` levels of array nesting removed; `depth <= 0` returns `arr` unchanged.
  *
  * @example `flattenDepth([1, [2, [3, [4]], 5]], 2); // => [1, 2, 3, [4], 5]`
  */
-!!EODOC
+// export function flattenDepth(arr, depth) {}
 
-!!SIG lodash flattenDepth(array, depth)
+// lodash
 /** Recursively flatten `array` up to `depth` times.
  *
  * @param array {array}: The array to flatten.
@@ -1518,20 +1714,26 @@
  * @example `var array = [1, [2, [3, [4]], 5]]; flattenDepth(array, 1); // => [1, 2, [3, [4]], 5]`
  * @example `flattenDepth(array, 2); // => [1, 2, 3, [4], 5]`
  */
-!!EODOC
+export function flattenDepth(array, depth) {
+  if (false) { flattenDepth(array, depth); }
+  throw 'TODO: implement flattenDepth';
+}
 
-!!SIG lodash flip(func)
+// lodash
 /** Creates a function that invokes `func` with arguments reversed.
  *
- * @param func {function}: The function to flip arguments for.
+ * @param func {function}: Function to flip arguments for.
  *
  * @returns {function}: the new flipped function.
  *
  * @example `var flipped = flip(function() { return toArray(arguments); }); flipped('a', 'b', 'c', 'd'); // => ['d', 'c', 'b', 'a']`
  */
-!!EODOC
+export function flip(func) {
+  if (false) { flip(func); }
+  throw 'TODO: implement flip';
+}
 
-!!SIG lodash floor(number, precision)
+// lodash
 /** Computes `number` rounded down to `precision`.
  *
  * @param number {number}: The number to round down.
@@ -1544,9 +1746,12 @@
  * @example `floor(0.046, 2); // => 0.04`
  * @example `floor(4060, -2); // => 4000`
  */
-!!EODOC
+export function floor(number, precision) {
+  if (false) { floor(number, precision); }
+  throw 'TODO: implement floor';
+}
 
-!!SIG lodash flow(funcs)
+// lodash
 /** Creates a function that returns the result of invoking the given functions
  * with the `this` binding of the created function, where each successive
  * invocation is supplied the return value of the previous.
@@ -1560,10 +1765,13 @@
  *
  * @example `function square(n) { return n * n; } var addSquare = flow([add, square]); addSquare(1, 2); // => 9`
  */
-!!EODOC
+export function flow(funcs) {
+  if (false) { flow(funcs); }
+  throw 'TODO: implement flow';
+}
 
-!!SIG lodash flowRight(funcs)
-/** This method is like `flow` except that it creates a function that
+// lodash
+/** Like `flow` except that it creates a function that
  * invokes the given functions from right to left.
  *
  * @seeAlso [flow]
@@ -1575,153 +1783,95 @@
  *
  * @example `function square(n) { return n * n; } var addSquare = flowRight([square, add]); addSquare(1, 2); // => 9`
  */
-!!EODOC
+export function flowRight(funcs) {
+  if (false) { flowRight(funcs); }
+  throw 'TODO: implement flowRight';
+}
 
-!!SIG flipshop forEach(bag, keylist, missingPolicy, func)
-/** Iterates over `bag`/`arr`, invoking `func` for each entry as `func(val, key)` (map) or
- * `func(val, seq)` (array). Unlike lodash's `forEach`, where an iteratee may exit early by
- * returning `false`, iteration here stops only when `func` returns `NextStepAction.BREAK`.
- *
- * `missingPolicy` (`USE_UNDEFINED`, the default, or `SKIP`) decides whether an entry whose value
- * is `undefined` gets visited at all. A `keylist` overload walks exactly those keys, in that
- * order, instead of `keys(bag)`.
+// flipshop
+/** Iterates over `bag`/`arr`,
  *
  * @example `forEach({ "a": 1, "b": 2, "c": 3 }, function(val, key) { if (key == "b") { return NextStepAction.BREAK; } }); // visits "a" then "b"; "c" is never reached`
  */
-!!EODOC
 
-!!SIG lodash forEach(collection, iteratee)
+// lodash
 /** Iterates over elements of `collection` and invokes `funcOrProp` for each element.
- * The function/propname is invoked with three arguments: (value, index|key, collection).
- * Iteratee functions may exit iteration early by explicitly returning `false`.
- *
- * **Note:** As with other "Collections" methods, objects with a "length"
- * property are iterated like arrays. To avoid this behavior use `forIn`
- * or `forOwn` for object iteration.
- *
- * @seeAlso [forEachRight]
- *
- * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
- *   @optional
- *
- * @returns {array|map}: `collection`.
- *
- * @example `forEach([1, 2], function(value) { println(value); }); // => Logs '1' then '2'.`
- * @example `forEach({ 'a': 1, 'b': 2 }, function(value, key) { println(key); }); // => Logs 'a' then 'b' (iteration order is not guaranteed).`
- */
-!!EODOC
-
-!!SIG flipshop forEach3(bag, keylist, missingPolicy, func)
-/** `forEach`, handing `func` a third argument: a 0-based visit-count `seq`, distinct from `key`
- * for a map (a `SKIP`'d entry consumes a `keylist` slot but not a `seq` one) -- `seq` fills both
- * trailing slots for an array, `func(val, seq, seq)`, matching the map callback's arity.
- */
-!!EODOC
-
-!!SIG flipshop forEachRight(arr, func)
-/** `forEach`, back-to-front -- otherwise identical, including the `NextStepAction.BREAK` early
- * exit.
- *
- * @example `forEachRight([1, 2, 3], function(val, seq) { debug(context, val); }); // visits 3, then 2, then 1 forEachRight({ a: 1, b: 2 }, function(val, key) { debug(context, key); }); // visits "b", then "a"`
- */
-!!EODOC
-
-!!SIG lodash forEachRight(collection, iteratee)
-/** This method is like `forEach` except that it iterates over elements of
- * `collection` from right to left.
+ * Return `NextStepAction.BREAK` from `func` to stop iteration early.
  *
  * @seeAlso [forEach]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ *   A function iteratee is invoked as `func(val, key is string)` (map) or `func(val, seq is number)` (array).
+ *   @optional
+ * @param missingPolicy {NilPolicy}:
+ *   with `NilPolicy.NIL` (the default), existing-as-undefined entries are visited;
+ *   with `NilPolicy.SKIP`, they are skipped; there will be a gap in the sequence of indexes for arrays.
+ *   defaults to `NilPolicy.NIL`.
+ *   @optional
+ * @param keylist {array}: The keys, in order, to iterate over;
+ *   keys are allowed to be repeated, absent, or out-of-bounds for the collection.
  *   @optional
  *
  * @returns {array|map}: `collection`.
  *
- * @example `forEachRight([1, 2], function(value) { println(value); }); // => Logs '2' then '1'.`
+ * @example `forEach3(["a", "b", "c"], (val, key, seq) => { println([val, key, seq]); }); // => Logs '[c, 0, 0]' then '[b, 1, 1]' then '[a, 2, 2]'.`
+ * @example `forEach3({ a: 1, b: 2 }, (val, key, seq) => { println([val, key, seq]); }); // => Logs '[1, "a", 0]' then '[2, "b", 1]'.`
  */
-!!EODOC
+// export function forEach(bag, keylist, missingPolicy, func) {}
 
-!!SIG lodash forIn(object, iteratee)
-/** Iterates over own and inherited enumerable string keyed properties of an
- * object and invokes `funcOrProp` for each property. The function/propname is invoked
- * with three arguments: (value, key, object). Iteratee functions may exit
- * iteration early by explicitly returning `false`.
+// flipshop
+/** Like `forEach` except that it calls a function iteratee with three arguments:
+ * (val, key, seq) for a map, or (val, seq, seq) for an array.
+ * Return `NextStepAction.BREAK` from `func` to stop iteration early.
  *
- * @seeAlso [forInRight]
+ * @seeAlso [forEach]
  *
- * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param collection {array|map}: The collection to iterate over.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ *   A function iteratee is invoked as `func(val, key is string, seq is number)` (map)
+ *   or `func(val, seq is number, seq is number)` (array).
+ *   @optional
+ * @param missingPolicy {NilPolicy}: The policy to use for missing values; defaults to `NilPolicy.NIL`.
+ *   @optional
+ * @param keylist {array}: The keys, in order, to iterate over;
+ *   keys are allowed to be repeated, absent, or out-of-bounds for the collection.
  *   @optional
  *
- * @returns {map}: `object`.
+ * @returns {array|map}: `collection`.
  *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; forIn(new Foo, function(value, key) { println(key); }); // => Logs 'a', 'b', then 'c' (iteration order is not guaranteed).`
+ * @example `forEach3(["a", "b", "c"], (val, key, seq) => { println([val, key, seq]); }); // => Logs '[c, 0, 0]' then '[b, 1, 1]' then '[a, 2, 2]'.`
+ * @example `forEach3({ a: 1, b: 2 }, (val, key, seq) => { println([val, key, seq]); }); // => Logs '[1, "a", 0]' then '[2, "b", 1]'.`
  */
-!!EODOC
+// export function forEach3(bag, keylist, missingPolicy, func) {}
 
-!!SIG lodash forInRight(object, iteratee)
-/** This method is like `forIn` except that it iterates over properties of
- * `object` in the opposite order.
+// flipshop
+/** Like `forEach` except that it iterates over elements of
+ * `collection` from right to left.
+ * Return `NextStepAction.BREAK` from `func` to stop iteration early.
  *
- * @seeAlso [forIn]
+ * @seeAlso [forEach]
  *
- * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param collection {array|map}: The collection to iterate over.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ *   A function iteratee is invoked as `func(val, key is string, seq is number)` (map)
+ *   or `func(val, seq is number, seq is number)` (array).
+ *   @optional
+ * @param missingPolicy {NilPolicy}: The policy to use for missing values; defaults to `NilPolicy.NIL`.
+ *   @optional
+ * @param keylist {array}: The keys, in order, to iterate over;
+ *   keys are allowed to be repeated, absent, or out-of-bounds for the collection.
  *   @optional
  *
- * @returns {map}: `object`.
+ * @returns {array|map}: `collection`.
  *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; forInRight(new Foo, function(value, key) { println(key); }); // => Logs 'c', 'b', then 'a' assuming 'forIn' logs 'a', 'b', then 'c'.`
+ * @example `forEachRight(["a", "b", "c"], (val, seq) => { println([val, seq]); }); // => Logs '[c, 0]' then '[b, 1]' then '[a, 2]'.`
+ * @example `forEachRight({ a: 1, b: 2 }, (val, key) => { println([val, key]); }); // => Logs '[2, "b"]' then '[1, "a"]'.`
  */
-!!EODOC
+// export function forEachRight(collection, iteratee, missingPolicy, func) {}
 
-!!SIG lodash forOwn(object, iteratee)
-/** Iterates over own enumerable string keyed properties of an object and
- * invokes `funcOrProp` for each property. The function/propname is invoked with three
- * arguments: (value, key, object). Iteratee functions may exit iteration
- * early by explicitly returning `false`.
- *
- * @seeAlso [forOwnRight]
- *
- * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
- *   @optional
- *
- * @returns {map}: `object`.
- *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; forOwn(new Foo, function(value, key) { println(key); }); // => Logs 'a' then 'b' (iteration order is not guaranteed).`
- */
-!!EODOC
-
-!!SIG lodash forOwnRight(object, iteratee)
-/** This method is like `forOwn` except that it iterates over properties of
- * `object` in the opposite order.
- *
- * @seeAlso [forOwn]
- *
- * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
- *   @optional
- *
- * @returns {map}: `object`.
- *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; forOwnRight(new Foo, function(value, key) { println(key); }); // => Logs 'b' then 'a' assuming 'forOwn' logs 'a' then 'b'.`
- */
-!!EODOC
-
-!!SIG flipshop fromPairs(pairs)
-/** Map built from `pairs` -- `[[key, val], ...]` -- the inverse of iterating a map's entries.
- * A repeated key keeps its last pair's value.
- *
- * @example `fromPairs([["a", 1], ["b", 2]]); // => { "a": 1, "b": 2 }`
- */
-!!EODOC
-
-!!SIG lodash fromPairs(pairs)
-/** The inverse of `toPairs`; this method returns an object composed
- * from key-value `pairs`.
+/** Map built from `pairs` -- `[[key, val], ...]` -- the inverse of `entries`
+ * (i.e. `toPairs`). A repeated key keeps the value given by the last pair.
  *
  * @param pairs {array}: The key-value pairs.
  *
@@ -1729,71 +1879,21 @@
  *
  * @example `fromPairs([['a', 1], ['b', 2]]); // => { 'a': 1, 'b': 2 }`
  */
-!!EODOC
 
-!!SIG lodash functions(object)
-/** Creates an array of function property names from own enumerable properties
- * of `object`.
+/** Gets the value at `keyname`/`keypath` of `bag`/`arr`. If the resolved value is `undefined`,
+ * -- because it's out of bounds, or missing, or exists with the value `undefined` --
+ * `fallback` is returned in its place
  *
- * @seeAlso [functionsIn]
- *
- * @param object {map}: The object to inspect.
- *
- * @returns {array}: the function names.
- *
- * @example `function Foo() { this.a = constant('a'); this.b = constant('b'); } Foo.prototype.c = constant('c'); functions(new Foo); // => ['a', 'b']`
- */
-!!EODOC
-
-!!SIG lodash functionsIn(object)
-/** Creates an array of function property names from own and inherited
- * enumerable properties of `object`.
- *
- * @seeAlso [functions]
- *
- * @param object {map}: The object to inspect.
- *
- * @returns {array}: the function names.
- *
- * @example `function Foo() { this.a = constant('a'); this.b = constant('b'); } Foo.prototype.c = constant('c'); functionsIn(new Foo); // => ['a', 'b', 'c']`
- */
-!!EODOC
-
-!!SIG lodash get(object, path, defaultValue)
-/** Gets the value at `path` of `object`. If the resolved value is
- * `undefined`, the `defaultValue` is returned in its place.
- *
- * @param object {map}: The object to query.
- * @param path {array|string}: The path of the property to get.
- * @param defaultValue: The value returned for `undefined` resolved values.
- *   @optional
- *
- * @returns: the resolved value.
- *
- * @example `var object = { 'a': [{ 'b': { 'c': 3 } }] }; get(object, 'a[0].b.c'); // => 3`
- * @example `get(object, ['a', '0', 'b', 'c']); // => 3`
- * @example `get(object, 'a.b.c', 'default'); // => 'default'`
- */
-!!EODOC
-
-!!SIG flipshop getAllAttrs(context, entity)
-/** /** Every attribute on `entity`, as `{name: value}`; `{"ok": false, "err": err}` if the read throws. */
- */
-!!EODOC
-
-!!SIG flipshop getAt(bag, keyStr, fallback)
-/** Gets the value at `keyStr`/`keyPath` of `bag`/`arr`. If the resolved value is `undefined`,
- * `fallback` is returned in its place -- except an array element that is present but genuinely
- * `undefined`, which comes back as itself; a map can't hold that case, since FeatureScript elides
- * an `undefined` value on the way in.
- *
- * A string path is dotted (`"a.b.c"` is three steps); an array path is a list of literal keys, so
- * `["a.b"]` is one step, reaching a key with a dot in its own name. Either kind of path may
- * contain a negative array index, which counts from the end -- lodash's `get` has no such support.
+ * A string path is dotted (`"a.b.c"` is three steps).
+ * An array path is a list of literal keys: `["a.b"]` is one step, reaching a key with a dot in its own name.
+ * Either kind of path may contain a negative array index, which counts from the end.
+ * This does not support the array-bracket style (`a.b[3]`); use eg `a.b.3` directly.
+ * Strings presented as array indexes are converted to numbers, or an error is thrown.
  *
  * @param bag {map|array}: Container to read from.
- * @param keyStr {string}: Dotted path.
- * @param keyPath {array}: Path as literal keys/indexes.
+ * @param path {array|string}: The path of the property to get:
+ *   as a dotted string (`a.3.5`),
+ *   or as a list of literal keys/indexes (`["a", 3, "5"]`).
  * @param fallback: Returned in place of an `undefined` result. Defaults to `undefined`.
  *
  * @example `getAt({ "a": { "b": 1 } }, "a.b"); // => 1`
@@ -1801,101 +1901,37 @@
  * @example `getAt({ "a": { "b": 1 } }, "a.c", { "not": "met" }); // => { "not": "met" }`
  * @example `getAt({ "rows": [{ "cells": [7, 8] }] }, "rows.-1.cells.-1"); // => 8`
  * @example `getAt([1, 2, 3], -1); // => 3`
+ * @example `getAt({ "2.5": "literal", "2": { "5": "pathed" } }, "2.5");      // => "pathed"`
+ * @example `getAt({ "2.5": "literal", "2": { "5": "pathed" } }, ["2.5"]);    // => "literal"`
+ * @example `getAt({ "2.5": "literal", "2": { "5": "pathed" } }, ["2", "5"]); // => "pathed"`
+ * @example `getAt([0, "one", ['a', 'b', 'c', 'd', 'e', 'f']], "1"); // => "one"`
+ * @example `getAt([0, "one", ['a', 'b', 'c', 'd', 'e', 'f']], "2.5"); // => "f"`
+ * @example `getAt([0, "one", ['a', 'b', 'c', 'd', 'e', 'f']], ["2.5"]); // error`
+ * @example `getAt([0, "one", ['a', 'b', 'c', 'd', 'e', 'f']], ["2", "5"]); // => "f"`
  */
-!!EODOC
+// export function getAt(bag, keyname, fallback) {}
 
-!!SIG flipshop getAttrs(context, query, attrName, defaultVal)
-/** Returns an array of `{ thing, attrName, val }` for each entity in `query`.
- * `val` is the attribute value if set, otherwise `defaultVal`.
- *
- * @param context {Context}
- * @param query {Query}
- * @param attrName {string}
- * @param defaultVal: fallback value when the attribute is absent
- *
- * @returns {array}
- */
-!!EODOC
 
-!!SIG flipshop getBestAttr(context, query, attrName, ignoredVal)
-/** Returns the best entry from `getAttrs`: the first entry whose value is defined
- * and not equal to `defaultVal`. Falls back to the first entry if all values equal
- * `defaultVal`. Returns `undefined` when the query resolves to no entities.
- *
- * @param context {Context}
- * @param query {Query}
- * @param attrName {string}
- * @param defaultVal: sentinel value for "not set"
- *
- * @returns: map with fields `{ thing, attrName, thingIndex, val }`, or undefined
- */
-!!EODOC
-
-!!SIG flipshop getName(context, query, ignoredVal)
-/** /** `getNameProp`'s `val`, or `ignoredVal` when `query` resolves to no entities at all. */
- */
-!!EODOC
-
-!!SIG flipshop getNameOfBody(context, body, defaultVal)
-/** /** `"Name"` attribute directly on `body` (not its best/first entity), or `defaultVal` if unset. */
- */
-!!EODOC
-
-!!SIG flipshop getNameProp(context, query, ignoredVal)
-/** `getBestAttr` specialised for the "name" attribute.
- *
- * @param context {Context}
- * @param query {Query}
- * @param defaultVal {string}
- *
- * @returns: map `{ thing, attrName, thingIndex, val }`, or undefined
- */
-!!EODOC
-
-!!SIG flipshop getNameProps(context, query, ignoredVal)
-/** `getAttrs` specialised for the "name" attribute.
- *
- * @param context {Context}
- * @param query {Query}
- * @param defaultVal {string}
- *
- * @returns {array}: of `{ thing, attrName, val }`
- */
-!!EODOC
-
-!!SIG flipshop getNames(context, query, ignoredVal)
-/** /** `getNameProps`, keeping just each entry's `val`. */
- */
-!!EODOC
-
-!!SIG flipshop groupBy(arr, iterateeSpec)
-/** Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to the
- * elements of `arr`/`bag` that produced each one. `iterateeSpec` is coerced through `funcOrProp`
- *
- * @example `groupBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd");`
- * @example `// => { "odd": [1, 3], "even": [2, 4] }`
- */
-!!EODOC
-
-!!SIG lodash groupBy(collection, iteratee)
+// flipshop
 /** Creates an object composed of keys generated from the results of running
  * each element of `collection` thru `funcOrProp`. The order of grouped values
  * is determined by the order they occur in `collection`. The corresponding
  * value of each key is an array of elements responsible for generating the
- * key. The function/propname is invoked with one argument: (value).
+ * key. A function iteratee is invoked with (val, seq).
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function/propname to transform keys; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname to transform keys; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the composed aggregate object.
  *
+ * @example `groupBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": [1, 3], "even": [2, 4] }`
  * @example `groupBy([6.1, 4.2, 6.3], Math.floor); // => { '4': [4.2], '6': [6.1, 6.3] }`
  * @example `groupBy(['one', 'two', 'three'], 'length'); // => { '3': ['one', 'two'], '5': ['three'] }`
  */
-!!EODOC
+// export function groupBy(arr, iterateeSpec) {}
 
-!!SIG lodash gt(value, other)
+// lodash
 /** Checks if `value` is greater than `other`.
  *
  * @seeAlso [lt]
@@ -1909,9 +1945,12 @@
  * @example `gt(3, 3); // => false`
  * @example `gt(1, 3); // => false`
  */
-!!EODOC
+export function gt(value, other) {
+  if (false) { gt(value, other); }
+  throw 'TODO: implement gt';
+}
 
-!!SIG lodash gte(value, other)
+// lodash
 /** Checks if `value` is greater than or equal to `other`.
  *
  * @seeAlso [lte]
@@ -1925,9 +1964,12 @@
  * @example `gte(3, 3); // => true`
  * @example `gte(1, 3); // => false`
  */
-!!EODOC
+export function gte(value, other) {
+  if (false) { gte(value, other); }
+  throw 'TODO: implement gte';
+}
 
-!!SIG lodash has(object, path)
+// lodash
 /** Checks if `path` is a direct property of `object`.
  *
  * @param object {map}: The object to query.
@@ -1940,9 +1982,12 @@
  * @example `has(object, ['a', 'b']); // => true`
  * @example `has(other, 'a'); // => false`
  */
-!!EODOC
+export function has(object, path) {
+  if (false) { has(object, path); }
+  throw 'TODO: implement has';
+}
 
-!!SIG lodash hasIn(object, path)
+// lodash
 /** Checks if `path` is a direct or inherited property of `object`.
  *
  * @param object {map}: The object to query.
@@ -1955,15 +2000,18 @@
  * @example `hasIn(object, ['a', 'b']); // => true`
  * @example `hasIn(object, 'b'); // => false`
  */
-!!EODOC
+export function hasIn(object, path) {
+  if (false) { hasIn(object, path); }
+  throw 'TODO: implement hasIn';
+}
 
-!!SIG flipshop hasKey(obj, key)
+// flipshop
 /** Whether `key` is present in `obj`. Unlike lodash's `has`, `key` is a single literal key or
  * index -- never a dotted path -- and a map only ever contains `key` when its value isn't
  * `undefined`, since FeatureScript elides one on the way in.
  *
  * For an array, `missingPolicy` decides whether an in-bounds slot holding `undefined` counts:
- * `MissingPolicy.USE_UNDEFINED` (the default) says yes; `MissingPolicy.SKIP` says no, the same as
+ * `NilPolicy.NIL` (the default) says yes; `NilPolicy.SKIP` says no, the same as
  * `hasPresentKey`. Neither array overload accepts a negative index, unlike @see `getAt`.
  *
  * `hasPresentKey` is `hasKey` pinned to the stricter policy.
@@ -1972,20 +2020,20 @@
  * @example `hasKey({ "a": undefined }, "a"); // => false`
  * @example `hasKey([1, 2, 3], 2); // => true`
  * @example `hasKey([1, 2, 3], -1); // => false`
- * @example `hasKey([1, undefined, 3], 1, MissingPolicy.SKIP); // => false`
+ * @example `hasKey([1, undefined, 3], 1, NilPolicy.SKIP); // => false`
  */
-!!EODOC
+// export function hasKey(obj, key) {}
 
-!!SIG flipshop hasMatch(str, regex)
+// flipshop
 /** Whether `str` matches `regex` anywhere -- a `match` wrapper that returns `false` instead of
  * throwing, on either a malformed `regex` or an `undefined` `str`.
  *
  * @example `hasMatch("hello", "ell"); // => true`
  * @example `hasMatch("hello", "^e"); // => false`
  */
-!!EODOC
+// export function hasMatch(str, regex) {}
 
-!!SIG lodash head(array)
+// lodash
 /** Gets the first element of `array`.
  *
  * @param array {array}: The array to query.
@@ -1995,9 +2043,12 @@
  * @example `head([1, 2, 3]); // => 1`
  * @example `head([]); // => undefined`
  */
-!!EODOC
+export function head(array) {
+  if (false) { head(array); }
+  throw 'TODO: implement head';
+}
 
-!!SIG flipshop hexcolorToColor(hexcolor)
+// flipshop
 /** Parses a 6- or 8-digit hex color string (`"#rrggbb"` or `"#rrggbbaa"`, leading `#` optional,
  * either case) into a `Color`. Missing `aa` defaults to fully opaque. Returns `OopsColor`
  * (bright red) on anything that doesn't match, rather than throwing.
@@ -2011,18 +2062,18 @@
  *    @field alpha {number}
  * }}
  */
-!!EODOC
+// export function hexcolorToColor(hexcolor) {}
 
-!!SIG flipshop hexpairToInt(hexpair, fallback)
+// flipshop
 /** Decimal value of a 2-character hex string (case-insensitive), or `fallback` (default
  * `undefined`) if `hexpair` isn't a valid 2-digit hex pair.
  *
  * @example `hexpairToInt("ff"); // => 255`
  * @example `hexpairToInt("FF"); // => 255`
  */
-!!EODOC
+// export function hexpairToInt(hexpair, fallback) {}
 
-!!SIG flipshop highlightQuery(context, qq, debugColor, debugMe)
+// flipshop
 /** Highlights `qq` in the viewport via `addDebugEntities`, plus the edges of `qq`'s owning
  * bodies -- a body is otherwise invisible through the faces of any body occluding it. A no-op
  * unless `debugMe` is true (default), so a call site can leave this in place and flip one flag
@@ -2033,9 +2084,9 @@
  * @param debugColor {DebugColor}
  * @param debugMe {boolean}: Set false to silence this call without removing it. Defaults to `true`.
  */
-!!EODOC
+// export function highlightQuery(context, qq, debugColor, debugMe) {}
 
-!!SIG lodash identity(val, _seq)
+// lodash
 /** Returns the first argument it receives.
  * @seeAlso [identity0]
  * @seeAlso [identity1]
@@ -2049,9 +2100,12 @@
  *
  * @example `var obj = { 'a': 1 }; println(identity(object) === object); // => true`
  */
-!!EODOC
+export function identity(val, _seq) {
+  if (false) { identity(val, _seq); }
+  throw 'TODO: implement identity';
+}
 
-!!SIG flipshop idsFor(id, tags)
+// flipshop
 /** Map of `tags` to a same-named child of `id`: `idsFor(id, ["a", "b"])` is
  * `{ "a": id + "a", "b": id + "b" }` -- the `ids` map every multi-sketch/multi-op feature
  * declares up front, built in one call instead of one line per key.
@@ -2059,9 +2113,9 @@
  * @param id {Id}: Base id.
  * @param tags {array}: Id-suffix strings, one per key.
  */
-!!EODOC
+// export function idsFor(id, tags) {}
 
-!!SIG flipshop ifZero(val, fallback)
+// flipshop
 /** returns `fallback` if `val` is either equal (within tolerance) to zero, or is undefined;
  * otherwise, returns `val`.
  *
@@ -2069,9 +2123,9 @@
  * @example `ifZero(5, "default"); // => 5`
  * @example `ifZero(0 * millimeter, "default"); // => "default"`
  */
-!!EODOC
+// export function ifZero(val, fallback) {}
 
-!!SIG flipshop arrayIncludes(arr, target)
+// flipshop
 /** Whether `target` appears anywhere in the `bag`'s values or `arr`'s elements, outside of the first (or last) `numToSkip`.
  * Comparison is plain `==`, which is deep structural equality on maps and arrays.
  * If `fromIndex` is negative, it's used as the offset from the end of `collection`.
@@ -2085,9 +2139,9 @@
  * @example `arrayIncludes([{ "a": 1 }], { "a": 1 }); // => true`
  * @example `arrayIncludes({ "x": 1, "y": 2 }, 2); // => true`
  */
-!!EODOC
+// export function arrayIncludes(arr, target) {}
 
-!!SIG lodash indexOf(array, value, fromIndex)
+// lodash
 /** Gets the index at which the first occurrence of `value` is found in `array`
  * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons. If `fromIndex` is negative, it's used as the
@@ -2103,16 +2157,19 @@
  * @example `indexOf([1, 2, 1, 2], 2); // => 1`
  * @example `indexOf([1, 2, 1, 2], 2, 2); // => 3`
  */
-!!EODOC
+export function indexOf(array, value, fromIndex) {
+  if (false) { indexOf(array, value, fromIndex); }
+  throw 'TODO: implement indexOf';
+}
 
-!!SIG flipshop initial(arr)
+// flipshop
 /** `arr` without its last element; `[]` for an empty or single-element `arr`.
  *
  * @example `initial([1, 2, 3]); // => [1, 2]`
  */
-!!EODOC
+// export function initial(arr) {}
 
-!!SIG lodash initial(array)
+// lodash
 /** Gets all but the last element of `array`.
  *
  * @param array {array}: The array to query.
@@ -2121,9 +2178,12 @@
  *
  * @example `initial([1, 2, 3]); // => [1, 2]`
  */
-!!EODOC
+export function initial(array) {
+  if (false) { initial(array); }
+  throw 'TODO: implement initial';
+}
 
-!!SIG flipshop inRange(num, start, end)
+// flipshop
 /** Whether `num` falls in `[start, end)` (or `[end, start)` if `end < start`). If
  * `end` is not specified, it's set to `start` with `start` then set to `0`.
  * If `start` is greater than `end` the params are swapped to support
@@ -2147,9 +2207,9 @@
  * @example `'inRange(5.2, 4); // => false`
  * @example `'inRange(-3, -2, -6); // => true`
  */
-!!EODOC
+// export function inRange(num, start, end) {}
 
-!!SIG lodash inRange(number, start, end)
+// lodash
 /** Checks if `n` is between `start` and up to, but not including, `end`. If
  * `end` is not specified, it's set to `start` with `start` then set to `0`.
  * If `start` is greater than `end` the params are swapped to support
@@ -2173,17 +2233,20 @@
  * @example `inRange(5.2, 4); // => false`
  * @example `inRange(-3, -2, -6); // => true`
  */
-!!EODOC
+export function inRange(number, start, end) {
+  if (false) { inRange(number, start, end); }
+  throw 'TODO: implement inRange';
+}
 
-!!SIG flipshop intersection(arrList)
+// flipshop
 /** Values present in every array of `arrList`, deduplicated, ordered as they occur in
  * `arrList[0]`.
  *
  * @example `intersection([[2, 1], [2, 3], [1, 2]]); // => [2]`
  */
-!!EODOC
+// export function intersection(arrList) {}
 
-!!SIG lodash intersection(arrays)
+// lodash
 /** Creates an array of unique values that are included in all given arrays
  * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons. The order and references of result values are
@@ -2196,18 +2259,21 @@
  *
  * @example `intersection([2, 1], [2, 3]); // => [2]`
  */
-!!EODOC
+export function intersection(arrays) {
+  if (false) { intersection(arrays); }
+  throw 'TODO: implement intersection';
+}
 
-!!SIG flipshop intersectionBy(arrList, iterateeSpec)
+// flipshop
 /** `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself.
  * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]`
  */
-!!EODOC
+// export function intersectionBy(arrList, iterateeSpec) {}
 
-!!SIG lodash intersectionBy(arrays, iteratee)
-/** This method is like `intersection` except that it accepts `funcOrProp`
+// lodash
+/** Like `intersection` except that it accepts `funcOrProp`
  * which is invoked for each element of each `arrays` to generate the criterion
  * by which they're compared. The order and references of result values are
  * determined by the first array. The function/propname is invoked with one argument:
@@ -2215,7 +2281,7 @@
  *
  * @param arrays {array}: The arrays to inspect.
  *   @optional
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of intersecting values.
@@ -2223,18 +2289,21 @@
  * @example `intersectionBy([2.1, 1.2], [2.3, 3.4], Math.floor); // => [2.1]`
  * @example `intersectionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 1 }]`
  */
-!!EODOC
+export function intersectionBy(arrays, iteratee) {
+  if (false) { intersectionBy(arrays, iteratee); }
+  throw 'TODO: implement intersectionBy';
+}
 
-!!SIG flipshop intersectionWith(arrList, comparator)
+// flipshop
 /** `intersection`, comparing elements with `comparator(val, other)` instead of `==`.
  *
  * @example `intersectionWith([[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], (aa, bb) => aa.x == bb.x);`
  * @example `// => [{ "x": 2 }]`
  */
-!!EODOC
+// export function intersectionWith(arrList, comparator) {}
 
-!!SIG lodash intersectionWith(arrays, comparator)
-/** This method is like `intersection` except that it accepts `comparator`
+// lodash
+/** Like `intersection` except that it accepts `comparator`
  * which is invoked to compare elements of `arrays`. The order and references
  * of result values are determined by the first array. The comparator is
  * invoked with two arguments: (arrVal, othVal).
@@ -2248,14 +2317,17 @@
  *
  * @example `var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]; var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }]; intersectionWith(objects, others, isEqual); // => [{ 'x': 1, 'y': 2 }]`
  */
-!!EODOC
+export function intersectionWith(arrays, comparator) {
+  if (false) { intersectionWith(arrays, comparator); }
+  throw 'TODO: implement intersectionWith';
+}
 
-!!SIG flipshop intToHexpair(num)
+// flipshop
 /** /** Lowercase 2-character hex string for `num`, a 0–255 integer. */
  */
-!!EODOC
+// export function intToHexpair(num) {}
 
-!!SIG flipshop invert(bag)
+// flipshop
 /** `bag` with its keys and values swapped: `{"a": "x", "b": "x"}` → `{"x": "b"}` -- a value that
  * occurs more than once keeps only its last key, same as lodash. A non-string value is
  * stringified into its new key, matching how lodash's own object keys coerce. `invertBy` collects
@@ -2264,9 +2336,9 @@
  *
  * @example `invert({ "a": 1, "b": 2, "c": 1 }); // => { "1": "c", "2": "b" }`
  */
-!!EODOC
+// export function invert(bag) {}
 
-!!SIG lodash invert(object)
+// lodash
 /** Creates an object composed of the inverted keys and values of `object`.
  * If `object` contains duplicate values, subsequent values overwrite
  * property assignments of previous values.
@@ -2277,17 +2349,20 @@
  *
  * @example `var object = { 'a': 1, 'b': 2, 'c': 1 }; invert(object); // => { '1': 'c', '2': 'b' }`
  */
-!!EODOC
+export function invert(object) {
+  if (false) { invert(object); }
+  throw 'TODO: implement invert';
+}
 
-!!SIG lodash invertBy(object, iteratee)
-/** This method is like `invert` except that the inverted object is generated
+// lodash
+/** Like `invert` except that the inverted object is generated
  * from the results of running each element of `object` thru `funcOrProp`. The
  * corresponding inverted value of each inverted key is an array of keys
  * responsible for generating the inverted value. The function/propname is invoked
  * with one argument: (value).
  *
  * @param object {map}: The object to invert.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new inverted object.
@@ -2295,9 +2370,12 @@
  * @example `var object = { 'a': 1, 'b': 2, 'c': 1 }; invertBy(object); // => { '1': ['a', 'c'], '2': ['b'] }`
  * @example `invertBy(object, function(value) { return 'group' + value; }); // => { 'group1': ['a', 'c'], 'group2': ['b'] }`
  */
-!!EODOC
+export function invertBy(object, iteratee) {
+  if (false) { invertBy(object, iteratee); }
+  throw 'TODO: implement invertBy';
+}
 
-!!SIG lodash invoke(object, path, args)
+// lodash
 /** Invokes the method at `path` of `object`.
  *
  * @param object {map}: The object to query.
@@ -2309,9 +2387,12 @@
  *
  * @example `var object = { 'a': [{ 'b': { 'c': [1, 2, 3, 4] } }] }; invoke(object, 'a[0].b.c.slice', 1, 3); // => [2, 3]`
  */
-!!EODOC
+export function invoke(object, path, args) {
+  if (false) { invoke(object, path, args); }
+  throw 'TODO: implement invoke';
+}
 
-!!SIG lodash invokeMap(collection, path, args)
+// lodash
 /** Invokes the method at `path` of each element in `collection`, returning
  * an array of the results of each invoked method. Any additional arguments
  * are provided to each invoked method. If `path` is a function, it's invoked
@@ -2327,9 +2408,12 @@
  * @example `invokeMap([[5, 1, 7], [3, 2, 1]], 'sort'); // => [[1, 5, 7], [1, 2, 3]]`
  * @example `invokeMap([123, 456], String.prototype.split, ''); // => [['1', '2', '3'], ['4', '5', '6']]`
  */
-!!EODOC
+export function invokeMap(collection, path, args) {
+  if (false) { invokeMap(collection, path, args); }
+  throw 'TODO: implement invokeMap';
+}
 
-!!SIG lodash isArguments(value)
+// lodash
 /** Checks if `value` is likely an `arguments` object.
  *
  * @param value: The value to check.
@@ -2339,9 +2423,12 @@
  * @example `isArguments(function() { return arguments; }()); // => true`
  * @example `isArguments([1, 2, 3]); // => false`
  */
-!!EODOC
+export function isArguments(value) {
+  if (false) { isArguments(value); }
+  throw 'TODO: implement isArguments';
+}
 
-!!SIG lodash isArray(value)
+// lodash
 /** Checks if `value` is classified as an `Array` object.
  *
  * @param value: The value to check.
@@ -2353,9 +2440,12 @@
  * @example `isArray('abc'); // => false`
  * @example `isArray(noop); // => false`
  */
-!!EODOC
+export function isArray(value) {
+  if (false) { isArray(value); }
+  throw 'TODO: implement isArray';
+}
 
-!!SIG lodash isArrayBuffer(value)
+// lodash
 /** Checks if `value` is classified as an `ArrayBuffer` object.
  *
  * @param value: The value to check.
@@ -2365,9 +2455,12 @@
  * @example `isArrayBuffer(new ArrayBuffer(2)); // => true`
  * @example `isArrayBuffer(new Array(2)); // => false`
  */
-!!EODOC
+export function isArrayBuffer(value) {
+  if (false) { isArrayBuffer(value); }
+  throw 'TODO: implement isArrayBuffer';
+}
 
-!!SIG lodash isArrayLike(value)
+// lodash
 /** Checks if `value` is array-like. A value is considered array-like if it's
  * not a function and has a `value.length` that's an integer greater than or
  * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
@@ -2381,10 +2474,13 @@
  * @example `isArrayLike('abc'); // => true`
  * @example `isArrayLike(noop); // => false`
  */
-!!EODOC
+export function isArrayLike(value) {
+  if (false) { isArrayLike(value); }
+  throw 'TODO: implement isArrayLike';
+}
 
-!!SIG lodash isArrayLikeObject(value)
-/** This method is like `isArrayLike` except that it also checks if `value`
+// lodash
+/** Like `isArrayLike` except that it also checks if `value`
  * is an object.
  *
  * @param value: The value to check.
@@ -2396,9 +2492,12 @@
  * @example `isArrayLikeObject('abc'); // => false`
  * @example `isArrayLikeObject(noop); // => false`
  */
-!!EODOC
+export function isArrayLikeObject(value) {
+  if (false) { isArrayLikeObject(value); }
+  throw 'TODO: implement isArrayLikeObject';
+}
 
-!!SIG lodash isBoolean(value)
+// lodash
 /** Checks if `value` is classified as a boolean primitive or object.
  *
  * @param value: The value to check.
@@ -2408,9 +2507,12 @@
  * @example `isBoolean(false); // => true`
  * @example `isBoolean(null); // => false`
  */
-!!EODOC
+export function isBoolean(value) {
+  if (false) { isBoolean(value); }
+  throw 'TODO: implement isBoolean';
+}
 
-!!SIG lodash isBuffer(value)
+// lodash
 /** Checks if `value` is a buffer.
  *
  * @param value: The value to check.
@@ -2420,9 +2522,12 @@
  * @example `isBuffer(new Buffer(2)); // => true`
  * @example `isBuffer(new Uint8Array(2)); // => false`
  */
-!!EODOC
+export function isBuffer(value) {
+  if (false) { isBuffer(value); }
+  throw 'TODO: implement isBuffer';
+}
 
-!!SIG lodash isDate(value)
+// lodash
 /** Checks if `value` is classified as a `Date` object.
  *
  * @param value: The value to check.
@@ -2432,9 +2537,12 @@
  * @example `isDate(new Date); // => true`
  * @example `isDate('Mon April 23 2012'); // => false`
  */
-!!EODOC
+export function isDate(value) {
+  if (false) { isDate(value); }
+  throw 'TODO: implement isDate';
+}
 
-!!SIG lodash isElement(value)
+// lodash
 /** Checks if `value` is likely a DOM element.
  *
  * @param value: The value to check.
@@ -2444,9 +2552,12 @@
  * @example `isElement(document.body); // => true`
  * @example `isElement('<body>'); // => false`
  */
-!!EODOC
+export function isElement(value) {
+  if (false) { isElement(value); }
+  throw 'TODO: implement isElement';
+}
 
-!!SIG lodash isEmpty(value)
+// lodash
 /** Checks if `value` is an empty object, collection, map, or set.
  *
  * Objects are considered empty if they have no own enumerable string keyed
@@ -2466,9 +2577,12 @@
  * @example `isEmpty([1, 2, 3]); // => false`
  * @example `isEmpty({ 'a': 1 }); // => false`
  */
-!!EODOC
+export function isEmpty(value) {
+  if (false) { isEmpty(value); }
+  throw 'TODO: implement isEmpty';
+}
 
-!!SIG lodash isEqual(value, other)
+// lodash
 /** Performs a deep comparison between two values to determine if they are
  * equivalent.
  *
@@ -2486,26 +2600,32 @@
  * @example `var object = { 'a': 1 }; var other = { 'a': 1 }; isEqual(object, other); // => true`
  * @example `object === other; // => false`
  */
-!!EODOC
+export function isEqual(value, other) {
+  if (false) { isEqual(value, other); }
+  throw 'TODO: implement isEqual';
+}
 
-!!SIG lodash isEqualWith(value, other, customizer)
-/** This method is like `isEqual` except that it accepts `customizer` which
+// lodash
+/** Like `isEqual` except that it accepts `customizer` which
  * is invoked to compare values. If `customizer` returns `undefined`, comparisons
  * are handled by the method instead. The `customizer` is invoked with up to
  * six arguments: (objValue, othValue [, index|key, object, other, stack]).
  *
  * @param value: The value to compare.
  * @param other: The other value to compare.
- * @param customizer {function}: The function to customize comparisons.
+ * @param customizer {function}: Function to customize comparisons.
  *   @optional
  *
  * @returns {boolean}: `true` if the values are equivalent, else `false`.
  *
  * @example `function isGreeting(value) { return /^h(?:i|ello)$/.test(value); } function customizer(objValue, othValue) { if (isGreeting(objValue) && isGreeting(othValue)) { return true; } } var array = ['hello', 'goodbye']; var other = ['hi', 'goodbye']; isEqualWith(array, other, customizer); // => true`
  */
-!!EODOC
+export function isEqualWith(value, other, customizer) {
+  if (false) { isEqualWith(value, other, customizer); }
+  throw 'TODO: implement isEqualWith';
+}
 
-!!SIG lodash isError(value)
+// lodash
 /** Checks if `value` is an `Error`, `EvalError`, `RangeError`, `ReferenceError`,
  * `SyntaxError`, `TypeError`, or `URIError` object.
  *
@@ -2516,9 +2636,12 @@
  * @example `isError(new Error); // => true`
  * @example `isError(Error); // => false`
  */
-!!EODOC
+export function isError(value) {
+  if (false) { isError(value); }
+  throw 'TODO: implement isError';
+}
 
-!!SIG lodash isFinite(value)
+// lodash
 /** Checks if `value` is a finite primitive number.
  *
  * **Note:** This method is based on
@@ -2533,9 +2656,12 @@
  * @example `isFinite(Infinity); // => false`
  * @example `isFinite('3'); // => false`
  */
-!!EODOC
+export function isFinite(value) {
+  if (false) { isFinite(value); }
+  throw 'TODO: implement isFinite';
+}
 
-!!SIG lodash isFunction(value)
+// lodash
 /** Checks if `value` is classified as a `Function` object.
  *
  * @param value: The value to check.
@@ -2545,14 +2671,17 @@
  * @example `isFunction(_); // => true`
  * @example `isFunction(/abc/); // => false`
  */
-!!EODOC
+export function isFunction(value) {
+  if (false) { isFunction(value); }
+  throw 'TODO: implement isFunction';
+}
 
-!!SIG flipshop isHexcolor(str)
+// flipshop
 /** /** Whether `str` is a hexcolor string @see `hexcolorToColor` would accept. */
  */
-!!EODOC
+// export function isHexcolor(str) {}
 
-!!SIG lodash isInteger(value)
+// lodash
 /** Checks if `value` is an integer.
  *
  * **Note:** This method is based on
@@ -2567,9 +2696,12 @@
  * @example `isInteger(Infinity); // => false`
  * @example `isInteger('3'); // => false`
  */
-!!EODOC
+export function isInteger(value) {
+  if (false) { isInteger(value); }
+  throw 'TODO: implement isInteger';
+}
 
-!!SIG lodash isLength(value)
+// lodash
 /** Checks if `value` is a valid array-like length.
  *
  * **Note:** This method is loosely based on
@@ -2584,9 +2716,12 @@
  * @example `isLength(Infinity); // => false`
  * @example `isLength('3'); // => false`
  */
-!!EODOC
+export function isLength(value) {
+  if (false) { isLength(value); }
+  throw 'TODO: implement isLength';
+}
 
-!!SIG lodash isMap(value)
+// lodash
 /** Checks if `value` is classified as a `Map` object.
  *
  * @param value: The value to check.
@@ -2596,9 +2731,12 @@
  * @example `isMap(new Map); // => true`
  * @example `isMap(new WeakMap); // => false`
  */
-!!EODOC
+export function isMap(value) {
+  if (false) { isMap(value); }
+  throw 'TODO: implement isMap';
+}
 
-!!SIG lodash isMatch(object, source)
+// lodash
 /** Performs a partial deep comparison between `object` and `source` to
  * determine if `object` contains equivalent property values.
  *
@@ -2617,26 +2755,32 @@
  * @example `var object = { 'a': 1, 'b': 2 }; isMatch(object, { 'b': 2 }); // => true`
  * @example `isMatch(object, { 'b': 1 }); // => false`
  */
-!!EODOC
+export function isMatch(object, source) {
+  if (false) { isMatch(object, source); }
+  throw 'TODO: implement isMatch';
+}
 
-!!SIG lodash isMatchWith(object, source, customizer)
-/** This method is like `isMatch` except that it accepts `customizer` which
+// lodash
+/** Like `isMatch` except that it accepts `customizer` which
  * is invoked to compare values. If `customizer` returns `undefined`, comparisons
  * are handled by the method instead. The `customizer` is invoked with five
  * arguments: (objValue, srcValue, index|key, object, source).
  *
  * @param object {map}: The object to inspect.
  * @param source {map}: The object of property values to match.
- * @param customizer {function}: The function to customize comparisons.
+ * @param customizer {function}: Function to customize comparisons.
  *   @optional
  *
  * @returns {boolean}: `true` if `object` is a match, else `false`.
  *
  * @example `function isGreeting(value) { return /^h(?:i|ello)$/.test(value); } function customizer(objValue, srcValue) { if (isGreeting(objValue) && isGreeting(srcValue)) { return true; } } var object = { 'greeting': 'hello' }; var source = { 'greeting': 'hi' }; isMatchWith(object, source, customizer); // => true`
  */
-!!EODOC
+export function isMatchWith(object, source, customizer) {
+  if (false) { isMatchWith(object, source, customizer); }
+  throw 'TODO: implement isMatchWith';
+}
 
-!!SIG lodash isNaN(value)
+// lodash
 /** Checks if `value` is `NaN`.
  *
  * **Note:** This method is based on
@@ -2653,9 +2797,12 @@
  * @example `isNaN(undefined); // => true`
  * @example `isNaN(undefined); // => false`
  */
-!!EODOC
+export function isNaN(value) {
+  if (false) { isNaN(value); }
+  throw 'TODO: implement isNaN';
+}
 
-!!SIG lodash isNative(value)
+// lodash
 /** Checks if `value` is a pristine native function.
  *
  * **Note:** This method can't reliably detect native functions in the presence
@@ -2673,9 +2820,12 @@
  * @example `isNative(Array.prototype.push); // => true`
  * @example `isNative(_); // => false`
  */
-!!EODOC
+export function isNative(value) {
+  if (false) { isNative(value); }
+  throw 'TODO: implement isNative';
+}
 
-!!SIG lodash isNil(value)
+// lodash
 /** Checks if `value` is `null` or `undefined`.
  *
  * @param value: The value to check.
@@ -2686,9 +2836,12 @@
  * @example `isNil(void 0); // => true`
  * @example `isNil(NaN); // => false`
  */
-!!EODOC
+export function isNil(value) {
+  if (false) { isNil(value); }
+  throw 'TODO: implement isNil';
+}
 
-!!SIG lodash isNull(value)
+// lodash
 /** Checks if `value` is `null`.
  *
  * @param value: The value to check.
@@ -2698,9 +2851,12 @@
  * @example `isNull(null); // => true`
  * @example `isNull(void 0); // => false`
  */
-!!EODOC
+export function isNull(value) {
+  if (false) { isNull(value); }
+  throw 'TODO: implement isNull';
+}
 
-!!SIG lodash isNumber(value)
+// lodash
 /** Checks if `value` is classified as a `Number` primitive or object.
  *
  * **Note:** To exclude `Infinity`, `-Infinity`, and `NaN`, which are
@@ -2715,9 +2871,12 @@
  * @example `isNumber(Infinity); // => true`
  * @example `isNumber('3'); // => false`
  */
-!!EODOC
+export function isNumber(value) {
+  if (false) { isNumber(value); }
+  throw 'TODO: implement isNumber';
+}
 
-!!SIG lodash isObject(value)
+// lodash
 /** Checks if `value` is the
  * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
  * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
@@ -2731,9 +2890,12 @@
  * @example `isObject(noop); // => true`
  * @example `isObject(null); // => false`
  */
-!!EODOC
+export function isObject(value) {
+  if (false) { isObject(value); }
+  throw 'TODO: implement isObject';
+}
 
-!!SIG lodash isObjectLike(value)
+// lodash
 /** Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
  *
@@ -2746,9 +2908,12 @@
  * @example `isObjectLike(noop); // => false`
  * @example `isObjectLike(null); // => false`
  */
-!!EODOC
+export function isObjectLike(value) {
+  if (false) { isObjectLike(value); }
+  throw 'TODO: implement isObjectLike';
+}
 
-!!SIG lodash isPlainObject(value)
+// lodash
 /** Checks if `value` is a plain object, that is, an object created by the
  * `Object` constructor or one with a `[[Prototype]]` of `null`.
  *
@@ -2761,9 +2926,12 @@
  * @example `isPlainObject({ 'x': 0, 'y': 0 }); // => true`
  * @example `isPlainObject(Object.create(null)); // => true`
  */
-!!EODOC
+export function isPlainObject(value) {
+  if (false) { isPlainObject(value); }
+  throw 'TODO: implement isPlainObject';
+}
 
-!!SIG lodash isRegExp(value)
+// lodash
 /** Checks if `value` is classified as a `RegExp` object.
  *
  * @param value: The value to check.
@@ -2773,9 +2941,12 @@
  * @example `isRegExp(/abc/); // => true`
  * @example `isRegExp('/abc/'); // => false`
  */
-!!EODOC
+export function isRegExp(value) {
+  if (false) { isRegExp(value); }
+  throw 'TODO: implement isRegExp';
+}
 
-!!SIG lodash isSafeInteger(value)
+// lodash
 /** Checks if `value` is a safe integer. An integer is safe if it's an IEEE-754
  * double precision number which isn't the result of a rounded unsafe integer.
  *
@@ -2791,9 +2962,12 @@
  * @example `isSafeInteger(Infinity); // => false`
  * @example `isSafeInteger('3'); // => false`
  */
-!!EODOC
+export function isSafeInteger(value) {
+  if (false) { isSafeInteger(value); }
+  throw 'TODO: implement isSafeInteger';
+}
 
-!!SIG lodash isSet(value)
+// lodash
 /** Checks if `value` is classified as a `Set` object.
  *
  * @param value: The value to check.
@@ -2803,9 +2977,12 @@
  * @example `isSet(new Set); // => true`
  * @example `isSet(new WeakSet); // => false`
  */
-!!EODOC
+export function isSet(value) {
+  if (false) { isSet(value); }
+  throw 'TODO: implement isSet';
+}
 
-!!SIG lodash isString(value)
+// lodash
 /** Checks if `value` is classified as a `String` primitive or object.
  *
  * @param value: The value to check.
@@ -2815,9 +2992,12 @@
  * @example `isString('abc'); // => true`
  * @example `isString(1); // => false`
  */
-!!EODOC
+export function isString(value) {
+  if (false) { isString(value); }
+  throw 'TODO: implement isString';
+}
 
-!!SIG lodash isSymbol(value)
+// lodash
 /** Checks if `value` is classified as a `Symbol` primitive or object.
  *
  * @param value: The value to check.
@@ -2827,9 +3007,12 @@
  * @example `isSymbol(Symbol.iterator); // => true`
  * @example `isSymbol('abc'); // => false`
  */
-!!EODOC
+export function isSymbol(value) {
+  if (false) { isSymbol(value); }
+  throw 'TODO: implement isSymbol';
+}
 
-!!SIG lodash isTypedArray(value)
+// lodash
 /** Checks if `value` is classified as a typed array.
  *
  * @param value: The value to check.
@@ -2839,9 +3022,12 @@
  * @example `isTypedArray(new Uint8Array); // => true`
  * @example `isTypedArray([]); // => false`
  */
-!!EODOC
+export function isTypedArray(value) {
+  if (false) { isTypedArray(value); }
+  throw 'TODO: implement isTypedArray';
+}
 
-!!SIG lodash isUndefined(value)
+// lodash
 /** Checks if `value` is `undefined`.
  *
  * @param value: The value to check.
@@ -2851,9 +3037,12 @@
  * @example `isUndefined(void 0); // => true`
  * @example `isUndefined(null); // => false`
  */
-!!EODOC
+export function isUndefined(value) {
+  if (false) { isUndefined(value); }
+  throw 'TODO: implement isUndefined';
+}
 
-!!SIG lodash isWeakMap(value)
+// lodash
 /** Checks if `value` is classified as a `WeakMap` object.
  *
  * @param value: The value to check.
@@ -2863,9 +3052,12 @@
  * @example `isWeakMap(new WeakMap); // => true`
  * @example `isWeakMap(new Map); // => false`
  */
-!!EODOC
+export function isWeakMap(value) {
+  if (false) { isWeakMap(value); }
+  throw 'TODO: implement isWeakMap';
+}
 
-!!SIG lodash isWeakSet(value)
+// lodash
 /** Checks if `value` is classified as a `WeakSet` object.
  *
  * @param value: The value to check.
@@ -2875,9 +3067,12 @@
  * @example `isWeakSet(new WeakSet); // => true`
  * @example `isWeakSet(new Set); // => false`
  */
-!!EODOC
+export function isWeakSet(value) {
+  if (false) { isWeakSet(value); }
+  throw 'TODO: implement isWeakSet';
+}
 
-!!SIG lodash iteratee(func)
+// lodash
 /** Creates a function that invokes `func` with the arguments of the created
  * function. If `func` is a property name, the created function returns the
  * property value for a given element. If `func` is an array or object, the
@@ -2894,9 +3089,12 @@
  * @example `map(users, iteratee('user')); // => ['barney', 'fred']`
  * @example `iteratee = wrap(iteratee, function(iteratee, func) { return !isRegExp(func) ? iteratee(func) : function(string) { return func.test(string); }; }); filter(['abc', 'def'], /ef/); // => ['def']`
  */
-!!EODOC
+export function iteratee(func) {
+  if (false) { iteratee(func); }
+  throw 'TODO: implement iteratee';
+}
 
-!!SIG lodash join(array, separator)
+// lodash
 /** Converts all elements in `array` into a string separated by `separator`.
  *
  * @param array {array}: The array to convert.
@@ -2907,14 +3105,17 @@
  *
  * @example `join(['a', 'b', 'c'], '~'); // => 'a~b~c'`
  */
-!!EODOC
+export function join(array, separator) {
+  if (false) { join(array, separator); }
+  throw 'TODO: implement join';
+}
 
-!!SIG flipshop kebabCase(str)
+// flipshop
 /** /** `str` split into words, lowercased, and joined with `-`. */
  */
-!!EODOC
+// export function kebabCase(str) {}
 
-!!SIG lodash kebabCase(string)
+// lodash
 /** Converts `string` to
  * [kebab case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles).
  *
@@ -2927,16 +3128,19 @@
  * @example `kebabCase('fooBar'); // => 'foo-bar'`
  * @example `kebabCase('__FOO_BAR__'); // => 'foo-bar'`
  */
-!!EODOC
+export function kebabCase(string) {
+  if (false) { kebabCase(string); }
+  throw 'TODO: implement kebabCase';
+}
 
-!!SIG lodash keyBy(collection, iteratee)
+// lodash
 /** Creates an object composed of keys generated from the results of running
  * each element of `collection` thru `funcOrProp`. The corresponding value of
  * each key is the last element responsible for generating the key. A function
  * iteratee is invoked as func(val, seq)
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function/propname to transform keys; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname to transform keys; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the composed aggregate object.
@@ -2944,14 +3148,17 @@
  * @example `var array = [ { 'dir': 'left', 'code': 97 }, { 'dir': 'right', 'code': 100 } ]; keyBy(array, function(o) { return String.fromCharCode(o.code); }); // => { 'a': { 'dir': 'left', 'code': 97 }, 'd': { 'dir': 'right', 'code': 100 } }`
  * @example `keyBy(array, 'dir'); // => { 'left': { 'dir': 'left', 'code': 97 }, 'right': { 'dir': 'right', 'code': 100 } }`
  */
-!!EODOC
+export function keyBy(collection, iteratee) {
+  if (false) { keyBy(collection, iteratee); }
+  throw 'TODO: implement keyBy';
+}
 
-!!SIG flipshop keylistEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters)
+// flipshop
 /** /** Keeps `varname` at `bagname ~ "_keys"` for as long as it hasn't been hand-edited; @see `defaultMaybe`. */
  */
-!!EODOC
+// export function keylistEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) {}
 
-!!SIG lodash keys(object)
+// lodash
 /** Creates an array of the own enumerable property names of `object`.
  *
  * **Note:** Non-object values are coerced to objects. See the
@@ -2965,9 +3172,12 @@
  * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; keys(new Foo); // => ['a', 'b'] (iteration order is not guaranteed)`
  * @example `keys('hi'); // => ['0', '1']`
  */
-!!EODOC
+export function keys(object) {
+  if (false) { keys(object); }
+  throw 'TODO: implement keys';
+}
 
-!!SIG lodash keysIn(object)
+// lodash
 /** Creates an array of the own and inherited enumerable property names of `object`.
  *
  * **Note:** Non-object values are coerced to objects.
@@ -2978,9 +3188,12 @@
  *
  * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; keysIn(new Foo); // => ['a', 'b', 'c'] (iteration order is not guaranteed)`
  */
-!!EODOC
+export function keysIn(object) {
+  if (false) { keysIn(object); }
+  throw 'TODO: implement keysIn';
+}
 
-!!SIG lodash last(array)
+// lodash
 /** Gets the last element of `array`.
  *
  * @param array {array}: The array to query.
@@ -2989,17 +3202,20 @@
  *
  * @example `last([1, 2, 3]); // => 3`
  */
-!!EODOC
+export function last(array) {
+  if (false) { last(array); }
+  throw 'TODO: implement last';
+}
 
-!!SIG flipshop lastIndexOf(arr, val)
+// flipshop
 /** Index of the last occurrence of `val` in `arr`, searching from the end, or `-1` if absent.
  *
  * @example `lastIndexOf([1, 2, 1], 1); // => 2`
  */
-!!EODOC
+// export function lastIndexOf(arr, val) {}
 
-!!SIG lodash lastIndexOf(array, value, fromIndex)
-/** This method is like `indexOf` except that it iterates over elements of
+// lodash
+/** Like `indexOf` except that it iterates over elements of
  * `array` from right to left.
  *
  * @param array {array}: The array to inspect.
@@ -3012,14 +3228,17 @@
  * @example `lastIndexOf([1, 2, 1, 2], 2); // => 3`
  * @example `lastIndexOf([1, 2, 1, 2], 2, 2); // => 1`
  */
-!!EODOC
+export function lastIndexOf(array, value, fromIndex) {
+  if (false) { lastIndexOf(array, value, fromIndex); }
+  throw 'TODO: implement lastIndexOf';
+}
 
-!!SIG flipshop lowerCase(str)
+// flipshop
 /** /** `str` split into words, lowercased, and joined with a space. */
  */
-!!EODOC
+// export function lowerCase(str) {}
 
-!!SIG lodash lowerCase(string)
+// lodash
 /** Converts `string`, as space separated words, to lower case.
  *
  * @param string {string}: The string to convert; defaults to `''`.
@@ -3031,17 +3250,20 @@
  * @example `lowerCase('fooBar'); // => 'foo bar'`
  * @example `lowerCase('__FOO_BAR__'); // => 'foo bar'`
  */
-!!EODOC
+export function lowerCase(string) {
+  if (false) { lowerCase(string); }
+  throw 'TODO: implement lowerCase';
+}
 
-!!SIG flipshop lowerFirst(str)
+// flipshop
 /** `str` with only its first character lowercased, the rest left untouched -- `upperFirst`'s
  * counterpart.
  *
  * @example `lowerFirst("Fred"); // => "fred"`
  */
-!!EODOC
+// export function lowerFirst(str) {}
 
-!!SIG lodash lowerFirst(string)
+// lodash
 /** Converts the first character of `string` to lower case.
  *
  * @param string {string}: The string to convert; defaults to `''`.
@@ -3052,9 +3274,12 @@
  * @example `lowerFirst('Fred'); // => 'fred'`
  * @example `lowerFirst('FRED'); // => 'fRED'`
  */
-!!EODOC
+export function lowerFirst(string) {
+  if (false) { lowerFirst(string); }
+  throw 'TODO: implement lowerFirst';
+}
 
-!!SIG lodash lt(value, other)
+// lodash
 /** Checks if `value` is less than `other`.
  *
  * @seeAlso [gt]
@@ -3068,9 +3293,12 @@
  * @example `lt(3, 3); // => false`
  * @example `lt(3, 1); // => false`
  */
-!!EODOC
+export function lt(value, other) {
+  if (false) { lt(value, other); }
+  throw 'TODO: implement lt';
+}
 
-!!SIG lodash lte(value, other)
+// lodash
 /** Checks if `value` is less than or equal to `other`.
  *
  * @seeAlso [gte]
@@ -3084,9 +3312,12 @@
  * @example `lte(3, 3); // => true`
  * @example `lte(3, 1); // => false`
  */
-!!EODOC
+export function lte(value, other) {
+  if (false) { lte(value, other); }
+  throw 'TODO: implement lte';
+}
 
-!!SIG lodash map(collection, iteratee)
+// lodash
 /** Creates an array of values by running each element in `collection` thru
  * `funcOrProp`. The function/propname is invoked with three arguments:
  * (value, index|key, collection).
@@ -3101,7 +3332,7 @@
  * `template`, `trim`, `trimEnd`, `trimStart`, and `words`
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new mapped array.
@@ -3110,18 +3341,21 @@
  * @example `map({ 'a': 4, 'b': 8 }, square); // => [16, 64] (iteration order is not guaranteed)`
  * @example `var users = [ { 'user': 'barney' }, { 'user': 'fred' } ]; map(users, 'user'); // => ['barney', 'fred']`
  */
-!!EODOC
+export function map(collection, iteratee) {
+  if (false) { map(collection, iteratee); }
+  throw 'TODO: implement map';
+}
 
-!!SIG flipshop mapKeys(bag, iterateeSpec)
+// flipshop
 /** `bag`'s values, replacing each key with `iterateeSpec(val, key)` -- `mapValues`' sibling for
  * keys instead of values. A collision on the computed key keeps the last entry that produced it.
  * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `mapKeys({ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }); // => { "a1": 1, "b2": 2 }`
  */
-!!EODOC
+// export function mapKeys(bag, iterateeSpec) {}
 
-!!SIG lodash mapKeys(object, iteratee)
+// lodash
 /** The opposite of `mapValues`; this method creates an object with the
  * same values as `object` and keys generated by running each own enumerable
  * string keyed property of `object` thru `funcOrProp`. The function/propname is invoked
@@ -3130,16 +3364,19 @@
  * @seeAlso [mapValues]
  *
  * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new mapped object.
  *
  * @example `mapKeys({ 'a': 1, 'b': 2 }, function(value, key) { return key + value; }); // => { 'a1': 1, 'b2': 2 }`
  */
-!!EODOC
+export function mapKeys(object, iteratee) {
+  if (false) { mapKeys(object, iteratee); }
+  throw 'TODO: implement mapKeys';
+}
 
-!!SIG flipshop mapValues(bag, keylist, missingPolicy, func)
+// flipshop
 /** `bag`/`arr` with every value replaced by `func`'s result. Lodash splits this into two
  * functions -- `mapValues` keeps an object's keys, `map` returns a new array -- unified here under
  * one dispatch: `func` is `func(val, key)` for a map or `func(val, seq)` for an array.
@@ -3147,16 +3384,16 @@
  * (for an array, `seq` fills both slots) when a map form needs to distinguish visit order from
  * key order. The `keylist` and `missingPolicy` overloads follow `forEach`'s rules: a `keylist`
  * walks exactly those keys, and `missingPolicy` decides whether an `undefined` value is mapped
- * (`USE_UNDEFINED`, the default) or its key dropped from the result entirely (`SKIP`). `func` is
+ * (`NIL`, the default) or its key dropped from the result entirely (`SKIP`). `func` is
  * coerced through `funcOrProp` @see `funcOrProp` -- `mapValues(users, 'name')` extracts a `name`
  * field from each.
  *
  * @example `mapValues({ "fred": 40, "pebbles": 1 }, function(age) { return age * 2; }); // => { "fred": 80, "pebbles": 2 }`
  * @example `mapValues([4, 8], function(n) { return n * n; }); // => [16, 64]`
  */
-!!EODOC
+// export function mapValues(bag, keylist, missingPolicy, func) {}
 
-!!SIG lodash mapValues(object, iteratee)
+// lodash
 /** Creates an object with the same keys as `object` and values generated
  * by running each own enumerable string keyed property of `object` thru
  * `funcOrProp`. The function/propname is invoked with three arguments:
@@ -3165,7 +3402,7 @@
  * @seeAlso [mapKeys]
  *
  * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new mapped object.
@@ -3173,18 +3410,21 @@
  * @example `var users = { 'fred': { 'user': 'fred', 'age': 40 }, 'pebbles': { 'user': 'pebbles', 'age': 1 } }; mapValues(users, function(o) { return o.age; }); // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)`
  * @example `mapValues(users, 'age'); // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)`
  */
-!!EODOC
+export function mapValues(object, iteratee) {
+  if (false) { mapValues(object, iteratee); }
+  throw 'TODO: implement mapValues';
+}
 
-!!SIG flipshop matches(source)
+// flipshop
 /** Builds a rule that's `true` for any map holding `source`'s entries -- a partial deep match.
  * `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
  *
  * @example `matches({ "a": 1 })({ "a": 1, "b": 2 }, 0); // => true`
  * @example `matches({ "a": 1 })({ "a": 2, "b": 2 }, 0); // => false`
  */
-!!EODOC
+// export function matches(source) {}
 
-!!SIG lodash matches(source)
+// lodash
 /** Creates a function that performs a partial deep comparison between a given
  * object and `source`, returning `true` if the given object has equivalent
  * property values, else `false`.
@@ -3206,17 +3446,20 @@
  * @example `var objects = [ { 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 } ]; filter(objects, matches({ 'a': 4, 'c': 6 })); // => [{ 'a': 4, 'b': 5, 'c': 6 }]`
  * @example `filter(objects, overSome([matches({ 'a': 1 }), matches({ 'a': 4 })])); // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]`
  */
-!!EODOC
+export function matches(source) {
+  if (false) { matches(source); }
+  throw 'TODO: implement matches';
+}
 
-!!SIG flipshop matchesProperty(path, srcValue)
+// flipshop
 /** Builds a rule that's `true` when `path` of a given object equals `srcValue`; `path` can be a
  * string/dotpath/pathlist @see `getAt`. `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
  *
  * @example `matchesProperty("a.b", 1)({ "a": { "b": 1 } }, 0); // => true`
  */
-!!EODOC
+// export function matchesProperty(path, srcValue) {}
 
-!!SIG lodash matchesProperty(path, srcValue)
+// lodash
 /** Creates a function that performs a partial deep comparison between the
  * value at `path` of a given object to `srcValue`, returning `true` if the
  * object value is equivalent, else `false`.
@@ -3236,9 +3479,12 @@
  * @example `var objects = [ { 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 } ]; find(objects, matchesProperty('a', 4)); // => { 'a': 4, 'b': 5, 'c': 6 }`
  * @example `filter(objects, overSome([matchesProperty('a', 1), matchesProperty('a', 4)])); // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]`
  */
-!!EODOC
+export function matchesProperty(path, srcValue) {
+  if (false) { matchesProperty(path, srcValue); }
+  throw 'TODO: implement matchesProperty';
+}
 
-!!SIG lodash max(array)
+// lodash
 /** Computes the maximum value of `array`. If `array` is empty or falsey,
  * `undefined` is returned.
  *
@@ -3249,24 +3495,27 @@
  * @example `max([4, 2, 8, 6]); // => 8`
  * @example `max([]); // => undefined`
  */
-!!EODOC
+export function max(array) {
+  if (false) { max(array); }
+  throw 'TODO: implement max';
+}
 
-!!SIG flipshop maxBy(arr, iterateeSpec)
+// flipshop
 /** Element of `arr` for which `iterateeSpec(val, seq)` is greatest, or `undefined` for an empty
  * `arr` -- std's array `max` picks the greatest value itself; this picks the element behind the
  * greatest *computed* value. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `maxBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 3 }`
  */
-!!EODOC
+// export function maxBy(arr, iterateeSpec) {}
 
-!!SIG lodash maxBy(array, iteratee)
-/** This method is like `max` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `max` except that it accepts `funcOrProp` which is
  * invoked for each element in `array` to generate the criterion by which
- * the value is ranked. The function/propname is invoked with one argument: (value).
+ * the value is ranked. A function iteratee is invoked with (val, seq).
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns: the maximum value.
@@ -3274,9 +3523,12 @@
  * @example `var objects = [{ 'n': 1 }, { 'n': 2 }]; maxBy(objects, function(o) { return o.n; }); // => { 'n': 2 }`
  * @example `maxBy(objects, 'n'); // => { 'n': 2 }`
  */
-!!EODOC
+export function maxBy(array, iteratee) {
+  if (false) { maxBy(array, iteratee); }
+  throw 'TODO: implement maxBy';
+}
 
-!!SIG lodash mean(array)
+// lodash
 /** Computes the mean of the values in `array`.
  *
  * @param array {array}: The array to iterate over.
@@ -3285,23 +3537,26 @@
  *
  * @example `mean([4, 2, 8, 6]); // => 5`
  */
-!!EODOC
+export function mean(array) {
+  if (false) { mean(array); }
+  throw 'TODO: implement mean';
+}
 
-!!SIG flipshop meanBy(arr, iterateeSpec)
+// flipshop
 /** Average of `iterateeSpec(val, seq)` across `arr` -- `average` *(std)*, mapped via `mapValues`.
  * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `meanBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 3`
  */
-!!EODOC
+// export function meanBy(arr, iterateeSpec) {}
 
-!!SIG lodash meanBy(array, iteratee)
-/** This method is like `mean` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `mean` except that it accepts `funcOrProp` which is
  * invoked for each element in `array` to generate the value to be averaged.
- * The function/propname is invoked with one argument: (value).
+ * A function iteratee is invoked with (val, seq).
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the mean.
@@ -3309,9 +3564,12 @@
  * @example `var objects = [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }]; meanBy(objects, function(o) { return o.n; }); // => 5`
  * @example `meanBy(objects, 'n'); // => 5`
  */
-!!EODOC
+export function meanBy(array, iteratee) {
+  if (false) { meanBy(array, iteratee); }
+  throw 'TODO: implement meanBy';
+}
 
-!!SIG lodash memoize(func, resolver)
+// lodash
 /** Creates a function that memoizes the result of `func`. If `resolver` is
  * provided, it determines the cache key for storing the result based on the
  * arguments provided to the memoized function. By default, the first argument
@@ -3324,8 +3582,8 @@
  * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
  * method interface of `clear`, `delete`, `get`, `has`, and `set`.
  *
- * @param func {function}: The function to have its output memoized.
- * @param resolver {function}: The function to resolve the cache key.
+ * @param func {function}: Function to have its output memoized.
+ * @param resolver {function}: Function to resolve the cache key.
  *   @optional
  *
  * @returns {function}: the new memoized function.
@@ -3336,10 +3594,13 @@
  * @example `values.cache.set(object, ['a', 'b']); values(object); // => ['a', 'b']`
  * @example `memoize.Cache = WeakMap;`
  */
-!!EODOC
+export function memoize(func, resolver) {
+  if (false) { memoize(func, resolver); }
+  throw 'TODO: implement memoize';
+}
 
-!!SIG lodash merge(object, sources)
-/** This method is like `assign` except that it recursively merges own and
+// lodash
+/** Like `assign` except that it recursively merges own and
  * inherited enumerable string keyed properties of source objects into the
  * destination object. Source properties that resolve to `undefined` are
  * skipped if a destination value exists. Array and plain object properties
@@ -3357,9 +3618,12 @@
  *
  * @example `var object = { 'a': [{ 'b': 2 }, { 'd': 4 }] }; var other = { 'a': [{ 'c': 3 }, { 'e': 5 }] }; merge(object, other); // => { 'a': [{ 'b': 2, 'c': 3 }, { 'd': 4, 'e': 5 }] }`
  */
-!!EODOC
+export function merge(object, sources) {
+  if (false) { merge(object, sources); }
+  throw 'TODO: implement merge';
+}
 
-!!SIG flipshop mergeWith(existing, incoming, combine)
+// flipshop
 /** `deepMerge`, with `combine(existingVal, incomingVal)` deciding what lands at a pair present in
  * both -- called at every level of the recursion, not just the leaves (including once per
  * index-pair when both sides are arrays), so returning `undefined` falls back to `deepMerge`'s
@@ -3369,10 +3633,10 @@
  * @example `mergeWith({ "a": 1 }, { "a": 2 }, (existingVal, incomingVal) => existingVal + incomingVal);`
  * @example `// => { "a": 3 }`
  */
-!!EODOC
+// export function mergeWith(existing, incoming, combine) {}
 
-!!SIG lodash mergeWith(object, sources, customizer)
-/** This method is like `merge` except that it accepts `customizer` which
+// lodash
+/** Like `merge` except that it accepts `customizer` which
  * is invoked to produce the merged values of the destination and source
  * properties. If `customizer` returns `undefined`, merging is handled by the
  * method instead. The `customizer` is invoked with six arguments:
@@ -3382,15 +3646,18 @@
  *
  * @param object {map}: The destination object.
  * @param sources {map}: The source objects.
- * @param customizer {function}: The function to customize assigned values.
+ * @param customizer {function}: Function to customize assigned values.
  *
  * @returns {map}: `object`.
  *
  * @example `function customizer(objValue, srcValue) { if (isArray(objValue)) { return objValue.concat(srcValue); } } var object = { 'a': [1], 'b': [2] }; var other = { 'a': [3], 'b': [4] }; mergeWith(object, other, customizer); // => { 'a': [1, 3], 'b': [2, 4] }`
  */
-!!EODOC
+export function mergeWith(object, sources, customizer) {
+  if (false) { mergeWith(object, sources, customizer); }
+  throw 'TODO: implement mergeWith';
+}
 
-!!SIG lodash method(path, args)
+// lodash
 /** Creates a function that invokes the method at `path` of a given object.
  * Any additional arguments are provided to the invoked method.
  *
@@ -3403,9 +3670,12 @@
  * @example `var objects = [ { 'a': { 'b': constant(2) } }, { 'a': { 'b': constant(1) } } ]; map(objects, method('a.b')); // => [2, 1]`
  * @example `map(objects, method(['a', 'b'])); // => [2, 1]`
  */
-!!EODOC
+export function method(path, args) {
+  if (false) { method(path, args); }
+  throw 'TODO: implement method';
+}
 
-!!SIG lodash methodOf(object, args)
+// lodash
 /** The opposite of `method`; this method creates a function that invokes
  * the method at a given path of `object`. Any additional arguments are
  * provided to the invoked method.
@@ -3419,9 +3689,12 @@
  * @example `var array = times(3, constant), object = { 'a': array, 'b': array, 'c': array }; map(['a[2]', 'c[0]'], methodOf(object)); // => [2, 0]`
  * @example `map([['a', '2'], ['c', '0']], methodOf(object)); // => [2, 0]`
  */
-!!EODOC
+export function methodOf(object, args) {
+  if (false) { methodOf(object, args); }
+  throw 'TODO: implement methodOf';
+}
 
-!!SIG lodash min(array)
+// lodash
 /** Computes the minimum value of `array`. If `array` is empty or falsey,
  * `undefined` is returned.
  *
@@ -3432,23 +3705,26 @@
  * @example `min([4, 2, 8, 6]); // => 2`
  * @example `min([]); // => undefined`
  */
-!!EODOC
+export function min(array) {
+  if (false) { min(array); }
+  throw 'TODO: implement min';
+}
 
-!!SIG flipshop minBy(arr, iterateeSpec)
+// flipshop
 /** `maxBy`'s counterpart: element of `arr` for which `iterateeSpec(val, seq)` is least, or
  * `undefined` for an empty `arr`. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `minBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 1 }`
  */
-!!EODOC
+// export function minBy(arr, iterateeSpec) {}
 
-!!SIG lodash minBy(array, iteratee)
-/** This method is like `min` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `min` except that it accepts `funcOrProp` which is
  * invoked for each element in `array` to generate the criterion by which
- * the value is ranked. The function/propname is invoked with one argument: (value).
+ * the value is ranked. A function iteratee is invoked with (val, seq).
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns: the minimum value.
@@ -3456,9 +3732,12 @@
  * @example `var objects = [{ 'n': 1 }, { 'n': 2 }]; minBy(objects, function(o) { return o.n; }); // => { 'n': 1 }`
  * @example `minBy(objects, 'n'); // => { 'n': 1 }`
  */
-!!EODOC
+export function minBy(array, iteratee) {
+  if (false) { minBy(array, iteratee); }
+  throw 'TODO: implement minBy';
+}
 
-!!SIG lodash mixin(object, source, options, options.chain)
+// lodash
 /** Adds all own enumerable string keyed function properties of a source
  * object to the destination object. If `object` is a function, then methods
  * are added to its prototype as well.
@@ -3480,9 +3759,12 @@
  * @example `_('fred').vowels().value(); // => ['e']`
  * @example `mixin({ 'vowels': vowels }, { 'chain': false }); _('fred').vowels(); // => ['e']`
  */
-!!EODOC
+export function mixin(object, source, options) {
+  if (false) { mixin(object, source, options); }
+  throw 'TODO: implement mixin';
+}
 
-!!SIG lodash multiply(multiplier, multiplicand)
+// lodash
 /** Multiply two numbers.
  *
  * @param multiplier {number}: The first number in a multiplication.
@@ -3492,29 +3774,38 @@
  *
  * @example `multiply(6, 4); // => 24`
  */
-!!EODOC
+export function multiply(multiplier, multiplicand) {
+  if (false) { multiply(multiplier, multiplicand); }
+  throw 'TODO: implement multiply';
+}
 
-!!SIG lodash nativeObjectToString()
+// lodash
 /** Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
-!!EODOC
+export function nativeObjectToString() {
+  if (false) { nativeObjectToString(); }
+  throw 'TODO: implement nativeObjectToString';
+}
 
-!!SIG lodash negate(predicate)
-/** Creates a function that negates the result of the predicate `func`. The
- * `func` predicate is invoked with the `this` binding and arguments of the
+// lodash
+/** Creates a function that negates the result of the rule `func`. The
+ * `func` rule is invoked with the `this` binding and arguments of the
  * created function.
  *
- * @param predicate {function}: The predicate to negate.
+ * @param rule {function}: The rule to negate.
  *
  * @returns {function}: the new negated function.
  *
  * @example `function isEven(n) { return n % 2 == 0; } filter([1, 2, 3, 4, 5, 6], negate(isEven)); // => [1, 3, 5]`
  */
-!!EODOC
+export function negate(rule) {
+  if (false) { negate(rule); }
+  throw 'TODO: implement negate';
+}
 
-!!SIG lodash noConflict()
+// lodash
 /** Reverts the `_` variable to its previous value and returns a reference to
  * the `lodash` function.
  *
@@ -3522,26 +3813,32 @@
  *
  * @example `var lodash = noConflict();`
  */
-!!EODOC
+export function noConflict() {
+  if (false) { noConflict(); }
+  throw 'TODO: implement noConflict';
+}
 
-!!SIG lodash noop()
+// lodash
 /** Returns `undefined`.
  * @seeAlso [noop0] [noop1] [noop2]
  *
  * @example `times(2, noop); // => [undefined, undefined]`
  */
-!!EODOC
+export function noop() {
+  if (false) { noop(); }
+  throw 'TODO: implement noop';
+}
 
-!!SIG flipshop nth(arr, seq)
+// flipshop
 /** Element of `arr` at `seq`; a negative `seq` counts back from the end. `undefined` if `seq`,
  * after that adjustment, is out of bounds.
  *
  * @example `nth([1, 2, 3], 1); // => 2`
  * @example `nth([1, 2, 3], -1); // => 3`
  */
-!!EODOC
+// export function nth(arr, seq) {}
 
-!!SIG lodash nth(array, n)
+// lodash
 /** Gets the element at index `n` of `array`. If `n` is negative, the nth
  * element from the end is returned.
  *
@@ -3554,9 +3851,12 @@
  * @example `var array = ['a', 'b', 'c', 'd']; nth(array, 1); // => 'b'`
  * @example `nth(array, -2); // => 'c';`
  */
-!!EODOC
+export function nth(array, n) {
+  if (false) { nth(array, n); }
+  throw 'TODO: implement nth';
+}
 
-!!SIG lodash nthArg(n)
+// lodash
 /** Creates a function that gets the argument at index `n`. If `n` is negative,
  * the nth argument from the end is returned.
  *
@@ -3568,9 +3868,12 @@
  * @example `var func = nthArg(1); func('a', 'b', 'c', 'd'); // => 'b'`
  * @example `var func = nthArg(-2); func('a', 'b', 'c', 'd'); // => 'c'`
  */
-!!EODOC
+export function nthArg(n) {
+  if (false) { nthArg(n); }
+  throw 'TODO: implement nthArg';
+}
 
-!!SIG flipshop objectify(arr, func)
+// flipshop
 /** Creates a map keyed by each element of `arr` itself, with the value at that key set to
  * `func(val, seq)` -- the last element responsible for a given key wins on a collision. This is
  * `keyBy` with the key and value roles swapped: lodash's `keyBy` keys by `iteratee(value)` and
@@ -3579,9 +3882,9 @@
  * @example `objectify(["a", "b", "c"], function(val, seq) { return seq; }); // => { "a": 0, "b": 1, "c": 2 }`
  * @example `objectify(["x", "x"], function(val, seq) { return seq; }); // => { "x": 1 }`
  */
-!!EODOC
+// export function objectify(arr, func) {}
 
-!!SIG flipshop omit(bag, keylist)
+// flipshop
 /** `bag` without the entries at `keylist` -- the inverse of `pick`. Each entry of `keylist` can be
  * a dotted string or key-path array @see `getAt`, deleting a nested leaf without disturbing its
  * siblings; a path with nothing currently at it is skipped rather than autovivifying empty maps
@@ -3592,9 +3895,9 @@
  * @example `omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }`
  * @example `omit({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "c": 2 } }`
  */
-!!EODOC
+// export function omit(bag, keylist) {}
 
-!!SIG lodash omit(object, paths)
+// lodash
 /** The opposite of `pick`; this method creates an object composed of the
  * own and inherited enumerable property paths of `object` that are not omitted.
  *
@@ -3608,38 +3911,47 @@
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; omit(object, ['a', 'c']); // => { 'b': '2' }`
  */
-!!EODOC
+export function omit(object, paths) {
+  if (false) { omit(object, paths); }
+  throw 'TODO: implement omit';
+}
 
-!!SIG lodash omitBy(object, predicate)
+// lodash
 /** The opposite of `pickBy`; this method creates an object composed of
  * the own and inherited enumerable string keyed properties of `object` that
- * `predicate` doesn't return truthy for. The predicate is invoked with two
+ * `rule` doesn't return truthy for. The rule is invoked with two
  * arguments: (value, key).
  *
  * @param object {map}: The source object.
- * @param predicate {function}: The function invoked per property; defaults to `identity`.
+ * @param rule {function}: Function invoked per property; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new object.
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; omitBy(object, isNumber); // => { 'b': '2' }`
  */
-!!EODOC
+export function omitBy(object, rule) {
+  if (false) { omitBy(object, rule); }
+  throw 'TODO: implement omitBy';
+}
 
-!!SIG lodash once(func)
+// lodash
 /** Creates a function that is restricted to invoking `func` once. Repeat calls
  * to the function return the value of the first invocation. The `func` is
  * invoked with the `this` binding and arguments of the created function.
  *
- * @param func {function}: The function to restrict.
+ * @param func {function}: Function to restrict.
  *
  * @returns {function}: the new restricted function.
  *
  * @example `var initialize = once(createApplication); initialize(); initialize(); // => 'createApplication' is invoked once`
  */
-!!EODOC
+export function once(func) {
+  if (false) { once(func); }
+  throw 'TODO: implement once';
+}
 
-!!SIG flipshop orderAnyBy(vals, iterateeSpec, order)
+// flipshop
 /** `orderBy`, with `cmpAny` as the comparator -- a total ordering even across mixed/incompatible
  * types in `iterateeSpec`'s results, so this never throws where `orderBy` might.
  *
@@ -3649,9 +3961,9 @@
  *
  * @example `orderAnyBy([1, "2", 0]); // => [0, 1, "2"] -- number sorts before string, per cmpAny's fstypenum fallback`
  */
-!!EODOC
+// export function orderAnyBy(vals, iterateeSpec, order) {}
 
-!!SIG flipshop orderBy(vals, iterateeSpec, order, comparator)
+// flipshop
 /** `vals`, ordered by `iterateeSpec`: `vals`'s elements (array) or values (map, keys discarded),
  * stably sorted by `iteratee(iterateeSpec)`'s result for each, compared with `comparator`.
  * Defaults to `cmp`, so an `iterateeSpec` producing incompatible types across elements -- e.g. a
@@ -3660,7 +3972,7 @@
  * of each.
  *
  * @param vals {array|map}: Collection to sort.
- * @param funcOrPropSpec: Ducktyped @see `funcOrProp` -- a function `(val, seq|key) => criteria`, a map (matches predicate), or a string (property path). Defaults to `identity`.
+ * @param funcOrPropSpec: Ducktyped @see `funcOrProp` -- a function `(val, seq|key) => criteria`, a map (matches rule), or a string (property path). Defaults to `identity`.
  * @param order {number}: Positive sorts ascending, negative descending, zero leaves `vals` in its original order regardless of `iterateeSpec`. Defaults to `1`.
  * @param comparator {function}: `(criteriaA, criteriaB) => number`, applied to pairs of `iterateeSpec`'s results. Defaults to `cmp`.
  *
@@ -3669,10 +3981,10 @@
  * @example `orderBy([1, 2, 3], identity, -1); // => [3, 2, 1]`
  * @example `orderBy({ "a": 3, "b": 1 }, identity); // => [1, 3]`
  */
-!!EODOC
+// export function orderBy(vals, iterateeSpec, order, comparator) {}
 
-!!SIG lodash orderBy(collection, iteratees, orders)
-/** This method is like `sortBy` except that it allows specifying the sort
+// lodash
+/** Like `sortBy` except that it allows specifying the sort
  * orders of The function/propnames to sort by. If `orders` is unspecified, all values
  * are sorted in ascending order. Otherwise, specify an order of "desc" for
  * descending or "asc" for ascending sort order of corresponding values.
@@ -3687,19 +3999,22 @@
  *
  * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 34 }, { 'user': 'fred', 'age': 40 }, { 'user': 'barney', 'age': 36 } ]; orderBy(users, ['user', 'age'], ['asc', 'desc']); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]`
  */
-!!EODOC
+export function orderBy(collection, iteratees, orders) {
+  if (false) { orderBy(collection, iteratees, orders); }
+  throw 'TODO: implement orderBy';
+}
 
-!!SIG flipshop over(funcs)
+// flipshop
 /** Builds a function that calls every function in `funcs` with `(val, seq)`, collecting results
  * into an array in `funcs`' order. Each element of `funcs` is coerced through `funcOrProp`, so a
- * property-path string, `[path, srcValue]` array, or partial-match map can stand in for a literal
+ * dotpath string, `[path, srcValue]` array, or partial-match map can stand in for a literal
  * function, matching lodash's own `over`/`overEvery`/`overSome` docs.
  *
  * @example `over([(val, _seq) => val + 1, (val, _seq) => val - 1])(5, 0); // => [6, 4]`
  */
-!!EODOC
+// export function over(funcs) {}
 
-!!SIG lodash over(iteratees)
+// lodash
 /** Creates a function that invokes `iteratees` with the arguments it receives
  * and returns their results.
  *
@@ -3710,12 +4025,15 @@
  *
  * @example `var func = over([Math.max, Math.min]); func(1, 2, 3, 4); // => [4, 1]`
  */
-!!EODOC
+export function over(iteratees) {
+  if (false) { over(iteratees); }
+  throw 'TODO: implement over';
+}
 
-!!SIG lodash overArgs(func, transforms)
+// lodash
 /** Creates a function that invokes `func` with its arguments transformed.
  *
- * @param func {function}: The function to wrap.
+ * @param func {function}: Function to wrap.
  * @param transforms {(Function|Function[])}: ] The argument transforms; defaults to `[identity`.
  *   @optional
  *
@@ -3724,25 +4042,28 @@
  * @example `function doubled(n) { return n * 2; } function square(n) { return n * n; } var func = overArgs(function(x, y) { return [x, y]; }, [square, doubled]); func(9, 3); // => [81, 6]`
  * @example `func(10, 5); // => [100, 10]`
  */
-!!EODOC
+export function overArgs(func, transforms) {
+  if (false) { overArgs(func, transforms); }
+  throw 'TODO: implement overArgs';
+}
 
-!!SIG flipshop overEvery(funcs)
+// flipshop
 /** Builds a rule that's `true` only when every function in `funcs` returns truthy for
  * `(val, seq)`. Each element of `funcs` is coerced through `funcOrProp`; @see `over`.
  *
  * @example `overEvery([(val, _seq) => val > 0, (val, _seq) => val < 10])(5, 0); // => true`
  */
-!!EODOC
+// export function overEvery(funcs) {}
 
-!!SIG lodash overEvery(predicates)
-/** Creates a function that checks if **all** of the `predicates` return
+// lodash
+/** Creates a function that checks if **all** of the `rules` return
  * truthy when invoked with the arguments it receives.
  *
- * Following shorthands are possible for providing predicates.
- * Pass an `Object` and it will be used as an parameter for `matches` to create the predicate.
- * Pass an `Array` of parameters for `matchesProperty` and the predicate will be created using them.
+ * Following shorthands are possible for providing rules.
+ * Pass an `Object` and it will be used as an parameter for `matches` to create the rule.
+ * Pass an `Array` of parameters for `matchesProperty` and the rule will be created using them.
  *
- * @param predicates {(Function|Function[])}: ] The predicates to check; defaults to `[identity`.
+ * @param rules {(Function|Function[])}: ] The rules to check; defaults to `[identity`.
  *   @optional
  *
  * @returns {function}: the new function.
@@ -3751,25 +4072,28 @@
  * @example `func(null); // => false`
  * @example `func(NaN); // => false`
  */
-!!EODOC
+export function overEvery(rules) {
+  if (false) { overEvery(rules); }
+  throw 'TODO: implement overEvery';
+}
 
-!!SIG flipshop overSome(funcs)
+// flipshop
 /** Builds a rule that's `true` when any function in `funcs` returns truthy for `(val, seq)`. Each
  * element of `funcs` is coerced through `funcOrProp`; @see `over`.
  *
  * @example `overSome([(val, _seq) => val < 0, (val, _seq) => val > 10])(5, 0); // => false`
  */
-!!EODOC
+// export function overSome(funcs) {}
 
-!!SIG lodash overSome(predicates)
-/** Creates a function that checks if **any** of the `predicates` return
+// lodash
+/** Creates a function that checks if **any** of the `rules` return
  * truthy when invoked with the arguments it receives.
  *
- * Following shorthands are possible for providing predicates.
- * Pass an `Object` and it will be used as an parameter for `matches` to create the predicate.
- * Pass an `Array` of parameters for `matchesProperty` and the predicate will be created using them.
+ * Following shorthands are possible for providing rules.
+ * Pass an `Object` and it will be used as an parameter for `matches` to create the rule.
+ * Pass an `Array` of parameters for `matchesProperty` and the rule will be created using them.
  *
- * @param predicates {(Function|Function[])}: ] The predicates to check; defaults to `[identity`.
+ * @param rules {(Function|Function[])}: ] The rules to check; defaults to `[identity`.
  *   @optional
  *
  * @returns {function}: the new function.
@@ -3779,18 +4103,21 @@
  * @example `func(NaN); // => false`
  * @example `var matchesFunc = overSome([{ 'a': 1 }, { 'a': 2 }]) var matchesPropertyFunc = overSome([['a', 1], ['a', 2]])`
  */
-!!EODOC
+export function overSome(rules) {
+  if (false) { overSome(rules); }
+  throw 'TODO: implement overSome';
+}
 
-!!SIG flipshop pad(str, minlen, padstr)
+// flipshop
 /** Pads `str` on both sides if it's shorter than `minlen`, splitting the padding as evenly as
  * possible and favoring the right side when it's odd -- `padLeft`/`padRight`'s two-sided sibling.
  *
  * @example `pad("hi", 6); // => " hi "`
  * @example `pad("hi", 5); // => " hi "`
  */
-!!EODOC
+// export function pad(str, minlen, padstr) {}
 
-!!SIG lodash pad(string, length, chars)
+// lodash
 /** Pads `string` on the left and right sides if it's shorter than `length`.
  * Padding characters are truncated if they can't be evenly divided by `length`.
  *
@@ -3807,14 +4134,17 @@
  * @example `pad('abc', 8, '_-'); // => '_-abc_-_'`
  * @example `pad('abc', 3); // => 'abc'`
  */
-!!EODOC
+export function pad(string, length, chars) {
+  if (false) { pad(string, length, chars); }
+  throw 'TODO: implement pad';
+}
 
-!!SIG flipshop paddingFor(padstr, neededLen)
+// flipshop
 /** /** `padstr` repeated enough times to reach at least `neededLen` characters -- not truncated to it; that's the caller's job. */
  */
-!!EODOC
+// export function paddingFor(padstr, neededLen) {}
 
-!!SIG lodash padEnd(string, length, chars)
+// lodash
 /** Pads `string` on the right side if it's shorter than `length`. Padding
  * characters are truncated if they exceed `length`.
  *
@@ -3831,9 +4161,12 @@
  * @example `padEnd('abc', 6, '_-'); // => 'abc_-_'`
  * @example `padEnd('abc', 3); // => 'abc'`
  */
-!!EODOC
+export function padEnd(string, length, chars) {
+  if (false) { padEnd(string, length, chars); }
+  throw 'TODO: implement padEnd';
+}
 
-!!SIG flipshop padLeft(str, minlen, padstr)
+// flipshop
 /** Pads `str` on the left side if it's shorter than `minlen`. Padding characters are truncated if
  * they exceed `minlen`. Overloads: `padLeft(num is number, minlen is number, padstr is string)`
  * and `padLeft(num is number, minlen is number)` call `padLeft` on the stringified value.
@@ -3842,9 +4175,9 @@
  * @example `padLeft("hello world", 12, "!"); // => "!hello world"`
  * @example `padLeft("hello world", 11); // => "hello world"`
  */
-!!EODOC
+// export function padLeft(str, minlen, padstr) {}
 
-!!SIG flipshop padRight(str, minlen, padstr)
+// flipshop
 /** Pads `str` on the right side if it's shorter than `minlen`. Padding characters are truncated
  * if they exceed `minlen`. Unlike `padLeft`, there's no numeric overload -- a `number` has to be
  * stringified by the caller first.
@@ -3852,9 +4185,9 @@
  * @example `padRight("hello world", 12); // => "hello world "`
  * @example `padRight("hello world", 12, "!"); // => "hello world!"`
  */
-!!EODOC
+// export function padRight(str, minlen, padstr) {}
 
-!!SIG lodash padStart(string, length, chars)
+// lodash
 /** Pads `string` on the left side if it's shorter than `length`. Padding
  * characters are truncated if they exceed `length`.
  *
@@ -3871,9 +4204,12 @@
  * @example `padStart('abc', 6, '_-'); // => '_-_abc'`
  * @example `padStart('abc', 3); // => 'abc'`
  */
-!!EODOC
+export function padStart(string, length, chars) {
+  if (false) { padStart(string, length, chars); }
+  throw 'TODO: implement padStart';
+}
 
-!!SIG lodash parseInt(string, radix)
+// lodash
 /** Converts `string` to an integer of the specified radix. If `radix` is
  * `undefined` or `0`, a `radix` of `10` is used unless `value` is a
  * hexadecimal, in which case a `radix` of `16` is used.
@@ -3890,9 +4226,12 @@
  * @example `parseInt('08'); // => 8`
  * @example `map(['6', '08', '10'], parseInt); // => [6, 8, 10]`
  */
-!!EODOC
+export function parseInt(string, radix) {
+  if (false) { parseInt(string, radix); }
+  throw 'TODO: implement parseInt';
+}
 
-!!SIG flipshop parseJsonSafely(rawjson, opts)
+// flipshop
 /** Parses `rawjson` into a map/array, wrapping a parse failure in a `regenError` (naming `story`,
  * a caller-supplied label) instead of surfacing `parseJson`'s own opaque throw.
  *
@@ -3900,20 +4239,17 @@
  *
  * @example `parseJsonSafely('{"a": 1}'); // => { "a": 1 }`
  */
-!!EODOC
+// export function parseJsonSafely(rawjson, opts) {}
 
-!!SIG lodash partial(func, partials)
+// lodash
 /** Creates a function that invokes `func` with `partials` prepended to the
- * arguments it receives. This method is like `bind` except it does **not**
+ * arguments it receives. Like `bind` except it does **not**
  * alter the `this` binding.
  *
  * The `partial.placeholder` value, which defaults to `_` in monolithic
  * builds, may be used as a placeholder for partially applied arguments.
  *
- * **Note:** This method doesn't set the "length" property of partially
- * applied functions.
- *
- * @param func {function}: The function to partially apply arguments to.
+ * @param func {function}: Function to partially apply arguments to.
  * @param partials: The arguments to be partially applied.
  *   @optional
  *
@@ -3922,10 +4258,13 @@
  * @example `function greet(greeting, name) { return greeting + ' ' + name; } var sayHelloTo = partial(greet, 'hello'); sayHelloTo('fred'); // => 'hello fred'`
  * @example `var greetFred = partial(greet, _, 'fred'); greetFred('hi'); // => 'hi fred'`
  */
-!!EODOC
+export function partial(func, partials) {
+  if (false) { partial(func, partials); }
+  throw 'TODO: implement partial';
+}
 
-!!SIG lodash partialRight(func, partials)
-/** This method is like `partial` except that partially applied arguments
+// lodash
+/** Like `partial` except that partially applied arguments
  * are appended to the arguments it receives.
  *
  * The `partialRight.placeholder` value, which defaults to `_` in monolithic
@@ -3934,7 +4273,7 @@
  * **Note:** This method doesn't set the "length" property of partially
  * applied functions.
  *
- * @param func {function}: The function to partially apply arguments to.
+ * @param func {function}: Function to partially apply arguments to.
  * @param partials: The arguments to be partially applied.
  *   @optional
  *
@@ -3943,9 +4282,12 @@
  * @example `function greet(greeting, name) { return greeting + ' ' + name; } var greetFred = partialRight(greet, 'fred'); greetFred('hi'); // => 'hi fred'`
  * @example `var sayHelloTo = partialRight(greet, 'hello', _); sayHelloTo('fred'); // => 'hello fred'`
  */
-!!EODOC
+export function partialRight(func, partials) {
+  if (false) { partialRight(func, partials); }
+  throw 'TODO: implement partialRight';
+}
 
-!!SIG flipshop partition(arr, rule)
+// flipshop
 /** `[passed, failed]` -- `bag`/`arr` split into the elements for which `rule` holds and the ones
  * for which it doesn't, keeping visiting order. `rule` gets `(val, seq)` (array) or `(val, key)`
  * (map); the map form returns values only, same as lodash's collection form. `rule` is coerced
@@ -3953,16 +4295,16 @@
  *
  * @example `partition([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [[2, 4], [1, 3]]`
  */
-!!EODOC
+// export function partition(arr, rule) {}
 
-!!SIG lodash partition(collection, predicate)
+// lodash
 /** Creates an array of elements split into two groups, the first of which
- * contains elements `predicate` returns truthy for, the second of which
- * contains elements `predicate` returns falsey for. The predicate is
+ * contains elements `rule` returns truthy for, the second of which
+ * contains elements `rule` returns falsey for. The rule is
  * invoked with one argument: (value).
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function|string|array}: iteratee; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the array of grouped elements.
@@ -3972,9 +4314,12 @@
  * @example `partition(users, ['active', false]); // => objects for [['barney', 'pebbles'], ['fred']]`
  * @example `partition(users, 'active'); // => objects for [['fred'], ['barney', 'pebbles']]`
  */
-!!EODOC
+export function partition(collection, rule) {
+  if (false) { partition(collection, rule); }
+  throw 'TODO: implement partition';
+}
 
-!!SIG flipshop pathForKey(keyStr)
+// flipshop
 /** Converts a dotted string into a path array -- @see `getAt`/`setAt`'s second argument. Unlike
  * lodash's `toPath`, there's no `a[0].b` bracket syntax; an array index is just another
  * dot-separated segment (`"a.0.b"`).
@@ -3983,15 +4328,15 @@
  * three steps and `".foo"` is two. A key with a terminal dot is unhandled: `"foo."` reads as
  * `"foo"`, dropping the trailing empty segment rather than keeping it as a trailing empty key.
  *
- * @param keyStr {string}: Dotted path.
+ * @param keyname {string}: Dotted path.
  *
  * @example `pathForKey("a.b.c"); // => ["a", "b", "c"]`
  * @example `pathForKey("a..b"); // => ["a", "", "b"]`
  * @example `pathForKey("foo."); // => ["foo"]`
  */
-!!EODOC
+// export function pathForKey(keyname) {}
 
-!!SIG flipshop pick(bag, keylist)
+// flipshop
 /** A map with just `bag`'s entries at `keylist` -- like lodash's `pick`, an absent key is simply
  * missing from the result rather than present with an `undefined` value. Each entry of `keylist`
  * can be a dotted string or key-path array @see `getAt`, reaching into a nested structure and
@@ -4008,9 +4353,9 @@
  * @example `pick({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "b": 1 } }`
  * @example `pickDefined({ "a": 1, "b": undefined, "c": 3 }, ["a", "b", "c"]); // => { "a": 1, "c": 3 }`
  */
-!!EODOC
+// export function pick(bag, keylist) {}
 
-!!SIG lodash pick(object, paths)
+// lodash
 /** Creates an object composed of the picked `object` properties.
  *
  * @param object {map}: The source object.
@@ -4021,32 +4366,38 @@
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; pick(object, ['a', 'c']); // => { 'a': 1, 'c': 3 }`
  */
-!!EODOC
+export function pick(object, paths) {
+  if (false) { pick(object, paths); }
+  throw 'TODO: implement pick';
+}
 
-!!SIG flipshop pickBy(bag, rule)
+// flipshop
 /** `bag`'s entries for which `rule(val, key)` holds -- the inverse of `omitBy`, and the
  * generic-rule sibling of `pickDefined`'s fixed "is defined" check, matching lodash's
- * `pickBy(object, [predicate=identity])`. `rule` is coerced through `funcOrProp` @see `funcOrProp`.
+ * `pickBy(object, [rule=identity])`.
  *
  * @example `pickBy({ "a": 1, "b": 2, "c": 3 }, (val, _key) => val > 1); // => { "b": 2, "c": 3 }`
  */
-!!EODOC
+// export function pickBy(bag, rule) {}
 
-!!SIG lodash pickBy(object, predicate)
-/** Creates an object composed of the `object` properties `predicate` returns
- * truthy for. The predicate is invoked with two arguments: (value, key).
+// lodash
+/** Creates an object composed of the `object` properties `rule` returns
+ * truthy for. The rule is invoked with two arguments: (value, key).
  *
  * @param object {map}: The source object.
- * @param predicate {function}: The function invoked per property; defaults to `identity`.
+ * @param rule {function}: Function invoked per property; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new object.
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; pickBy(object, isNumber); // => { 'a': 1, 'c': 3 }`
  */
-!!EODOC
+export function pickBy(object, rule) {
+  if (false) { pickBy(object, rule); }
+  throw 'TODO: implement pickBy';
+}
 
-!!SIG lodash property(path)
+// lodash
 /** Creates a function that returns the value at `path` of a given object.
  *
  * @param path {array|string}: The path of the property to get.
@@ -4056,9 +4407,12 @@
  * @example `var objects = [ { 'a': { 'b': 2 } }, { 'a': { 'b': 1 } } ]; map(objects, property('a.b')); // => [2, 1]`
  * @example `map(sortBy(objects, property(['a', 'b'])), 'a.b'); // => [1, 2]`
  */
-!!EODOC
+export function property(path) {
+  if (false) { property(path); }
+  throw 'TODO: implement property';
+}
 
-!!SIG lodash propertyOf(object)
+// lodash
 /** The opposite of `property`; this method creates a function that returns
  * the value at a given path of `object`.
  *
@@ -4069,15 +4423,18 @@
  * @example `var array = [0, 1, 2], object = { 'a': array, 'b': array, 'c': array }; map(['a[2]', 'c[0]'], propertyOf(object)); // => [2, 0]`
  * @example `map([['a', '2'], ['c', '0']], propertyOf(object)); // => [2, 0]`
  */
-!!EODOC
+export function propertyOf(object) {
+  if (false) { propertyOf(object); }
+  throw 'TODO: implement propertyOf';
+}
 
-!!SIG lodash pull(array, values)
+// lodash
 /** Removes all given values from `array` using
  * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons.
  *
  * **Note:** Unlike `without`, this method mutates `array`. Use `remove`
- * to remove elements from an array by predicate.
+ * to remove elements from an array by rule.
  *
  * @param array {array}: The array to modify.
  * @param values: The values to remove.
@@ -4087,10 +4444,13 @@
  *
  * @example `var array = ['a', 'b', 'c', 'a', 'b', 'c']; pull(array, 'a', 'c'); println(array); // => ['b', 'b']`
  */
-!!EODOC
+export function pull(array, values) {
+  if (false) { pull(array, values); }
+  throw 'TODO: implement pull';
+}
 
-!!SIG lodash pullAll(array, values)
-/** This method is like `pull` except that it accepts an array of values to remove.
+// lodash
+/** Like `pull` except that it accepts an array of values to remove.
  *
  * **Note:** Unlike `difference`, this method mutates `array`.
  *
@@ -4101,28 +4461,34 @@
  *
  * @example `var array = ['a', 'b', 'c', 'a', 'b', 'c']; pullAll(array, ['a', 'c']); println(array); // => ['b', 'b']`
  */
-!!EODOC
+export function pullAll(array, values) {
+  if (false) { pullAll(array, values); }
+  throw 'TODO: implement pullAll';
+}
 
-!!SIG lodash pullAllBy(array, values, iteratee)
-/** This method is like `pullAll` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `pullAll` except that it accepts `funcOrProp` which is
  * invoked for each element of `array` and `values` to generate the criterion
- * by which they're compared. The function/propname is invoked with one argument: (value).
+ * by which they're compared. A function iteratee is invoked with (val, seq).
  *
  * **Note:** Unlike `differenceBy`, this method mutates `array`.
  *
  * @param array {array}: The array to modify.
  * @param values {array}: The values to remove.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: `array`.
  *
  * @example `var array = [{ 'x': 1 }, { 'x': 2 }, { 'x': 3 }, { 'x': 1 }]; pullAllBy(array, [{ 'x': 1 }, { 'x': 3 }], 'x'); println(array); // => [{ 'x': 2 }]`
  */
-!!EODOC
+export function pullAllBy(array, values, iteratee) {
+  if (false) { pullAllBy(array, values, iteratee); }
+  throw 'TODO: implement pullAllBy';
+}
 
-!!SIG lodash pullAllWith(array, values, comparator)
-/** This method is like `pullAll` except that it accepts `comparator` which
+// lodash
+/** Like `pullAll` except that it accepts `comparator` which
  * is invoked to compare elements of `array` to `values`. The comparator is
  * invoked with two arguments: (arrVal, othVal).
  *
@@ -4137,9 +4503,12 @@
  *
  * @example `var array = [{ 'x': 1, 'y': 2 }, { 'x': 3, 'y': 4 }, { 'x': 5, 'y': 6 }]; pullAllWith(array, [{ 'x': 3, 'y': 4 }], isEqual); println(array); // => [{ 'x': 1, 'y': 2 }, { 'x': 5, 'y': 6 }]`
  */
-!!EODOC
+export function pullAllWith(array, values, comparator) {
+  if (false) { pullAllWith(array, values, comparator); }
+  throw 'TODO: implement pullAllWith';
+}
 
-!!SIG lodash pullAt(array, indexes)
+// lodash
 /** Removes elements from `array` corresponding to `indexes` and returns an
  * array of removed elements.
  *
@@ -4154,9 +4523,12 @@
  * @example `var array = ['a', 'b', 'c', 'd']; var pulled = pullAt(array, [1, 3]); println(array); // => ['a', 'c']`
  * @example `println(pulled); // => ['b', 'd']`
  */
-!!EODOC
+export function pullAt(array, indexes) {
+  if (false) { pullAt(array, indexes); }
+  throw 'TODO: implement pullAt';
+}
 
-!!SIG lodash random(lower, upper, floating)
+// lodash
 /** Produces a random number between the inclusive `lower` and `upper` bounds.
  * If only one argument is provided a number between `0` and the given number
  * is returned. If `floating` is `true`, or either `lower` or `upper` are
@@ -4183,9 +4555,12 @@
  * @example `random(5, true); // => a floating-point number between 0 and 5`
  * @example `random(1.2, 5.2); // => a floating-point number between 1.2 and 5.2`
  */
-!!EODOC
+export function random(lower, upper, floating) {
+  if (false) { random(lower, upper, floating); }
+  throw 'TODO: implement random';
+}
 
-!!SIG lodash range(start, end, step)
+// lodash
 /** Creates an array of numbers (positive and/or negative) progressing from
  * `start` up to, but not including, `end`. A step of `-1` is used if a negative
  * `start` is specified without an `end` or `step`. If `end` is not specified,
@@ -4213,15 +4588,18 @@
  * @example `range(1, 4, 0); // => [1, 1, 1]`
  * @example `range(0); // => []`
  */
-!!EODOC
+export function range(start, end, step) {
+  if (false) { range(start, end, step); }
+  throw 'TODO: implement range';
+}
 
-!!SIG flipshop rangedSequencePosition(pos, beg, end)
+// flipshop
 /** /** Resolves `pos` (only `SequencePosition.END` is defined) against `beg`/`end`; `undefined` otherwise. */
  */
-!!EODOC
+// export function rangedSequencePosition(pos, beg, end) {}
 
-!!SIG lodash rangeRight(start, end, step)
-/** This method is like `range` except that it populates values in
+// lodash
+/** Like `range` except that it populates values in
  * descending order.
  *
  * @seeAlso [inRange]
@@ -4243,39 +4621,48 @@
  * @example `rangeRight(1, 4, 0); // => [1, 1, 1]`
  * @example `rangeRight(0); // => []`
  */
-!!EODOC
+export function rangeRight(start, end, step) {
+  if (false) { rangeRight(start, end, step); }
+  throw 'TODO: implement rangeRight';
+}
 
-!!SIG lodash rearg(func, indexes)
+// lodash
 /** Creates a function that invokes `func` with arguments arranged according
  * to the specified `indexes` where the argument value at the first index is
  * provided as the first argument, the argument value at the second index is
  * provided as the second argument, and so on.
  *
- * @param func {function}: The function to rearrange arguments for.
+ * @param func {function}: Function to rearrange arguments for.
  * @param indexes {(number|number[])}: The arranged argument indexes.
  *
  * @returns {function}: the new function.
  *
  * @example `var rearged = rearg(function(a, b, c) { return [a, b, c]; }, [2, 0, 1]); rearged('b', 'c', 'a') // => ['a', 'b', 'c']`
  */
-!!EODOC
+export function rearg(func, indexes) {
+  if (false) { rearg(func, indexes); }
+  throw 'TODO: implement rearg';
+}
 
-!!SIG flipshop rebag(arr, func)
+// flipshop
 /** Rebuilds a map (from a map or an array) by asking `func(val, key?)` -- `func(val, seq)` for an
  * array, `func(val, key)` for a map -- for the `[newKey, newVal]` pair each entry becomes; an
  * entry where `func` returns `undefined` (rather than a pair) is dropped rather than written
  * under an `undefined` key. Where two entries land on the same `newKey`, the later one wins --
  * `keys(bag)` order for a map, index order for an array.
  */
-!!EODOC
+// export function rebag(arr, func) {}
 
-!!SIG lodash reComboMark(rsCombo, 'g')
+// lodash
 /** Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks) and
  * [combining diacritical marks for symbols](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks_for_Symbols).
  */
-!!EODOC
+export function reComboMark(rsCombo, 'g') {
+  if (false) { reComboMark(rsCombo, 'g'); }
+  throw 'TODO: implement reComboMark';
+}
 
-!!SIG lodash reduce(collection, iteratee, accumulator)
+// lodash
 /** Reduces `collection` to a value which is the accumulated result of running
  * each element in `collection` thru `funcOrProp`, where each successive
  * invocation is supplied the return value of the previous. If `accumulator`
@@ -4293,7 +4680,7 @@
  * @seeAlso [reduceRight]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function}: Reducer function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param accumulator: The initial value.
  *   @optional
@@ -4303,29 +4690,32 @@
  * @example `reduce([1, 2], function(sum, n) { return sum + n; }, 0); // => 3`
  * @example `reduce({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) { (result[value] || (result[value] = [])).push(key); return result; }, {}); // => { '1': ['a', 'c'], '2': ['b'] } (iteration order is not guaranteed)`
  */
-!!EODOC
+export function reduce(collection, iteratee, accumulator) {
+  if (false) { reduce(collection, iteratee, accumulator); }
+  throw 'TODO: implement reduce';
+}
 
-!!SIG flipshop reduceRight(arr, seed, foldFunction)
+// flipshop
 /** `bag`/`arr` reduced right-to-left through `foldFunction(accumulator, val, seq|key)` -- unlike
  * std's `foldArray`, `foldFunction` also gets the index/key as a third argument.
  *
  * @example `reduceRight([1, 2, 3], "", function(acc, val, _seq) { return acc ~ val; }); // => "321"`
  */
-!!EODOC
+// export function reduceRight(arr, seed, foldFunction) {}
 
-!!SIG flipshop reduceRight(arr, foldFunction)
+// flipshop
 /** /** `reduceRight`, seeded from the last-visited element -- `undefined` for an empty `arr`/`bag`. */
  */
-!!EODOC
+// export function reduceRight(arr, foldFunction) {}
 
-!!SIG lodash reduceRight(collection, iteratee, accumulator)
-/** This method is like `reduce` except that it iterates over elements of
+// lodash
+/** Like `reduce` except that it iterates over elements of
  * `collection` from right to left.
  *
  * @seeAlso [reduce]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function}: Reducer function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param accumulator: The initial value.
  *   @optional
@@ -4334,43 +4724,28 @@
  *
  * @example `var array = [[0, 1], [2, 3], [4, 5]]; reduceRight(array, function(flattened, other) { return flattened.concat(other); }, []); // => [4, 5, 2, 3, 0, 1]`
  */
-!!EODOC
+export function reduceRight(collection, iteratee, accumulator) {
+  if (false) { reduceRight(collection, iteratee, accumulator); }
+  throw 'TODO: implement reduceRight';
+}
 
-!!SIG lodash reEsTemplate([^\\}]*(?:\\.[^\\}]*)
-/** Used to match
- * [ES template delimiters](http://ecma-international.org/ecma-262/7.0/#sec-template-literal-lexical-components).
- */
-!!EODOC
-
-!!SIG lodash reForbiddenIdentifierChars()
-/** Used to validate the `validate` option in `template` variable.
- *
- * Forbids characters which could potentially change the meaning of the function argument definition:
- * - "()," (modification of function parameters)
- * - "=" (default value)
- * - "[]{}" (destructuring of function parameters)
- * - "/" (beginning of a comment)
- * - whitespace
- */
-!!EODOC
-
-!!SIG flipshop reject(arr, rule)
+// flipshop
 /** Elements of `bag`/`arr` for which `rule` does *not* hold -- the inverse of `filter` *(std)*.
  * `rule` gets `(val, seq)` (array) or `(val, key)` (map); the map form returns values only.
  * `rule` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `reject([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [1, 3]`
  */
-!!EODOC
+// export function reject(arr, rule) {}
 
-!!SIG lodash reject(collection, predicate)
+// lodash
 /** The opposite of `filter`; this method returns the elements of `collection`
- * that `predicate` does **not** return truthy for.
+ * that `rule` does **not** return truthy for.
  *
  * @seeAlso [filter]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new filtered array.
@@ -4380,18 +4755,21 @@
  * @example `reject(users, ['active', false]); // => objects for ['fred']`
  * @example `reject(users, 'active'); // => objects for ['barney']`
  */
-!!EODOC
+export function reject(collection, rule) {
+  if (false) { reject(collection, rule); }
+  throw 'TODO: implement reject';
+}
 
-!!SIG lodash remove(array, predicate)
-/** Removes all elements from `array` that `predicate` returns truthy for
- * and returns an array of the removed elements. The predicate is invoked
+// lodash
+/** Removes all elements from `array` that `rule` returns truthy for
+ * and returns an array of the removed elements. The rule is invoked
  * with three arguments: (value, index, array).
  *
  * **Note:** Unlike `filter`, this method mutates `array`. Use `pull`
  * to pull elements from an array by value.
  *
  * @param array {array}: The array to modify.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of removed elements.
@@ -4399,9 +4777,12 @@
  * @example `var array = [1, 2, 3, 4]; var evens = remove(array, function(n) { return n % 2 == 0; }); println(array); // => [1, 3]`
  * @example `println(evens); // => [2, 4]`
  */
-!!EODOC
+export function remove(array, rule) {
+  if (false) { remove(array, rule); }
+  throw 'TODO: implement remove';
+}
 
-!!SIG lodash repeat(string, n)
+// lodash
 /** Repeats the given string `n` times.
  *
  * @param string {string}: The string to repeat; defaults to `''`.
@@ -4415,9 +4796,12 @@
  * @example `repeat('abc', 2); // => 'abcabc'`
  * @example `repeat('abc', 0); // => ''`
  */
-!!EODOC
+export function repeat(string, n) {
+  if (false) { repeat(string, n); }
+  throw 'TODO: implement repeat';
+}
 
-!!SIG lodash replace(string, pattern, replacement)
+// lodash
 /** Replaces matches for `pattern` in `string` with `replacement`.
  *
  * **Note:** This method is based on
@@ -4432,15 +4816,21 @@
  *
  * @example `replace('Hi Fred', 'Fred', 'Barney'); // => 'Hi Barney'`
  */
-!!EODOC
+export function replace(string, pattern, replacement) {
+  if (false) { replace(string, pattern, replacement); }
+  throw 'TODO: implement replace';
+}
 
-!!SIG lodash reRegExpChar()
+// lodash
 /** Used to match `RegExp`
  * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
  */
-!!EODOC
+export function reRegExpChar() {
+  if (false) { reRegExpChar(); }
+  throw 'TODO: implement reRegExpChar';
+}
 
-!!SIG lodash rest(func, start)
+// lodash
 /** Creates a function that invokes `func` with the `this` binding of the
  * created function and arguments from `start` and beyond provided as
  * an array.
@@ -4448,7 +4838,7 @@
  * **Note:** This method is based on the
  * [rest parameter](https://mdn.io/rest_parameters).
  *
- * @param func {function}: The function to apply a rest parameter to.
+ * @param func {function}: Function to apply a rest parameter to.
  * @param start {number}: The start position of the rest parameter; defaults to `func.length-1`.
  *   @optional
  *
@@ -4456,10 +4846,13 @@
  *
  * @example `var say = rest(function(what, names) { return what + ' ' + initial(names).join(', ') + (size(names) > 1 ? ', & ' : '') + last(names); }); say('hello', 'fred', 'barney', 'pebbles'); // => 'hello fred, barney, & pebbles'`
  */
-!!EODOC
+export function rest(func, start) {
+  if (false) { rest(func, start); }
+  throw 'TODO: implement rest';
+}
 
-!!SIG lodash result(object, path, defaultValue)
-/** This method is like `get` except that if the resolved value is a
+// lodash
+/** Like `get` except that if the resolved value is a
  * function it's invoked with the `this` binding of its parent object and
  * its result is returned.
  *
@@ -4475,9 +4868,12 @@
  * @example `result(object, 'a[0].b.c3', 'default'); // => 'default'`
  * @example `result(object, 'a[0].b.c3', constant('default')); // => 'default'`
  */
-!!EODOC
+export function result(object, path, defaultValue) {
+  if (false) { result(object, path, defaultValue); }
+  throw 'TODO: implement result';
+}
 
-!!SIG lodash reverse(array)
+// lodash
 /** Reverses `array` so that the first element becomes the last, the second
  * element becomes the second to last, and so on.
  *
@@ -4491,9 +4887,12 @@
  * @example `var array = [1, 2, 3]; reverse(array); // => [3, 2, 1]`
  * @example `println(array); // => [3, 2, 1]`
  */
-!!EODOC
+export function reverse(array) {
+  if (false) { reverse(array); }
+  throw 'TODO: implement reverse';
+}
 
-!!SIG lodash round(number, precision)
+// lodash
 /** Computes `number` rounded to `precision`.
  *
  * @param number {number}: The number to round.
@@ -4506,9 +4905,12 @@
  * @example `round(4.006, 2); // => 4.01`
  * @example `round(4060, -2); // => 4100`
  */
-!!EODOC
+export function round(number, precision) {
+  if (false) { round(number, precision); }
+  throw 'TODO: implement round';
+}
 
-!!SIG lodash runInContext(context)
+// lodash
 /** Create a new pristine `lodash` function using the `context` object.
  *
  * @param context {map}: The context object; defaults to `root`.
@@ -4522,16 +4924,19 @@
  * @example `lodash.isFunction(lodash.bar); // => true`
  * @example `var defer = runInContext({ 'setTimeout': setImmediate }).defer;`
  */
-!!EODOC
+export function runInContext(context) {
+  if (false) { runInContext(context); }
+  throw 'TODO: implement runInContext';
+}
 
-!!SIG flipshop sameColor(c1, c2, tol)
+// flipshop
 /** Whether `c1` and `c2` match channel-by-channel within `tol` (default just under `1/255`, so a
  * color that round-tripped through an 8-bit tuple still compares equal). A missing `alpha` on
  * either side is treated as `1.0`.
  */
-!!EODOC
+// export function sameColor(c1, c2, tol) {}
 
-!!SIG lodash sample(collection)
+// lodash
 /** Gets a random element from `collection`.
  *
  * @param collection {array|map}: The collection to sample.
@@ -4540,9 +4945,12 @@
  *
  * @example `sample([1, 2, 3, 4]); // => 2`
  */
-!!EODOC
+export function sample(collection) {
+  if (false) { sample(collection); }
+  throw 'TODO: implement sample';
+}
 
-!!SIG lodash sampleSize(collection, n)
+// lodash
 /** Gets `n` random elements at unique keys from `collection` up to the
  * size of `collection`.
  *
@@ -4555,9 +4963,12 @@
  * @example `sampleSize([1, 2, 3], 2); // => [3, 1]`
  * @example `sampleSize([1, 2, 3], 4); // => [2, 3, 1]`
  */
-!!EODOC
+export function sampleSize(collection, n) {
+  if (false) { sampleSize(collection, n); }
+  throw 'TODO: implement sampleSize';
+}
 
-!!SIG flipshop sanitize_varname(varname)
+// flipshop
 /** `varname` as a legal-ish variable name: each `.` becomes `_`, and every other non-word
  * character becomes `__` -- independently, so two special characters in a row don't collapse
  * into one replacement.
@@ -4565,9 +4976,9 @@
  * @example `sanitize_varname("foo.bar"); // => "foo_bar"`
  * @example `sanitize_varname("foo bar!"); // => "foo__bar__"`
  */
-!!EODOC
+// export function sanitize_varname(varname) {}
 
-!!SIG lodash set(object, path, value)
+// lodash
 /** Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
  * it's created. Arrays are created for missing index properties while objects
  * are created for all other missing properties. Use `setWith` to customize
@@ -4584,10 +4995,13 @@
  * @example `var object = { 'a': [{ 'b': { 'c': 3 } }] }; set(object, 'a[0].b.c', 4); println(object.a[0].b.c); // => 4`
  * @example `set(object, ['x', '0', 'y', 'z'], 5); println(object.x[0].y.z); // => 5`
  */
-!!EODOC
+export function set(object, path, value) {
+  if (false) { set(object, path, value); }
+  throw 'TODO: implement set';
+}
 
-!!SIG flipshop setAt(bag, keyStr, val)
-/** Sets the value at `keyStr`/`keyPath` of `bag`/`arr`, returning the (possibly new) container.
+// flipshop
+/** Sets the value at `keyname`/`keypath` of `bag`/`arr`, returning the (possibly new) container.
  * If a portion of the path doesn't exist, it's created as a map, unless the *next* segment looks
  * like a non-negative integer (a bare number, or a string of digits), in which case it's created
  * as an array instead -- matching lodash's own `set`/`baseSet` heuristic. @see `setAtWith` to
@@ -4602,8 +5016,8 @@
  * `undefined` rather than throwing.
  *
  * @param bag {map|array}: Container to write into.
- * @param keyStr {string}: Dotted path.
- * @param keyPath {array}: Path as literal keys/indexes.
+ * @param keyname {string}: Dotted path.
+ * @param keypath {array}: Path as literal keys/indexes.
  * @param val: Value to place at the path's leaf.
  * @param onCollision {function}: `(existing, incoming) => merged`, called only when the leaf is already occupied. Defaults to `lastInWins`.
  *
@@ -4613,9 +5027,9 @@
  * @example `setAt({ "a": { "x": 1 } }, "a", { "y": 2 }, ((existing, incoming) => deepMerge(existing, incoming)));`
  * @example `// => { "a": { "x": 1, "y": 2 } }`
  */
-!!EODOC
+// export function setAt(bag, keyname, val) {}
 
-!!SIG flipshop setAtWith(bag, keyStrOrPath, val, segmentFor)
+// flipshop
 /** `setAt`, with `segmentFor(existingChildOrUndefined, nextSegment) => newChildContainer`
  * overriding what an autovivified intermediate segment becomes, in place of `setAt`'s own
  * map-unless-the-next-segment-looks-like-an-index heuristic -- the actual hook lodash's `setWith`
@@ -4623,30 +5037,30 @@
  * a map or array; returning `undefined` falls back to `setAt`'s own default for that segment.
  *
  * @param bag {map}: Container to write into.
- * @param keyStrOrPath {string|array}: Dotted path, or path as literal keys/indexes.
+ * @param keynameOrPath {string|array}: Dotted path, or path as literal keys/indexes.
  * @param val: Value to place at the path's leaf.
  * @param segmentFor {function}: `(existingChildOrUndefined, nextSegment) => newChildContainer`.
  *
  * @example `setAtWith({}, "a.0.b", 1, (_existing, _nextSegment) => ({})); // => { "a": { "0": { "b": 1 } } }`
  */
-!!EODOC
+// export function setAtWith(bag, keynameOrPath, val, segmentFor) {}
 
-!!SIG flipshop setColor(context, qq, cmap)
+// flipshop
 /** Sets the `APPEARANCE` property on `qq` to `cmap` -- a `Color`, or anything `toColor` accepts
  * (a hexcolor string, a `"r,g,b[,a]"` tuple string, or an `[r,g,b,a?]` array).
  */
-!!EODOC
+// export function setColor(context, qq, cmap) {}
 
-!!SIG flipshop setName(context, entities, nameText)
+// flipshop
 /** Sets the NAME property and a "Name" attribute on entities.
  *
  * @param context {Context}
  * @param entities {Query}
  * @param name {string}
  */
-!!EODOC
+// export function setName(context, entities, nameText) {}
 
-!!SIG flipshop setPropAndAttribute(context, entities, propType, attrName, value)
+// flipshop
 /** Sets both a FeatureScript property and a same-keyed attribute on entities.
  * Use attributes (not properties) to read names back during regeneration, since
  * Onshape does not allow reading properties until the full part studio has rendered.
@@ -4657,9 +5071,9 @@
  * @param attrName {string}: attribute key to mirror the value under
  * @param value {string}: the value to set
  */
-!!EODOC
+// export function setPropAndAttribute(context, entities, propType, attrName, value) {}
 
-!!SIG flipshop setReadableName(context, entities, nameText, maxLength)
+// flipshop
 /** `setName`, after collapsing `nameText`'s whitespace runs to single spaces and truncating to
  * `maxLength` -- for a name that might be multi-line or arbitrarily long (e.g. copied from a
  * sketch's text) but needs to read as one short line in the part tree.
@@ -4669,10 +5083,10 @@
  * @param nameText {string}
  * @param maxLength {number}: Defaults to `20`.
  */
-!!EODOC
+// export function setReadableName(context, entities, nameText, maxLength) {}
 
-!!SIG lodash setWith(object, path, value, customizer)
-/** This method is like `set` except that it accepts `customizer` which is
+// lodash
+/** Like `set` except that it accepts `customizer` which is
  * invoked to produce the objects of `path`.  If `customizer` returns `undefined`
  * path creation is handled by the method instead. The `customizer` is invoked
  * with three arguments: (nsValue, key, nsObject).
@@ -4682,16 +5096,19 @@
  * @param object {map}: The object to modify.
  * @param path {array|string}: The path of the property to set.
  * @param value: The value to set.
- * @param customizer {function}: The function to customize assigned values.
+ * @param customizer {function}: Function to customize assigned values.
  *   @optional
  *
  * @returns {map}: `object`.
  *
  * @example `var object = {}; setWith(object, '[0][1]', 'a', Object); // => { '0': { '1': 'a' } }`
  */
-!!EODOC
+export function setWith(object, path, value, customizer) {
+  if (false) { setWith(object, path, value, customizer); }
+  throw 'TODO: implement setWith';
+}
 
-!!SIG lodash shuffle(collection)
+// lodash
 /** Creates an array of shuffled values, using a version of the
  * [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher-Yates_shuffle).
  *
@@ -4701,9 +5118,12 @@
  *
  * @example `shuffle([1, 2, 3, 4]); // => [4, 1, 3, 2]`
  */
-!!EODOC
+export function shuffle(collection) {
+  if (false) { shuffle(collection); }
+  throw 'TODO: implement shuffle';
+}
 
-!!SIG lodash size(collection)
+// lodash
 /** Gets the size of `collection` by returning its length for array-like
  * values or the number of own enumerable string keyed properties for objects.
  *
@@ -4715,9 +5135,12 @@
  * @example `size({ 'a': 1, 'b': 2 }); // => 2`
  * @example `size('pebbles'); // => 7`
  */
-!!EODOC
+export function size(collection) {
+  if (false) { size(collection); }
+  throw 'TODO: implement size';
+}
 
-!!SIG flipshop sizeof(val)
+// flipshop
 /** Size of `val`: length for a string, element count for an array, key count for a map, `0` for
  * `undefined`.
  *
@@ -4726,14 +5149,14 @@
  * @example `sizeof("12345"); // => 5`
  * @example `sizeof(undefined); // => 0`
  */
-!!EODOC
+// export function sizeof(val) {}
 
-!!SIG flipshop sizeofEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters)
+// flipshop
 /** /** Keeps `varname` at `objname ~ "_size"` for as long as it hasn't been hand-edited; @see `defaultMaybe`. */
  */
-!!EODOC
+// export function sizeofEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) {}
 
-!!SIG lodash slice(array, start, end)
+// lodash
 /** Creates a slice of `array` from `start` up to, but not including, `end`.
  *
  * **Note:** This method is used instead of
@@ -4748,14 +5171,17 @@
  *
  * @returns {array}: the slice of `array`.
  */
-!!EODOC
+export function slice(array, start, end) {
+  if (false) { slice(array, start, end); }
+  throw 'TODO: implement slice';
+}
 
-!!SIG flipshop snakeCase(str)
+// flipshop
 /** /** `str` split into words, lowercased, and joined with `_`. */
  */
-!!EODOC
+// export function snakeCase(str) {}
 
-!!SIG lodash snakeCase(string)
+// lodash
 /** Converts `string` to
  * [snake case](https://en.wikipedia.org/wiki/Snake_case).
  *
@@ -4768,27 +5194,33 @@
  * @example `snakeCase('fooBar'); // => 'foo_bar'`
  * @example `snakeCase('--FOO-BAR--'); // => 'foo_bar'`
  */
-!!EODOC
+export function snakeCase(string) {
+  if (false) { snakeCase(string); }
+  throw 'TODO: implement snakeCase';
+}
 
-!!SIG lodash some(collection, predicate)
-/** Checks if `predicate` returns truthy for **any** element of `collection`.
- * Iteration is stopped once `predicate` returns truthy. The predicate is
+// lodash
+/** Checks if `rule` returns truthy for **any** element of `collection`.
+ * Iteration is stopped once `rule` returns truthy. The rule is
  * invoked with three arguments: (value, index|key, collection).
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
- * @returns {boolean}: `true` if any element passes the predicate check, else `false`.
+ * @returns {boolean}: `true` if any element passes the rule check, else `false`.
  *
  * @example `some([null, 0, 'yes', false], Boolean); // => true`
  * @example `var users = [ { 'user': 'barney', 'active': true }, { 'user': 'fred', 'active': false } ]; some(users, { 'user': 'barney', 'active': false }); // => false`
  * @example `some(users, ['active', false]); // => true`
  * @example `some(users, 'active'); // => true`
  */
-!!EODOC
+export function some(collection, rule) {
+  if (false) { some(collection, rule); }
+  throw 'TODO: implement some';
+}
 
-!!SIG lodash sortBy(collection, iteratees)
+// lodash
 /** Creates an array of elements, sorted in ascending order by the results of
  * running each element in a collection thru each iteratee. This method
  * performs a stable sort, that is, it preserves the original sort order of
@@ -4803,9 +5235,12 @@
  * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 30 }, { 'user': 'barney', 'age': 34 } ]; sortBy(users, [function(o) { return o.user; }]); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]`
  * @example `sortBy(users, ['user', 'age']); // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]`
  */
-!!EODOC
+export function sortBy(collection, iteratees) {
+  if (false) { sortBy(collection, iteratees); }
+  throw 'TODO: implement sortBy';
+}
 
-!!SIG lodash sortedIndex(array, value)
+// lodash
 /** Uses a binary search to determine the lowest index at which `value`
  * should be inserted into `array` in order to maintain its sort order.
  *
@@ -4816,16 +5251,19 @@
  *
  * @example `sortedIndex([30, 50], 40); // => 1`
  */
-!!EODOC
+export function sortedIndex(array, value) {
+  if (false) { sortedIndex(array, value); }
+  throw 'TODO: implement sortedIndex';
+}
 
-!!SIG lodash sortedIndexBy(array, value, iteratee)
-/** This method is like `sortedIndex` except that it accepts `funcOrProp`
+// lodash
+/** Like `sortedIndex` except that it accepts `funcOrProp`
  * which is invoked for `value` and each element of `array` to compute their
- * sort ranking. The function/propname is invoked with one argument: (value).
+ * sort ranking. A function iteratee is invoked with (val, seq).
  *
  * @param array {array}: The sorted array to inspect.
  * @param value: The value to evaluate.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the index at which `value` should be inserted into `array`.
@@ -4833,10 +5271,13 @@
  * @example `var objects = [{ 'x': 4 }, { 'x': 5 }]; sortedIndexBy(objects, { 'x': 4 }, function(o) { return o.x; }); // => 0`
  * @example `sortedIndexBy(objects, { 'x': 4 }, 'x'); // => 0`
  */
-!!EODOC
+export function sortedIndexBy(array, value, iteratee) {
+  if (false) { sortedIndexBy(array, value, iteratee); }
+  throw 'TODO: implement sortedIndexBy';
+}
 
-!!SIG lodash sortedIndexOf(array, value)
-/** This method is like `indexOf` except that it performs a binary
+// lodash
+/** Like `indexOf` except that it performs a binary
  * search on a sorted `array`.
  *
  * @param array {array}: The array to inspect.
@@ -4846,10 +5287,13 @@
  *
  * @example `sortedIndexOf([4, 5, 5, 5, 6], 5); // => 1`
  */
-!!EODOC
+export function sortedIndexOf(array, value) {
+  if (false) { sortedIndexOf(array, value); }
+  throw 'TODO: implement sortedIndexOf';
+}
 
-!!SIG lodash sortedLastIndex(array, value)
-/** This method is like `sortedIndex` except that it returns the highest
+// lodash
+/** Like `sortedIndex` except that it returns the highest
  * index at which `value` should be inserted into `array` in order to
  * maintain its sort order.
  *
@@ -4860,16 +5304,19 @@
  *
  * @example `sortedLastIndex([4, 5, 5, 5, 6], 5); // => 4`
  */
-!!EODOC
+export function sortedLastIndex(array, value) {
+  if (false) { sortedLastIndex(array, value); }
+  throw 'TODO: implement sortedLastIndex';
+}
 
-!!SIG lodash sortedLastIndexBy(array, value, iteratee)
-/** This method is like `sortedLastIndex` except that it accepts `funcOrProp`
+// lodash
+/** Like `sortedLastIndex` except that it accepts `funcOrProp`
  * which is invoked for `value` and each element of `array` to compute their
- * sort ranking. The function/propname is invoked with one argument: (value).
+ * sort ranking. A function iteratee is invoked with (val, seq).
  *
  * @param array {array}: The sorted array to inspect.
  * @param value: The value to evaluate.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the index at which `value` should be inserted into `array`.
@@ -4877,10 +5324,13 @@
  * @example `var objects = [{ 'x': 4 }, { 'x': 5 }]; sortedLastIndexBy(objects, { 'x': 4 }, function(o) { return o.x; }); // => 1`
  * @example `sortedLastIndexBy(objects, { 'x': 4 }, 'x'); // => 1`
  */
-!!EODOC
+export function sortedLastIndexBy(array, value, iteratee) {
+  if (false) { sortedLastIndexBy(array, value, iteratee); }
+  throw 'TODO: implement sortedLastIndexBy';
+}
 
-!!SIG lodash sortedLastIndexOf(array, value)
-/** This method is like `lastIndexOf` except that it performs a binary
+// lodash
+/** Like `lastIndexOf` except that it performs a binary
  * search on a sorted `array`.
  *
  * @param array {array}: The array to inspect.
@@ -4890,10 +5340,13 @@
  *
  * @example `sortedLastIndexOf([4, 5, 5, 5, 6], 5); // => 3`
  */
-!!EODOC
+export function sortedLastIndexOf(array, value) {
+  if (false) { sortedLastIndexOf(array, value); }
+  throw 'TODO: implement sortedLastIndexOf';
+}
 
-!!SIG lodash sortedUniq(array)
-/** This method is like `uniq` except that it's designed and optimized
+// lodash
+/** Like `uniq` except that it's designed and optimized
  * for sorted arrays.
  *
  * @param array {array}: The array to inspect.
@@ -4902,23 +5355,29 @@
  *
  * @example `sortedUniq([1, 1, 2]); // => [1, 2]`
  */
-!!EODOC
+export function sortedUniq(array) {
+  if (false) { sortedUniq(array); }
+  throw 'TODO: implement sortedUniq';
+}
 
-!!SIG lodash sortedUniqBy(array, iteratee)
-/** This method is like `uniqBy` except that it's designed and optimized
+// lodash
+/** Like `uniqBy` except that it's designed and optimized
  * for sorted arrays.
  *
  * @param array {array}: The array to inspect.
- * @param funcOrProp {function}: The function/propname invoked per element.
+ * @param funcOrProp {function}: Function/propname invoked per element.
  *   @optional
  *
  * @returns {array}: the new duplicate free array.
  *
  * @example `sortedUniqBy([1.1, 1.2, 2.3, 2.4], Math.floor); // => [1.1, 2.3]`
  */
-!!EODOC
+export function sortedUniqBy(array, iteratee) {
+  if (false) { sortedUniqBy(array, iteratee); }
+  throw 'TODO: implement sortedUniqBy';
+}
 
-!!SIG lodash split(string, separator, limit)
+// lodash
 /** Splits `string` by `separator`.
  *
  * **Note:** This method is based on
@@ -4934,9 +5393,12 @@
  *
  * @example `split('a-b-c', '-', 2); // => ['a', 'b']`
  */
-!!EODOC
+export function split(string, separator, limit) {
+  if (false) { split(string, separator, limit); }
+  throw 'TODO: implement split';
+}
 
-!!SIG lodash spread(func, start)
+// lodash
 /** Creates a function that invokes `func` with the `this` binding of the
  * create function and an array of arguments much like
  * [`Function#apply`](http://www.ecma-international.org/ecma-262/7.0/#sec-function.prototype.apply).
@@ -4944,7 +5406,7 @@
  * **Note:** This method is based on the
  * [spread operator](https://mdn.io/spread_operator).
  *
- * @param func {function}: The function to spread arguments over.
+ * @param func {function}: Function to spread arguments over.
  * @param start {number}: The start position of the spread; defaults to `0`.
  *   @optional
  *
@@ -4953,17 +5415,20 @@
  * @example `var say = spread(function(who, what) { return who + ' says ' + what; }); say(['fred', 'hello']); // => 'fred says hello'`
  * @example `var numbers = Promise.all([ Promise.resolve(40), Promise.resolve(36) ]); numbers.then(spread(function(x, y) { return x + y; })); // => a Promise of 76`
  */
-!!EODOC
+export function spread(func, start) {
+  if (false) { spread(func, start); }
+  throw 'TODO: implement spread';
+}
 
-!!SIG flipshop starbanner(str)
+// flipshop
 /** Wraps `str` in a border of `*` characters matching its own length, for a `debug()` call that
  * wants to stand out.
  *
  * @example `starbanner("hi"); // => "\n**\nhi\n**\n\n"`
  */
-!!EODOC
+// export function starbanner(str) {}
 
-!!SIG lodash startCase(string)
+// lodash
 /** Converts `string` to
  * [start case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage).
  *
@@ -4976,9 +5441,12 @@
  * @example `startCase('fooBar'); // => 'Foo Bar'`
  * @example `startCase('__FOO_BAR__'); // => 'FOO BAR'`
  */
-!!EODOC
+export function startCase(string) {
+  if (false) { startCase(string); }
+  throw 'TODO: implement startCase';
+}
 
-!!SIG lodash startsWith(string, target, position)
+// lodash
 /** Checks if `string` starts with the given target string.
  *
  * @param string {string}: The string to inspect; defaults to `''`.
@@ -4994,18 +5462,21 @@
  * @example `startsWith('abc', 'b'); // => false`
  * @example `startsWith('abc', 'b', 1); // => true`
  */
-!!EODOC
+export function startsWith(string, target, position) {
+  if (false) { startsWith(string, target, position); }
+  throw 'TODO: implement startsWith';
+}
 
-!!SIG flipshop strRepeat(str, reps)
+// flipshop
 /** Repeats `str` `reps` times.
  *
  * @example `strRepeat("*", 3); // => "***"`
  * @example `strRepeat("abc", 2); // => "abcabc"`
  * @example `strRepeat("abc", 0); // => ""`
  */
-!!EODOC
+// export function strRepeat(str, reps) {}
 
-!!SIG flipshop strSlice(str, begseq, endseq)
+// flipshop
 /** Text of `str` from `begseq` up to, but not including, `endseq` -- the semantics of JS's
  * `String.prototype.slice`.
  *
@@ -5023,23 +5494,23 @@
  * @example `strSlice("hello world", -3, -1); // => "rl"`
  * @example `strSlice("hello world", 100, 200); // => ""`
  */
-!!EODOC
+// export function strSlice(str, begseq, endseq) {}
 
-!!SIG flipshop strTake(str, len)
+// flipshop
 /** First `len` characters of `str`; `""` if `len <= 0`.
  *
  * @example `strTake("hello world", 2); // => "he"`
  */
-!!EODOC
+// export function strTake(str, len) {}
 
-!!SIG flipshop strTakeRight(str, len)
+// flipshop
 /** Last `len` characters of `str`; `""` if `len <= 0`.
  *
  * @example `strTakeRight("hello world", 2); // => "ld"`
  */
-!!EODOC
+// export function strTakeRight(str, len) {}
 
-!!SIG lodash stubArray()
+// lodash
 /** This method returns a new empty array.
  *
  * @returns {array}: the new empty array.
@@ -5047,18 +5518,24 @@
  * @example `var arrays = times(2, stubArray); println(arrays); // => [[], []]`
  * @example `println(arrays[0] === arrays[1]); // => false`
  */
-!!EODOC
+export function stubArray() {
+  if (false) { stubArray(); }
+  throw 'TODO: implement stubArray';
+}
 
-!!SIG lodash stubFalse()
+// lodash
 /** This method returns `false`.
  *
  * @returns {boolean}: `false`.
  *
  * @example `times(2, stubFalse); // => [false, false]`
  */
-!!EODOC
+export function stubFalse() {
+  if (false) { stubFalse(); }
+  throw 'TODO: implement stubFalse';
+}
 
-!!SIG lodash stubObject()
+// lodash
 /** This method returns a new empty object.
  *
  * @returns {map}: the new empty object.
@@ -5066,27 +5543,36 @@
  * @example `var objects = times(2, stubObject); println(objects); // => [{}, {}]`
  * @example `println(objects[0] === objects[1]); // => false`
  */
-!!EODOC
+export function stubObject() {
+  if (false) { stubObject(); }
+  throw 'TODO: implement stubObject';
+}
 
-!!SIG lodash stubString()
+// lodash
 /** This method returns an empty string.
  *
  * @returns {string}: the empty string.
  *
  * @example `times(2, stubString); // => ['', '']`
  */
-!!EODOC
+export function stubString() {
+  if (false) { stubString(); }
+  throw 'TODO: implement stubString';
+}
 
-!!SIG lodash stubTrue()
+// lodash
 /** This method returns `true`.
  *
  * @returns {boolean}: `true`.
  *
  * @example `times(2, stubTrue); // => [true, true]`
  */
-!!EODOC
+export function stubTrue() {
+  if (false) { stubTrue(); }
+  throw 'TODO: implement stubTrue';
+}
 
-!!SIG lodash subtract(minuend, subtrahend)
+// lodash
 /** Subtract two numbers.
  *
  * @param minuend {number}: The first number in a subtraction.
@@ -5096,9 +5582,12 @@
  *
  * @example `subtract(6, 4); // => 2`
  */
-!!EODOC
+export function subtract(minuend, subtrahend) {
+  if (false) { subtract(minuend, subtrahend); }
+  throw 'TODO: implement subtract';
+}
 
-!!SIG lodash sum(array)
+// lodash
 /** Computes the sum of the values in `array`.
  *
  * @param array {array}: The array to iterate over.
@@ -5107,23 +5596,26 @@
  *
  * @example `sum([4, 2, 8, 6]); // => 20`
  */
-!!EODOC
+export function sum(array) {
+  if (false) { sum(array); }
+  throw 'TODO: implement sum';
+}
 
-!!SIG flipshop sumBy(arr, iterateeSpec)
+// flipshop
 /** Sum of `iterateeSpec(val, seq)` across `arr` -- `sum` *(std)*, mapped via `mapValues`.
  * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `sumBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 6`
  */
-!!EODOC
+// export function sumBy(arr, iterateeSpec) {}
 
-!!SIG lodash sumBy(array, iteratee)
-/** This method is like `sum` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `sum` except that it accepts `funcOrProp` which is
  * invoked for each element in `array` to generate the value to be summed.
- * The function/propname is invoked with one argument: (value).
+ * A function iteratee is invoked with (val, seq).
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the sum.
@@ -5131,16 +5623,19 @@
  * @example `var objects = [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }]; sumBy(objects, function(o) { return o.n; }); // => 20`
  * @example `sumBy(objects, 'n'); // => 20`
  */
-!!EODOC
+export function sumBy(array, iteratee) {
+  if (false) { sumBy(array, iteratee); }
+  throw 'TODO: implement sumBy';
+}
 
-!!SIG flipshop tail(arr)
+// flipshop
 /** `arr` without its first element; `[]` for an empty or single-element `arr`.
  *
  * @example `tail([1, 2, 3]); // => [2, 3]`
  */
-!!EODOC
+// export function tail(arr) {}
 
-!!SIG lodash tail(array)
+// lodash
 /** Gets all but the first element of `array`.
  *
  * @param array {array}: The array to query.
@@ -5149,18 +5644,21 @@
  *
  * @example `tail([1, 2, 3]); // => [2, 3]`
  */
-!!EODOC
+export function tail(array) {
+  if (false) { tail(array); }
+  throw 'TODO: implement tail';
+}
 
-!!SIG flipshop take(arr, takeCount)
+// flipshop
 /** First `takeCount` elements of `arr`; `takeCount <= 0` returns `[]`. With no `takeCount` given,
  * defaults to `1`, matching `drop`'s own default.
  *
  * @example `take([1, 2, 3], 2); // => [1, 2]`
  * @example `take([1, 2, 3]); // => [1]`
  */
-!!EODOC
+// export function take(arr, takeCount) {}
 
-!!SIG lodash take(array, n)
+// lodash
 /** Creates a slice of `array` with `n` elements taken from the beginning.
  *
  * @param array {array}: The array to query.
@@ -5174,18 +5672,21 @@
  * @example `take([1, 2, 3], 5); // => [1, 2, 3]`
  * @example `take([1, 2, 3], 0); // => []`
  */
-!!EODOC
+export function take(array, n) {
+  if (false) { take(array, n); }
+  throw 'TODO: implement take';
+}
 
-!!SIG flipshop takeRight(arr, takeCount)
+// flipshop
 /** Last `takeCount` elements of `arr`; `takeCount <= 0` returns `[]`. With no `takeCount` given,
  * defaults to `1`, matching `dropRight`'s own default.
  *
  * @example `takeRight([1, 2, 3], 2); // => [2, 3]`
  * @example `takeRight([1, 2, 3]); // => [3]`
  */
-!!EODOC
+// export function takeRight(arr, takeCount) {}
 
-!!SIG lodash takeRight(array, n)
+// lodash
 /** Creates a slice of `array` with `n` elements taken from the end.
  *
  * @param array {array}: The array to query.
@@ -5199,23 +5700,26 @@
  * @example `takeRight([1, 2, 3], 5); // => [1, 2, 3]`
  * @example `takeRight([1, 2, 3], 0); // => []`
  */
-!!EODOC
+export function takeRight(array, n) {
+  if (false) { takeRight(array, n); }
+  throw 'TODO: implement takeRight';
+}
 
-!!SIG flipshop takeRightWhile(arr, rule)
+// flipshop
 /** Elements taken from the end of `arr` for as long as `rule` holds. With no `rule` given,
  * defaults to `truthy`, matching `dropRightWhile`'s own default.
  *
  * @example `takeRightWhile([1, 2, 3, 4], (val) => val > 2); // => [3, 4]`
  */
-!!EODOC
+// export function takeRightWhile(arr, rule) {}
 
-!!SIG lodash takeRightWhile(array, predicate)
+// lodash
 /** Creates a slice of `array` with elements taken from the end. Elements are
- * taken until `predicate` returns falsey. The predicate is invoked with
+ * taken until `rule` returns falsey. The rule is invoked with
  * three arguments: (value, index, array).
  *
  * @param array {array}: The array to query.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -5225,23 +5729,26 @@
  * @example `takeRightWhile(users, ['active', false]); // => objects for ['fred', 'pebbles']`
  * @example `takeRightWhile(users, 'active'); // => []`
  */
-!!EODOC
+export function takeRightWhile(array, rule) {
+  if (false) { takeRightWhile(array, rule); }
+  throw 'TODO: implement takeRightWhile';
+}
 
-!!SIG flipshop takeWhile(arr, rule)
+// flipshop
 /** Elements taken from the beginning of `arr` for as long as `rule` holds. With no `rule` given,
  * defaults to `truthy`, matching `dropWhile`'s own default.
  *
  * @example `takeWhile([1, 2, 3, 4], (val) => val < 3); // => [1, 2]`
  */
-!!EODOC
+// export function takeWhile(arr, rule) {}
 
-!!SIG lodash takeWhile(array, predicate)
+// lodash
 /** Creates a slice of `array` with elements taken from the beginning. Elements
- * are taken until `predicate` returns falsey. The predicate is invoked with
+ * are taken until `rule` returns falsey. The rule is invoked with
  * three arguments: (value, index, array).
  *
  * @param array {array}: The array to query.
- * @param predicate {function}: The function invoked per iteration; defaults to `identity`.
+ * @param rule {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -5251,157 +5758,32 @@
  * @example `takeWhile(users, ['active', false]); // => objects for ['barney', 'fred']`
  * @example `takeWhile(users, 'active'); // => []`
  */
-!!EODOC
+export function takeWhile(array, rule) {
+  if (false) { takeWhile(array, rule); }
+  throw 'TODO: implement takeWhile';
+}
 
-!!SIG lodash tap(value, interceptor)
-/** This method invokes `interceptor` and returns `value`. The interceptor
- * is invoked with one argument; (value). The purpose of this method is to
- * "tap into" a method chain sequence in order to modify intermediate results.
+// flipshop
+/** Invokes `func(seq, seq)` `count` times (i.e. for seq = 0 to count - 1),
+ * returning an array of the results of each invocation.
  *
- * @param value: The value to provide to `interceptor`.
- * @param interceptor {function}: The function to invoke.
- *
- * @returns: `value`.
- *
- * @example `_([1, 2, 3]) .tap(function(array) { array.pop(); }) .reverse() .value(); // => [2, 1]`
- */
-!!EODOC
-
-!!SIG lodash template(string, options, options.escape, options.evaluate, options.imports, options.interpolate, options.sourceURL, options.variable)
-/** Creates a compiled template function that can interpolate data properties
- * in "interpolate" delimiters, HTML-escape interpolated data properties in
- * "escape" delimiters, and execute JavaScript in "evaluate" delimiters. Data
- * properties may be accessed as free variables in the template. If a setting
- * object is given, it takes precedence over `templateSettings` values.
- *
- * **Security:** `template` is insecure and should not be used. It will be
- * removed in Lodash v5. Avoid untrusted input. See
- * [threat model](https://github.com/lodash/lodash/blob/main/threat-model.md).
- *
- * **Note:** In the development build `template` utilizes
- * [sourceURLs](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/#toc-sourceurl)
- * for easier debugging.
- *
- * For more information on precompiling templates see
- * [lodash's custom builds documentation](https://lodash.com/custom-builds).
- *
- * For more information on Chrome extension sandboxes see
- * [Chrome's extensions documentation](https://developer.chrome.com/extensions/sandboxingEval).
- *
- * @param string {string}: The template string; defaults to `''`.
- *   @optional
- * @param options {{
- *    @field escape {RegExp}: The HTML "escape" delimiter; defaults to `templateSettings.escape`.
- *     @optional
- *    @field evaluate {RegExp}: The "evaluate" delimiter; defaults to `templateSettings.evaluate`.
- *     @optional
- *    @field imports {map}: An object to import into the template as free variables; defaults to `templateSettings.imports`.
- *     @optional
- *    @field interpolate {RegExp}: The "interpolate" delimiter; defaults to `templateSettings.interpolate`.
- *     @optional
- *    @field sourceURL {string}: '] The sourceURL of the compiled template; defaults to `'lodash.templateSources[n`.
- *     @optional
- *    @field variable {string}: The data object variable name; defaults to `'obj'`.
- *     @optional
- * }}
- *
- * @returns {function}: the compiled template function.
- *
- * @example `var compiled = template('hello <%= user %>!'); compiled({ 'user': 'fred' }); // => 'hello fred!'`
- * @example `var compiled = template('<b><%- value %></b>'); compiled({ 'value': '<script>' }); // => '<b>&lt;script&gt;</b>'`
- * @example `var compiled = template('<% forEach(users, function(user) { %><li><%- user %></li><% }); %>'); compiled({ 'users': ['fred', 'barney'] }); // => '<li>fred</li><li>barney</li>'`
- * @example `var compiled = template('<% print("hello " + user); %>!'); compiled({ 'user': 'barney' }); // => 'hello barney!'`
- * @example `var compiled = template('hello ${ user }!'); compiled({ 'user': 'pebbles' }); // => 'hello pebbles!'`
- * @example `var compiled = template('<%= "\\<%- value %\\>" %>'); compiled({ 'value': 'ignored' }); // => '<%- value %>'`
- * @example `var text = '<% jq.each(users, function(user) { %><li><%- user %></li><% }); %>'; var compiled = template(text, { 'imports': { 'jq': jQuery } }); compiled({ 'users': ['fred', 'barney'] }); // => '<li>fred</li><li>barney</li>'`
- * @example `var compiled = template('hello <%= user %>!', { 'sourceURL': '/basic/greeting.jst' }); compiled(data); // => Find the source of "greeting.jst" under the Sources tab or Resources panel of the web inspector.`
- * @example `var compiled = template('hi <%= data.user %>!', { 'variable': 'data' }); compiled.source; // => function(data) {`
- * @example `templateSettings.interpolate = /{{([\s\S]+?)}}/g; var compiled = template('hello {{ user }}!'); compiled({ 'user': 'mustache' }); // => 'hello mustache!'`
- * @example `fs.writeFileSync(path.join(process.cwd(), 'jst.js'), '\ var JST = {\ "main": ' + template(mainText).source + '\ };\ ');`
- */
-!!EODOC
-
-!!SIG lodash throttle(func, wait, options, options.leading, options.trailing)
-/** Creates a throttled function that only invokes `func` at most once per
- * every `wait` milliseconds. The throttled function comes with a `cancel`
- * method to cancel delayed `func` invocations and a `flush` method to
- * immediately invoke them. Provide `options` to indicate whether `func`
- * should be invoked on the leading and/or trailing edge of the `wait`
- * timeout. The `func` is invoked with the last arguments provided to the
- * throttled function. Subsequent calls to the throttled function return the
- * result of the last `func` invocation.
- *
- * **Note:** If `leading` and `trailing` options are `true`, `func` is
- * invoked on the trailing edge of the timeout only if the throttled function
- * is invoked more than once during the `wait` timeout.
- *
- * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
- * until to the next tick, similar to `setTimeout` with a timeout of `0`.
- *
- * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
- * for details over the differences between `throttle` and `debounce`.
- *
- * @param func {function}: The function to throttle.
- * @param wait {number}: The number of milliseconds to throttle invocations to; defaults to `0`.
- *   @optional
- * @param options {{
- *    @field leading {boolean}: Specify invoking on the leading edge of the timeout; defaults to `true`.
- *     @optional
- *    @field trailing {boolean}: Specify invoking on the trailing edge of the timeout; defaults to `true`.
- *     @optional
- * }}
- *
- * @returns {function}: the new throttled function.
- *
- * @example `jQuery(window).on('scroll', throttle(updatePosition, 100)); var throttled = throttle(renewToken, 300000, { 'trailing': false }); jQuery(element).on('click', throttled); jQuery(window).on('popstate', throttled.cancel);`
- */
-!!EODOC
-
-!!SIG lodash thru(value, interceptor)
-/** This method is like `tap` except that it returns the result of `interceptor`.
- * The purpose of this method is to "pass thru" values replacing intermediate
- * results in a method chain sequence.
- *
- * @param value: The value to provide to `interceptor`.
- * @param interceptor {function}: The function to invoke.
- *
- * @returns: the result of `interceptor`.
- *
- * @example `_(' abc ') .chain() .trim() .thru(function(value) { return [value]; }) .value(); // => ['abc']`
- */
-!!EODOC
-
-!!SIG flipshop times(count, func)
-/** Calls `func(seq, seq)` for `seq` from `0` to `count - 1`, collecting results -- `count < 1`
- * returns `[]`. There's no second value to offer alongside the index, so `seq` fills both slots.
- * With no `func` given, defaults to `identity`, so `times(3)` is just `[0, 1, 2]`.
- *
- * @example `times(3, (seq, _seq2) => seq * seq); // => [0, 1, 4]`
- * @example `times(3); // => [0, 1, 2]`
- */
-!!EODOC
-
-!!SIG lodash times(n, iteratee)
-/** Invokes The function/propname `n` times, returning an array of the results of
- * each invocation. The function/propname is invoked with one argument; (index).
- *
- * @param n {number}: The number of times to invoke `funcOrProp`.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param count {number}: The number of times to invoke `func`.
+ * @param func {function}: Function invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the array of results.
  *
  * @example `times(3, String); // => ['0', '1', '2']`
+ * @example `times(3, (seq, _seq2) => seq * seq); // => [0, 1, 4]`
  * @example `times(4, constant(0)); // => [0, 0, 0, 0]`
  */
-!!EODOC
 
-!!SIG flipshop titleCase(str)
+// flipshop
 /** /** `titleCase` with default options -- @see the two-argument overload. */
  */
-!!EODOC
+// export function titleCase(str) {}
 
-!!SIG flipshop titleCase(str, opts)
+// flipshop
 /** Converts `str` to start case, in the spirit of lodash's `startCase`: splits into words,
  * capitalizes each word's first letter, and lower-cases the rest. Unlike `startCase`, word
  * breaks come from a configurable set of delimiter characters rather than Unicode word-boundary
@@ -5413,9 +5795,9 @@
  * @example `titleCase("hello.world", { "spaces": "." }); // => "Hello World"`
  * @example `titleCase("a_b_c", { "tr": { "a": "X", "b": "Y" } }); // => "X Y C"`
  */
-!!EODOC
+// export function titleCase(str, opts) {}
 
-!!SIG lodash toArray(value)
+// lodash
 /** Converts `value` to an array.
  *
  * @param value: The value to convert.
@@ -5427,9 +5809,12 @@
  * @example `toArray(1); // => []`
  * @example `toArray(null); // => []`
  */
-!!EODOC
+export function toArray(value) {
+  if (false) { toArray(value); }
+  throw 'TODO: implement toArray';
+}
 
-!!SIG flipshop toColor(cmap)
+// flipshop
 /** Best-effort `Color` from whatever's given:
  * - a `Color` is passed through unchanged.
  * - a 3- or 4-number array is passed straight to `color(...)` -- values are assumed already
@@ -5440,9 +5825,9 @@
  *
  * `OopsColor` (bright red) comes back if nothing matches, or if parsing throws.
  */
-!!EODOC
+// export function toColor(cmap) {}
 
-!!SIG lodash toFinite(value)
+// lodash
 /** Converts `value` to a finite number.
  *
  * @param value: The value to convert.
@@ -5454,14 +5839,17 @@
  * @example `toFinite(Infinity); // => 1.7976931348623157e+308`
  * @example `toFinite('3.2'); // => 3.2`
  */
-!!EODOC
+export function toFinite(value) {
+  if (false) { toFinite(value); }
+  throw 'TODO: implement toFinite';
+}
 
-!!SIG flipshop toHexcolor(color)
+// flipshop
 /** /** `color` as `"#rrggbbaa"`. */
  */
-!!EODOC
+// export function toHexcolor(color) {}
 
-!!SIG lodash toInteger(value)
+// lodash
 /** Converts `value` to an integer.
  *
  * **Note:** This method is loosely based on
@@ -5476,9 +5864,12 @@
  * @example `toInteger(Infinity); // => 1.7976931348623157e+308`
  * @example `toInteger('3.2'); // => 3`
  */
-!!EODOC
+export function toInteger(value) {
+  if (false) { toInteger(value); }
+  throw 'TODO: implement toInteger';
+}
 
-!!SIG lodash toLength(value)
+// lodash
 /** Converts `value` to an integer suitable for use as the length of an
  * array-like object.
  *
@@ -5494,9 +5885,12 @@
  * @example `toLength(Infinity); // => 4294967295`
  * @example `toLength('3.2'); // => 3`
  */
-!!EODOC
+export function toLength(value) {
+  if (false) { toLength(value); }
+  throw 'TODO: implement toLength';
+}
 
-!!SIG lodash toLower(string)
+// lodash
 /** Converts `string`, as a whole, to lower case just like
  * [String#toLowerCase](https://mdn.io/toLowerCase).
  *
@@ -5509,9 +5903,12 @@
  * @example `toLower('fooBar'); // => 'foobar'`
  * @example `toLower('__FOO_BAR__'); // => '__foo_bar__'`
  */
-!!EODOC
+export function toLower(string) {
+  if (false) { toLower(string); }
+  throw 'TODO: implement toLower';
+}
 
-!!SIG lodash toNumber(value)
+// lodash
 /** Converts `value` to a number.
  *
  * @param value: The value to process.
@@ -5523,18 +5920,21 @@
  * @example `toNumber(Infinity); // => Infinity`
  * @example `toNumber('3.2'); // => 3.2`
  */
-!!EODOC
+export function toNumber(value) {
+  if (false) { toNumber(value); }
+  throw 'TODO: implement toNumber';
+}
 
-!!SIG flipshop toPairs(bag)
+// flipshop
 /** `bag` flattened into `[[key, val], ...]` pairs, in `keys(bag)` order -- the inverse of
  * `fromPairs` *(arrayUtils)*. FeatureScript maps have no own/inherited distinction, so this
  * covers lodash's `entries`, `entriesIn`, and `toPairsIn` as well as `toPairs`.
  *
  * @example `toPairs({ "a": 1, "b": 2 }); // => [["a", 1], ["b", 2]]`
  */
-!!EODOC
+// export function toPairs(bag) {}
 
-!!SIG lodash toPairs(object)
+// lodash
 /** Creates an array of own enumerable string keyed-value pairs for `object`
  * which can be consumed by `fromPairs`. If `object` is a map or set, its
  * entries are returned.
@@ -5545,9 +5945,12 @@
  *
  * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; toPairs(new Foo); // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)`
  */
-!!EODOC
+export function toPairs(object) {
+  if (false) { toPairs(object); }
+  throw 'TODO: implement toPairs';
+}
 
-!!SIG lodash toPairsIn(object)
+// lodash
 /** Creates an array of own and inherited enumerable string keyed-value pairs
  * for `object` which can be consumed by `fromPairs`. If `object` is a map
  * or set, its entries are returned.
@@ -5558,9 +5961,12 @@
  *
  * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; toPairsIn(new Foo); // => [['a', 1], ['b', 2], ['c', 3]] (iteration order is not guaranteed)`
  */
-!!EODOC
+export function toPairsIn(object) {
+  if (false) { toPairsIn(object); }
+  throw 'TODO: implement toPairsIn';
+}
 
-!!SIG lodash toPath(value)
+// lodash
 /** Converts `value` to a property path array.
  *
  * @param value: The value to convert.
@@ -5570,9 +5976,12 @@
  * @example `toPath('a.b.c'); // => ['a', 'b', 'c']`
  * @example `toPath('a[0].b.c'); // => ['a', '0', 'b', 'c']`
  */
-!!EODOC
+export function toPath(value) {
+  if (false) { toPath(value); }
+  throw 'TODO: implement toPath';
+}
 
-!!SIG lodash toPlainObject(value)
+// lodash
 /** Converts `value` to a plain object flattening inherited enumerable string
  * keyed properties of `value` to own properties of the plain object.
  *
@@ -5583,9 +5992,12 @@
  * @example `function Foo() { this.b = 2; } Foo.prototype.c = 3; assign({ 'a': 1 }, new Foo); // => { 'a': 1, 'b': 2 }`
  * @example `assign({ 'a': 1 }, toPlainObject(new Foo)); // => { 'a': 1, 'b': 2, 'c': 3 }`
  */
-!!EODOC
+export function toPlainObject(value) {
+  if (false) { toPlainObject(value); }
+  throw 'TODO: implement toPlainObject';
+}
 
-!!SIG lodash toSafeInteger(value)
+// lodash
 /** Converts `value` to a safe integer. A safe integer can be compared and
  * represented correctly.
  *
@@ -5598,9 +6010,12 @@
  * @example `toSafeInteger(Infinity); // => 9007199254740991`
  * @example `toSafeInteger('3.2'); // => 3`
  */
-!!EODOC
+export function toSafeInteger(value) {
+  if (false) { toSafeInteger(value); }
+  throw 'TODO: implement toSafeInteger';
+}
 
-!!SIG lodash toString(value)
+// lodash
 /** Converts `value` to a string. An empty string is returned for `null`
  * and `undefined` values. The sign of `-0` is preserved.
  *
@@ -5612,19 +6027,22 @@
  * @example `toString(-0); // => '-0'`
  * @example `toString([1, 2, 3]); // => '1,2,3'`
  */
-!!EODOC
+export function toString(value) {
+  if (false) { toString(value); }
+  throw 'TODO: implement toString';
+}
 
-!!SIG flipshop toTuplecolor(color)
+// flipshop
 /** /** `color` as `[red, green, blue, alpha]`, each rounded to a 0–255 integer; `alpha` defaults to `1.0` (255) if unset. */
  */
-!!EODOC
+// export function toTuplecolor(color) {}
 
-!!SIG flipshop toUnitcolor(color)
+// flipshop
 /** /** `color` as `[red, green, blue, alpha]`, each 0.0–1.0; `alpha` defaults to `1.0` if unset. */
  */
-!!EODOC
+// export function toUnitcolor(color) {}
 
-!!SIG lodash toUpper(string)
+// lodash
 /** Converts `string`, as a whole, to upper case just like
  * [String#toUpperCase](https://mdn.io/toUpperCase).
  *
@@ -5637,9 +6055,12 @@
  * @example `toUpper('fooBar'); // => 'FOOBAR'`
  * @example `toUpper('__foo_bar__'); // => '__FOO_BAR__'`
  */
-!!EODOC
+export function toUpper(string) {
+  if (false) { toUpper(string); }
+  throw 'TODO: implement toUpper';
+}
 
-!!SIG lodash transform(object, iteratee, accumulator)
+// lodash
 /** An alternative to `reduce`; this method transforms `object` to a new
  * `accumulator` object which is the result of running each of its own
  * enumerable string keyed properties thru `funcOrProp`, with each invocation
@@ -5649,7 +6070,7 @@
  * Iteratee functions may exit iteration early by explicitly returning `false`.
  *
  * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: The function invoked per iteration; defaults to `identity`.
+ * @param funcOrProp {function}: Reducer function invoked per iteration; defaults to `identity`.
  *   @optional
  * @param accumulator: The custom accumulator value.
  *   @optional
@@ -5659,14 +6080,17 @@
  * @example `transform([2, 3, 4], function(result, n) { result.push(n *= n); return n % 2 == 0; }, []); // => [4, 9]`
  * @example `transform({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) { (result[value] || (result[value] = [])).push(key); }, {}); // => { '1': ['a', 'c'], '2': ['b'] }`
  */
-!!EODOC
+export function transform(object, iteratee, accumulator) {
+  if (false) { transform(object, iteratee, accumulator); }
+  throw 'TODO: implement transform';
+}
 
-!!SIG flipshop trim(str, chars)
+// flipshop
 /** /** `trimStart` and `trimEnd` together: strips from both ends. */
  */
-!!EODOC
+// export function trim(str, chars) {}
 
-!!SIG lodash trim(string, chars)
+// lodash
 /** Removes leading and trailing whitespace or specified characters from `string`.
  *
  * @param string {string}: The string to trim; defaults to `''`.
@@ -5680,14 +6104,17 @@
  * @example `trim('-_-abc-_-', '_-'); // => 'abc'`
  * @example `map([' foo ', ' bar '], trim); // => ['foo', 'bar']`
  */
-!!EODOC
+export function trim(string, chars) {
+  if (false) { trim(string, chars); }
+  throw 'TODO: implement trim';
+}
 
-!!SIG flipshop trimEnd(str, chars)
+// flipshop
 /** /** `trimStart`'s counterpart: strips from the back instead of the front. */
  */
-!!EODOC
+// export function trimEnd(str, chars) {}
 
-!!SIG lodash trimEnd(string, chars)
+// lodash
 /** Removes trailing whitespace or specified characters from `string`.
  *
  * @param string {string}: The string to trim; defaults to `''`.
@@ -5700,16 +6127,19 @@
  * @example `trimEnd(' abc '); // => ' abc'`
  * @example `trimEnd('-_-abc-_-', '_-'); // => '-_-abc'`
  */
-!!EODOC
+export function trimEnd(string, chars) {
+  if (false) { trimEnd(string, chars); }
+  throw 'TODO: implement trimEnd';
+}
 
-!!SIG flipshop trimStart(str, chars)
+// flipshop
 /** `str` with any character in `chars` (default whitespace) removed from the front.
  *
  * @example `trimStart(" hi "); // => "hi "`
  */
-!!EODOC
+// export function trimStart(str, chars) {}
 
-!!SIG lodash trimStart(string, chars)
+// lodash
 /** Removes leading whitespace or specified characters from `string`.
  *
  * @param string {string}: The string to trim; defaults to `''`.
@@ -5722,9 +6152,12 @@
  * @example `trimStart(' abc '); // => 'abc '`
  * @example `trimStart('-_-abc-_-', '_-'); // => 'abc-_-'`
  */
-!!EODOC
+export function trimStart(string, chars) {
+  if (false) { trimStart(string, chars); }
+  throw 'TODO: implement trimStart';
+}
 
-!!SIG flipshop truncate(str, opts)
+// flipshop
 /** `str` shortened to at most `opts.length` characters (the omission marker included), replacing
  * whatever got cut with `opts.omission`. Unlike lodash, there's no `separator` option to break at
  * a word/regex boundary instead of an exact character count.
@@ -5733,9 +6166,9 @@
  *
  * @example `truncate("hello world", { "length": 8 }); // => "hello..."`
  */
-!!EODOC
+// export function truncate(str, opts) {}
 
-!!SIG lodash truncate(string, options, options.length, options.omission, options.separator)
+// lodash
 /** Truncates `string` if it's longer than the given maximum string length.
  * The last characters of the truncated string are replaced with the omission
  * string which defaults to "...".
@@ -5758,9 +6191,12 @@
  * @example `truncate('hi-diddly-ho there, neighborino', { 'length': 24, 'separator': /,? +/ }); // => 'hi-diddly-ho there...'`
  * @example `truncate('hi-diddly-ho there, neighborino', { 'omission': ' [...]' }); // => 'hi-diddly-ho there, neig [...]'`
  */
-!!EODOC
+export function truncate(string, options) {
+  if (false) { truncate(string, options); }
+  throw 'TODO: implement truncate';
+}
 
-!!SIG flipshop tuplestrToColor(tuplestr)
+// flipshop
 /** Parses a 0–255 RGB(A) tuple string (`"200,99,100,33"` or `"[0, 1, 255]"` -- brackets and spaces
  * optional, values must be plain integers) into a `Color`. Missing alpha defaults to fully
  * opaque. Returns `OopsColor` (bright red) on anything that doesn't match, rather than throwing.
@@ -5774,21 +6210,24 @@
  *    @field alpha {number}
  * }}
  */
-!!EODOC
+// export function tuplestrToColor(tuplestr) {}
 
-!!SIG lodash unary(func)
+// lodash
 /** Creates a function that accepts up to one argument, ignoring any
  * additional arguments.
  *
- * @param func {function}: The function to cap arguments for.
+ * @param func {function}: Function to cap arguments for.
  *
  * @returns {function}: the new capped function.
  *
  * @example `map(['6', '8', '10'], unary(parseInt)); // => [6, 8, 10]`
  */
-!!EODOC
+export function unary(func) {
+  if (false) { unary(func); }
+  throw 'TODO: implement unary';
+}
 
-!!SIG flipshop undotMap(obj, onCollision)
+// flipshop
 /** Expands the dotted top-level keys of `obj` into nested maps: `{ "a.b": 1, "a": { "c": 2 } }`
  * becomes `{ "a": { "b": 1, "c": 2 } }`.
  *
@@ -5802,9 +6241,9 @@
  * @seeAlso [deepMerge]
  * @seeAlso [partition]
  */
-!!EODOC
+// export function undotMap(obj, onCollision) {}
 
-!!SIG lodash unescape(string)
+// lodash
 /** The inverse of `escape`; this method converts the HTML entities
  * `&amp;`, `&lt;`, `&gt;`, `&quot;`, and `&#39;` in `string` to
  * their corresponding characters.
@@ -5819,16 +6258,19 @@
  *
  * @example `unescape('fred, barney, &amp; pebbles'); // => 'fred, barney, & pebbles'`
  */
-!!EODOC
+export function unescape(string) {
+  if (false) { unescape(string); }
+  throw 'TODO: implement unescape';
+}
 
-!!SIG flipshop union(arrList)
+// flipshop
 /** Deduplicated concatenation of every array in `arrList`, ordered by first occurrence.
  *
  * @example `union([[2], [1, 2], [2, 3]]); // => [2, 1, 3]`
  */
-!!EODOC
+// export function union(arrList) {}
 
-!!SIG lodash union(arrays)
+// lodash
 /** Creates an array of unique values, in order, from all given arrays using
  * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons.
@@ -5840,18 +6282,21 @@
  *
  * @example `union([2], [1, 2]); // => [2, 1]`
  */
-!!EODOC
+export function union(arrays) {
+  if (false) { union(arrays); }
+  throw 'TODO: implement union';
+}
 
-!!SIG flipshop unionBy(arrList, iterateeSpec)
+// flipshop
 /** `union`, deduplicating by `iterateeSpec(val)` instead of `val` itself. `iterateeSpec` is coerced
  * through `funcOrProp` @see `funcOrProp`.
  *
  * @example `unionBy([[2.1], [1.2, 2.3]], (val) => floor(val)); // => [2.1, 1.2]`
  */
-!!EODOC
+// export function unionBy(arrList, iterateeSpec) {}
 
-!!SIG lodash unionBy(arrays, iteratee)
-/** This method is like `union` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `union` except that it accepts `funcOrProp` which is
  * invoked for each element of each `arrays` to generate the criterion by
  * which uniqueness is computed. Result values are chosen from the first
  * array in which the value occurs. The function/propname is invoked with one argument:
@@ -5859,7 +6304,7 @@
  *
  * @param arrays {array}: The arrays to inspect.
  *   @optional
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of combined values.
@@ -5867,18 +6312,21 @@
  * @example `unionBy([2.1], [1.2, 2.3], Math.floor); // => [2.1, 1.2]`
  * @example `unionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 1 }, { 'x': 2 }]`
  */
-!!EODOC
+export function unionBy(arrays, iteratee) {
+  if (false) { unionBy(arrays, iteratee); }
+  throw 'TODO: implement unionBy';
+}
 
-!!SIG flipshop unionWith(arrList, comparator)
+// flipshop
 /** `union`, deduplicating with `comparator(val, kept)` instead of `==`.
  *
  * @example `unionWith([[{ "x": 1 }], [{ "x": 1 }, { "x": 2 }]], (aa, bb) => aa.x == bb.x);`
  * @example `// => [{ "x": 1 }, { "x": 2 }]`
  */
-!!EODOC
+// export function unionWith(arrList, comparator) {}
 
-!!SIG lodash unionWith(arrays, comparator)
-/** This method is like `union` except that it accepts `comparator` which
+// lodash
+/** Like `union` except that it accepts `comparator` which
  * is invoked to compare elements of `arrays`. Result values are chosen from
  * the first array in which the value occurs. The comparator is invoked
  * with two arguments: (arrVal, othVal).
@@ -5892,9 +6340,12 @@
  *
  * @example `var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]; var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }]; unionWith(objects, others, isEqual); // => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }, { 'x': 1, 'y': 1 }]`
  */
-!!EODOC
+export function unionWith(arrays, comparator) {
+  if (false) { unionWith(arrays, comparator); }
+  throw 'TODO: implement unionWith';
+}
 
-!!SIG lodash uniq(array)
+// lodash
 /** Creates a duplicate-free version of an array, using
  * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons, in which only the first occurrence of each element
@@ -5907,26 +6358,29 @@
  *
  * @example `uniq([2, 1, 2]); // => [2, 1]`
  */
-!!EODOC
+export function uniq(array) {
+  if (false) { uniq(array); }
+  throw 'TODO: implement uniq';
+}
 
-!!SIG flipshop uniqBy(arr, iterateeSpec)
+// flipshop
 /** `arr` with duplicate elements removed, keeping the first occurrence -- like std's
  * `deduplicate`, but comparing `iterateeSpec(val, seq)` instead of `val` itself. `iterateeSpec` is
  * coerced through `funcOrProp` @see `funcOrProp`.
  *
  * @example `uniqBy([2.1, 1.2, 2.3], (val, _seq) => floor(val)); // => [2.1, 1.2]`
  */
-!!EODOC
+// export function uniqBy(arr, iterateeSpec) {}
 
-!!SIG lodash uniqBy(array, iteratee)
-/** This method is like `uniq` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `uniq` except that it accepts `funcOrProp` which is
  * invoked for each element in `array` to generate the criterion by which
  * uniqueness is computed. The order of result values is determined by the
  * order they occur in the array. The function/propname is invoked with one argument:
  * (value).
  *
  * @param array {array}: The array to inspect.
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new duplicate free array.
@@ -5934,9 +6388,12 @@
  * @example `uniqBy([2.1, 1.2, 2.3], Math.floor); // => [2.1, 1.2]`
  * @example `uniqBy([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 1 }, { 'x': 2 }]`
  */
-!!EODOC
+export function uniqBy(array, iteratee) {
+  if (false) { uniqBy(array, iteratee); }
+  throw 'TODO: implement uniqBy';
+}
 
-!!SIG lodash uniqueId(prefix)
+// lodash
 /** Generates a unique ID. If `prefix` is given, the ID is appended to it.
  *
  * @param prefix {string}: The value to prefix the ID with; defaults to `''`.
@@ -5947,19 +6404,22 @@
  * @example `uniqueId('contact_'); // => 'contact_104'`
  * @example `uniqueId(); // => '105'`
  */
-!!EODOC
+export function uniqueId(prefix) {
+  if (false) { uniqueId(prefix); }
+  throw 'TODO: implement uniqueId';
+}
 
-!!SIG flipshop uniqWith(arr, comparator)
+// flipshop
 /** `arr` with duplicate elements removed, keeping the first occurrence, where two elements count
  * as duplicates when `comparator(val, kept)` is `true`.
  *
  * @example `uniqWith([{ "x": 1 }, { "x": 1 }, { "x": 2 }], (aa, bb) => aa.x == bb.x);`
  * @example `// => [{ "x": 1 }, { "x": 2 }]`
  */
-!!EODOC
+// export function uniqWith(arr, comparator) {}
 
-!!SIG lodash uniqWith(array, comparator)
-/** This method is like `uniq` except that it accepts `comparator` which
+// lodash
+/** Like `uniq` except that it accepts `comparator` which
  * is invoked to compare elements of `array`. The order of result values is
  * determined by the order they occur in the array.The comparator is invoked
  * with two arguments: (arrVal, othVal).
@@ -5972,9 +6432,12 @@
  *
  * @example `var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }, { 'x': 1, 'y': 2 }]; uniqWith(objects, isEqual); // => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]`
  */
-!!EODOC
+export function uniqWith(array, comparator) {
+  if (false) { uniqWith(array, comparator); }
+  throw 'TODO: implement uniqWith';
+}
 
-!!SIG flipshop unitcolorToColor(unitcolor)
+// flipshop
 /** Parses a 0.0–1.0 RGB(A) tuple string (`"0.5, 0.8675309, 1.0"` or `"[0.0, 0.1, 1.0, 1.0]"`)
  * into a `Color`. Missing alpha defaults to fully opaque. Returns `OopsColor` (bright red) on
  * anything that doesn't match, rather than throwing.
@@ -5988,9 +6451,9 @@
  *    @field alpha {number}
  * }}
  */
-!!EODOC
+// export function unitcolorToColor(unitcolor) {}
 
-!!SIG lodash unset(object, path)
+// lodash
 /** Removes the property at `path` of `object`.
  *
  * **Note:** This method mutates `object`.
@@ -6005,19 +6468,22 @@
  * @example `unset(object, ['a', '0', 'b', 'c']); // => true`
  * @example `println(object); // => { 'a': [{ 'b': {} }] };`
  */
-!!EODOC
+export function unset(object, path) {
+  if (false) { unset(object, path); }
+  throw 'TODO: implement unset';
+}
 
-!!SIG flipshop unzip(arr)
+// flipshop
 /** Inverse of `zip` *(std)* -- ungroups `arr`'s rows back into columns. `zip`'s grouping is its own
  * inverse (transposing rows and columns twice returns the original shape), so `unzip` is just
  * `zip` under lodash's name for the reverse direction.
  *
  * @example `unzip([["a", 1, true], ["b", 2, false]]); // => [["a", "b"], [1, 2], [true, false]]`
  */
-!!EODOC
+// export function unzip(arr) {}
 
-!!SIG lodash unzip(array)
-/** This method is like `zip` except that it accepts an array of grouped
+// lodash
+/** Like `zip` except that it accepts an array of grouped
  * elements and creates an array regrouping the elements to their pre-zip
  * configuration.
  *
@@ -6028,22 +6494,25 @@
  * @example `var zipped = zip(['a', 'b'], [1, 2], [true, false]); // => [['a', 1, true], ['b', 2, false]]`
  * @example `unzip(zipped); // => [['a', 'b'], [1, 2], [true, false]]`
  */
-!!EODOC
+export function unzip(array) {
+  if (false) { unzip(array); }
+  throw 'TODO: implement unzip';
+}
 
-!!SIG flipshop unzipWith(arr, iteratee)
+// flipshop
 /** `unzip`, passing each ungrouped column through `funcOrProp` before collecting it.
  *
  * @example `unzipWith([[1, 10], [2, 20]], (col) => sum(col)); // => [3, 30]`
  */
-!!EODOC
+// export function unzipWith(arr, iteratee) {}
 
-!!SIG lodash unzipWith(array, iteratee)
-/** This method is like `unzip` except that it accepts `funcOrProp` to specify
+// lodash
+/** Like `unzip` except that it accepts `funcOrProp` to specify
  * how regrouped values should be combined. The function/propname is invoked with the
  * elements of each group: (...group).
  *
  * @param array {array}: The array of grouped elements to process.
- * @param funcOrProp {function}: The function to combine regrouped values; defaults to `identity`.
+ * @param funcOrProp {function}: Function to combine regrouped values; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of regrouped elements.
@@ -6051,19 +6520,22 @@
  * @example `var zipped = zip([1, 2], [10, 20], [100, 200]); // => [[1, 10, 100], [2, 20, 200]]`
  * @example `unzipWith(zipped, add); // => [3, 30, 300]`
  */
-!!EODOC
+export function unzipWith(array, iteratee) {
+  if (false) { unzipWith(array, iteratee); }
+  throw 'TODO: implement unzipWith';
+}
 
-!!SIG flipshop upcase(str)
+// flipshop
 /** Converts `str`, as a whole, to upper case. Same ASCII-only limitation as `downcase`.
  *
  * @example `upcase("fooBar"); // => "FOOBAR"`
  * @example `upcase("--foo-bar--"); // => "--FOO-BAR--"`
  */
-!!EODOC
+// export function upcase(str) {}
 
-!!SIG flipshop update(bag, keyStrOrPath, updater)
-/** Read-modify-write: `keyStr`/`keyPath` of `bag`/`arr` becomes `updater(currentVal)`.
- * `updateWith` additionally takes an `onCollision`, called only when the leaf `keyStrOrPath`
+// flipshop
+/** Read-modify-write: `keyname`/`keypath` of `bag`/`arr` becomes `updater(currentVal)`.
+ * `updateWith` additionally takes an `onCollision`, called only when the leaf `keynameOrPath`
  * already resolves to something -- it customizes how the freshly-`updater`'d value combines with
  * what was just read, not how a missing intermediate segment gets created (@see `setAtWith` for
  * that -- the actual counterpart to lodash's `setWith`/`updateWith` customizer). Since the value
@@ -6072,10 +6544,10 @@
  *
  * @example `update({ "a": 1 }, "a", (val) => val + 1); // => { "a": 2 }`
  */
-!!EODOC
+// export function update(bag, keynameOrPath, updater) {}
 
-!!SIG lodash update(object, path, updater)
-/** This method is like `set` except that accepts `updater` to produce the
+// lodash
+/** Like `set` except that accepts `updater` to produce the
  * value to set. Use `updateWith` to customize `path` creation. The `updater`
  * is invoked with one argument: (value).
  *
@@ -6083,17 +6555,20 @@
  *
  * @param object {map}: The object to modify.
  * @param path {array|string}: The path of the property to set.
- * @param updater {function}: The function to produce the updated value.
+ * @param updater {function}: Function to produce the updated value.
  *
  * @returns {map}: `object`.
  *
  * @example `var object = { 'a': [{ 'b': { 'c': 3 } }] }; update(object, 'a[0].b.c', function(n) { return n * n; }); println(object.a[0].b.c); // => 9`
  * @example `update(object, 'x[0].y.z', function(n) { return n ? n + 1 : 0; }); println(object.x[0].y.z); // => 0`
  */
-!!EODOC
+export function update(object, path, updater) {
+  if (false) { update(object, path, updater); }
+  throw 'TODO: implement update';
+}
 
-!!SIG lodash updateWith(object, path, updater, customizer)
-/** This method is like `update` except that it accepts `customizer` which is
+// lodash
+/** Like `update` except that it accepts `customizer` which is
  * invoked to produce the objects of `path`.  If `customizer` returns `undefined`
  * path creation is handled by the method instead. The `customizer` is invoked
  * with three arguments: (nsValue, key, nsObject).
@@ -6102,22 +6577,25 @@
  *
  * @param object {map}: The object to modify.
  * @param path {array|string}: The path of the property to set.
- * @param updater {function}: The function to produce the updated value.
- * @param customizer {function}: The function to customize assigned values.
+ * @param updater {function}: Function to produce the updated value.
+ * @param customizer {function}: Function to customize assigned values.
  *   @optional
  *
  * @returns {map}: `object`.
  *
  * @example `var object = {}; updateWith(object, '[0][1]', constant('a'), Object); // => { '0': { '1': 'a' } }`
  */
-!!EODOC
+export function updateWith(object, path, updater, customizer) {
+  if (false) { updateWith(object, path, updater, customizer); }
+  throw 'TODO: implement updateWith';
+}
 
-!!SIG flipshop upperCase(str)
+// flipshop
 /** /** `str` split into words, uppercased, and joined with a space. */
  */
-!!EODOC
+// export function upperCase(str) {}
 
-!!SIG lodash upperCase(string)
+// lodash
 /** Converts `string`, as space separated words, to upper case.
  *
  * @param string {string}: The string to convert; defaults to `''`.
@@ -6129,17 +6607,20 @@
  * @example `upperCase('fooBar'); // => 'FOO BAR'`
  * @example `upperCase('__foo_bar__'); // => 'FOO BAR'`
  */
-!!EODOC
+export function upperCase(string) {
+  if (false) { upperCase(string); }
+  throw 'TODO: implement upperCase';
+}
 
-!!SIG flipshop upperFirst(str)
+// flipshop
 /** `str` with only its first character uppercased, the rest left untouched -- unlike `capitalize`,
  * everything after the first character is left as-is rather than lowercased.
  *
  * @example `upperFirst("fred"); // => "Fred"`
  */
-!!EODOC
+// export function upperFirst(str) {}
 
-!!SIG lodash upperFirst(string)
+// lodash
 /** Converts the first character of `string` to upper case.
  *
  * @param string {string}: The string to convert; defaults to `''`.
@@ -6150,9 +6631,12 @@
  * @example `upperFirst('fred'); // => 'Fred'`
  * @example `upperFirst('FRED'); // => 'FRED'`
  */
-!!EODOC
+export function upperFirst(string) {
+  if (false) { upperFirst(string); }
+  throw 'TODO: implement upperFirst';
+}
 
-!!SIG lodash values(object)
+// lodash
 /** Creates an array of the own enumerable string keyed property values of `object`.
  *
  * **Note:** Non-object values are coerced to objects.
@@ -6164,30 +6648,33 @@
  * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; values(new Foo); // => [1, 2] (iteration order is not guaranteed)`
  * @example `values('hi'); // => ['h', 'i']`
  */
-!!EODOC
+export function values(object) {
+  if (false) { values(object); }
+  throw 'TODO: implement values';
+}
 
-!!SIG flipshop valuesAt(arr, keylist)
+// flipshop
 /** Array of `bag`'s (or `arr`'s) values at `keylist`, in that order. Unlike lodash's `at`, there's
  * no path traversal -- each entry of `keylist` is a literal key or index, not a dotted path -- and
  * an array index must be non-negative and in bounds.
  *
- * `missingPolicy` decides what happens at a key/index with nothing there: `USE_UNDEFINED` (the
+ * `missingPolicy` decides what happens at a key/index with nothing there: `NIL` (the
  * default) fills the slot with `undefined`, so the result stays the same length as `keylist`;
  * `SKIP` drops the slot instead, so the result can come back shorter.
  *
  * @example `valuesAt({ "a": 11, "b": 22 }, ["b", "a"]); // => [22, 11]`
  * @example `valuesAt({ "a": 11, "b": 22 }, ["c"]); // => [undefined]`
- * @example `valuesAt({ "a": 11, "b": 22 }, ["c", "b"], MissingPolicy.SKIP); // => [22]`
+ * @example `valuesAt({ "a": 11, "b": 22 }, ["c", "b"], NilPolicy.SKIP); // => [22]`
  */
-!!EODOC
+// export function valuesAt(arr, keylist) {}
 
-!!SIG flipshop valuesAtEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters)
+// flipshop
 /** Keeps `varname` at `bagname ~ "_vals"` and `description` at a summary of the selection, each
  * for as long as it hasn't been hand-edited; @see `defaultMaybe`.
  */
-!!EODOC
+// export function valuesAtEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) {}
 
-!!SIG lodash valuesIn(object)
+// lodash
 /** Creates an array of the own and inherited enumerable string keyed property
  * values of `object`.
  *
@@ -6199,18 +6686,21 @@
  *
  * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; valuesIn(new Foo); // => [1, 2, 3] (iteration order is not guaranteed)`
  */
-!!EODOC
+export function valuesIn(object) {
+  if (false) { valuesIn(object); }
+  throw 'TODO: implement valuesIn';
+}
 
-!!SIG flipshop without(arr, excludeArr)
+// flipshop
 /** `arr` without any element equal to one in `excludeArr`. Lodash's `without` takes the exclusion
  * values as trailing variadic arguments; here they're a single array, which makes this identical
  * to @see `difference` -- kept under its own name to match lodash's vocabulary.
  *
  * @example `without([2, 1, 2, 3], [1, 2]); // => [3]`
  */
-!!EODOC
+// export function without(arr, excludeArr) {}
 
-!!SIG lodash without(array, values)
+// lodash
 /** Creates an array excluding all given values using
  * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * for equality comparisons.
@@ -6228,18 +6718,21 @@
  *
  * @example `without([2, 1, 2, 3], 1, 2); // => [3]`
  */
-!!EODOC
+export function without(array, values) {
+  if (false) { without(array, values); }
+  throw 'TODO: implement without';
+}
 
-!!SIG flipshop words(str)
+// flipshop
 /** `str` split into words on runs of non-alphanumeric characters -- the shared primitive behind
  * `camelCase`/`kebabCase`/`snakeCase`/`upperCase`/`lowerCase` below. Simpler than lodash's own
  * `words`: this splits only on delimiter characters, not on camelCase boundaries or digit runs.
  *
  * @example `words("foo-bar_baz qux"); // => ["foo", "bar", "baz", "qux"]`
  */
-!!EODOC
+// export function words(str) {}
 
-!!SIG lodash words(string, pattern)
+// lodash
 /** Splits `string` into an array of its words.
  *
  * @param string {string}: The string to inspect; defaults to `''`.
@@ -6252,9 +6745,12 @@
  * @example `words('fred, barney, & pebbles'); // => ['fred', 'barney', 'pebbles']`
  * @example `words('fred, barney, & pebbles', /[^, ]+/g); // => ['fred', 'barney', '&', 'pebbles']`
  */
-!!EODOC
+export function words(string, pattern) {
+  if (false) { words(string, pattern); }
+  throw 'TODO: implement words';
+}
 
-!!SIG lodash wrap(value, wrapper)
+// lodash
 /** Creates a function that provides `value` to `wrapper` as its first
  * argument. Any additional arguments provided to the function are appended
  * to those provided to the `wrapper`. The wrapper is invoked with the `this`
@@ -6268,9 +6764,12 @@
  *
  * @example `var p = wrap(escape, function(func, text) { return '<p>' + func(text) + '</p>'; }); p('fred, barney, & pebbles'); // => '<p>fred, barney, &amp; pebbles</p>'`
  */
-!!EODOC
+export function wrap(value, wrapper) {
+  if (false) { wrap(value, wrapper); }
+  throw 'TODO: implement wrap';
+}
 
-!!SIG lodash wrapperAt(paths)
+// lodash
 /** This method is the wrapper version of `at`.
  *
  * @param paths {(string|string[])}: The property paths to pick.
@@ -6280,9 +6779,12 @@
  *
  * @example `var object = { 'a': [{ 'b': { 'c': 3 } }, 4] }; _(object).at(['a[0].b.c', 'a[1]']).value(); // => [3, 4]`
  */
-!!EODOC
+export function wrapperAt(paths) {
+  if (false) { wrapperAt(paths); }
+  throw 'TODO: implement wrapperAt';
+}
 
-!!SIG lodash wrapperChain()
+// lodash
 /** Creates a `lodash` wrapper instance with explicit method chain sequences enabled.
  *
  * @returns {map}: the new `lodash` wrapper instance.
@@ -6290,9 +6792,12 @@
  * @example `var users = [ { 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 40 } ]; _(users).head(); // => { 'user': 'barney', 'age': 36 }`
  * @example `_(users) .chain() .head() .pick('user') .value(); // => { 'user': 'barney' }`
  */
-!!EODOC
+export function wrapperChain() {
+  if (false) { wrapperChain(); }
+  throw 'TODO: implement wrapperChain';
+}
 
-!!SIG lodash wrapperCommit()
+// lodash
 /** Executes the chain sequence and returns the wrapped result.
  *
  * @returns {map}: the new `lodash` wrapper instance.
@@ -6302,9 +6807,12 @@
  * @example `wrapped.last(); // => 3`
  * @example `println(array); // => [1, 2, 3]`
  */
-!!EODOC
+export function wrapperCommit() {
+  if (false) { wrapperCommit(); }
+  throw 'TODO: implement wrapperCommit';
+}
 
-!!SIG lodash wrapperNext()
+// lodash
 /** Gets the next value on a wrapped object following the
  * [iterator protocol](https://mdn.io/iteration_protocols#iterator).
  *
@@ -6314,9 +6822,12 @@
  * @example `wrapped.next(); // => { 'done': false, 'value': 2 }`
  * @example `wrapped.next(); // => { 'done': true, 'value': undefined }`
  */
-!!EODOC
+export function wrapperNext() {
+  if (false) { wrapperNext(); }
+  throw 'TODO: implement wrapperNext';
+}
 
-!!SIG lodash wrapperPlant(value)
+// lodash
 /** Creates a clone of the chain sequence planting `value` as the wrapped value.
  *
  * @param value: The value to plant.
@@ -6326,9 +6837,12 @@
  * @example `function square(n) { return n * n; } var wrapped = _([1, 2]).map(square); var other = wrapped.plant([3, 4]); other.value(); // => [9, 16]`
  * @example `wrapped.value(); // => [1, 4]`
  */
-!!EODOC
+export function wrapperPlant(value) {
+  if (false) { wrapperPlant(value); }
+  throw 'TODO: implement wrapperPlant';
+}
 
-!!SIG lodash wrapperReverse()
+// lodash
 /** This method is the wrapper version of `reverse`.
  *
  * **Note:** This method mutates the wrapped array.
@@ -6338,9 +6852,12 @@
  * @example `var array = [1, 2, 3]; _(array).reverse().value() // => [3, 2, 1]`
  * @example `println(array); // => [3, 2, 1]`
  */
-!!EODOC
+export function wrapperReverse() {
+  if (false) { wrapperReverse(); }
+  throw 'TODO: implement wrapperReverse';
+}
 
-!!SIG lodash wrapperToIterator()
+// lodash
 /** Enables the wrapper to be iterable.
  *
  * @returns {map}: the wrapper object.
@@ -6348,27 +6865,33 @@
  * @example `var wrapped = _([1, 2]); wrapped[Symbol.iterator]() === wrapped; // => true`
  * @example `Array.from(wrapped); // => [1, 2]`
  */
-!!EODOC
+export function wrapperToIterator() {
+  if (false) { wrapperToIterator(); }
+  throw 'TODO: implement wrapperToIterator';
+}
 
-!!SIG lodash wrapperValue()
+// lodash
 /** Executes the chain sequence to resolve the unwrapped value.
  *
  * @returns: the resolved unwrapped value.
  *
  * @example `_([1, 2, 3]).value(); // => [1, 2, 3]`
  */
-!!EODOC
+export function wrapperValue() {
+  if (false) { wrapperValue(); }
+  throw 'TODO: implement wrapperValue';
+}
 
-!!SIG flipshop xor(arrList)
+// flipshop
 /** Symmetric difference: values that appear in exactly one array of `arrList`, deduplicated, in
  * first-occurrence order. Lodash's `xor` takes the arrays as trailing variadic arguments; here
  * they're a single array of arrays.
  *
  * @example `xor([[2, 1], [2, 3]]); // => [1, 3]`
  */
-!!EODOC
+// export function xor(arrList) {}
 
-!!SIG lodash xor(arrays)
+// lodash
 /** Creates an array of unique values that is the
  * [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
  * of the given arrays. The order of result values is determined by the order
@@ -6384,18 +6907,21 @@
  *
  * @example `xor([2, 1], [2, 3]); // => [1, 3]`
  */
-!!EODOC
+export function xor(arrays) {
+  if (false) { xor(arrays); }
+  throw 'TODO: implement xor';
+}
 
-!!SIG flipshop xorBy(arrList, iterateeSpec)
+// flipshop
 /** `xor`, comparing by `iterateeSpec(val, seq)` instead of `val` itself. `iterateeSpec` is coerced
  * through `funcOrProp` @see `funcOrProp`.
  *
  * @example `xorBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [1.2, 3.4]`
  */
-!!EODOC
+// export function xorBy(arrList, iterateeSpec) {}
 
-!!SIG lodash xorBy(arrays, iteratee)
-/** This method is like `xor` except that it accepts `funcOrProp` which is
+// lodash
+/** Like `xor` except that it accepts `funcOrProp` which is
  * invoked for each element of each `arrays` to generate the criterion by
  * which by which they're compared. The order of result values is determined
  * by the order they occur in the arrays. The function/propname is invoked with one
@@ -6403,7 +6929,7 @@
  *
  * @param arrays {array}: The arrays to inspect.
  *   @optional
- * @param funcOrProp {function}: The function/propname invoked per element; defaults to `identity`.
+ * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of filtered values.
@@ -6411,18 +6937,21 @@
  * @example `xorBy([2.1, 1.2], [2.3, 3.4], Math.floor); // => [1.2, 3.4]`
  * @example `xorBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 2 }]`
  */
-!!EODOC
+export function xorBy(arrays, iteratee) {
+  if (false) { xorBy(arrays, iteratee); }
+  throw 'TODO: implement xorBy';
+}
 
-!!SIG flipshop xorWith(arrList, comparator)
+// flipshop
 /** `xor`, comparing with `comparator(val, otherVal)` instead of `==`.
  *
  * @example `xorWith([[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], (aa, bb) => aa.x == bb.x);`
  * @example `// => [{ "x": 1 }]`
  */
-!!EODOC
+// export function xorWith(arrList, comparator) {}
 
-!!SIG lodash xorWith(arrays, comparator)
-/** This method is like `xor` except that it accepts `comparator` which is
+// lodash
+/** Like `xor` except that it accepts `comparator` which is
  * invoked to compare elements of `arrays`. The order of result values is
  * determined by the order they occur in the arrays. The comparator is invoked
  * with two arguments: (arrVal, othVal).
@@ -6436,9 +6965,12 @@
  *
  * @example `var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]; var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }]; xorWith(objects, others, isEqual); // => [{ 'x': 2, 'y': 1 }, { 'x': 1, 'y': 1 }]`
  */
-!!EODOC
+export function xorWith(arrays, comparator) {
+  if (false) { xorWith(arrays, comparator); }
+  throw 'TODO: implement xorWith';
+}
 
-!!SIG lodash zip(arrays)
+// lodash
 /** Creates an array of grouped elements, the first of which contains the
  * first elements of the given arrays, the second of which contains the
  * second elements of the given arrays, and so on.
@@ -6450,9 +6982,12 @@
  *
  * @example `zip(['a', 'b'], [1, 2], [true, false]); // => [['a', 1, true], ['b', 2, false]]`
  */
-!!EODOC
+export function zip(arrays) {
+  if (false) { zip(arrays); }
+  throw 'TODO: implement zip';
+}
 
-!!SIG flipshop zipObject(keylist, valuelist)
+// flipshop
 /** Map pairing up `keylist` and `valuelist` by position: `zipObject(["a","b"], [1,2])` is
  * `{"a": 1, "b": 2}`. A `keylist` entry past the end of `valuelist` is simply absent from the
  * result -- FeatureScript maps drop a key written to `undefined`; a `valuelist` entry past the end
@@ -6461,10 +6996,10 @@
  * @example `zipObject(["a", "b"], [1, 2]); // => { "a": 1, "b": 2 }`
  * @example `zipObject(["a", "b"], [1]); // => { "a": 1 }`
  */
-!!EODOC
+// export function zipObject(keylist, valuelist) {}
 
-!!SIG lodash zipObject(props, values)
-/** This method is like `fromPairs` except that it accepts two arrays,
+// lodash
+/** Like `fromPairs` except that it accepts two arrays,
  * one of property identifiers and one of corresponding values.
  *
  * @param props {array}: ] The property identifiers; defaults to `[`.
@@ -6476,10 +7011,13 @@
  *
  * @example `zipObject(['a', 'b'], [1, 2]); // => { 'a': 1, 'b': 2 }`
  */
-!!EODOC
+export function zipObject(props, values) {
+  if (false) { zipObject(props, values); }
+  throw 'TODO: implement zipObject';
+}
 
-!!SIG lodash zipObjectDeep(props, values)
-/** This method is like `zipObject` except that it supports property paths.
+// lodash
+/** Like `zipObject` except that it supports property paths.
  *
  * @param props {array}: ] The property identifiers; defaults to `[`.
  *   @optional
@@ -6490,28 +7028,37 @@
  *
  * @example `zipObjectDeep(['a.b[0].c', 'a.b[1].d'], [1, 2]); // => { 'a': { 'b': [{ 'c': 1 }, { 'd': 2 }] } }`
  */
-!!EODOC
+export function zipObjectDeep(props, values) {
+  if (false) { zipObjectDeep(props, values); }
+  throw 'TODO: implement zipObjectDeep';
+}
 
-!!SIG TODO-clxnUtils zipWith(arrList, funcOrProp)
+// TODO-clxnUtils
 /** `zip` *(std)* on `arrList`, passing each grouped row through `funcOrProp` before collecting it --
  * the same shape as `unzipWith`, under lodash's name for the zipping direction.
  *
  * @example `zipWith([[1, 2], [10, 20]], (row) => sum(row)); // => [11, 22]`
  */
-!!EODOC
+export function zipWith(arrList, funcOrProp) {
+  if (false) { zipWith(arrList, funcOrProp); }
+  throw 'TODO: implement zipWith';
+}
 
-!!SIG TODO-clxnUtils zipWith(arrays, iteratee)
-/** This method is like `zip` except that it accepts `funcOrProp` to specify
+// TODO-clxnUtils
+/** Like `zip` except that it accepts `funcOrProp` to specify
  * how grouped values should be combined. The function/propname is invoked with the
  * elements of each group: (...group).
  *
  * @param arrays {array}: The arrays to process.
  *   @optional
- * @param funcOrProp {function}: The function to combine grouped values; defaults to `identity`.
+ * @param funcOrProp {function}: Function to combine grouped values; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of grouped elements.
  *
  * @example `zipWith([1, 2], [10, 20], [100, 200], function(a, b, c) { return a + b + c; }); // => [111, 222]`
  */
-!!EODOC
+export function zipWith2(arrays, iteratee) {
+  if (false) { zipWith2(arrays, iteratee); }
+  throw 'TODO: implement zipWith2';
+}

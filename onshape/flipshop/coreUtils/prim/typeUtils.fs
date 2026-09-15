@@ -24,11 +24,11 @@ export enum NextStepAction {
  * How the walking functions below treat an entry whose value is `undefined` — because it's
  * missing outright, or because it's present and genuinely set to `undefined`.
  */
-export enum MissingPolicy {
-    annotation { "Name": "Treat set-but-undefined values the same as absent values: they should not appear in the result" }
+export enum NilPolicy {
+    annotation { "Name": "Treat set-but-undefined values as if they're absent: they should not appear in the result. If relevant, an array index will advance, but a sequence counter will not." }
     SKIP,
-    annotation { "Name": "Treat set-but-undefined values as present (include them in results)" }
-    USE_UNDEFINED
+    annotation { "Name": "Treat set-but-undefined values as existing with the value `undefined` (include them in results)" }
+    NIL
 }
 
 /**
