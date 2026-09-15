@@ -126,68 +126,172 @@ export function cmpTo(aa is box, bb is box, cf is function) returns number {
 export function cmpTo(aa is box, bb is box) returns number { return cmpTo(aa, bb, cmp); }
 
 /**
- * `sort` *(std)*, extended with `pairs`' criteria already computed: sorts `pairs` (each a
- * `[criteria, val]`) by their `criteria` slot and returns just the `val`s, in `order`'s direction.
- * The multiply-by-`order` trick works for any comparator, not just a `-1/0/1` one: `order`'s sign
- * flips or keeps `comparator`'s sign, and `order == 0` collapses every comparison to `0`, which
- * `sort`'s stable merge leaves in `pairs`' original order -- a "neuter" pass-through.
- * @param pairs {array}: `[criteria, val]` tuples.
- * @param order {number}: Positive sorts ascending by `criteria`, negative descending, zero leaves `pairs` in their original order.
- * @param comparator {function}: `(criteriaA, criteriaB) => number`.
+ * `[val, ckey]` for each entry of `collection` -- an array's elements paired with their index, a
+ * map's values with their key. The `ckey` rides along only far enough to reach each `funcOrPath`;
+ * the sorted result is `val`s alone.
+ *
+ * @param collection {array|map}: Collection to walk.
+ *
+ * @returns {array}: `[val, ckey]` pairs, in `collection`'s own order.
  */
-function sortPairsBy(pairs is array, order is number, comparator is function) returns array {
-  const sortedPairs = sort(pairs, function(pairA is array, pairB is array) returns number {
-    return order * comparator(pairA[0], pairB[0]);
+function valCkeysFor(collection is array) returns array {
+  return mapValues(collection, (val, idx is number) => [val, idx]);
+}
+function valCkeysFor(collection is map) returns array {
+  return mapValues(keys(collection), (key is string, _seq) => [collection[key], key]);
+}
+
+/**
+ * One sort axis per element of `funcOrPaths`, each coerced through `iteratee` -- a function is used
+ * as-is, a dotkey string reads that property, a map becomes a `matches` rule. A lone `funcOrPath`
+ * is a single axis; `undefined` or an empty array name no axis at all, which is `identity`.
+ *
+ * @seeAlso [iteratee]
+ *
+ * @param funcOrPaths {function|string|map|array}: One `funcOrPath` per axis, or a lone `funcOrPath`.
+ *
+ * @returns {array}: Functions, each invoked as `(val, ckey)`.
+ */
+function axisFuncsFor(funcOrPaths) returns array {
+  if (! (funcOrPaths is array)) { return [iteratee(funcOrPaths)]; }
+  if (size(funcOrPaths) == 0)   { return [identity]; }
+  return mapValues(funcOrPaths, (funcOrPath, _idx) => iteratee(funcOrPath));
+}
+
+/**
+ * `spec` spread across `axisCount` sort axes: an array fills axes positionally, padding whatever
+ * it runs short of with `fallback`; any other value broadcasts itself to every axis; `undefined`
+ * leaves every axis at `fallback`. This is how `orders` and `comparators` each accept a bare
+ * value, a per-axis array, or nothing at all.
+ *
+ * @param spec: Per-axis array, a bare value to broadcast, or `undefined`.
+ * @param axisCount {number}: Number of sort axes to fill.
+ * @param fallback: Stands in for axes `spec` leaves unspoken for.
+ *
+ * @returns {array}: Exactly `axisCount` values.
+ */
+function axisValsFor(spec, axisCount is number, fallback) returns array {
+  if (spec is undefined)  { return makeArray(axisCount, fallback); }
+  if (! (spec is array))  { return makeArray(axisCount, spec); }
+  const spokenFor = min(axisCount, size(spec));
+  var axisVals = makeArray(axisCount, fallback);
+  for (var ii = 0; ii < spokenFor; ii += 1) {
+    if (! (spec[ii] is undefined)) { axisVals[ii] = spec[ii]; }
+  }
+  return axisVals;
+}
+
+/**
+ * `critsA` against `critsB` axis by axis, stopping at the first axis that separates them.
+ * Each axis's `comparator` result is multiplied by that axis's `order`, so a negative `order`
+ * flips its direction; an `order` of `0` skips the axis outright, so its `comparator` never runs
+ * and its criteria never have to be comparable.
+ *
+ * @param critsA {array}: One `funcOrPath` result per axis.
+ * @param critsB {array}: Likewise, for the element being compared against.
+ * @param axisOrders {array}: One `order` number per axis.
+ * @param axisComparators {array}: One `comparator` function per axis.
+ *
+ * @returns {number}: Negative if `critsA` sorts first, positive if `critsB` does, zero if the axes cannot separate them.
+ */
+function cmpCrits(critsA is array, critsB is array, axisOrders is array, axisComparators is array) returns number {
+  for (var ii = 0; ii < size(critsA); ii += 1) {
+    if (axisOrders[ii] == 0) { continue; }
+    const comparator = axisComparators[ii];
+    const result = axisOrders[ii] * comparator(critsA[ii], critsB[ii]);
+    if (result != 0) { return result; }
+  }
+  return 0;
+}
+
+/**
+ * Shared body of `orderBy` and `orderAnyBy`, once `fallbackComparator` says which comparator the
+ * axes that named none of their own should use.
+ *
+ * @param collection {array|map}: Collection to iterate over.
+ * @param funcOrPaths: One `funcOrPath` per sort axis @see `axisFuncsFor`.
+ * @param orders: One `order` per sort axis, or a bare number to broadcast @see `axisValsFor`.
+ * @param comparators: One `comparator` per sort axis, or a bare function to broadcast @see `axisValsFor`.
+ * @param fallbackComparator {function}: Comparator for any axis `comparators` leaves unspoken for.
+ *
+ * @returns {array}: The new sorted array.
+ */
+function orderedValsFor(collection, funcOrPaths, orders, comparators, fallbackComparator is function) returns array {
+  const axisFuncs       = axisFuncsFor(funcOrPaths);
+  const axisOrders      = axisValsFor(orders, size(axisFuncs), 1);
+  const axisComparators = axisValsFor(comparators, size(axisFuncs), fallbackComparator);
+  const critsVals = mapValues(valCkeysFor(collection), function(valCkey is array, _seq) returns array {
+    const val  = valCkey[0];
+    const ckey = valCkey[1];
+    return [mapValues(axisFuncs, (axisFunc, _idx) => axisFunc(val, ckey)), val];
   });
-  return mapValues(sortedPairs, function(pair is array, _seq is number) { return pair[1]; });
+  const sortedCritsVals = sort(critsVals, function(critsValA is array, critsValB is array) returns number {
+    return cmpCrits(critsValA[0], critsValB[0], axisOrders, axisComparators);
+  });
+  return mapValues(sortedCritsVals, (critsVal is array, _idx) => critsVal[1]);
 }
 
-/**
- * `vals`, ordered by `iterateeSpec`: `vals`'s elements (array) or values (map, keys discarded),
- * stably sorted by `iteratee(iterateeSpec)`'s result for each, compared with `comparator`.
- * Defaults to `cmp`, so an `iterateeSpec` producing incompatible types across elements -- e.g. a
- * mix of numbers and strings -- throws exactly as `cmp` does; @see `orderAnyBy` for a version that
- * never throws. Lodash's `orderBy` accepts one-or-many iteratees and orders; this accepts just one
- * of each.
- * @param vals {array|map}: Collection to sort.
- * @param iterateeSpec: Ducktyped @see `iteratee` -- a function `(val, seq|key) => criteria`, a map
- *   (matches predicate), or a string (property path). Defaults to `identity`.
- * @param order {number}: Positive sorts ascending, negative descending, zero leaves `vals` in its
- *   original order regardless of `iterateeSpec`. Defaults to `1`.
- * @param comparator {function}: `(criteriaA, criteriaB) => number`, applied to pairs of
- *   `iterateeSpec`'s results. Defaults to `cmp`.
- * @example
- *   orderBy([3, 1, 2]);                                // => [1, 2, 3]
- *   orderBy([{ "n": 3 }, { "n": 1 }], "n");             // => [{ "n": 1 }, { "n": 3 }]
- *   orderBy([1, 2, 3], identity, -1);                   // => [3, 2, 1]
- *   orderBy({ "a": 3, "b": 1 }, identity);              // => [1, 3]
+/** Creates an array of elements, sorted in ascending order by the results of
+ * running each element in a collection thru each `funcOrPath`.
+ * If the `order` for any axis is unspecified, all values are sorted in the ascending order given by the comparator.
+ * Otherwise, specify the sort order of corresponding values
+ * as -1 for descending, 1 for ascending, and 0 to ignore that axis.
+ * This method performs a stable sort, that is, it preserves the original sort order of
+ * equal elements.
+ * Each `funcOrPath` is invoked as `(val, ckey)`.
+ *
+ * @seeAlso [orderAnyBy]
+ *
+ * @param collection {array|map}: The collection to iterate over.
+ * @param funcOrPaths {function|string|array}: One `funcOrPath` per sort axis; defaults to `[identity]`.
+ *   An array is always read as a list of axes, so a deep path wants its dotkey spelling -- `"a.b"`, not `["a", "b"]`.
+ *   @optional
+ * @param orders {number|number[]}: The sort orders of `funcOrPaths`. If a bare number is given, it is used for all axes. If there are more funcOrPaths than `orders`, the remaining ones will sort ascending (the default)
+ *   @optional
+ * @param comparators {function|function[]}: `(criteriaA, criteriaB) => number`, applied to pairs of `funcOrPath`'s results. If a bare function is given, it is used for all axes. If there are more funcOrPaths than `comparators`, the remaining ones will use cmp (or cmpAny if called as orderAnyBy);
+ *   Defaults to `cmp` -- incompatible types throw. Pass `cmpAny` to allow mixed types, or use the orderAnyBy convenience function.
+ *   @optional
+ *
+ * @returns {array}: the new sorted array.
+ *
+ * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 34 }, { 'user': 'fred', 'age': 40 }, { 'user': 'barney', 'age': 36 } ]; orderBy(users, ['user', 'age'], [1, -1]); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]`
+ * @example `orderBy([3, 1, 2]); // => [1, 2, 3]`
+ * @example `orderBy([{ "n": 3 }, { "n": 1 }], "n"); // => [{ "n": 1 }, { "n": 3 }]`
+ * @example `orderBy([1, 2, 3], identity, -1); // => [3, 2, 1]`
+ * @example `orderBy({ "a": 3, "b": 1 }, identity); // => [1, 3]`
  */
-export function orderBy(vals is array, iterateeSpec, order is number, comparator is function) returns array {
-  const keyFn = iteratee(iterateeSpec);
-  const pairs = mapValues(vals, function(val, seq is number) { return [keyFn(val, seq), val]; });
-  return sortPairsBy(pairs, order, comparator);
+export function orderBy(collection, funcOrPaths, orders, comparators) returns array {
+  return orderedValsFor(collection, funcOrPaths, orders, comparators, cmp);
 }
-export function orderBy(vals is map, iterateeSpec, order is number, comparator is function) returns array {
-  const keyFn = iteratee(iterateeSpec);
-  const pairs = mapValues(keys(vals), function(key is string, _seq is number) { return [keyFn(vals[key], key), vals[key]]; });
-  return sortPairsBy(pairs, order, comparator);
-}
-export function orderBy(vals, iterateeSpec, order is number) returns array { return orderBy(vals, iterateeSpec, order, cmp); }
-export function orderBy(vals, iterateeSpec) returns array { return orderBy(vals, iterateeSpec, 1, cmp); }
-export function orderBy(vals) returns array { return orderBy(vals, identity, 1, cmp); }
+export function orderBy(collection, funcOrPaths, orders) returns array { return orderBy(collection, funcOrPaths, orders, undefined); }
+export function orderBy(collection, funcOrPaths) returns array         { return orderBy(collection, funcOrPaths, undefined, undefined); }
+export function orderBy(collection) returns array                      { return orderBy(collection, undefined, undefined, undefined); }
 
 /**
- * `orderBy`, with `cmpAny` as the comparator -- a total ordering even across mixed/incompatible
- * types in `iterateeSpec`'s results, so this never throws where `orderBy` might.
- * @param vals {array|map}: Collection to sort.
- * @param iterateeSpec: @see `orderBy`. Defaults to `identity`.
- * @param order {number}: @see `orderBy`. Defaults to `1`.
- * @example
- *   orderAnyBy([1, "2", 0]); // => [0, 1, "2"] -- number sorts before string, per cmpAny's fstypenum fallback
+ * `orderBy`, with `cmpAny` standing in wherever a `comparator` goes unnamed -- a total ordering
+ * even across mixed or otherwise incompatible types among a `funcOrPath`'s results, so this never
+ * throws where `orderBy` might.
+ *
+ * @seeAlso [orderBy]
+ *
+ * @param collection {array|map}: The collection to iterate over.
+ * @param funcOrPaths {function|string|array}: Options for @see `orderBy`.
+ *   @optional
+ * @param orders {number|number[]}: Options for @see `orderBy`.
+ *   @optional
+ * @param comparators {function|function[]}: Options for @see `orderBy`; unnamed axes get `cmpAny` rather than `cmp`.
+ *   @optional
+ *
+ * @returns {array}: the new sorted array.
+ *
+ * @example `orderAnyBy([1, "2", 0]); // => [0, 1, "2"] -- number sorts before string, per cmpAny's fstypenum fallback`
  */
-export function orderAnyBy(vals, iterateeSpec, order is number) returns array { return orderBy(vals, iterateeSpec, order, cmpAny); }
-export function orderAnyBy(vals, iterateeSpec) returns array { return orderAnyBy(vals, iterateeSpec, 1); }
-export function orderAnyBy(vals) returns array { return orderAnyBy(vals, identity, 1); }
+export function orderAnyBy(collection, funcOrPaths, orders, comparators) returns array {
+  return orderedValsFor(collection, funcOrPaths, orders, comparators, cmpAny);
+}
+export function orderAnyBy(collection, funcOrPaths, orders) returns array { return orderAnyBy(collection, funcOrPaths, orders, undefined); }
+export function orderAnyBy(collection, funcOrPaths) returns array         { return orderAnyBy(collection, funcOrPaths, undefined, undefined); }
+export function orderAnyBy(collection) returns array                      { return orderAnyBy(collection, undefined, undefined, undefined); }
 
 // • undefined: Represents an unassigned or empty value, with only one possible value ().
 // • boolean: A logical truth value, limited to  and .

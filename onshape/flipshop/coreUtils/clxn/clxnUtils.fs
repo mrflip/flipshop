@@ -46,9 +46,9 @@ export function valuesAt(bag is map, keylist is array) returns array {
   return mapValues(keylist, (key is string, _) => bag[key]);
 }
 
-//--
+// --
 
-// == [Collection Walking] -- mapValues, objectify, rebag
+// == [forEach and forEach3]
 
 /**
  * Iterates over `bag`/`arr`, invoking `func` for each entry as `func(val, key)` (map) or
@@ -180,6 +180,31 @@ export function forEach3(arr is array, func is function) {
 }
 
 /**
+ * `forEach`, back-to-front — otherwise identical, including the `NextStepAction.BREAK` early
+ * exit.
+ * @example
+ *   forEachRight([1, 2, 3], function(val, seq) { debug(context, val); }); // visits 3, then 2, then 1
+ *   forEachRight({ a: 1, b: 2 }, function(val, key) { debug(context, key); }); // visits "b", then "a"
+ */
+export function forEachRight(arr is array, func is function) {
+  for (var seq = size(arr) - 1; seq >= 0; seq -= 1) {
+    const result = func(arr[seq], seq);
+    if (result == NextStepAction.BREAK) { break; }
+  }
+}
+export function forEachRight(bag is map, func is function) {
+  const keylist = keys(bag);
+  for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
+    const key = keylist[seq];
+    const result = func(bag[key], key);
+    if (result == NextStepAction.BREAK) { break; }
+  }
+}
+// --
+
+// == [mapValues and mapValues3]
+
+/**
  * `bag`/`arr` with every value replaced by `func`'s result. Lodash splits this into two
  * functions — `mapValues` keeps an object's keys, `map` returns a new array — unified here under
  * one dispatch: `func` is `func(val, key)` for a map or `func(val, seq)` for an array.
@@ -270,39 +295,24 @@ export function mapValues3(arr is array, func) returns array {
 }
 
 /**
- * Creates a map keyed by each element of `arr` itself, with the value at that key set to
- * `func(val, seq)` — the last element responsible for a given key wins on a collision. This is
- * `_.keyBy` with the key and value roles swapped: lodash's `keyBy` keys by `iteratee(value)` and
- * keeps `value` itself, where `objectify` keys by `value` and lets `func` compute the result.
- *
+ * `bag`'s values, replacing each key with `iterateeSpec(val, key)` — `mapValues`' sibling for
+ * keys instead of values. A collision on the computed key keeps the last entry that produced it.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
  * @example
- *   objectify(["a", "b", "c"], function(val, seq) { return seq; }); // => { "a": 0, "b": 1, "c": 2 }
- *   objectify(["x", "x"],      function(val, seq) { return seq; }); // => { "x": 1 }
+ *   mapKeys({ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }); // => { "a1": 1, "b2": 2 }
  */
-export function objectify(arr is array, func is function) returns map {
-    return rebag(arr, (val, seq is number) => [val, func(val, seq)]);
+export function mapKeys(bag is map, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
+  var result = {};
+  for (var key in keys(bag)) {
+    result[fn(bag[key], key)] = bag[key];
+  }
+  return result;
 }
 
-/**
- * Rebuilds a map (from a map or an array) by asking `func(val, key?)` — `func(val, seq)` for an
- * array, `func(val, key)` for a map — for the `[newKey, newVal]` pair each entry becomes; an
- * entry where `func` returns `undefined` (rather than a pair) is dropped rather than written
- * under an `undefined` key. Where two entries land on the same `newKey`, the later one wins —
- * `keys(bag)` order for a map, index order for an array.
- */
-export function rebag(arr is array, func is function) returns map {
-    var result = new box({});
-    forEach(arr, (val, seq is number) => { const kv = func(val, seq); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
-    return result[];
-}
-export function rebag(bag is map, func is function) returns map {
-    var result = new box({});
-    forEach(bag, (val, key is string) => { const kv = func(val, key); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
-    return result[];
-}
 // --
 
-// == [Box Array Utils]
+// == [Collection Utilities]
 
 /**
  * Mutates the array inside `arrRef` in place and returns `val`, for accumulating into an outer
@@ -316,37 +326,6 @@ export function boxarrPush(arrRef is box, val) {
 export function boxarrUnshift(arrRef is box, val) {
   arrRef[] = concatenateArrays([val], arrRef[]);
   return val;
-}
-
-//--
-
-// == [Lodash Collection ports] -- countBy, find, findLast, flatMap*, forEachRight, groupBy, partition, reduceRight, reject
-
-/**
- * Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to how many
- * elements of `arr`/`bag` produced that result. `iterateeSpec` is coerced through `iteratee`
- * @see `iteratee`.
- * @example
- *   countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
- *   countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }
- */
-export function countBy(arr is array, iterateeSpec) returns map {
-  const fn = iteratee(iterateeSpec);
-  var result = {};
-  for (var seq = 0; seq < size(arr); seq += 1) {
-    const key = fn(arr[seq], seq);
-    result[key] = ifNil(result[key], 0) + 1;
-  }
-  return result;
-}
-export function countBy(bag is map, iterateeSpec) returns map {
-  const fn = iteratee(iterateeSpec);
-  var result = {};
-  for (var key in keys(bag)) {
-    const groupKey = fn(bag[key], key);
-    result[groupKey] = ifNil(result[groupKey], 0) + 1;
-  }
-  return result;
 }
 
 /**
@@ -368,11 +347,13 @@ export function find(bag is map, rule) {
   }
   return undefined;
 }
+
 /** `find`, scanning from the end. */
 export function findLast(arr is array, rule) {
   const seq = findLastIndex(arr, iteratee(rule));
   return (seq == -1) ? undefined : arr[seq];
 }
+
 export function findLast(bag is map, rule) {
   const fn = iteratee(rule);
   const keylist = keys(bag);
@@ -395,45 +376,28 @@ export function findLast(bag is map, rule) {
 export function flatMap(arr is array, iterateeSpec) returns array {
   return flatten(mapValues(arr, iteratee(iterateeSpec)));
 }
+
 export function flatMap(bag is map, iterateeSpec) returns array {
   const fn = iteratee(iterateeSpec);
   return flatten(mapValues(keys(bag), (key is string, _seq is number) => fn(bag[key], key)));
 }
+
 export function flatMapDeep(arr is array, iterateeSpec) returns array {
   return flattenDeep(mapValues(arr, iteratee(iterateeSpec)));
 }
+
 export function flatMapDeep(bag is map, iterateeSpec) returns array {
   const fn = iteratee(iterateeSpec);
   return flattenDeep(mapValues(keys(bag), (key is string, _seq is number) => fn(bag[key], key)));
 }
+
 export function flatMapDepth(arr is array, iterateeSpec, depth is number) returns array {
   return flattenDepth(mapValues(arr, iteratee(iterateeSpec)), depth);
 }
+
 export function flatMapDepth(bag is map, iterateeSpec, depth is number) returns array {
   const fn = iteratee(iterateeSpec);
   return flattenDepth(mapValues(keys(bag), (key is string, _seq is number) => fn(bag[key], key)), depth);
-}
-
-/**
- * `forEach`, back-to-front — otherwise identical, including the `NextStepAction.BREAK` early
- * exit.
- * @example
- *   forEachRight([1, 2, 3], function(val, seq) { debug(context, val); }); // visits 3, then 2, then 1
- *   forEachRight({ a: 1, b: 2 }, function(val, key) { debug(context, key); }); // visits "b", then "a"
- */
-export function forEachRight(arr is array, func is function) {
-  for (var seq = size(arr) - 1; seq >= 0; seq -= 1) {
-    const result = func(arr[seq], seq);
-    if (result == NextStepAction.BREAK) { break; }
-  }
-}
-export function forEachRight(bag is map, func is function) {
-  const keylist = keys(bag);
-  for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
-    const key = keylist[seq];
-    const result = func(bag[key], key);
-    if (result == NextStepAction.BREAK) { break; }
-  }
 }
 
 /**
@@ -561,31 +525,6 @@ export function reject(bag is map, rule) returns array {
   }
   return result;
 }
-//--
-
-// == [Array Utils]
-
-/**
- * Whether `target` appears anywhere in `bag`'s values or `arr`'s elements. Unlike lodash's
- * `includes`, there's no substring search on a string — only the array and map collection forms
- * — and comparison is plain `==`, which is deep structural equality on maps and arrays.
- * @example
- *   arrayIncludes([1, 2, 3], 2);              // => true
- *   arrayIncludes([{ "a": 1 }], { "a": 1 });  // => true
- *   arrayIncludes({ "x": 1, "y": 2 }, 2);     // => true
- */
-export function arrayIncludes(arr is array, target) returns boolean {
-  for (var item in arr) {
-    if (item == target) { return true; }
-  }
-  return false;
-}
-export function arrayIncludes(bag is map, target) returns boolean {
-  for (var key in keys(bag)) {
-    if (bag[key] == target) { return true; }
-  }
-  return false;
-}
 
 /**
  * Splits `arr` into groups of `chunkSize` elements each; the last group holds whatever's left
@@ -614,45 +553,6 @@ export function chunk(arr is array, chunkSize is number) returns array {
  */
 export function compact(arr is array) returns array {
   return filter(arr, (val) => truthy(val));
-}
-
-/**
- * `arr`'s values that don't appear in `excludeArr`, order taken from `arr`. Lodash's `difference`
- * takes the exclusion values as trailing variadic arrays; FeatureScript has no varargs, so they're
- * a single array here — call with `concatenateArrays([...])` to exclude from several sources at
- * once.
- * @example
- *   difference([2, 1], [2, 3]); // => [1]
- */
-export function difference(arr is array, excludeArr is array) returns array {
-  return filter(arr, (val) => (! arrayIncludes(excludeArr, val)));
-}
-
-/**
- * `difference`, comparing `arr` and `excludeArr` by `iterateeSpec(val, seq)` instead of `val`
- * itself. `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
- * @example
- *   differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]
- */
-export function differenceBy(arr is array, excludeArr is array, iterateeSpec) returns array {
-  const fn = iteratee(iterateeSpec);
-  const excludeKeys = mapValues(excludeArr, fn);
-  var result = [];
-  for (var seq = 0; seq < size(arr); seq += 1) {
-    const val = arr[seq];
-    if (! arrayIncludes(excludeKeys, fn(val, seq))) { result = append(result, val); }
-  }
-  return result;
-}
-
-/**
- * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==`.
- * @example
- *   differenceWith([{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], (aa, bb) => aa.x == bb.x);
- *   // => [{ "x": 2 }]
- */
-export function differenceWith(arr is array, excludeArr is array, comparator is function) returns array {
-  return filter(arr, (val) => (! any(excludeArr, (other) => comparator(val, other))));
 }
 
 /**
@@ -733,6 +633,38 @@ export function findLastIndex(arr is array, rule is function) returns number {
 }
 
 /**
+ * First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
+ * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
+ * @see `iteratee`.
+ * @example
+ *   findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
+ */
+export function findKey(bag is map, rule) {
+  const fn = iteratee(rule);
+  for (var key in keys(bag)) {
+    if (fn(bag[key], key)) { return key; }
+  }
+  return undefined;
+}
+
+/**
+ * Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
+ * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
+ * @see `iteratee`.
+ * @example
+ *   findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
+ */
+export function findLastKey(bag is map, rule) {
+  const fn = iteratee(rule);
+  const keylist = keys(bag);
+  for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
+    const key = keylist[seq];
+    if (fn(bag[key], key)) { return key; }
+  }
+  return undefined;
+}
+
+/**
  * `arr` with one level of array nesting removed. @see `flattenDeep`, `flattenDepth`.
  * @example
  *   flatten([1, [2, [3, [4]], 5]]); // => [1, 2, [3, [4]], 5]
@@ -777,73 +709,12 @@ export function flattenDepth(arr is array, depth is number) returns array {
 }
 
 /**
- * Map built from `pairs` — `[[key, val], ...]` — the inverse of iterating a map's entries.
- * A repeated key keeps its last pair's value.
- * @example
- *   fromPairs([["a", 1], ["b", 2]]); // => { "a": 1, "b": 2 }
- */
-export function fromPairs(pairs is array) returns map {
-  var result = {};
-  for (var pair in pairs) {
-    result[pair[0]] = pair[1];
-  }
-  return result;
-}
-
-/**
  * `arr` without its last element; `[]` for an empty or single-element `arr`.
  * @example
  *   initial([1, 2, 3]); // => [1, 2]
  */
 export function initial(arr is array) returns array {
   return subArray(arr, 0, max(size(arr) - 1, 0));
-}
-
-/**
- * Values present in every array of `arrList`, deduplicated, ordered as they occur in
- * `arrList[0]`.
- * @example
- *   intersection([[2, 1], [2, 3], [1, 2]]); // => [2]
- */
-export function intersection(arrList is array) returns array {
-  if (size(arrList) == 0) { return []; }
-  const first = arrList[0];
-  const rest = subArray(arrList, 1);
-  const kept = filter(first, (val) => all(rest, (other is array) => arrayIncludes(other, val)));
-  return deduplicate(kept);
-}
-
-/**
- * `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself.
- * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
- * @example
- *   intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]
- */
-export function intersectionBy(arrList is array, iterateeSpec) returns array {
-  if (size(arrList) == 0) { return []; }
-  const fn = iteratee(iterateeSpec);
-  const first = arrList[0];
-  const restKeys = mapValues(subArray(arrList, 1), (other is array, _seq is number) => mapValues(other, fn));
-  var kept = [];
-  for (var seq = 0; seq < size(first); seq += 1) {
-    const val = first[seq];
-    if (all(restKeys, (otherKeys is array) => arrayIncludes(otherKeys, fn(val, seq)))) { kept = append(kept, val); }
-  }
-  return uniqBy(kept, fn);
-}
-
-/**
- * `intersection`, comparing elements with `comparator(val, other)` instead of `==`.
- * @example
- *   intersectionWith([[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], (aa, bb) => aa.x == bb.x);
- *   // => [{ "x": 2 }]
- */
-export function intersectionWith(arrList is array, comparator is function) returns array {
-  if (size(arrList) == 0) { return []; }
-  const first = arrList[0];
-  const rest = subArray(arrList, 1);
-  const kept = filter(first, (val) => all(rest, (other is array) => any(other, (otherVal) => comparator(val, otherVal))));
-  return uniqWith(kept, comparator);
 }
 
 /**
@@ -856,6 +727,46 @@ export function lastIndexOf(arr is array, val) returns number {
     if (arr[seq] == val) { return seq; }
   }
   return -1;
+}
+
+/**
+ * Element of `arr` at `seq`; a negative `seq` counts back from the end. `undefined` if `seq`,
+ * after that adjustment, is out of bounds.
+ * @example
+ *   nth([1, 2, 3], 1);  // => 2
+ *   nth([1, 2, 3], -1); // => 3
+ */
+export function nth(arr is array, seq is number) {
+  const idx = (seq < 0) ? (size(arr) + seq) : seq;
+  if (idx < 0 || idx >= size(arr)) { return undefined; }
+  return arr[idx];
+}
+
+/**
+ * Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to how many
+ * elements of `arr`/`bag` produced that result. `iterateeSpec` is coerced through `iteratee`
+ * @see `iteratee`.
+ * @example
+ *   countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }
+ *   countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }
+ */
+export function countBy(arr is array, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
+  var result = {};
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const key = fn(arr[seq], seq);
+    result[key] = ifNil(result[key], 0) + 1;
+  }
+  return result;
+}
+export function countBy(bag is map, iterateeSpec) returns map {
+  const fn = iteratee(iterateeSpec);
+  var result = {};
+  for (var key in keys(bag)) {
+    const groupKey = fn(bag[key], key);
+    result[groupKey] = ifNil(result[groupKey], 0) + 1;
+  }
+  return result;
 }
 
 /**
@@ -910,18 +821,6 @@ export function minBy(arr is array, iterateeSpec) {
   }
   return bestVal;
 }
-/**
- * Element of `arr` at `seq`; a negative `seq` counts back from the end. `undefined` if `seq`,
- * after that adjustment, is out of bounds.
- * @example
- *   nth([1, 2, 3], 1);  // => 2
- *   nth([1, 2, 3], -1); // => 3
- */
-export function nth(arr is array, seq is number) {
-  const idx = (seq < 0) ? (size(arr) + seq) : seq;
-  if (idx < 0 || idx >= size(arr)) { return undefined; }
-  return arr[idx];
-}
 
 /**
  * Sum of `iterateeSpec(val, seq)` across `arr` — `sum` *(std)*, mapped via `mapValues`.
@@ -933,6 +832,37 @@ export function sumBy(arr is array, iterateeSpec) {
   return sum(mapValues(arr, iterateeSpec));
 }
 
+/**
+ * Creates a map keyed by each element of `arr` itself, with the value at that key set to
+ * `func(val, seq)` — the last element responsible for a given key wins on a collision. This is
+ * `_.keyBy` with the key and value roles swapped: lodash's `keyBy` keys by `iteratee(value)` and
+ * keeps `value` itself, where `objectify` keys by `value` and lets `func` compute the result.
+ *
+ * @example
+ *   objectify(["a", "b", "c"], function(val, seq) { return seq; }); // => { "a": 0, "b": 1, "c": 2 }
+ *   objectify(["x", "x"],      function(val, seq) { return seq; }); // => { "x": 1 }
+ */
+export function objectify(arr is array, func is function) returns map {
+    return rebag(arr, (val, seq is number) => [val, func(val, seq)]);
+}
+
+/**
+ * Rebuilds a map (from a map or an array) by asking `func(val, key?)` — `func(val, seq)` for an
+ * array, `func(val, key)` for a map — for the `[newKey, newVal]` pair each entry becomes; an
+ * entry where `func` returns `undefined` (rather than a pair) is dropped rather than written
+ * under an `undefined` key. Where two entries land on the same `newKey`, the later one wins —
+ * `keys(bag)` order for a map, index order for an array.
+ */
+export function rebag(arr is array, func is function) returns map {
+    var result = new box({});
+    forEach(arr, (val, seq is number) => { const kv = func(val, seq); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
+    return result[];
+}
+export function rebag(bag is map, func is function) returns map {
+    var result = new box({});
+    forEach(bag, (val, key is string) => { const kv = func(val, key); if (kv != undefined) { result[][kv[0]] = kv[1]; } });
+    return result[];
+}
 
 /**
  * `arr` without its first element; `[]` for an empty or single-element `arr`.
@@ -996,6 +926,143 @@ export function takeWhile(arr is array, rule is function) returns array {
   return subArray(arr, 0, seq);
 }
 export function takeWhile(arr is array) returns array { return takeWhile(arr, curry2to1(truthy)); }
+
+/**
+ * Map pairing up `keylist` and `valuelist` by position: `zipObject(["a","b"], [1,2])` is
+ * `{"a": 1, "b": 2}`. A `keylist` entry past the end of `valuelist` is simply absent from the
+ * result — FeatureScript maps drop a key written to `undefined`; a `valuelist` entry past the end
+ * of `keylist` is dropped.
+ * @example
+ *   zipObject(["a", "b"], [1, 2]); // => { "a": 1, "b": 2 }
+ *   zipObject(["a", "b"], [1]);    // => { "a": 1 }
+ */
+export function zipObject(keylist is array, valuelist is array) returns map {
+  var result = {};
+  for (var seq = 0; seq < size(keylist); seq += 1) {
+    result[keylist[seq]] = (seq < size(valuelist)) ? valuelist[seq] : undefined;
+  }
+  return result;
+}
+
+/**
+ * `zip` *(std)* on `arrList`, passing each grouped row through `iteratee` before collecting it —
+ * the same shape as `unzipWith`, under lodash's name for the zipping direction.
+ * @example
+ *   zipWith([[1, 2], [10, 20]], (row) => sum(row)); // => [11, 22]
+ */
+export function zipWith(arrList is array, iteratee is function) returns array {
+  return mapValues(zip(arrList), iteratee);
+}
+// --
+
+// == [Set-like Functions]
+
+/**
+ * Whether `target` appears anywhere in `bag`'s values or `arr`'s elements. Unlike lodash's
+ * `includes`, there's no substring search on a string — only the array and map collection forms
+ * — and comparison is plain `==`, which is deep structural equality on maps and arrays.
+ * @example
+ *   arrayIncludes([1, 2, 3], 2);              // => true
+ *   arrayIncludes([{ "a": 1 }], { "a": 1 });  // => true
+ *   arrayIncludes({ "x": 1, "y": 2 }, 2);     // => true
+ */
+export function arrayIncludes(arr is array, target) returns boolean {
+  for (var item in arr) {
+    if (item == target) { return true; }
+  }
+  return false;
+}
+export function arrayIncludes(bag is map, target) returns boolean {
+  for (var key in keys(bag)) {
+    if (bag[key] == target) { return true; }
+  }
+  return false;
+}
+/**
+ * `arr`'s values that don't appear in `excludeArr`, order taken from `arr`. Lodash's `difference`
+ * takes the exclusion values as trailing variadic arrays; FeatureScript has no varargs, so they're
+ * a single array here — call with `concatenateArrays([...])` to exclude from several sources at
+ * once.
+ * @example
+ *   difference([2, 1], [2, 3]); // => [1]
+ */
+export function difference(arr is array, excludeArr is array) returns array {
+  return filter(arr, (val) => (! arrayIncludes(excludeArr, val)));
+}
+
+/**
+ * `difference`, comparing `arr` and `excludeArr` by `iterateeSpec(val, seq)` instead of `val`
+ * itself. `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
+ * @example
+ *   differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]
+ */
+export function differenceBy(arr is array, excludeArr is array, iterateeSpec) returns array {
+  const fn = iteratee(iterateeSpec);
+  const excludeKeys = mapValues(excludeArr, fn);
+  var result = [];
+  for (var seq = 0; seq < size(arr); seq += 1) {
+    const val = arr[seq];
+    if (! arrayIncludes(excludeKeys, fn(val, seq))) { result = append(result, val); }
+  }
+  return result;
+}
+
+/**
+ * `difference`, comparing `arr` and `excludeArr` with `comparator(val, other)` instead of `==`.
+ * @example
+ *   differenceWith([{ "x": 1 }, { "x": 2 }], [{ "x": 1 }], (aa, bb) => aa.x == bb.x);
+ *   // => [{ "x": 2 }]
+ */
+export function differenceWith(arr is array, excludeArr is array, comparator is function) returns array {
+  return filter(arr, (val) => (! any(excludeArr, (other) => comparator(val, other))));
+}
+
+/**
+ * Values present in every array of `arrList`, deduplicated, ordered as they occur in
+ * `arrList[0]`.
+ * @example
+ *   intersection([[2, 1], [2, 3], [1, 2]]); // => [2]
+ */
+export function intersection(arrList is array) returns array {
+  if (size(arrList) == 0) { return []; }
+  const first = arrList[0];
+  const rest = subArray(arrList, 1);
+  const kept = filter(first, (val) => all(rest, (other is array) => arrayIncludes(other, val)));
+  return deduplicate(kept);
+}
+
+/**
+ * `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself.
+ * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
+ * @example
+ *   intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]
+ */
+export function intersectionBy(arrList is array, iterateeSpec) returns array {
+  if (size(arrList) == 0) { return []; }
+  const fn = iteratee(iterateeSpec);
+  const first = arrList[0];
+  const restKeys = mapValues(subArray(arrList, 1), (other is array, _seq is number) => mapValues(other, fn));
+  var kept = [];
+  for (var seq = 0; seq < size(first); seq += 1) {
+    const val = first[seq];
+    if (all(restKeys, (otherKeys is array) => arrayIncludes(otherKeys, fn(val, seq)))) { kept = append(kept, val); }
+  }
+  return uniqBy(kept, fn);
+}
+
+/**
+ * `intersection`, comparing elements with `comparator(val, other)` instead of `==`.
+ * @example
+ *   intersectionWith([[{ "x": 1 }, { "x": 2 }], [{ "x": 2 }]], (aa, bb) => aa.x == bb.x);
+ *   // => [{ "x": 2 }]
+ */
+export function intersectionWith(arrList is array, comparator is function) returns array {
+  if (size(arrList) == 0) { return []; }
+  const first = arrList[0];
+  const rest = subArray(arrList, 1);
+  const kept = filter(first, (val) => all(rest, (other is array) => any(other, (otherVal) => comparator(val, otherVal))));
+  return uniqWith(kept, comparator);
+}
 
 /**
  * Deduplicated concatenation of every array in `arrList`, ordered by first occurrence.
@@ -1066,26 +1133,6 @@ export function uniqWith(arr is array, comparator is function) returns array {
 }
 
 /**
- * Inverse of `zip` *(std)* — ungroups `arr`'s rows back into columns. `zip`'s grouping is its own
- * inverse (transposing rows and columns twice returns the original shape), so `unzip` is just
- * `zip` under lodash's name for the reverse direction.
- * @example
- *   unzip([["a", 1, true], ["b", 2, false]]); // => [["a", "b"], [1, 2], [true, false]]
- */
-export function unzip(arr is array) returns array {
-  return zip(arr);
-}
-
-/**
- * `unzip`, passing each ungrouped column through `iteratee` before collecting it.
- * @example
- *   unzipWith([[1, 10], [2, 20]], (col) => sum(col)); // => [3, 30]
- */
-export function unzipWith(arr is array, iteratee is function) returns array {
-  return mapValues(unzip(arr), iteratee);
-}
-
-/**
  * `arr` without any element equal to one in `excludeArr`. Lodash's `without` takes the exclusion
  * values as trailing variadic arguments; here they're a single array, which makes this identical
  * to @see `difference` — kept under its own name to match lodash's vocabulary.
@@ -1152,68 +1199,9 @@ export function xorWith(arrList is array, comparator is function) returns array 
   });
 }
 
-/**
- * Map pairing up `keylist` and `valuelist` by position: `zipObject(["a","b"], [1,2])` is
- * `{"a": 1, "b": 2}`. A `keylist` entry past the end of `valuelist` is simply absent from the
- * result — FeatureScript maps drop a key written to `undefined`; a `valuelist` entry past the end
- * of `keylist` is dropped.
- * @example
- *   zipObject(["a", "b"], [1, 2]); // => { "a": 1, "b": 2 }
- *   zipObject(["a", "b"], [1]);    // => { "a": 1 }
- */
-export function zipObject(keylist is array, valuelist is array) returns map {
-  var result = {};
-  for (var seq = 0; seq < size(keylist); seq += 1) {
-    result[keylist[seq]] = (seq < size(valuelist)) ? valuelist[seq] : undefined;
-  }
-  return result;
-}
-
-/**
- * `zip` *(std)* on `arrList`, passing each grouped row through `iteratee` before collecting it —
- * the same shape as `unzipWith`, under lodash's name for the zipping direction.
- * @example
- *   zipWith([[1, 2], [10, 20]], (row) => sum(row)); // => [11, 22]
- */
-export function zipWith(arrList is array, iteratee is function) returns array {
-  return mapValues(zip(arrList), iteratee);
-}
-
 // --
 
-// == [Object Utils] ==
-
-/**
- * First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
- * @see `iteratee`.
- * @example
- *   findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
- */
-export function findKey(bag is map, rule) {
-  const fn = iteratee(rule);
-  for (var key in keys(bag)) {
-    if (fn(bag[key], key)) { return key; }
-  }
-  return undefined;
-}
-
-/**
- * Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
- * @see `iteratee`.
- * @example
- *   findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"
- */
-export function findLastKey(bag is map, rule) {
-  const fn = iteratee(rule);
-  const keylist = keys(bag);
-  for (var seq = size(keylist) - 1; seq >= 0; seq -= 1) {
-    const key = keylist[seq];
-    if (fn(bag[key], key)) { return key; }
-  }
-  return undefined;
-}
+// == [Map Utilities]
 
 /**
  * `bag` with its keys and values swapped: `{"a": "x", "b": "x"}` → `{"x": "b"}` — a value that
@@ -1241,17 +1229,15 @@ export function invertBy(bag is map, iterateeSpec) returns map {
 }
 
 /**
- * `bag`'s values, replacing each key with `iterateeSpec(val, key)` — `mapValues`' sibling for
- * keys instead of values. A collision on the computed key keeps the last entry that produced it.
- * `iterateeSpec` is coerced through `iteratee` @see `iteratee`.
+ * Map built from `pairs` — `[[key, val], ...]` — the inverse of iterating a map's entries.
+ * A repeated key keeps its last pair's value.
  * @example
- *   mapKeys({ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }); // => { "a1": 1, "b2": 2 }
+ *   fromPairs([["a", 1], ["b", 2]]); // => { "a": 1, "b": 2 }
  */
-export function mapKeys(bag is map, iterateeSpec) returns map {
-  const fn = iteratee(iterateeSpec);
+export function fromPairs(pairs is array) returns map {
   var result = {};
-  for (var key in keys(bag)) {
-    result[fn(bag[key], key)] = bag[key];
+  for (var pair in pairs) {
+    result[pair[0]] = pair[1];
   }
   return result;
 }
@@ -1265,6 +1251,26 @@ export function mapKeys(bag is map, iterateeSpec) returns map {
  */
 export function toPairs(bag is map) returns array {
   return mapValues(keys(bag), (key is string, _seq is number) => [key, bag[key]]);
+}
+
+/**
+ * Inverse of `zip` *(std)* — ungroups `arr`'s rows back into columns. `zip`'s grouping is its own
+ * inverse (transposing rows and columns twice returns the original shape), so `unzip` is just
+ * `zip` under lodash's name for the reverse direction.
+ * @example
+ *   unzip([["a", 1, true], ["b", 2, false]]); // => [["a", "b"], [1, 2], [true, false]]
+ */
+export function unzip(arr is array) returns array {
+  return zip(arr);
+}
+
+/**
+ * `unzip`, passing each ungrouped column through `iteratee` before collecting it.
+ * @example
+ *   unzipWith([[1, 10], [2, 20]], (col) => sum(col)); // => [3, 30]
+ */
+export function unzipWith(arr is array, iteratee is function) returns array {
+  return mapValues(unzip(arr), iteratee);
 }
 
 // --

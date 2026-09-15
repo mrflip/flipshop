@@ -288,39 +288,90 @@ function runCmpThreadingTests(context is Context, verbose is boolean) returns ma
 }
 
 // == [orderBy] ==
-// orderBy(vals, iterateeSpec?, order?, comparator?) sorts an array's elements, or a map's values
-// (keys discarded), by iterateeSpec's result for each -- defaulting to identity, ascending, and
-// cmp. Every arity below the full 4 is a plain defaulting wrapper, so exercising each arity once
-// is exercising the whole chain; the bulk of these cases instead probe iterateeSpec's three forms
-// (function/string/map), the order sign (including the order=0 neuter case), stability of ties,
-// and that the comparator is handed iterateeSpec's *results*, not the original elements.
+// orderBy(collection, funcOrPaths?, orders?, comparators?) sorts an array's elements, or a map's
+// values (keys discarded), by each funcOrPath's result for each -- defaulting to one identity
+// axis, ascending, via cmp. Every arity below the full 4 is a plain defaulting wrapper, so
+// exercising each arity once is exercising the whole chain; the bulk of these cases instead probe
+// a lone funcOrPath's three forms (function/string/map), the multi-axis forms and how orders and
+// comparators spread across them (bare value broadcast, short array padded, the order=0 neuter
+// axis), stability of ties, and that a comparator is handed a funcOrPath's *results*, not the
+// original elements.
+
+const SortUsers = [
+  { "user": 'fred',   "age": 48 },
+  { "user": 'barney', "age": 34 },
+  { "user": 'fred',   "age": 40 },
+  { "user": 'barney', "age": 36 },
+];
 
 export const OrderByCases = [
   [[[3, 1, 2]],                                   [1, 2, 3],  'default: ascending, by identity, via cmp -- the 1-arg form'],
   [[[3, 1, 2], identity, -1],                     [3, 2, 1],  'order = -1 sorts descending'],
   [[[3, 1, 2], identity, 0],                      [3, 1, 2],  'order = 0 is a neuter pass-through -- stable, so the input comes back unchanged'],
-  [[[10, 5, 20], (val, _seq) => -val],            [20, 10, 5], 'function iterateeSpec: ascending by -val sorts descending by val -- the 2-arg form'],
+  [[[3, 1, 2], []],                               [1, 2, 3],  'an empty funcOrPaths names no axis at all, which is identity'],
+  [[[10, 5, 20], (val, _seq) => -val],            [20, 10, 5], 'function funcOrPath: ascending by -val sorts descending by val -- the 2-arg form'],
   [
     [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n"],
     [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
-    'string iterateeSpec is a property accessor',
+    'string funcOrPath is a property accessor',
   ],
   [
     [[{ "a": 1, "b": "X" }, { "a": 9, "b": "Y" }, { "a": 1, "b": "Z" }], { "a": 1 }],
     [{ "a": 9, "b": "Y" }, { "a": 1, "b": "X" }, { "a": 1, "b": "Z" }],
-    'map iterateeSpec is a matches predicate; false sorts before true; elements with equal criteria keep their original relative order (stability)',
+    'map funcOrPath is a matches rule; false sorts before true; elements with equal criteria keep their original relative order (stability)',
   ],
   [
     [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n", 1, (aa, bb) => aa - bb],
     [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
     'the 4-arg form: a custom comparator receives the already-extracted numeric criteria, not the original maps -- subtracting a map would throw',
   ],
+  [
+    [SortUsers, ["user", "age"], [1, -1]],
+    [SortUsers[3], SortUsers[1], SortUsers[0], SortUsers[2]],
+    'two axes, one order apiece: user ascending, age descending within each user -- barney 36, barney 34, fred 48, fred 40',
+  ],
+  [
+    [SortUsers, ["user", "age"]],
+    [SortUsers[1], SortUsers[3], SortUsers[2], SortUsers[0]],
+    'two axes, no orders: both ascending -- barney 34, barney 36, fred 40, fred 48',
+  ],
+  [
+    [SortUsers, ["user", "age"], -1],
+    [SortUsers[0], SortUsers[2], SortUsers[3], SortUsers[1]],
+    'a bare orders number broadcasts to every axis -- both descending, so fred 48, fred 40, barney 36, barney 34',
+  ],
+  [
+    [SortUsers, ["user", "age"], [-1]],
+    [SortUsers[2], SortUsers[0], SortUsers[1], SortUsers[3]],
+    'orders shorter than funcOrPaths: user descending as asked, and the unspoken-for age axis ascending -- fred 40, fred 48, barney 34, barney 36',
+  ],
+  [
+    [SortUsers, ["user", "age"], [1, 0]],
+    [SortUsers[1], SortUsers[3], SortUsers[0], SortUsers[2]],
+    'order = 0 ignores the age axis outright, leaving each user group in its original relative order -- barney 34, barney 36, fred 48, fred 40',
+  ],
+  [
+    [[{ "a": 1, "b": 2 }, { "a": 1, "b": 1 }, { "a": 2, "b": 9 }], ["a", "b"], 1, [(aa, bb) => bb - aa]],
+    [{ "a": 2, "b": 9 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }],
+    'comparators shorter than funcOrPaths: axis a uses the reversing comparator given for it, axis b falls back to cmp',
+  ],
+  [
+    [SortUsers, [(val, _ckey) => val.age < 40, "age"]],
+    [SortUsers[2], SortUsers[0], SortUsers[1], SortUsers[3]],
+    'axes mix forms freely -- a function axis (the 40-and-overs first, since false sorts before true) then a string one, so fred 40, fred 48, barney 34, barney 36',
+  ],
   [[{ "z": 3, "a": 1, "m": 2 }],                  [1, 2, 3],  'a map is sorted by its values; keys are discarded'],
   [
     [{ "aaa": 1, "b": 2, "c": 3 }, (val, key) => length(key)],
     [2, 3, 1],
-    'the map form hands the iteratee (val, key), not (val, seq) -- sorting by key length puts "b" and "c" (length 1) '
+    'the map form hands each funcOrPath (val, ckey), not (val, seq) -- sorting by key length puts "b" and "c" (length 1) '
     ~ 'before "aaa" (length 3); if a numeric position were passed instead of the string key, length(...) would throw',
+  ],
+  [
+    [{ "aa": 1, "b": 2, "cc": 3 }, [(val, key) => length(key), identity], [1, -1]],
+    [2, 3, 1],
+    'the (val, ckey) shape holds for every axis of a multi-axis map sort -- "b" (length 1) leads, then the "aa"/"cc" tie breaks '
+    ~ 'on the second axis, descending by value, so 3 before 1',
   ],
   [[[3 * meter, 1 * meter, 2 * meter]],           [1 * meter, 2 * meter, 3 * meter], 'ValueWithUnits sort via the default cmp comparator'],
   [[[]],                                          [],         'empty array sorts to an empty array'],
@@ -343,19 +394,30 @@ function runOrderByErrorTests(context is Context, verbose is boolean) returns ma
 }
 
 // == [orderAnyBy] ==
-// orderBy with cmpAny as the comparator -- same iterateeSpec/order handling, but never throws on
-// mixed-type criteria, falling back to fstypenum order instead.
+// orderBy with cmpAny standing in wherever a comparator goes unnamed -- same funcOrPaths/orders
+// handling, but never throws on mixed-type criteria, falling back to fstypenum order instead.
 
 export const OrderAnyByCases = [
   [[[1, "2", 0]],              [0, 1, "2"], 'never throws on mixed types -- falls back to fstypenum order, matching cmpAny (number sorts before string)'],
   [[[3, 1, 2]],                [1, 2, 3],   'same-type values still sort ascending, same as orderBy'],
   [[[3, 1, 2], identity, -1],  [3, 2, 1],   'order still controls direction'],
   [[{ "a": "x", "b": 1 }],     [1, "x"],    'map values sorted via cmpAny, discarding keys -- number sorts before string'],
+  [
+    [[{ "a": 1, "b": "X" }, { "a": 1, "b": 2 }, { "a": 0, "b": 9 }], ["a", "b"], [-1, 1]],
+    [{ "a": 1, "b": 2 }, { "a": 1, "b": "X" }, { "a": 0, "b": 9 }],
+    'multi-axis works the same, with cmpAny padding out both axes -- the mixed number/string b axis would throw under orderBy',
+  ],
+  [
+    [[{ "a": 1, "b": "X" }, { "a": 1, "b": 2 }, { "a": 0, "b": 9 }], ["a", "b"], [-1, 1], [cmp]],
+    [{ "a": 1, "b": 2 }, { "a": 1, "b": "X" }, { "a": 0, "b": 9 }],
+    'the 4-arg form: an explicit cmp for the homogeneous a axis, cmpAny still padding out the mixed b axis',
+  ],
 ];
 function runOrderAnyByTests(context is Context, verbose is boolean) returns map {
   return runTests(context, "orderAnyBy", verbose, OrderAnyByCases, function(args is array) {
     if (size(args) == 1) { return orderAnyBy(args[0]); }
     if (size(args) == 2) { return orderAnyBy(args[0], args[1]); }
-    return orderAnyBy(args[0], args[1], args[2]);
+    if (size(args) == 3) { return orderAnyBy(args[0], args[1], args[2]); }
+    return orderAnyBy(args[0], args[1], args[2], args[3]);
   });
 }

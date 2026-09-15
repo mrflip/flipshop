@@ -445,14 +445,6 @@ export function clamp(number, lower, upper) {
 // lodash
 /** Creates a shallow clone of `value`.
  *
- * **Note:** This method is loosely based on the
- * [structured clone algorithm](https://mdn.io/Structured_clone_algorithm)
- * and supports cloning arrays, array buffers, booleans, date objects, maps,
- * numbers, `Object` objects, regexes, sets, strings, symbols, and typed
- * arrays. The own enumerable properties of `arguments` objects are cloned
- * as plain objects. An empty object is returned for uncloneable values such
- * as error objects, functions, DOM nodes, and WeakMaps.
- *
  * @seeAlso [cloneDeep]
  *
  * @param value: The value to clone.
@@ -506,7 +498,7 @@ export function cloneDeepWith(value, customizer) {
 /** Like `clone` except that it accepts `customizer` which
  * is invoked to produce the cloned value. If `customizer` returns `undefined`,
  * cloning is handled by the method instead. The `customizer` is invoked with
- * up to four arguments; (value [, index|key, object, stack]).
+ * up to four arguments; (value [, ckey, object, stack]).
  *
  * @seeAlso [cloneDeepWith]
  *
@@ -595,13 +587,13 @@ export function concat(array, values) {
 
 // flipshop
 /** Builds a function that tries `pairs` in order, calling and returning the first `handler` whose
- * `rule` holds `val`, or `undefined` if none does. Each `rule` is coerced through `funcOrProp`, so a
+ * `rule` holds `val`, or `undefined` if none does. Each `rule` is a `ruleOrKey`, so a
  * dotpath string, `[path, srcValue]` array, or partial-match map works in place of a
- * literal `rule(val, seq) => boolean` function -- matching lodash's own `cond`, which runs
- * `funcOrProp` on every rule.
+ * literal `rule(val, ckey) => boolean` function -- matching lodash's own `cond`, which coerces
+ * every rule the same way.
  *
- * @example `const grade = cond([ [(score, _seq) => score >= 90, constant("A")],`
- * @example `[(score, _seq) => score >= 80, constant("B")],`
+ * @example `const grade = cond([ [(score, _ckey) => score >= 90, constant("A")],`
+ * @example `[(score, _ckey) => score >= 80, constant("B")],`
  * @example `[constant(true), constant("F")] ]); grade(95, 0); // => "A"`
  * @example `grade(70, 0); // => "F"`
  */
@@ -609,8 +601,7 @@ export function concat(array, values) {
 
 // flipshop
 /** `cond`, keyed by rule instead of ordered by array position -- each map key doubles as its own
- * `rule` (coerced through `funcOrProp`, so a key is naturally a dotpath string), paired with
- * its value as the `handler`.
+ * `ruleOrKey` (naturally a dotpath string), paired with its value as the `handler`.
  *
  * @example `const speak = cond({ "isDog": constant("Woof"), "isCat": constant("Meow") }); speak({ "isDog": true, "isCat": false }, 0); // => "Woof"`
  */
@@ -636,14 +627,13 @@ export function cond(pairs) {
 }
 
 // lodash
-/** Creates a function that invokes the rule properties of `source` with
- * the corresponding property values of a given object, returning `true` if
- * all rules return truthy, else `false`.
+/** Creates a function that invokes each of `source`'s rules against the correspondingly-keyed
+ * val of a given map, returning `true` if every rule returns truthy, else `false`.
  *
  * **Note:** The created function is equivalent to `conformsTo` with
  * `source` partially applied.
  *
- * @param source {map}: The object of property rules to conform to.
+ * @param source {map}: Map of key to rule to conform to.
  *
  * @returns {function}: the new spec function.
  *
@@ -655,14 +645,14 @@ export function conforms(source) {
 }
 
 // lodash
-/** Checks if `object` conforms to `source` by invoking the rule
- * properties of `source` with the corresponding property values of `object`.
+/** Checks if `object` conforms to `source` by invoking each of `source`'s rules against the
+ * correspondingly-keyed val of `object`.
  *
  * **Note:** This method is equivalent to `conforms` when `source` is
  * partially applied.
  *
- * @param object {map}: The object to inspect.
- * @param source {map}: The object of property rules to conform to.
+ * @param object {map}: The map to inspect.
+ * @param source {map}: Map of key to rule to conform to.
  *
  * @returns {boolean}: `true` if `object` conforms, else `false`.
  *
@@ -678,7 +668,7 @@ export function conformsTo(object, source) {
 /** Builds a single-argument function that always returns `val`, ignoring the argument it's called
  * with -- FeatureScript calls a function with exactly its declared arity, so unlike lodash's
  * `constant` this only fits a one-argument slot (e.g. `mapArray`/`filter`/a `cond` handler); lift
- * it into a `(val, seq)` slot with `curry2to1(constant(val))`.
+ * it into a `(val, ckey)` slot with `curry2to1(constant(val))`.
  *
  * @example `times(3, constant(0)); // => [0, 0, 0]`
  */
@@ -700,31 +690,30 @@ export function constant(value) {
 }
 
 // flipshop
-/** Map of `iterateeSpec(val, seq)` (array) / `iterateeSpec(val, key)` (map) results to how many
- * elements of `arr`/`bag` produced that result. `iterateeSpec` is coerced through `funcOrProp`
+/** Map of `funcOrPath(val, ckey)` results to how many elements of `arr`/`bag` produced that
+ * result.
  *
- * @example `countBy([1, 2, 3, 4], (val, _seq) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }`
- * @example `countBy({ a: 1, b: 2 }, (val, _key) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }`
+ * @example `countBy([1, 2, 3, 4], (val, _ckey) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 2, "even": 2 }`
+ * @example `countBy({ a: 1, b: 2 }, (val, _ckey) => (val % 2 == 0) ? "even" : "odd"); // => { "odd": 1, "even": 1 }`
  */
-// export function countBy(arr, iterateeSpec) {}
+// export function countBy(arr, funcOrPath) {}
 
 // lodash
-/** Creates an object composed of keys generated from the results of running
- * each element of `collection` thru `funcOrProp`. The corresponding value of
- * each key is the number of times the key was returned by `funcOrProp`. The
- * iteratee is invoked (value).
+/** Creates a map of keys generated from the results of running each element of `collection`
+ * thru `funcOrPath`. The corresponding value of each key is the number of times the key was
+ * returned by `funcOrPath`.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: Function/propname to transform keys; defaults to `identity`.
+ * @param funcOrPath {function}: `(val, ckey) => key`; defaults to `identity`.
  *   @optional
  *
- * @returns {map}: the composed aggregate object.
+ * @returns {map}: the composed aggregate map.
  *
  * @example `countBy([6.1, 4.2, 6.3], Math.floor); // => { '4': 1, '6': 2 }`
  * @example `countBy(['one', 'two', 'three'], 'length'); // => { '3': 2, '5': 1 }`
  */
-export function countBy(collection, iteratee) {
-  if (false) { countBy(collection, iteratee); }
+export function countBy(collection, funcOrPath) {
+  if (false) { countBy(collection, funcOrPath); }
   throw 'TODO: implement countBy';
 }
 
@@ -891,17 +880,13 @@ export function deburr(string) {
 // export function defaultMaybe(oldDefinition, newDefinition, basekey, destkey, valfunc) {}
 
 // lodash
-/** Assigns own and inherited enumerable string keyed properties of source
- * objects to the destination object for all destination properties that
- * resolve to `undefined`. Source objects are applied from left to right.
- * Once a property is set, additional values of the same property are ignored.
- *
- * **Note:** This method mutates `object`.
+/** Fills in `object`'s keys that resolve to `undefined` from `sources`, applied left to right;
+ * once a key is filled, later sources are ignored for that key.
  *
  * @seeAlso [defaultsDeep]
  *
- * @param object {map}: The destination object.
- * @param sources {map}: The source objects.
+ * @param object {map}: The destination map.
+ * @param sources {map}: The source maps.
  *   @optional
  *
  * @returns {map}: `object`.
@@ -914,15 +899,12 @@ export function defaults(object, sources) {
 }
 
 // lodash
-/** Like `defaults` except that it recursively assigns
- * default properties.
- *
- * **Note:** This method mutates `object`.
+/** Like `defaults` except that it recursively fills in default keys.
  *
  * @seeAlso [defaults]
  *
- * @param object {map}: The destination object.
- * @param sources {map}: The source objects.
+ * @param object {map}: The destination map.
+ * @param sources {map}: The source maps.
  *   @optional
  *
  * @returns {map}: `object`.
@@ -1022,26 +1004,24 @@ export function difference(array, values) {
 }
 
 // flipshop
-/** `difference`, comparing `arr` and `excludeArr` by `iterateeSpec(val, seq)` instead of `val`
- * itself. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+/** `difference`, comparing `arr` and `excludeArr` by `funcOrPath(val, idx)` instead of `val`
+ * itself.
  *
  * @example `differenceBy([2.1, 1.2], [2.3, 3.4], (val, _seq) => floor(val)); // => [1.2]`
  */
-// export function differenceBy(arr, excludeArr, iterateeSpec) {}
+// export function differenceBy(arr, excludeArr, funcOrPath) {}
 
 // lodash
-/** Like `difference` except that it accepts `funcOrProp` which
- * is invoked for each element of `array` and `values` to generate the criterion
- * by which they're compared. The order and references of result values are
- * determined by the first array. The function/propname is invoked with one argument:
- * (value).
+/** Like `difference` except that it accepts `funcOrPath`, invoked for each element of `array`
+ * and `values` to generate the criterion by which they're compared. The order and references
+ * of result values are determined by the first array.
  *
  * **Note:** Unlike `pullAllBy`, this method returns a new array.
  *
  * @param array {array}: The array to inspect.
  * @param values {array}: The values to exclude.
  *   @optional
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of filtered values.
@@ -1049,8 +1029,8 @@ export function difference(array, values) {
  * @example `differenceBy([2.1, 1.2], [2.3, 3.4], Math.floor); // => [1.2]`
  * @example `differenceBy([{ 'x': 2 }, { 'x': 1 }], [{ 'x': 1 }], 'x'); // => [{ 'x': 2 }]`
  */
-export function differenceBy(array, values, iteratee) {
-  if (false) { differenceBy(array, values, iteratee); }
+export function differenceBy(array, values, funcOrPath) {
+  if (false) { differenceBy(array, values, funcOrPath); }
   throw 'TODO: implement differenceBy';
 }
 
@@ -1191,11 +1171,10 @@ export function dropRight(array, n) {
 
 // lodash
 /** Creates a slice of `array` excluding elements dropped from the end.
- * Elements are dropped until `rule` returns falsey. The rule is
- * invoked with three arguments: (value, index, array).
+ * Elements are dropped until `rule` returns falsey. `rule` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to query.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -1219,11 +1198,10 @@ export function dropRightWhile(array, rule) {
 
 // lodash
 /** Creates a slice of `array` excluding elements dropped from the beginning.
- * Elements are dropped until `rule` returns falsey. The rule is
- * invoked with three arguments: (value, index, array).
+ * Elements are dropped until `rule` returns falsey. `rule` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to query.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -1336,8 +1314,7 @@ export function escapeRegExp(string) {
 
 // lodash
 /** Checks if `rule` returns truthy for **all** elements of `collection`.
- * Iteration is stopped once `rule` returns falsey. The rule is
- * invoked with three arguments: (value, index|key, collection).
+ * Iteration is stopped once `rule` returns falsey. `rule` is invoked as `(val, ckey)`.
  *
  * **Note:** This method returns `true` for
  * [empty collections](https://en.wikipedia.org/wiki/Empty_set) because
@@ -1345,7 +1322,7 @@ export function escapeRegExp(string) {
  * elements of empty collections.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {boolean}: `true` if all elements pass the rule check, else `false`.
@@ -1391,15 +1368,14 @@ export function fill(array, value, start, end) {
 
 // lodash
 /** Iterates over elements of `collection`, returning an array of all elements
- * `rule` returns truthy for. The rule is invoked with three
- * arguments: (value, index|key, collection).
+ * `rule` returns truthy for. `rule` is invoked as `(val, ckey)`.
  *
  * **Note:** Unlike `remove`, this method returns a new array.
  *
  * @seeAlso [reject]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new filtered array.
@@ -1418,7 +1394,7 @@ export function filter(collection, rule) {
 // flipshop
 /** First element of `bag`/`arr` for which `rule` holds, or `undefined` if none does. The map form
  * hands `rule` the key as a second argument. `findLast` scans from the end instead. `rule` is
- * coerced through `funcOrProp` @see `funcOrProp`.
+ * coerced through `iteratee` @see `iteratee`.
  *
  * @example `find([1, 2, 3], (val) => val > 1); // => 2`
  * @example `find({ a: 1, b: 2 }, (val, key) => key == "b"); // => 2`
@@ -1427,11 +1403,10 @@ export function filter(collection, rule) {
 
 // lodash
 /** Iterates over elements of `collection`, returning the first element
- * `rule` returns truthy for. The rule is invoked with three
- * arguments: (value, index|key, collection).
+ * `rule` returns truthy for. `rule` is invoked as `(val, ckey)`.
  *
  * @param collection {array|map}: The collection to inspect.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `0`.
  *   @optional
@@ -1461,7 +1436,7 @@ export function find(collection, rule, fromIndex) {
  * element `rule` returns truthy for instead of the element itself.
  *
  * @param array {array}: The array to inspect.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `0`.
  *   @optional
@@ -1480,7 +1455,7 @@ export function findIndex(array, rule, fromIndex) {
 
 // flipshop
 /** First key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `funcOrProp`
+ * `findLastKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
  *
  * @example `findKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"`
  */
@@ -1491,7 +1466,7 @@ export function findIndex(array, rule, fromIndex) {
  * element `rule` returns truthy for instead of the element itself.
  *
  * @param object {map}: The object to inspect.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {string|undefined}: the key of the matched element, else `undefined`.
@@ -1516,7 +1491,7 @@ export function findKey(object, rule) {
  * `collection` from right to left.
  *
  * @param collection {array|map}: The collection to inspect.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `collection.length-1`.
  *   @optional
@@ -1543,7 +1518,7 @@ export function findLast(collection, rule, fromIndex) {
  * of `collection` from right to left.
  *
  * @param array {array}: The array to inspect.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  * @param fromIndex {number}: The index to search from; defaults to `array.length-1`.
  *   @optional
@@ -1562,7 +1537,7 @@ export function findLastIndex(array, rule, fromIndex) {
 
 // flipshop
 /** Last key of `bag` whose value satisfies `rule(val, key)`, or `undefined` if none does.
- * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `funcOrProp`
+ * `findKey` scans in the reverse of `keys(bag)` order. `rule` is coerced through `iteratee`
  *
  * @example `findLastKey({ "a": 1, "b": 2, "c": 3 }, function(val, key) { return val > 1; }); // => "b"`
  */
@@ -1573,7 +1548,7 @@ export function findLastIndex(array, rule, fromIndex) {
  * a collection in the opposite order.
  *
  * @param object {map}: The object to inspect.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {string|undefined}: the key of the matched element, else `undefined`.
@@ -1589,31 +1564,30 @@ export function findLastKey(object, rule) {
 }
 
 // flipshop
-/** `bag`/`arr` mapped through `iterateeSpec`, then flattened one level @see `flatten`. The map form
- * hands `iterateeSpec` the key as a second argument, and always returns an array, same as lodash's
+/** `bag`/`arr` mapped through `funcOrPath`, then flattened one level @see `flatten`. The map form
+ * hands `funcOrPath` the key as a second argument, and always returns an array, same as lodash's
  * collection form. `flatMapDeep`/`flatMapDepth` flatten fully / to `depth` levels instead.
- * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+ * `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `flatMap([1, 2], (val) => [val, val]); // => [1, 1, 2, 2]`
  * @example `flatMap({ a: 1, b: 2 }, (val) => [val, val]); // => [1, 1, 2, 2]`
  */
-// export function flatMap(arr, iterateeSpec) {}
+// export function flatMap(arr, funcOrPath) {}
 
 // lodash
 /** Creates a flattened array of values by running each element in `collection`
- * thru `funcOrProp` and flattening the mapped results. The function/propname is invoked
- * with three arguments: (value, index|key, collection).
+ * thru `funcOrPath` and flattening the mapped results. `funcOrPath` is invoked as `(val, ckey)`.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new flattened array.
  *
  * @example `function duplicate(n) { return [n, n]; } flatMap([1, 2], duplicate); // => [1, 1, 2, 2]`
  */
-export function flatMap(collection, iteratee) {
-  if (false) { flatMap(collection, iteratee); }
+export function flatMap(collection, funcOrPath) {
+  if (false) { flatMap(collection, funcOrPath); }
   throw 'TODO: implement flatMap';
 }
 
@@ -1622,15 +1596,15 @@ export function flatMap(collection, iteratee) {
  * mapped results.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new flattened array.
  *
  * @example `function duplicate(n) { return [[[n, n]]]; } flatMapDeep([1, 2], duplicate); // => [1, 1, 2, 2]`
  */
-export function flatMapDeep(collection, iteratee) {
-  if (false) { flatMapDeep(collection, iteratee); }
+export function flatMapDeep(collection, funcOrPath) {
+  if (false) { flatMapDeep(collection, funcOrPath); }
   throw 'TODO: implement flatMapDeep';
 }
 
@@ -1639,7 +1613,7 @@ export function flatMapDeep(collection, iteratee) {
  * mapped results up to `depth` times.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  * @param depth {number}: The maximum recursion depth; defaults to `1`.
  *   @optional
@@ -1648,8 +1622,8 @@ export function flatMapDeep(collection, iteratee) {
  *
  * @example `function duplicate(n) { return [[[n, n]]]; } flatMapDepth([1, 2], duplicate, 2); // => [[1, 1], [2, 2]]`
  */
-export function flatMapDepth(collection, iteratee, depth) {
-  if (false) { flatMapDepth(collection, iteratee, depth); }
+export function flatMapDepth(collection, funcOrPath, depth) {
+  if (false) { flatMapDepth(collection, funcOrPath, depth); }
   throw 'TODO: implement flatMapDepth';
 }
 
@@ -1795,14 +1769,13 @@ export function flowRight(funcs) {
  */
 
 // lodash
-/** Iterates over elements of `collection` and invokes `funcOrProp` for each element.
- * Return `NextStepAction.BREAK` from `func` to stop iteration early.
+/** Iterates over elements of `collection` and invokes `funcOrPath` for each element, as
+ * `funcOrPath(val, ckey)`. Return `NextStepAction.BREAK` from `func` to stop iteration early.
  *
  * @seeAlso [forEach]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
- *   A function iteratee is invoked as `func(val, key is string)` (map) or `func(val, seq is number)` (array).
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  * @param missingPolicy {NilPolicy}:
  *   with `NilPolicy.NIL` (the default), existing-as-undefined entries are visited;
@@ -1815,22 +1788,21 @@ export function flowRight(funcs) {
  *
  * @returns {array|map}: `collection`.
  *
- * @example `forEach3(["a", "b", "c"], (val, key, seq) => { println([val, key, seq]); }); // => Logs '[c, 0, 0]' then '[b, 1, 1]' then '[a, 2, 2]'.`
- * @example `forEach3({ a: 1, b: 2 }, (val, key, seq) => { println([val, key, seq]); }); // => Logs '[1, "a", 0]' then '[2, "b", 1]'.`
+ * @example `forEach3(["a", "b", "c"], (val, ckey, iter) => { println([val, ckey, iter]); }); // => Logs '[c, 0, 0]' then '[b, 1, 1]' then '[a, 2, 2]'.`
+ * @example `forEach3({ a: 1, b: 2 }, (val, ckey, iter) => { println([val, ckey, iter]); }); // => Logs '[1, "a", 0]' then '[2, "b", 1]'.`
  */
 // export function forEach(bag, keylist, missingPolicy, func) {}
 
 // flipshop
-/** Like `forEach` except that it calls a function iteratee with three arguments:
- * (val, key, seq) for a map, or (val, seq, seq) for an array.
+/** Like `forEach` except that `func` is invoked as `func(val, ckey, iter)`: `ckey` is the map key
+ * or array index, and `iter` is a 0-based visit-count that's distinct from `ckey` when a `keylist`
+ * or `missingPolicy` makes visit order diverge from key order.
  * Return `NextStepAction.BREAK` from `func` to stop iteration early.
  *
  * @seeAlso [forEach]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
- *   A function iteratee is invoked as `func(val, key is string, seq is number)` (map)
- *   or `func(val, seq is number, seq is number)` (array).
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  * @param missingPolicy {NilPolicy}: The policy to use for missing values; defaults to `NilPolicy.NIL`.
  *   @optional
@@ -1840,8 +1812,8 @@ export function flowRight(funcs) {
  *
  * @returns {array|map}: `collection`.
  *
- * @example `forEach3(["a", "b", "c"], (val, key, seq) => { println([val, key, seq]); }); // => Logs '[c, 0, 0]' then '[b, 1, 1]' then '[a, 2, 2]'.`
- * @example `forEach3({ a: 1, b: 2 }, (val, key, seq) => { println([val, key, seq]); }); // => Logs '[1, "a", 0]' then '[2, "b", 1]'.`
+ * @example `forEach3(["a", "b", "c"], (val, ckey, iter) => { println([val, ckey, iter]); }); // => Logs '[c, 0, 0]' then '[b, 1, 1]' then '[a, 2, 2]'.`
+ * @example `forEach3({ a: 1, b: 2 }, (val, ckey, iter) => { println([val, ckey, iter]); }); // => Logs '[1, "a", 0]' then '[2, "b", 1]'.`
  */
 // export function forEach3(bag, keylist, missingPolicy, func) {}
 
@@ -1853,9 +1825,7 @@ export function flowRight(funcs) {
  * @seeAlso [forEach]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
- *   A function iteratee is invoked as `func(val, key is string, seq is number)` (map)
- *   or `func(val, seq is number, seq is number)` (array).
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  * @param missingPolicy {NilPolicy}: The policy to use for missing values; defaults to `NilPolicy.NIL`.
  *   @optional
@@ -1865,10 +1835,10 @@ export function flowRight(funcs) {
  *
  * @returns {array|map}: `collection`.
  *
- * @example `forEachRight(["a", "b", "c"], (val, seq) => { println([val, seq]); }); // => Logs '[c, 0]' then '[b, 1]' then '[a, 2]'.`
- * @example `forEachRight({ a: 1, b: 2 }, (val, key) => { println([val, key]); }); // => Logs '[2, "b"]' then '[1, "a"]'.`
+ * @example `forEachRight(["a", "b", "c"], (val, ckey) => { println([val, ckey]); }); // => Logs '[c, 0]' then '[b, 1]' then '[a, 2]'.`
+ * @example `forEachRight({ a: 1, b: 2 }, (val, ckey) => { println([val, ckey]); }); // => Logs '[2, "b"]' then '[1, "a"]'.`
  */
-// export function forEachRight(collection, iteratee, missingPolicy, func) {}
+// export function forEachRight(bag, keylist, missingPolicy, func) {}
 
 /** Map built from `pairs` -- `[[key, val], ...]` -- the inverse of `entries`
  * (i.e. `toPairs`). A repeated key keeps the value given by the last pair.
@@ -1891,7 +1861,7 @@ export function flowRight(funcs) {
  * Strings presented as array indexes are converted to numbers, or an error is thrown.
  *
  * @param bag {map|array}: Container to read from.
- * @param path {array|string}: The path of the property to get:
+ * @param path {anypath}: Path to get.
  *   as a dotted string (`a.3.5`),
  *   or as a list of literal keys/indexes (`["a", 3, "5"]`).
  * @param fallback: Returned in place of an `undefined` result. Defaults to `undefined`.
@@ -1913,14 +1883,13 @@ export function flowRight(funcs) {
 
 
 // flipshop
-/** Creates an object composed of keys generated from the results of running
- * each element of `collection` thru `funcOrProp`. The order of grouped values
- * is determined by the order they occur in `collection`. The corresponding
- * value of each key is an array of elements responsible for generating the
- * key. A function iteratee is invoked with (val, seq).
+/** Creates a map of keys generated from the results of running each element of `collection`
+ * thru `funcOrPath`. The order of grouped values is determined by the order they occur in
+ * `collection`. The corresponding value of each key is an array of elements responsible for
+ * generating the key.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: Function/propname to transform keys; defaults to `identity`.
+ * @param funcOrPath {function}: `(val, ckey) => key`; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the composed aggregate object.
@@ -1929,7 +1898,7 @@ export function flowRight(funcs) {
  * @example `groupBy([6.1, 4.2, 6.3], Math.floor); // => { '4': [4.2], '6': [6.1, 6.3] }`
  * @example `groupBy(['one', 'two', 'three'], 'length'); // => { '3': ['one', 'two'], '5': ['three'] }`
  */
-// export function groupBy(arr, iterateeSpec) {}
+// export function groupBy(arr, funcOrPath) {}
 
 // lodash
 /** Checks if `value` is greater than `other`.
@@ -1970,17 +1939,17 @@ export function gte(value, other) {
 }
 
 // lodash
-/** Checks if `path` is a direct property of `object`.
+/** Checks if `path` exists in `object`.
  *
- * @param object {map}: The object to query.
- * @param path {array|string}: The path to check.
+ * @param object {map}: The map to query.
+ * @param path {anypath}: The path to check.
  *
  * @returns {boolean}: `true` if `path` exists, else `false`.
  *
- * @example `var object = { 'a': { 'b': 2 } }; var other = create({ 'a': create({ 'b': 2 }) }); has(object, 'a'); // => true`
+ * @example `var object = { 'a': { 'b': 2 } }; has(object, 'a'); // => true`
  * @example `has(object, 'a.b'); // => true`
  * @example `has(object, ['a', 'b']); // => true`
- * @example `has(other, 'a'); // => false`
+ * @example `has(object, 'c'); // => false`
  */
 export function has(object, path) {
   if (false) { has(object, path); }
@@ -1988,17 +1957,18 @@ export function has(object, path) {
 }
 
 // lodash
-/** Checks if `path` is a direct or inherited property of `object`.
+/** Same as `has` -- FeatureScript maps have no own/inherited distinction, so there's no extra
+ * reach for this to have over `has`.
  *
- * @param object {map}: The object to query.
- * @param path {array|string}: The path to check.
+ * @param object {map}: The map to query.
+ * @param path {anypath}: The path to check.
  *
  * @returns {boolean}: `true` if `path` exists, else `false`.
  *
- * @example `var object = create({ 'a': create({ 'b': 2 }) }); hasIn(object, 'a'); // => true`
+ * @example `var object = { 'a': { 'b': 2 } }; hasIn(object, 'a'); // => true`
  * @example `hasIn(object, 'a.b'); // => true`
  * @example `hasIn(object, ['a', 'b']); // => true`
- * @example `hasIn(object, 'b'); // => false`
+ * @example `hasIn(object, 'c'); // => false`
  */
 export function hasIn(object, path) {
   if (false) { hasIn(object, path); }
@@ -2265,15 +2235,15 @@ export function intersection(arrays) {
 }
 
 // flipshop
-/** `intersection`, comparing elements by `iterateeSpec(val, seq)` instead of `val` itself.
- * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+/** `intersection`, comparing elements by `funcOrPath(val, idx)` instead of `val` itself.
+ * `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `intersectionBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [2.1]`
  */
-// export function intersectionBy(arrList, iterateeSpec) {}
+// export function intersectionBy(arrList, funcOrPath) {}
 
 // lodash
-/** Like `intersection` except that it accepts `funcOrProp`
+/** Like `intersection` except that it accepts `funcOrPath`
  * which is invoked for each element of each `arrays` to generate the criterion
  * by which they're compared. The order and references of result values are
  * determined by the first array. The function/propname is invoked with one argument:
@@ -2281,7 +2251,7 @@ export function intersection(arrays) {
  *
  * @param arrays {array}: The arrays to inspect.
  *   @optional
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of intersecting values.
@@ -2289,8 +2259,8 @@ export function intersection(arrays) {
  * @example `intersectionBy([2.1, 1.2], [2.3, 3.4], Math.floor); // => [2.1]`
  * @example `intersectionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 1 }]`
  */
-export function intersectionBy(arrays, iteratee) {
-  if (false) { intersectionBy(arrays, iteratee); }
+export function intersectionBy(arrays, funcOrPath) {
+  if (false) { intersectionBy(arrays, funcOrPath); }
   throw 'TODO: implement intersectionBy';
 }
 
@@ -2331,21 +2301,20 @@ export function intersectionWith(arrays, comparator) {
 /** `bag` with its keys and values swapped: `{"a": "x", "b": "x"}` → `{"x": "b"}` -- a value that
  * occurs more than once keeps only its last key, same as lodash. A non-string value is
  * stringified into its new key, matching how lodash's own object keys coerce. `invertBy` collects
- * every key instead of just the last one, grouped under `iterateeSpec(val, key)` rather than
- * `val` itself. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+ * every key instead of just the last one, grouped under `funcOrPath(val, key)` rather than
+ * `val` itself. `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `invert({ "a": 1, "b": 2, "c": 1 }); // => { "1": "c", "2": "b" }`
  */
 // export function invert(bag) {}
 
 // lodash
-/** Creates an object composed of the inverted keys and values of `object`.
- * If `object` contains duplicate values, subsequent values overwrite
- * property assignments of previous values.
+/** Creates a map of the inverted keys and values of `object`.
+ * If `object` contains duplicate values, a later key overwrites an earlier one.
  *
- * @param object {map}: The object to invert.
+ * @param object {map}: The map to invert.
  *
- * @returns {map}: the new inverted object.
+ * @returns {map}: the new inverted map.
  *
  * @example `var object = { 'a': 1, 'b': 2, 'c': 1 }; invert(object); // => { '1': 'c', '2': 'b' }`
  */
@@ -2355,14 +2324,12 @@ export function invert(object) {
 }
 
 // lodash
-/** Like `invert` except that the inverted object is generated
- * from the results of running each element of `object` thru `funcOrProp`. The
- * corresponding inverted value of each inverted key is an array of keys
- * responsible for generating the inverted value. The function/propname is invoked
- * with one argument: (value).
+/** Like `invert` except that the inverted map is generated from the results of running each
+ * element of `object` thru `funcOrPath`. The corresponding inverted value of each inverted key
+ * is an array of keys responsible for generating the inverted value.
  *
  * @param object {map}: The object to invert.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new inverted object.
@@ -2370,8 +2337,8 @@ export function invert(object) {
  * @example `var object = { 'a': 1, 'b': 2, 'c': 1 }; invertBy(object); // => { '1': ['a', 'c'], '2': ['b'] }`
  * @example `invertBy(object, function(value) { return 'group' + value; }); // => { 'group1': ['a', 'c'], 'group2': ['b'] }`
  */
-export function invertBy(object, iteratee) {
-  if (false) { invertBy(object, iteratee); }
+export function invertBy(object, funcOrPath) {
+  if (false) { invertBy(object, funcOrPath); }
   throw 'TODO: implement invertBy';
 }
 
@@ -2379,7 +2346,7 @@ export function invertBy(object, iteratee) {
 /** Invokes the method at `path` of `object`.
  *
  * @param object {map}: The object to query.
- * @param path {array|string}: The path of the method to invoke.
+ * @param path {anypath}: Path to the method to invoke.
  * @param args: The arguments to invoke the method with.
  *   @optional
  *
@@ -2558,14 +2525,8 @@ export function isElement(value) {
 }
 
 // lodash
-/** Checks if `value` is an empty object, collection, map, or set.
- *
- * Objects are considered empty if they have no own enumerable string keyed
- * properties.
- *
- * Array-like values such as `arguments` objects, arrays, buffers, strings, or
- * jQuery-like collections are considered empty if they have a `length` of `0`.
- * Similarly, maps and sets are considered empty if they have a `size` of `0`.
+/** Checks if `value` is an empty map, array, or string -- one with no keys, no elements, or no
+ * characters, respectively.
  *
  * @param value: The value to check.
  *
@@ -2584,13 +2545,7 @@ export function isEmpty(value) {
 
 // lodash
 /** Performs a deep comparison between two values to determine if they are
- * equivalent.
- *
- * **Note:** This method supports comparing arrays, array buffers, booleans,
- * date objects, error objects, maps, numbers, `Object` objects, regexes,
- * sets, strings, symbols, and typed arrays. `Object` objects are compared
- * by their own, not inherited, enumerable properties. Functions and DOM
- * nodes are compared by strict equality, i.e. `===`.
+ * equivalent -- keys and vals for two maps, elements for two arrays, recursively.
  *
  * @param value: The value to compare.
  * @param other: The other value to compare.
@@ -2609,7 +2564,7 @@ export function isEqual(value, other) {
 /** Like `isEqual` except that it accepts `customizer` which
  * is invoked to compare values. If `customizer` returns `undefined`, comparisons
  * are handled by the method instead. The `customizer` is invoked with up to
- * six arguments: (objValue, othValue [, index|key, object, other, stack]).
+ * six arguments: (objValue, othValue [, ckey, object, other, stack]).
  *
  * @param value: The value to compare.
  * @param other: The other value to compare.
@@ -2738,7 +2693,7 @@ export function isMap(value) {
 
 // lodash
 /** Performs a partial deep comparison between `object` and `source` to
- * determine if `object` contains equivalent property values.
+ * determine if `object` contains `source`'s vals at `source`'s keys.
  *
  * **Note:** This method is equivalent to `matches` when `source` is
  * partially applied.
@@ -2748,7 +2703,7 @@ export function isMap(value) {
  * for a list of supported value comparisons.
  *
  * @param object {map}: The object to inspect.
- * @param source {map}: The object of property values to match.
+ * @param source {map}: Map of vals to match.
  *
  * @returns {boolean}: `true` if `object` is a match, else `false`.
  *
@@ -2764,10 +2719,10 @@ export function isMatch(object, source) {
 /** Like `isMatch` except that it accepts `customizer` which
  * is invoked to compare values. If `customizer` returns `undefined`, comparisons
  * are handled by the method instead. The `customizer` is invoked with five
- * arguments: (objValue, srcValue, index|key, object, source).
+ * arguments: (objValue, srcValue, ckey, object, source).
  *
  * @param object {map}: The object to inspect.
- * @param source {map}: The object of property values to match.
+ * @param source {map}: Map of vals to match.
  * @param customizer {function}: Function to customize comparisons.
  *   @optional
  *
@@ -3073,13 +3028,12 @@ export function isWeakSet(value) {
 }
 
 // lodash
-/** Creates a function that invokes `func` with the arguments of the created
- * function. If `func` is a property name, the created function returns the
- * property value for a given element. If `func` is an array or object, the
- * created function returns `true` for elements that contain the equivalent
- * source properties, otherwise it returns `false`.
+/** Coerces `spec`, a `funcOrPath` or `ruleOrKey`, into a callable: a function passes through
+ * unchanged, a key/dotkey/keypath becomes a `property` accessor, a `[path, srcValue]` array
+ * becomes a `matchesProperty` rule, a map becomes a `matches` rule, and anything else falls
+ * back to `identity`.
  *
- * @param func: The value to convert to a callback; defaults to `identity`.
+ * @param spec: The value to convert to a callback; defaults to `identity`.
  *   @optional
  *
  * @returns {function}: the callback.
@@ -3087,10 +3041,9 @@ export function isWeakSet(value) {
  * @example `var users = [ { 'user': 'barney', 'age': 36, 'active': true }, { 'user': 'fred', 'age': 40, 'active': false } ]; filter(users, iteratee({ 'user': 'barney', 'active': true })); // => [{ 'user': 'barney', 'age': 36, 'active': true }]`
  * @example `filter(users, iteratee(['user', 'fred'])); // => [{ 'user': 'fred', 'age': 40 }]`
  * @example `map(users, iteratee('user')); // => ['barney', 'fred']`
- * @example `iteratee = wrap(iteratee, function(iteratee, func) { return !isRegExp(func) ? iteratee(func) : function(string) { return func.test(string); }; }); filter(['abc', 'def'], /ef/); // => ['def']`
  */
-export function iteratee(func) {
-  if (false) { iteratee(func); }
+export function iteratee(spec) {
+  if (false) { iteratee(spec); }
   throw 'TODO: implement iteratee';
 }
 
@@ -3134,13 +3087,12 @@ export function kebabCase(string) {
 }
 
 // lodash
-/** Creates an object composed of keys generated from the results of running
- * each element of `collection` thru `funcOrProp`. The corresponding value of
- * each key is the last element responsible for generating the key. A function
- * iteratee is invoked as func(val, seq)
+/** Creates a map of keys generated from the results of running each element of `collection`
+ * thru `funcOrPath`. The corresponding value of each key is the last element responsible for
+ * generating the key.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: Function/propname to transform keys; defaults to `identity`.
+ * @param funcOrPath {function}: `(val, ckey) => key`; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the composed aggregate object.
@@ -3148,8 +3100,8 @@ export function kebabCase(string) {
  * @example `var array = [ { 'dir': 'left', 'code': 97 }, { 'dir': 'right', 'code': 100 } ]; keyBy(array, function(o) { return String.fromCharCode(o.code); }); // => { 'a': { 'dir': 'left', 'code': 97 }, 'd': { 'dir': 'right', 'code': 100 } }`
  * @example `keyBy(array, 'dir'); // => { 'left': { 'dir': 'left', 'code': 97 }, 'right': { 'dir': 'right', 'code': 100 } }`
  */
-export function keyBy(collection, iteratee) {
-  if (false) { keyBy(collection, iteratee); }
+export function keyBy(collection, funcOrPath) {
+  if (false) { keyBy(collection, funcOrPath); }
   throw 'TODO: implement keyBy';
 }
 
@@ -3159,18 +3111,13 @@ export function keyBy(collection, iteratee) {
 // export function keylistEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) {}
 
 // lodash
-/** Creates an array of the own enumerable property names of `object`.
+/** Creates an array of the keys of `object`.
  *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
+ * @param object {map}: The map to query.
  *
- * @param object {map}: The object to query.
+ * @returns {array}: the array of keys.
  *
- * @returns {array}: the array of property names.
- *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; keys(new Foo); // => ['a', 'b'] (iteration order is not guaranteed)`
- * @example `keys('hi'); // => ['0', '1']`
+ * @example `keys({ 'a': 1, 'b': 2 }); // => ['a', 'b'] (iteration order is not guaranteed)`
  */
 export function keys(object) {
   if (false) { keys(object); }
@@ -3178,15 +3125,14 @@ export function keys(object) {
 }
 
 // lodash
-/** Creates an array of the own and inherited enumerable property names of `object`.
+/** Same as `keys` -- FeatureScript maps have no own/inherited distinction, so there's no extra
+ * reach for this to have over `keys`.
  *
- * **Note:** Non-object values are coerced to objects.
+ * @param object {map}: The map to query.
  *
- * @param object {map}: The object to query.
+ * @returns {array}: the array of keys.
  *
- * @returns {array}: the array of property names.
- *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; keysIn(new Foo); // => ['a', 'b', 'c'] (iteration order is not guaranteed)`
+ * @example `keysIn({ 'a': 1, 'b': 2 }); // => ['a', 'b'] (iteration order is not guaranteed)`
  */
 export function keysIn(object) {
   if (false) { keysIn(object); }
@@ -3318,9 +3264,8 @@ export function lte(value, other) {
 }
 
 // lodash
-/** Creates an array of values by running each element in `collection` thru
- * `funcOrProp`. The function/propname is invoked with three arguments:
- * (value, index|key, collection).
+/** Creates an array of values by running each element in `collection` thru `funcOrPath`.
+ * `funcOrPath` is invoked as `(val, ckey)`.
  *
  * Many lodash methods are guarded to work as iteratees for methods like
  * `every`, `filter`, `map`, `mapValues`, `reject`, and `some`.
@@ -3332,7 +3277,7 @@ export function lte(value, other) {
  * `template`, `trim`, `trimEnd`, `trimStart`, and `words`
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new mapped array.
@@ -3341,52 +3286,50 @@ export function lte(value, other) {
  * @example `map({ 'a': 4, 'b': 8 }, square); // => [16, 64] (iteration order is not guaranteed)`
  * @example `var users = [ { 'user': 'barney' }, { 'user': 'fred' } ]; map(users, 'user'); // => ['barney', 'fred']`
  */
-export function map(collection, iteratee) {
-  if (false) { map(collection, iteratee); }
+export function map(collection, funcOrPath) {
+  if (false) { map(collection, funcOrPath); }
   throw 'TODO: implement map';
 }
 
 // flipshop
-/** `bag`'s values, replacing each key with `iterateeSpec(val, key)` -- `mapValues`' sibling for
+/** `bag`'s values, replacing each key with `funcOrPath(val, key)` -- `mapValues`' sibling for
  * keys instead of values. A collision on the computed key keeps the last entry that produced it.
- * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+ * `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `mapKeys({ "a": 1, "b": 2 }, function(val, key) { return key ~ val; }); // => { "a1": 1, "b2": 2 }`
  */
-// export function mapKeys(bag, iterateeSpec) {}
+// export function mapKeys(bag, funcOrPath) {}
 
 // lodash
-/** The opposite of `mapValues`; this method creates an object with the
- * same values as `object` and keys generated by running each own enumerable
- * string keyed property of `object` thru `funcOrProp`. The function/propname is invoked
- * with three arguments: (value, key, object).
+/** The opposite of `mapValues`; this method creates a map with the same values as `object` and
+ * keys generated by running each of `object`'s keys thru `funcOrPath`. `funcOrPath` is invoked
+ * as `(val, key)`.
  *
  * @seeAlso [mapValues]
  *
  * @param object {map}: The object to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new mapped object.
  *
  * @example `mapKeys({ 'a': 1, 'b': 2 }, function(value, key) { return key + value; }); // => { 'a1': 1, 'b2': 2 }`
  */
-export function mapKeys(object, iteratee) {
-  if (false) { mapKeys(object, iteratee); }
+export function mapKeys(object, funcOrPath) {
+  if (false) { mapKeys(object, funcOrPath); }
   throw 'TODO: implement mapKeys';
 }
 
 // flipshop
 /** `bag`/`arr` with every value replaced by `func`'s result. Lodash splits this into two
  * functions -- `mapValues` keeps an object's keys, `map` returns a new array -- unified here under
- * one dispatch: `func` is `func(val, key)` for a map or `func(val, seq)` for an array.
- * `mapValues3` instead hands `func` all three of `val`, `key`, and a 0-based visit-count `seq`
- * (for an array, `seq` fills both slots) when a map form needs to distinguish visit order from
- * key order. The `keylist` and `missingPolicy` overloads follow `forEach`'s rules: a `keylist`
- * walks exactly those keys, and `missingPolicy` decides whether an `undefined` value is mapped
- * (`NIL`, the default) or its key dropped from the result entirely (`SKIP`). `func` is
- * coerced through `funcOrProp` @see `funcOrProp` -- `mapValues(users, 'name')` extracts a `name`
- * field from each.
+ * one dispatch: `func` is `func(val, ckey)`.
+ * `mapValues3` instead hands `func` all three of `val`, `ckey`, and a 0-based visit-count `iter`
+ * when a map form needs to distinguish visit order from key order. The `keylist` and
+ * `missingPolicy` overloads follow `forEach`'s rules: a `keylist` walks exactly those keys, and
+ * `missingPolicy` decides whether an `undefined` value is mapped (`NIL`, the default) or its key
+ * dropped from the result entirely (`SKIP`). `func` is coerced through `iteratee` @see `iteratee`
+ * -- `mapValues(users, 'name')` extracts a `name` field from each.
  *
  * @example `mapValues({ "fred": 40, "pebbles": 1 }, function(age) { return age * 2; }); // => { "fred": 80, "pebbles": 2 }`
  * @example `mapValues([4, 8], function(n) { return n * n; }); // => [16, 64]`
@@ -3394,15 +3337,13 @@ export function mapKeys(object, iteratee) {
 // export function mapValues(bag, keylist, missingPolicy, func) {}
 
 // lodash
-/** Creates an object with the same keys as `object` and values generated
- * by running each own enumerable string keyed property of `object` thru
- * `funcOrProp`. The function/propname is invoked with three arguments:
- * (value, key, object).
+/** Creates a map with the same keys as `object` and values generated by running each of
+ * `object`'s keys thru `funcOrPath`. `funcOrPath` is invoked as `(val, key)`.
  *
  * @seeAlso [mapKeys]
  *
  * @param object {map}: The object to iterate over.
- * @param funcOrProp {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
+ * @param funcOrPath {function|string|array}: iteratee invoked per iteration; defaults to `identity`.
  *   @optional
  *
  * @returns {map}: the new mapped object.
@@ -3410,14 +3351,14 @@ export function mapKeys(object, iteratee) {
  * @example `var users = { 'fred': { 'user': 'fred', 'age': 40 }, 'pebbles': { 'user': 'pebbles', 'age': 1 } }; mapValues(users, function(o) { return o.age; }); // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)`
  * @example `mapValues(users, 'age'); // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)`
  */
-export function mapValues(object, iteratee) {
-  if (false) { mapValues(object, iteratee); }
+export function mapValues(object, funcOrPath) {
+  if (false) { mapValues(object, funcOrPath); }
   throw 'TODO: implement mapValues';
 }
 
 // flipshop
 /** Builds a rule that's `true` for any map holding `source`'s entries -- a partial deep match.
- * `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
+ * `(val, ckey)` callback shape, discarding `ckey` @see `conforms`.
  *
  * @example `matches({ "a": 1 })({ "a": 1, "b": 2 }, 0); // => true`
  * @example `matches({ "a": 1 })({ "a": 2, "b": 2 }, 0); // => false`
@@ -3426,8 +3367,8 @@ export function mapValues(object, iteratee) {
 
 // lodash
 /** Creates a function that performs a partial deep comparison between a given
- * object and `source`, returning `true` if the given object has equivalent
- * property values, else `false`.
+ * map and `source`, returning `true` if the given map has `source`'s vals at
+ * `source`'s keys, else `false`.
  *
  * **Note:** The created function is equivalent to `isMatch` with `source`
  * partially applied.
@@ -3439,7 +3380,7 @@ export function mapValues(object, iteratee) {
  * **Note:** Multiple values can be checked by combining several matchers
  * using `overSome`
  *
- * @param source {map}: The object of property values to match.
+ * @param source {map}: Map of vals to match.
  *
  * @returns {function}: the new spec function.
  *
@@ -3452,8 +3393,8 @@ export function matches(source) {
 }
 
 // flipshop
-/** Builds a rule that's `true` when `path` of a given object equals `srcValue`; `path` can be a
- * string/dotpath/pathlist @see `getAt`. `(obj, seq)` callback shape, discarding `seq` @see `conforms`.
+/** Builds a rule that's `true` when `path` of a given map equals `srcValue`; `path` is an
+ * `anypath` @see `getAt`. `(val, ckey)` callback shape, discarding `ckey` @see `conforms`.
  *
  * @example `matchesProperty("a.b", 1)({ "a": { "b": 1 } }, 0); // => true`
  */
@@ -3471,7 +3412,7 @@ export function matches(source) {
  * **Note:** Multiple values can be checked by combining several matchers
  * using `overSome`
  *
- * @param path {array|string}: The path of the property to get.
+ * @param path {anypath}: Path to get.
  * @param srcValue: The value to match.
  *
  * @returns {function}: the new spec function.
@@ -3501,21 +3442,21 @@ export function max(array) {
 }
 
 // flipshop
-/** Element of `arr` for which `iterateeSpec(val, seq)` is greatest, or `undefined` for an empty
+/** Element of `arr` for which `funcOrPath(val, idx)` is greatest, or `undefined` for an empty
  * `arr` -- std's array `max` picks the greatest value itself; this picks the element behind the
- * greatest *computed* value. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+ * greatest *computed* value. `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `maxBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 3 }`
  */
-// export function maxBy(arr, iterateeSpec) {}
+// export function maxBy(arr, funcOrPath) {}
 
 // lodash
-/** Like `max` except that it accepts `funcOrProp` which is
+/** Like `max` except that it accepts `funcOrPath` which is
  * invoked for each element in `array` to generate the criterion by which
- * the value is ranked. A function iteratee is invoked with (val, seq).
+ * the value is ranked. `funcOrPath` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns: the maximum value.
@@ -3523,8 +3464,8 @@ export function max(array) {
  * @example `var objects = [{ 'n': 1 }, { 'n': 2 }]; maxBy(objects, function(o) { return o.n; }); // => { 'n': 2 }`
  * @example `maxBy(objects, 'n'); // => { 'n': 2 }`
  */
-export function maxBy(array, iteratee) {
-  if (false) { maxBy(array, iteratee); }
+export function maxBy(array, funcOrPath) {
+  if (false) { maxBy(array, funcOrPath); }
   throw 'TODO: implement maxBy';
 }
 
@@ -3543,20 +3484,20 @@ export function mean(array) {
 }
 
 // flipshop
-/** Average of `iterateeSpec(val, seq)` across `arr` -- `average` *(std)*, mapped via `mapValues`.
- * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+/** Average of `funcOrPath(val, idx)` across `arr` -- `average` *(std)*, mapped via `mapValues`.
+ * `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `meanBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 3`
  */
-// export function meanBy(arr, iterateeSpec) {}
+// export function meanBy(arr, funcOrPath) {}
 
 // lodash
-/** Like `mean` except that it accepts `funcOrProp` which is
+/** Like `mean` except that it accepts `funcOrPath` which is
  * invoked for each element in `array` to generate the value to be averaged.
- * A function iteratee is invoked with (val, seq).
+ * `funcOrPath` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the mean.
@@ -3564,8 +3505,8 @@ export function mean(array) {
  * @example `var objects = [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }]; meanBy(objects, function(o) { return o.n; }); // => 5`
  * @example `meanBy(objects, 'n'); // => 5`
  */
-export function meanBy(array, iteratee) {
-  if (false) { meanBy(array, iteratee); }
+export function meanBy(array, funcOrPath) {
+  if (false) { meanBy(array, funcOrPath); }
   throw 'TODO: implement meanBy';
 }
 
@@ -3600,18 +3541,13 @@ export function memoize(func, resolver) {
 }
 
 // lodash
-/** Like `assign` except that it recursively merges own and
- * inherited enumerable string keyed properties of source objects into the
- * destination object. Source properties that resolve to `undefined` are
- * skipped if a destination value exists. Array and plain object properties
- * are merged recursively. Other objects and value types are overridden by
- * assignment. Source objects are applied from left to right. Subsequent
- * sources overwrite property assignments of previous sources.
+/** Like `assign` except that it recursively merges keys of source maps into the destination
+ * map: a source key resolving to `undefined` is skipped if a destination value exists; array
+ * and map values are merged recursively; anything else is overridden by assignment. Sources are
+ * applied left to right. @see `deepMerge`, which does this for a single pair.
  *
- * **Note:** This method mutates `object`.
- *
- * @param object {map}: The destination object.
- * @param sources {map}: The source objects.
+ * @param object {map}: The destination map.
+ * @param sources {map}: The source maps.
  *   @optional
  *
  * @returns {map}: `object`.
@@ -3661,7 +3597,7 @@ export function mergeWith(object, sources, customizer) {
 /** Creates a function that invokes the method at `path` of a given object.
  * Any additional arguments are provided to the invoked method.
  *
- * @param path {array|string}: The path of the method to invoke.
+ * @param path {anypath}: Path to the method to invoke.
  * @param args: The arguments to invoke the method with.
  *   @optional
  *
@@ -3711,20 +3647,20 @@ export function min(array) {
 }
 
 // flipshop
-/** `maxBy`'s counterpart: element of `arr` for which `iterateeSpec(val, seq)` is least, or
- * `undefined` for an empty `arr`. `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+/** `maxBy`'s counterpart: element of `arr` for which `funcOrPath(val, idx)` is least, or
+ * `undefined` for an empty `arr`. `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `minBy([{ "n": 1 }, { "n": 3 }, { "n": 2 }], (val) => val.n); // => { "n": 1 }`
  */
-// export function minBy(arr, iterateeSpec) {}
+// export function minBy(arr, funcOrPath) {}
 
 // lodash
-/** Like `min` except that it accepts `funcOrProp` which is
+/** Like `min` except that it accepts `funcOrPath` which is
  * invoked for each element in `array` to generate the criterion by which
- * the value is ranked. A function iteratee is invoked with (val, seq).
+ * the value is ranked. `funcOrPath` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns: the minimum value.
@@ -3732,22 +3668,17 @@ export function min(array) {
  * @example `var objects = [{ 'n': 1 }, { 'n': 2 }]; minBy(objects, function(o) { return o.n; }); // => { 'n': 1 }`
  * @example `minBy(objects, 'n'); // => { 'n': 1 }`
  */
-export function minBy(array, iteratee) {
-  if (false) { minBy(array, iteratee); }
+export function minBy(array, funcOrPath) {
+  if (false) { minBy(array, funcOrPath); }
   throw 'TODO: implement minBy';
 }
 
 // lodash
-/** Adds all own enumerable string keyed function properties of a source
- * object to the destination object. If `object` is a function, then methods
- * are added to its prototype as well.
+/** Adds all of `source`'s function-valued keys to the destination map.
  *
- * **Note:** Use `runInContext` to create a pristine `lodash` function to
- * avoid conflicts caused by modifying the original.
- *
- * @param object {function|map}: The destination object; defaults to `lodash`.
+ * @param object {function|map}: The destination map; defaults to `lodash`.
  *   @optional
- * @param source {map}: The object of functions to add.
+ * @param source {map}: Map of functions to add.
  * @param options {{
  *    @field chain {boolean}: Specify whether mixins are chainable; defaults to `true`.
  *     @optional
@@ -3830,13 +3761,13 @@ export function noop() {
 }
 
 // flipshop
-/** Element of `arr` at `seq`; a negative `seq` counts back from the end. `undefined` if `seq`,
+/** Element of `arr` at `idx`; a negative `idx` counts back from the end. `undefined` if `idx`,
  * after that adjustment, is out of bounds.
  *
  * @example `nth([1, 2, 3], 1); // => 2`
  * @example `nth([1, 2, 3], -1); // => 3`
  */
-// export function nth(arr, seq) {}
+// export function nth(arr, idx) {}
 
 // lodash
 /** Gets the element at index `n` of `array`. If `n` is negative, the nth
@@ -3874,59 +3805,39 @@ export function nthArg(n) {
 }
 
 // flipshop
-/** Creates a map keyed by each element of `arr` itself, with the value at that key set to
- * `func(val, seq)` -- the last element responsible for a given key wins on a collision. This is
- * `keyBy` with the key and value roles swapped: lodash's `keyBy` keys by `iteratee(value)` and
- * keeps `value` itself, where `objectify` keys by `value` and lets `func` compute the result.
+/** Creates a map whose keys are values of `arr`, mapped to the value given by `funcOrPath`
+ * On a collision, the last element responsible for a given key wins.
  *
- * @example `objectify(["a", "b", "c"], function(val, seq) { return seq; }); // => { "a": 0, "b": 1, "c": 2 }`
- * @example `objectify(["x", "x"], function(val, seq) { return seq; }); // => { "x": 1 }`
+ * @example `objectify(["a", "b", "c"], function(val, idx) { return idx; }); // => { "a": 0, "b": 1, "c": 2 }`
+ * @example `objectify(["x", "x"], function(val, idx) { return idx; }); // => { "x": 1 }`
  */
 // export function objectify(arr, func) {}
 
-// flipshop
-/** `bag` without the entries at `keylist` -- the inverse of `pick`. Each entry of `keylist` can be
- * a dotted string or key-path array @see `getAt`, deleting a nested leaf without disturbing its
- * siblings; a path with nothing currently at it is skipped rather than autovivifying empty maps
- * along the way. `omitBy` instead drops any entry for which `rule(val, key)` holds, the inverse
- * of `pickDefined`'s spirit but with a caller-supplied rule rather than a fixed "is defined"
- * check. `rule` is coerced through `funcOrProp` @see `funcOrProp`.
+/** Creates a map of items in `bag` that are not in `pathlist`;
+ * The opposite of `pick`
  *
- * @example `omit({ "a": 1, "b": 2, "c": 3 }, ["b"]); // => { "a": 1, "c": 3 }`
- * @example `omit({ "a": { "b": 1, "c": 2 } }, ["a.b"]); // => { "a": { "c": 2 } }`
- */
-// export function omit(bag, keylist) {}
-
-// lodash
-/** The opposite of `pick`; this method creates an object composed of the
- * own and inherited enumerable property paths of `object` that are not omitted.
- *
- * **Note:** This method is considerably slower than `pick`.
- *
- * @param object {map}: The source object.
- * @param paths {(string|string[])}: The property paths to omit.
+ * @param bag {map}: The source map.
+ * @param pathlist {array}: Each entry a key or keypath to omit.
  *   @optional
  *
- * @returns {map}: the new object.
+ * @returns {map}: the new map.
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; omit(object, ['a', 'c']); // => { 'b': '2' }`
  */
-export function omit(object, paths) {
-  if (false) { omit(object, paths); }
+export function omit(object, pathlist) {
+  if (false) { omit(object, pathlist); }
   throw 'TODO: implement omit';
 }
 
 // lodash
-/** The opposite of `pickBy`; this method creates an object composed of
- * the own and inherited enumerable string keyed properties of `object` that
- * `rule` doesn't return truthy for. The rule is invoked with two
- * arguments: (value, key).
+/** Creates a map of `object`'s keys that `rule` doesn't return truthy for.
+ * `rule` is invoked as `(val, key)`. The opposite of `pickBy`
  *
- * @param object {map}: The source object.
- * @param rule {function}: Function invoked per property; defaults to `identity`.
+ * @param object {map}: The source map.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
- * @returns {map}: the new object.
+ * @returns {map}: the new map.
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; omitBy(object, isNumber); // => { 'b': '2' }`
  */
@@ -3937,10 +3848,11 @@ export function omitBy(object, rule) {
 
 // lodash
 /** Creates a function that is restricted to invoking `func` once. Repeat calls
- * to the function return the value of the first invocation. The `func` is
- * invoked with the `this` binding and arguments of the created function.
+ * to the function return the value of the first invocation.
+ * @seeAlso [before] [after]
  *
  * @param func {function}: Function to restrict.
+ * @param arity {number}: The number of arguments (0 <= arity <= 5) to invoke `func` with. Defaults to 2.
  *
  * @returns {function}: the new restricted function.
  *
@@ -3952,83 +3864,79 @@ export function once(func) {
 }
 
 // flipshop
-/** `orderBy`, with `cmpAny` as the comparator -- a total ordering even across mixed/incompatible
- * types in `iterateeSpec`'s results, so this never throws where `orderBy` might.
- *
- * @param vals {array|map}: Collection to sort.
- * @param funcOrPropSpec: @see `orderBy`. Defaults to `identity`.
- * @param order {number}: @see `orderBy`. Defaults to `1`.
- *
- * @example `orderAnyBy([1, "2", 0]); // => [0, 1, "2"] -- number sorts before string, per cmpAny's fstypenum fallback`
- */
-// export function orderAnyBy(vals, iterateeSpec, order) {}
 
-// flipshop
-/** `vals`, ordered by `iterateeSpec`: `vals`'s elements (array) or values (map, keys discarded),
- * stably sorted by `iteratee(iterateeSpec)`'s result for each, compared with `comparator`.
- * Defaults to `cmp`, so an `iterateeSpec` producing incompatible types across elements -- e.g. a
- * mix of numbers and strings -- throws exactly as `cmp` does; @see `orderAnyBy` for a version that
- * never throws. Lodash's `orderBy` accepts one-or-many iteratees and orders; this accepts just one
- * of each.
+/** Creates an array of elements, sorted in ascending order by the results of
+ * running each element in a collection thru each `funcOrPath`.
+ * If the `order` for any axis is unspecified, all values are sorted in the ascending order given by the comparator.
+ * Otherwise, specify the sort order of corresponding values
+ * as -1 for descending, 1 for ascending, and 0 to ignore that axis.
+ * This method performs a stable sort, that is, it preserves the original sort order of
+ * equal elements.
+ * Each `funcOrPath` is invoked as `(val, ckey)`.
  *
- * @param vals {array|map}: Collection to sort.
- * @param funcOrPropSpec: Ducktyped @see `funcOrProp` -- a function `(val, seq|key) => criteria`, a map (matches rule), or a string (property path). Defaults to `identity`.
- * @param order {number}: Positive sorts ascending, negative descending, zero leaves `vals` in its original order regardless of `iterateeSpec`. Defaults to `1`.
- * @param comparator {function}: `(criteriaA, criteriaB) => number`, applied to pairs of `iterateeSpec`'s results. Defaults to `cmp`.
+ * @param collection {array|map}: The collection to iterate over.
+ * @param funcOrPaths {function|string|array}: One `funcOrPath` per sort axis; defaults to `[identity]`.
+ *   @optional
+ * @param orders {number|number[]}: The sort orders of `funcOrPaths`. If a bare number is given, it is used for all axes. if there are more funcOrPaths than `orders`, the remaining ones will sort ascending (the default)
+ *   @optional
+ * @param comparators {function|function[]}: `(criteriaA, criteriaB) => number`, applied to pairs of `funcOrPath`'s results.
+ *   If a bare function is given, it is used for all axes.
+ *   If there are more funcOrPaths than `comparators`, the remaining ones will use cmpAny.
+ *   Defaults to `cmpAny` -- incompatible types nonetheless have a consistent total ordering.
  *
+ * @returns {array}: the new sorted array.
+ *
+ * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 34 }, { 'user': 'fred', 'age': 40 }, { 'user': 'barney', 'age': 36 } ]; orderBy(users, ['user', 'age'], [1, -1]); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]`
  * @example `orderBy([3, 1, 2]); // => [1, 2, 3]`
  * @example `orderBy([{ "n": 3 }, { "n": 1 }], "n"); // => [{ "n": 1 }, { "n": 3 }]`
  * @example `orderBy([1, 2, 3], identity, -1); // => [3, 2, 1]`
  * @example `orderBy({ "a": 3, "b": 1 }, identity); // => [1, 3]`
  */
-// export function orderBy(vals, iterateeSpec, order, comparator) {}
+// export function orderAnyBy(vals, funcOrPaths, orders, comparators) {}
 
-// lodash
-/** Like `sortBy` except that it allows specifying the sort
- * orders of The function/propnames to sort by. If `orders` is unspecified, all values
- * are sorted in ascending order. Otherwise, specify an order of "desc" for
- * descending or "asc" for ascending sort order of corresponding values.
+
+// flipshop
+
+/** Creates an array of elements, sorted in ascending order by the results of
+ * running each element in a collection thru each `funcOrPath`.
+ * If the `order` for any axis is unspecified, all values are sorted in the ascending order given by the comparator.
+ * Otherwise, specify the sort order of corresponding values
+ * as -1 for descending, 1 for ascending, and 0 to ignore that axis.
+ * This method performs a stable sort, that is, it preserves the original sort order of
+ * equal elements.
+ * Each `funcOrPath` is invoked as `(val, ckey)`.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProps {Array[]|Function[]|Object[]|string[]}: ] The function/propnames to sort by; defaults to `[identity`.
+ * @param funcOrPaths {function|string|array}: One `funcOrPath` per sort axis; defaults to `[identity]`.
  *   @optional
- * @param orders {string[]}: The sort orders of `iteratees`.
+ * @param orders {number|number[]}: The sort orders of `funcOrPaths`. If a bare number is given, it is used for all axes. if there are more funcOrPaths than `orders`, the remaining ones will sort ascending (the default)
  *   @optional
+ * @param comparators {function|function[]}: `(criteriaA, criteriaB) => number`, applied to pairs of `funcOrPath`'s results. If a bare function is given, it is used for all axes. if there are more funcOrPaths than `comparators `, the remaining ones will use cmp (or cmpAny if called as orderByAny);
+ *   Defaults to `cmp` -- incompatible types throw. Pass `cmpAny` to allow mixed types, or use the orderByAny convenience function.
  *
  * @returns {array}: the new sorted array.
  *
- * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 34 }, { 'user': 'fred', 'age': 40 }, { 'user': 'barney', 'age': 36 } ]; orderBy(users, ['user', 'age'], ['asc', 'desc']); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]`
+ * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 34 }, { 'user': 'fred', 'age': 40 }, { 'user': 'barney', 'age': 36 } ]; orderBy(users, ['user', 'age'], [1, -1]); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]`
+ * @example `orderBy([3, 1, 2]); // => [1, 2, 3]`
+ * @example `orderBy([{ "n": 3 }, { "n": 1 }], "n"); // => [{ "n": 1 }, { "n": 3 }]`
+ * @example `orderBy([1, 2, 3], identity, -1); // => [3, 2, 1]`
+ * @example `orderBy({ "a": 3, "b": 1 }, identity); // => [1, 3]`
  */
-export function orderBy(collection, iteratees, orders) {
-  if (false) { orderBy(collection, iteratees, orders); }
-  throw 'TODO: implement orderBy';
-}
+export function orderBy(collection, funcOrPaths, orders, comparators) {}
 
 // flipshop
-/** Builds a function that calls every function in `funcs` with `(val, seq)`, collecting results
- * into an array in `funcs`' order. Each element of `funcs` is coerced through `funcOrProp`, so a
- * dotpath string, `[path, srcValue]` array, or partial-match map can stand in for a literal
- * function, matching lodash's own `over`/`overEvery`/`overSome` docs.
+/** Creates a function`overfunc(vals is array)` invoking `funcs` on its argument
+ * and returning their results as an array of results.
  *
- * @example `over([(val, _seq) => val + 1, (val, _seq) => val - 1])(5, 0); // => [6, 4]`
- */
-// export function over(funcs) {}
-
-// lodash
-/** Creates a function that invokes `iteratees` with the arguments it receives
- * and returns their results.
- *
- * @param funcOrProps {(Function|Function[])}: ] The function/propnames to invoke; defaults to `[identity`.
+ * @param funcs {array}: Each a `funcOrKey`; defaults to `[identity]`.
  *   @optional
  *
  * @returns {function}: the new function.
  *
- * @example `var func = over([Math.max, Math.min]); func(1, 2, 3, 4); // => [4, 1]`
+ * @example `var overfunc = over([Math.max, Math.min]); overfunc([1, 2, 3, 4]); // => [4, 1]`
  */
-export function over(iteratees) {
-  if (false) { over(iteratees); }
-  throw 'TODO: implement over';
-}
+// export function over(funcOrKeys) {}
+
 
 // lodash
 /** Creates a function that invokes `func` with its arguments transformed.
@@ -4049,21 +3957,18 @@ export function overArgs(func, transforms) {
 
 // flipshop
 /** Builds a rule that's `true` only when every function in `funcs` returns truthy for
- * `(val, seq)`. Each element of `funcs` is coerced through `funcOrProp`; @see `over`.
+ * `(val, ckey)`. Each element of `funcs` is a `ruleOrKey`; @see `over`.
  *
- * @example `overEvery([(val, _seq) => val > 0, (val, _seq) => val < 10])(5, 0); // => true`
+ * @example `overEvery([(val, _ckey) => val > 0, (val, _ckey) => val < 10])(5, 0); // => true`
  */
 // export function overEvery(funcs) {}
 
 // lodash
 /** Creates a function that checks if **all** of the `rules` return
- * truthy when invoked with the arguments it receives.
+ * truthy when invoked with the arguments it receives. Each of `rules` is a `ruleOrKey`, so a
+ * partial-match map or a `[path, srcValue]` array can stand in for a literal rule function.
  *
- * Following shorthands are possible for providing rules.
- * Pass an `Object` and it will be used as an parameter for `matches` to create the rule.
- * Pass an `Array` of parameters for `matchesProperty` and the rule will be created using them.
- *
- * @param rules {(Function|Function[])}: ] The rules to check; defaults to `[identity`.
+ * @param rules {array}: Each a `ruleOrKey`; defaults to `[identity]`.
  *   @optional
  *
  * @returns {function}: the new function.
@@ -4078,22 +3983,19 @@ export function overEvery(rules) {
 }
 
 // flipshop
-/** Builds a rule that's `true` when any function in `funcs` returns truthy for `(val, seq)`. Each
- * element of `funcs` is coerced through `funcOrProp`; @see `over`.
+/** Builds a rule that's `true` when any function in `funcs` returns truthy for `(val, ckey)`. Each
+ * element of `funcs` is a `ruleOrKey`; @see `over`.
  *
- * @example `overSome([(val, _seq) => val < 0, (val, _seq) => val > 10])(5, 0); // => false`
+ * @example `overSome([(val, _ckey) => val < 0, (val, _ckey) => val > 10])(5, 0); // => false`
  */
 // export function overSome(funcs) {}
 
 // lodash
 /** Creates a function that checks if **any** of the `rules` return
- * truthy when invoked with the arguments it receives.
+ * truthy when invoked with the arguments it receives. Each of `rules` is a `ruleOrKey`, so a
+ * partial-match map or a `[path, srcValue]` array can stand in for a literal rule function.
  *
- * Following shorthands are possible for providing rules.
- * Pass an `Object` and it will be used as an parameter for `matches` to create the rule.
- * Pass an `Array` of parameters for `matchesProperty` and the rule will be created using them.
- *
- * @param rules {(Function|Function[])}: ] The rules to check; defaults to `[identity`.
+ * @param rules {array}: Each a `ruleOrKey`; defaults to `[identity]`.
  *   @optional
  *
  * @returns {function}: the new function.
@@ -4289,9 +4191,8 @@ export function partialRight(func, partials) {
 
 // flipshop
 /** `[passed, failed]` -- `bag`/`arr` split into the elements for which `rule` holds and the ones
- * for which it doesn't, keeping visiting order. `rule` gets `(val, seq)` (array) or `(val, key)`
- * (map); the map form returns values only, same as lodash's collection form. `rule` is coerced
- * through `funcOrProp` @see `funcOrProp`.
+ * for which it doesn't, keeping visiting order. `rule` gets `(val, ckey)`; the map form returns
+ * values only, same as lodash's collection form. `rule` is a `ruleOrKey`.
  *
  * @example `partition([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [[2, 4], [1, 3]]`
  */
@@ -4300,11 +4201,10 @@ export function partialRight(func, partials) {
 // lodash
 /** Creates an array of elements split into two groups, the first of which
  * contains elements `rule` returns truthy for, the second of which
- * contains elements `rule` returns falsey for. The rule is
- * invoked with one argument: (value).
+ * contains elements `rule` returns falsey for. `rule` is invoked as `(val, ckey)`.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function|string|array}: iteratee; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the array of grouped elements.
@@ -4356,18 +4256,18 @@ export function partition(collection, rule) {
 // export function pick(bag, keylist) {}
 
 // lodash
-/** Creates an object composed of the picked `object` properties.
+/** Creates a map of the picked keys of `object`.
  *
- * @param object {map}: The source object.
- * @param paths {(string|string[])}: The property paths to pick.
+ * @param object {map}: The source map.
+ * @param keylist {array}: Each entry an `anypath` @see `getAt`, to pick.
  *   @optional
  *
- * @returns {map}: the new object.
+ * @returns {map}: the new map.
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; pick(object, ['a', 'c']); // => { 'a': 1, 'c': 3 }`
  */
-export function pick(object, paths) {
-  if (false) { pick(object, paths); }
+export function pick(object, keylist) {
+  if (false) { pick(object, keylist); }
   throw 'TODO: implement pick';
 }
 
@@ -4381,14 +4281,14 @@ export function pick(object, paths) {
 // export function pickBy(bag, rule) {}
 
 // lodash
-/** Creates an object composed of the `object` properties `rule` returns
- * truthy for. The rule is invoked with two arguments: (value, key).
+/** Creates a map of `object`'s keys that `rule` returns truthy for. `rule` is invoked as
+ * `(val, key)`.
  *
- * @param object {map}: The source object.
- * @param rule {function}: Function invoked per property; defaults to `identity`.
+ * @param object {map}: The source map.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
- * @returns {map}: the new object.
+ * @returns {map}: the new map.
  *
  * @example `var object = { 'a': 1, 'b': '2', 'c': 3 }; pickBy(object, isNumber); // => { 'a': 1, 'c': 3 }`
  */
@@ -4400,7 +4300,7 @@ export function pickBy(object, rule) {
 // lodash
 /** Creates a function that returns the value at `path` of a given object.
  *
- * @param path {array|string}: The path of the property to get.
+ * @param path {anypath}: Path to get.
  *
  * @returns {function}: the new accessor function.
  *
@@ -4413,14 +4313,14 @@ export function property(path) {
 }
 
 // lodash
-/** The opposite of `property`; this method creates a function that returns
- * the value at a given path of `object`.
+/** The opposite of `property`; this method creates a function that returns the value at a given
+ * `anypath` of `object`.
  *
- * @param object {map}: The object to query.
+ * @param object {map}: The map to query.
  *
  * @returns {function}: the new accessor function.
  *
- * @example `var array = [0, 1, 2], object = { 'a': array, 'b': array, 'c': array }; map(['a[2]', 'c[0]'], propertyOf(object)); // => [2, 0]`
+ * @example `var array = [0, 1, 2], object = { 'a': array, 'b': array, 'c': array }; map(['a.2', 'c.0'], propertyOf(object)); // => [2, 0]`
  * @example `map([['a', '2'], ['c', '0']], propertyOf(object)); // => [2, 0]`
  */
 export function propertyOf(object) {
@@ -4467,23 +4367,23 @@ export function pullAll(array, values) {
 }
 
 // lodash
-/** Like `pullAll` except that it accepts `funcOrProp` which is
+/** Like `pullAll` except that it accepts `funcOrPath` which is
  * invoked for each element of `array` and `values` to generate the criterion
- * by which they're compared. A function iteratee is invoked with (val, seq).
+ * by which they're compared. `funcOrPath` is invoked as `(val, idx)`.
  *
  * **Note:** Unlike `differenceBy`, this method mutates `array`.
  *
  * @param array {array}: The array to modify.
  * @param values {array}: The values to remove.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: `array`.
  *
  * @example `var array = [{ 'x': 1 }, { 'x': 2 }, { 'x': 3 }, { 'x': 1 }]; pullAllBy(array, [{ 'x': 1 }, { 'x': 3 }], 'x'); println(array); // => [{ 'x': 2 }]`
  */
-export function pullAllBy(array, values, iteratee) {
-  if (false) { pullAllBy(array, values, iteratee); }
+export function pullAllBy(array, values, funcOrPath) {
+  if (false) { pullAllBy(array, values, funcOrPath); }
   throw 'TODO: implement pullAllBy';
 }
 
@@ -4645,11 +4545,10 @@ export function rearg(func, indexes) {
 }
 
 // flipshop
-/** Rebuilds a map (from a map or an array) by asking `func(val, key?)` -- `func(val, seq)` for an
- * array, `func(val, key)` for a map -- for the `[newKey, newVal]` pair each entry becomes; an
- * entry where `func` returns `undefined` (rather than a pair) is dropped rather than written
- * under an `undefined` key. Where two entries land on the same `newKey`, the later one wins --
- * `keys(bag)` order for a map, index order for an array.
+/** Rebuilds a map (from a map or an array) by asking `func(val, ckey)` for the `[newKey, newVal]`
+ * pair each entry becomes; an entry where `func` returns `undefined` (rather than a pair) is
+ * dropped rather than written under an `undefined` key. Where two entries land on the same
+ * `newKey`, the later one wins -- `keys(bag)` order for a map, index order for an array.
  */
 // export function rebag(arr, func) {}
 
@@ -4664,11 +4563,10 @@ export function reComboMark(rsCombo, 'g') {
 
 // lodash
 /** Reduces `collection` to a value which is the accumulated result of running
- * each element in `collection` thru `funcOrProp`, where each successive
+ * each element in `collection` thru `reducer`, where each successive
  * invocation is supplied the return value of the previous. If `accumulator`
  * is not given, the first element of `collection` is used as the initial
- * value. The function/propname is invoked with four arguments:
- * (accumulator, value, index|key, collection).
+ * value. `reducer` is invoked as `(acc, val, ckey)`.
  *
  * Many lodash methods are guarded to work as iteratees for methods like
  * `reduce`, `reduceRight`, and `transform`.
@@ -4680,7 +4578,7 @@ export function reComboMark(rsCombo, 'g') {
  * @seeAlso [reduceRight]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: Reducer function invoked per iteration; defaults to `identity`.
+ * @param reducer {function}: `(acc, val, ckey) => acc`; defaults to `identity`.
  *   @optional
  * @param accumulator: The initial value.
  *   @optional
@@ -4690,23 +4588,23 @@ export function reComboMark(rsCombo, 'g') {
  * @example `reduce([1, 2], function(sum, n) { return sum + n; }, 0); // => 3`
  * @example `reduce({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) { (result[value] || (result[value] = [])).push(key); return result; }, {}); // => { '1': ['a', 'c'], '2': ['b'] } (iteration order is not guaranteed)`
  */
-export function reduce(collection, iteratee, accumulator) {
-  if (false) { reduce(collection, iteratee, accumulator); }
+export function reduce(collection, reducer, accumulator) {
+  if (false) { reduce(collection, reducer, accumulator); }
   throw 'TODO: implement reduce';
 }
 
 // flipshop
-/** `bag`/`arr` reduced right-to-left through `foldFunction(accumulator, val, seq|key)` -- unlike
- * std's `foldArray`, `foldFunction` also gets the index/key as a third argument.
+/** `bag`/`arr` reduced right-to-left through `reducer(acc, val, ckey)` -- unlike std's
+ * `foldArray`, `reducer` also gets `ckey` as a third argument.
  *
- * @example `reduceRight([1, 2, 3], "", function(acc, val, _seq) { return acc ~ val; }); // => "321"`
+ * @example `reduceRight([1, 2, 3], "", function(acc, val, _ckey) { return acc ~ val; }); // => "321"`
  */
-// export function reduceRight(arr, seed, foldFunction) {}
+// export function reduceRight(arr, seed, reducer) {}
 
 // flipshop
 /** /** `reduceRight`, seeded from the last-visited element -- `undefined` for an empty `arr`/`bag`. */
  */
-// export function reduceRight(arr, foldFunction) {}
+// export function reduceRight(arr, reducer) {}
 
 // lodash
 /** Like `reduce` except that it iterates over elements of
@@ -4715,7 +4613,7 @@ export function reduce(collection, iteratee, accumulator) {
  * @seeAlso [reduce]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProp {function}: Reducer function invoked per iteration; defaults to `identity`.
+ * @param reducer {function}: `(acc, val, ckey) => acc`; defaults to `identity`.
  *   @optional
  * @param accumulator: The initial value.
  *   @optional
@@ -4724,17 +4622,17 @@ export function reduce(collection, iteratee, accumulator) {
  *
  * @example `var array = [[0, 1], [2, 3], [4, 5]]; reduceRight(array, function(flattened, other) { return flattened.concat(other); }, []); // => [4, 5, 2, 3, 0, 1]`
  */
-export function reduceRight(collection, iteratee, accumulator) {
-  if (false) { reduceRight(collection, iteratee, accumulator); }
+export function reduceRight(collection, reducer, accumulator) {
+  if (false) { reduceRight(collection, reducer, accumulator); }
   throw 'TODO: implement reduceRight';
 }
 
 // flipshop
 /** Elements of `bag`/`arr` for which `rule` does *not* hold -- the inverse of `filter` *(std)*.
- * `rule` gets `(val, seq)` (array) or `(val, key)` (map); the map form returns values only.
- * `rule` is coerced through `funcOrProp` @see `funcOrProp`.
+ * `rule` gets `(val, ckey)`; the map form returns values only.
+ * `rule` is a `ruleOrKey`.
  *
- * @example `reject([1, 2, 3, 4], (val, _seq) => val % 2 == 0); // => [1, 3]`
+ * @example `reject([1, 2, 3, 4], (val, _ckey) => val % 2 == 0); // => [1, 3]`
  */
 // export function reject(arr, rule) {}
 
@@ -4745,7 +4643,7 @@ export function reduceRight(collection, iteratee, accumulator) {
  * @seeAlso [filter]
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new filtered array.
@@ -4762,14 +4660,13 @@ export function reject(collection, rule) {
 
 // lodash
 /** Removes all elements from `array` that `rule` returns truthy for
- * and returns an array of the removed elements. The rule is invoked
- * with three arguments: (value, index, array).
+ * and returns an array of the removed elements. `rule` is invoked as `(val, idx)`.
  *
  * **Note:** Unlike `filter`, this method mutates `array`. Use `pull`
  * to pull elements from an array by value.
  *
  * @param array {array}: The array to modify.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of removed elements.
@@ -4857,7 +4754,7 @@ export function rest(func, start) {
  * its result is returned.
  *
  * @param object {map}: The object to query.
- * @param path {array|string}: The path of the property to resolve.
+ * @param path {anypath}: Path to resolve.
  * @param defaultValue: The value returned for `undefined` resolved values.
  *   @optional
  *
@@ -4979,15 +4876,12 @@ export function sampleSize(collection, n) {
 // export function sanitize_varname(varname) {}
 
 // lodash
-/** Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
- * it's created. Arrays are created for missing index properties while objects
- * are created for all other missing properties. Use `setWith` to customize
- * `path` creation.
+/** Sets the value at `path` of `object`. If a portion of `path` doesn't exist, it's created: an
+ * array for a missing segment that looks like an index, a map for every other missing segment.
+ * Use `setWith` to customize `path` creation.
  *
- * **Note:** This method mutates `object`.
- *
- * @param object {map}: The object to modify.
- * @param path {array|string}: The path of the property to set.
+ * @param object {map}: The map to modify.
+ * @param path {anypath}: Path to set.
  * @param value: The value to set.
  *
  * @returns {map}: `object`.
@@ -5094,7 +4988,7 @@ export function set(object, path, value) {
  * **Note:** This method mutates `object`.
  *
  * @param object {map}: The object to modify.
- * @param path {array|string}: The path of the property to set.
+ * @param path {anypath}: Path to set.
  * @param value: The value to set.
  * @param customizer {function}: Function to customize assigned values.
  *   @optional
@@ -5124,8 +5018,7 @@ export function shuffle(collection) {
 }
 
 // lodash
-/** Gets the size of `collection` by returning its length for array-like
- * values or the number of own enumerable string keyed properties for objects.
+/** Gets the size of `collection`: its length for an array or string, or its key count for a map.
  *
  * @param collection {array|map|string}: The collection to inspect.
  *
@@ -5201,11 +5094,10 @@ export function snakeCase(string) {
 
 // lodash
 /** Checks if `rule` returns truthy for **any** element of `collection`.
- * Iteration is stopped once `rule` returns truthy. The rule is
- * invoked with three arguments: (value, index|key, collection).
+ * Iteration is stopped once `rule` returns truthy. `rule` is invoked as `(val, ckey)`.
  *
  * @param collection {array|map}: The collection to iterate over.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {boolean}: `true` if any element passes the rule check, else `false`.
@@ -5218,26 +5110,6 @@ export function snakeCase(string) {
 export function some(collection, rule) {
   if (false) { some(collection, rule); }
   throw 'TODO: implement some';
-}
-
-// lodash
-/** Creates an array of elements, sorted in ascending order by the results of
- * running each element in a collection thru each iteratee. This method
- * performs a stable sort, that is, it preserves the original sort order of
- * equal elements. The function/propnames are invoked with one argument: (value).
- *
- * @param collection {array|map}: The collection to iterate over.
- * @param funcOrProps {(Function|Function[])}: ] The function/propnames to sort by; defaults to `[identity`.
- *   @optional
- *
- * @returns {array}: the new sorted array.
- *
- * @example `var users = [ { 'user': 'fred', 'age': 48 }, { 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 30 }, { 'user': 'barney', 'age': 34 } ]; sortBy(users, [function(o) { return o.user; }]); // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]`
- * @example `sortBy(users, ['user', 'age']); // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]`
- */
-export function sortBy(collection, iteratees) {
-  if (false) { sortBy(collection, iteratees); }
-  throw 'TODO: implement sortBy';
 }
 
 // lodash
@@ -5257,13 +5129,13 @@ export function sortedIndex(array, value) {
 }
 
 // lodash
-/** Like `sortedIndex` except that it accepts `funcOrProp`
+/** Like `sortedIndex` except that it accepts `funcOrPath`
  * which is invoked for `value` and each element of `array` to compute their
- * sort ranking. A function iteratee is invoked with (val, seq).
+ * sort ranking. `funcOrPath` is invoked as `(val, idx)`.
  *
  * @param array {array}: The sorted array to inspect.
  * @param value: The value to evaluate.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the index at which `value` should be inserted into `array`.
@@ -5271,8 +5143,8 @@ export function sortedIndex(array, value) {
  * @example `var objects = [{ 'x': 4 }, { 'x': 5 }]; sortedIndexBy(objects, { 'x': 4 }, function(o) { return o.x; }); // => 0`
  * @example `sortedIndexBy(objects, { 'x': 4 }, 'x'); // => 0`
  */
-export function sortedIndexBy(array, value, iteratee) {
-  if (false) { sortedIndexBy(array, value, iteratee); }
+export function sortedIndexBy(array, value, funcOrPath) {
+  if (false) { sortedIndexBy(array, value, funcOrPath); }
   throw 'TODO: implement sortedIndexBy';
 }
 
@@ -5310,13 +5182,13 @@ export function sortedLastIndex(array, value) {
 }
 
 // lodash
-/** Like `sortedLastIndex` except that it accepts `funcOrProp`
+/** Like `sortedLastIndex` except that it accepts `funcOrPath`
  * which is invoked for `value` and each element of `array` to compute their
- * sort ranking. A function iteratee is invoked with (val, seq).
+ * sort ranking. `funcOrPath` is invoked as `(val, idx)`.
  *
  * @param array {array}: The sorted array to inspect.
  * @param value: The value to evaluate.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the index at which `value` should be inserted into `array`.
@@ -5324,8 +5196,8 @@ export function sortedLastIndex(array, value) {
  * @example `var objects = [{ 'x': 4 }, { 'x': 5 }]; sortedLastIndexBy(objects, { 'x': 4 }, function(o) { return o.x; }); // => 1`
  * @example `sortedLastIndexBy(objects, { 'x': 4 }, 'x'); // => 1`
  */
-export function sortedLastIndexBy(array, value, iteratee) {
-  if (false) { sortedLastIndexBy(array, value, iteratee); }
+export function sortedLastIndexBy(array, value, funcOrPath) {
+  if (false) { sortedLastIndexBy(array, value, funcOrPath); }
   throw 'TODO: implement sortedLastIndexBy';
 }
 
@@ -5365,15 +5237,15 @@ export function sortedUniq(array) {
  * for sorted arrays.
  *
  * @param array {array}: The array to inspect.
- * @param funcOrProp {function}: Function/propname invoked per element.
+ * @param funcOrPath {function}: `(val) => criteria`.
  *   @optional
  *
  * @returns {array}: the new duplicate free array.
  *
  * @example `sortedUniqBy([1.1, 1.2, 2.3, 2.4], Math.floor); // => [1.1, 2.3]`
  */
-export function sortedUniqBy(array, iteratee) {
-  if (false) { sortedUniqBy(array, iteratee); }
+export function sortedUniqBy(array, funcOrPath) {
+  if (false) { sortedUniqBy(array, funcOrPath); }
   throw 'TODO: implement sortedUniqBy';
 }
 
@@ -5602,20 +5474,20 @@ export function sum(array) {
 }
 
 // flipshop
-/** Sum of `iterateeSpec(val, seq)` across `arr` -- `sum` *(std)*, mapped via `mapValues`.
- * `iterateeSpec` is coerced through `funcOrProp` @see `funcOrProp`.
+/** Sum of `funcOrPath(val, idx)` across `arr` -- `sum` *(std)*, mapped via `mapValues`.
+ * `funcOrPath` is coerced through `iteratee` @see `iteratee`.
  *
  * @example `sumBy([{ "n": 2 }, { "n": 4 }], (val) => val.n); // => 6`
  */
-// export function sumBy(arr, iterateeSpec) {}
+// export function sumBy(arr, funcOrPath) {}
 
 // lodash
-/** Like `sum` except that it accepts `funcOrProp` which is
+/** Like `sum` except that it accepts `funcOrPath` which is
  * invoked for each element in `array` to generate the value to be summed.
- * A function iteratee is invoked with (val, seq).
+ * `funcOrPath` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to iterate over.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {number}: the sum.
@@ -5623,8 +5495,8 @@ export function sum(array) {
  * @example `var objects = [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }]; sumBy(objects, function(o) { return o.n; }); // => 20`
  * @example `sumBy(objects, 'n'); // => 20`
  */
-export function sumBy(array, iteratee) {
-  if (false) { sumBy(array, iteratee); }
+export function sumBy(array, funcOrPath) {
+  if (false) { sumBy(array, funcOrPath); }
   throw 'TODO: implement sumBy';
 }
 
@@ -5715,11 +5587,10 @@ export function takeRight(array, n) {
 
 // lodash
 /** Creates a slice of `array` with elements taken from the end. Elements are
- * taken until `rule` returns falsey. The rule is invoked with
- * three arguments: (value, index, array).
+ * taken until `rule` returns falsey. `rule` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to query.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -5744,11 +5615,10 @@ export function takeRightWhile(array, rule) {
 
 // lodash
 /** Creates a slice of `array` with elements taken from the beginning. Elements
- * are taken until `rule` returns falsey. The rule is invoked with
- * three arguments: (value, index, array).
+ * are taken until `rule` returns falsey. `rule` is invoked as `(val, idx)`.
  *
  * @param array {array}: The array to query.
- * @param rule {function}: Function invoked per iteration; defaults to `identity`.
+ * @param rule {ruleOrKey}: Coerced to a rule; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the slice of `array`.
@@ -5764,17 +5634,17 @@ export function takeWhile(array, rule) {
 }
 
 // flipshop
-/** Invokes `func(seq, seq)` `count` times (i.e. for seq = 0 to count - 1),
- * returning an array of the results of each invocation.
+/** Invokes `func(iter)` `count` times (i.e. for `iter` = 0 to `count` - 1), returning an array
+ * of the results of each invocation.
  *
  * @param count {number}: The number of times to invoke `func`.
- * @param func {function}: Function invoked per iteration; defaults to `identity`.
+ * @param func {function}: `(iter) => val`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the array of results.
  *
  * @example `times(3, String); // => ['0', '1', '2']`
- * @example `times(3, (seq, _seq2) => seq * seq); // => [0, 1, 4]`
+ * @example `times(3, (iter) => iter * iter); // => [0, 1, 4]`
  * @example `times(4, constant(0)); // => [0, 0, 0, 0]`
  */
 
@@ -5935,15 +5805,14 @@ export function toNumber(value) {
 // export function toPairs(bag) {}
 
 // lodash
-/** Creates an array of own enumerable string keyed-value pairs for `object`
- * which can be consumed by `fromPairs`. If `object` is a map or set, its
- * entries are returned.
+/** Same as `toPairs` -- FeatureScript maps have no own/inherited distinction, so there's no
+ * extra reach for this to have over `toPairs`.
  *
- * @param object {map}: The object to query.
+ * @param object {map}: The map to query.
  *
  * @returns {array}: the key-value pairs.
  *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; toPairs(new Foo); // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)`
+ * @example `toPairs({ 'a': 1, 'b': 2 }); // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)`
  */
 export function toPairs(object) {
   if (false) { toPairs(object); }
@@ -5951,15 +5820,14 @@ export function toPairs(object) {
 }
 
 // lodash
-/** Creates an array of own and inherited enumerable string keyed-value pairs
- * for `object` which can be consumed by `fromPairs`. If `object` is a map
- * or set, its entries are returned.
+/** Same as `toPairs` -- FeatureScript maps have no own/inherited distinction, so there's no
+ * extra reach for this to have over `toPairs`.
  *
- * @param object {map}: The object to query.
+ * @param object {map}: The map to query.
  *
  * @returns {array}: the key-value pairs.
  *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; toPairsIn(new Foo); // => [['a', 1], ['b', 2], ['c', 3]] (iteration order is not guaranteed)`
+ * @example `toPairsIn({ 'a': 1, 'b': 2 }); // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)`
  */
 export function toPairsIn(object) {
   if (false) { toPairsIn(object); }
@@ -5967,14 +5835,13 @@ export function toPairsIn(object) {
 }
 
 // lodash
-/** Converts `value` to a property path array.
+/** Converts `value` to a `keypath` array.
  *
  * @param value: The value to convert.
  *
- * @returns {array}: the new property path array.
+ * @returns {array}: the new keypath array.
  *
  * @example `toPath('a.b.c'); // => ['a', 'b', 'c']`
- * @example `toPath('a[0].b.c'); // => ['a', '0', 'b', 'c']`
  */
 export function toPath(value) {
   if (false) { toPath(value); }
@@ -5982,15 +5849,12 @@ export function toPath(value) {
 }
 
 // lodash
-/** Converts `value` to a plain object flattening inherited enumerable string
- * keyed properties of `value` to own properties of the plain object.
+/** Same as `identity` -- FeatureScript maps have no prototype chain to flatten, so there's
+ * nothing for this to have over `value` itself.
  *
  * @param value: The value to convert.
  *
- * @returns {map}: the converted plain object.
- *
- * @example `function Foo() { this.b = 2; } Foo.prototype.c = 3; assign({ 'a': 1 }, new Foo); // => { 'a': 1, 'b': 2 }`
- * @example `assign({ 'a': 1 }, toPlainObject(new Foo)); // => { 'a': 1, 'b': 2, 'c': 3 }`
+ * @returns {map}: `value`.
  */
 export function toPlainObject(value) {
   if (false) { toPlainObject(value); }
@@ -6061,16 +5925,13 @@ export function toUpper(string) {
 }
 
 // lodash
-/** An alternative to `reduce`; this method transforms `object` to a new
- * `accumulator` object which is the result of running each of its own
- * enumerable string keyed properties thru `funcOrProp`, with each invocation
- * potentially mutating the `accumulator` object. If `accumulator` is not
- * provided, a new object with the same `[[Prototype]]` will be used. The
- * iteratee is invoked with four arguments: (accumulator, value, key, object).
- * Iteratee functions may exit iteration early by explicitly returning `false`.
+/** An alternative to `reduce`; this method transforms `object` into a new `accumulator` map,
+ * which is the result of running each of `object`'s keys thru `reducer`, invoked as
+ * `(acc, val, ckey)`. If `accumulator` is not provided, an empty map is used. `reducer` may
+ * exit iteration early by explicitly returning `false`.
  *
  * @param object {map}: The object to iterate over.
- * @param funcOrProp {function}: Reducer function invoked per iteration; defaults to `identity`.
+ * @param reducer {function}: `(acc, val, ckey) => acc`; defaults to `identity`.
  *   @optional
  * @param accumulator: The custom accumulator value.
  *   @optional
@@ -6080,8 +5941,8 @@ export function toUpper(string) {
  * @example `transform([2, 3, 4], function(result, n) { result.push(n *= n); return n % 2 == 0; }, []); // => [4, 9]`
  * @example `transform({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) { (result[value] || (result[value] = [])).push(key); }, {}); // => { '1': ['a', 'c'], '2': ['b'] }`
  */
-export function transform(object, iteratee, accumulator) {
-  if (false) { transform(object, iteratee, accumulator); }
+export function transform(object, reducer, accumulator) {
+  if (false) { transform(object, reducer, accumulator); }
   throw 'TODO: implement transform';
 }
 
@@ -6288,15 +6149,15 @@ export function union(arrays) {
 }
 
 // flipshop
-/** `union`, deduplicating by `iterateeSpec(val)` instead of `val` itself. `iterateeSpec` is coerced
- * through `funcOrProp` @see `funcOrProp`.
+/** `union`, deduplicating by `funcOrPath(val)` instead of `val` itself. `funcOrPath` is coerced
+ * through `iteratee` @see `iteratee`.
  *
  * @example `unionBy([[2.1], [1.2, 2.3]], (val) => floor(val)); // => [2.1, 1.2]`
  */
-// export function unionBy(arrList, iterateeSpec) {}
+// export function unionBy(arrList, funcOrPath) {}
 
 // lodash
-/** Like `union` except that it accepts `funcOrProp` which is
+/** Like `union` except that it accepts `funcOrPath` which is
  * invoked for each element of each `arrays` to generate the criterion by
  * which uniqueness is computed. Result values are chosen from the first
  * array in which the value occurs. The function/propname is invoked with one argument:
@@ -6304,7 +6165,7 @@ export function union(arrays) {
  *
  * @param arrays {array}: The arrays to inspect.
  *   @optional
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of combined values.
@@ -6312,8 +6173,8 @@ export function union(arrays) {
  * @example `unionBy([2.1], [1.2, 2.3], Math.floor); // => [2.1, 1.2]`
  * @example `unionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 1 }, { 'x': 2 }]`
  */
-export function unionBy(arrays, iteratee) {
-  if (false) { unionBy(arrays, iteratee); }
+export function unionBy(arrays, funcOrPath) {
+  if (false) { unionBy(arrays, funcOrPath); }
   throw 'TODO: implement unionBy';
 }
 
@@ -6365,22 +6226,22 @@ export function uniq(array) {
 
 // flipshop
 /** `arr` with duplicate elements removed, keeping the first occurrence -- like std's
- * `deduplicate`, but comparing `iterateeSpec(val, seq)` instead of `val` itself. `iterateeSpec` is
- * coerced through `funcOrProp` @see `funcOrProp`.
+ * `deduplicate`, but comparing `funcOrPath(val, idx)` instead of `val` itself. `funcOrPath` is
+ * coerced through `iteratee` @see `iteratee`.
  *
  * @example `uniqBy([2.1, 1.2, 2.3], (val, _seq) => floor(val)); // => [2.1, 1.2]`
  */
-// export function uniqBy(arr, iterateeSpec) {}
+// export function uniqBy(arr, funcOrPath) {}
 
 // lodash
-/** Like `uniq` except that it accepts `funcOrProp` which is
+/** Like `uniq` except that it accepts `funcOrPath` which is
  * invoked for each element in `array` to generate the criterion by which
  * uniqueness is computed. The order of result values is determined by the
  * order they occur in the array. The function/propname is invoked with one argument:
  * (value).
  *
  * @param array {array}: The array to inspect.
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new duplicate free array.
@@ -6388,8 +6249,8 @@ export function uniq(array) {
  * @example `uniqBy([2.1, 1.2, 2.3], Math.floor); // => [2.1, 1.2]`
  * @example `uniqBy([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 1 }, { 'x': 2 }]`
  */
-export function uniqBy(array, iteratee) {
-  if (false) { uniqBy(array, iteratee); }
+export function uniqBy(array, funcOrPath) {
+  if (false) { uniqBy(array, funcOrPath); }
   throw 'TODO: implement uniqBy';
 }
 
@@ -6454,16 +6315,14 @@ export function uniqWith(array, comparator) {
 // export function unitcolorToColor(unitcolor) {}
 
 // lodash
-/** Removes the property at `path` of `object`.
+/** Removes the val at `path` of `object`.
  *
- * **Note:** This method mutates `object`.
+ * @param object {map}: The map to modify.
+ * @param path {anypath}: Path to unset.
  *
- * @param object {map}: The object to modify.
- * @param path {array|string}: The path of the property to unset.
+ * @returns {boolean}: `true` if a val was deleted, else `false`.
  *
- * @returns {boolean}: `true` if the property is deleted, else `false`.
- *
- * @example `var object = { 'a': [{ 'b': { 'c': 7 } }] }; unset(object, 'a[0].b.c'); // => true`
+ * @example `var object = { 'a': [{ 'b': { 'c': 7 } }] }; unset(object, 'a.0.b.c'); // => true`
  * @example `println(object); // => { 'a': [{ 'b': {} }] };`
  * @example `unset(object, ['a', '0', 'b', 'c']); // => true`
  * @example `println(object); // => { 'a': [{ 'b': {} }] };`
@@ -6500,19 +6359,18 @@ export function unzip(array) {
 }
 
 // flipshop
-/** `unzip`, passing each ungrouped column through `funcOrProp` before collecting it.
+/** `unzip`, passing each ungrouped column through `combiner` before collecting it.
  *
  * @example `unzipWith([[1, 10], [2, 20]], (col) => sum(col)); // => [3, 30]`
  */
-// export function unzipWith(arr, iteratee) {}
+// export function unzipWith(arr, combiner) {}
 
 // lodash
-/** Like `unzip` except that it accepts `funcOrProp` to specify
- * how regrouped values should be combined. The function/propname is invoked with the
- * elements of each group: (...group).
+/** Like `unzip` except that it accepts `combiner` to specify how regrouped values should be
+ * combined; invoked with the elements of each group: (...group).
  *
  * @param array {array}: The array of grouped elements to process.
- * @param funcOrProp {function}: Function to combine regrouped values; defaults to `identity`.
+ * @param combiner {function}: Invoked with the array of values collected at each position; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of regrouped elements.
@@ -6520,8 +6378,8 @@ export function unzip(array) {
  * @example `var zipped = zip([1, 2], [10, 20], [100, 200]); // => [[1, 10, 100], [2, 20, 200]]`
  * @example `unzipWith(zipped, add); // => [3, 30, 300]`
  */
-export function unzipWith(array, iteratee) {
-  if (false) { unzipWith(array, iteratee); }
+export function unzipWith(array, combiner) {
+  if (false) { unzipWith(array, combiner); }
   throw 'TODO: implement unzipWith';
 }
 
@@ -6554,7 +6412,7 @@ export function unzipWith(array, iteratee) {
  * **Note:** This method mutates `object`.
  *
  * @param object {map}: The object to modify.
- * @param path {array|string}: The path of the property to set.
+ * @param path {anypath}: Path to set.
  * @param updater {function}: Function to produce the updated value.
  *
  * @returns {map}: `object`.
@@ -6576,7 +6434,7 @@ export function update(object, path, updater) {
  * **Note:** This method mutates `object`.
  *
  * @param object {map}: The object to modify.
- * @param path {array|string}: The path of the property to set.
+ * @param path {anypath}: Path to set.
  * @param updater {function}: Function to produce the updated value.
  * @param customizer {function}: Function to customize assigned values.
  *   @optional
@@ -6637,15 +6495,13 @@ export function upperFirst(string) {
 }
 
 // lodash
-/** Creates an array of the own enumerable string keyed property values of `object`.
+/** Creates an array of the vals of `object`.
  *
- * **Note:** Non-object values are coerced to objects.
+ * @param object {map}: The map to query.
  *
- * @param object {map}: The object to query.
+ * @returns {array}: the array of vals.
  *
- * @returns {array}: the array of property values.
- *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; values(new Foo); // => [1, 2] (iteration order is not guaranteed)`
+ * @example `values({ 'a': 1, 'b': 2 }); // => [1, 2] (iteration order is not guaranteed)`
  * @example `values('hi'); // => ['h', 'i']`
  */
 export function values(object) {
@@ -6675,16 +6531,14 @@ export function values(object) {
 // export function valuesAtEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) {}
 
 // lodash
-/** Creates an array of the own and inherited enumerable string keyed property
- * values of `object`.
+/** Same as `values` -- FeatureScript maps have no own/inherited distinction, so there's no
+ * extra reach for this to have over `values`.
  *
- * **Note:** Non-object values are coerced to objects.
+ * @param object {map}: The map to query.
  *
- * @param object {map}: The object to query.
+ * @returns {array}: the array of vals.
  *
- * @returns {array}: the array of property values.
- *
- * @example `function Foo() { this.a = 1; this.b = 2; } Foo.prototype.c = 3; valuesIn(new Foo); // => [1, 2, 3] (iteration order is not guaranteed)`
+ * @example `valuesIn({ 'a': 1, 'b': 2 }); // => [1, 2] (iteration order is not guaranteed)`
  */
 export function valuesIn(object) {
   if (false) { valuesIn(object); }
@@ -6772,7 +6626,7 @@ export function wrap(value, wrapper) {
 // lodash
 /** This method is the wrapper version of `at`.
  *
- * @param paths {(string|string[])}: The property paths to pick.
+ * @param keylist {array}: Each entry an `anypath`, to pick.
  *   @optional
  *
  * @returns {map}: the new `lodash` wrapper instance.
@@ -6913,15 +6767,15 @@ export function xor(arrays) {
 }
 
 // flipshop
-/** `xor`, comparing by `iterateeSpec(val, seq)` instead of `val` itself. `iterateeSpec` is coerced
- * through `funcOrProp` @see `funcOrProp`.
+/** `xor`, comparing by `funcOrPath(val, idx)` instead of `val` itself. `funcOrPath` is coerced
+ * through `iteratee` @see `iteratee`.
  *
  * @example `xorBy([[2.1, 1.2], [2.3, 3.4]], (val, _seq) => floor(val)); // => [1.2, 3.4]`
  */
-// export function xorBy(arrList, iterateeSpec) {}
+// export function xorBy(arrList, funcOrPath) {}
 
 // lodash
-/** Like `xor` except that it accepts `funcOrProp` which is
+/** Like `xor` except that it accepts `funcOrPath` which is
  * invoked for each element of each `arrays` to generate the criterion by
  * which by which they're compared. The order of result values is determined
  * by the order they occur in the arrays. The function/propname is invoked with one
@@ -6929,7 +6783,7 @@ export function xor(arrays) {
  *
  * @param arrays {array}: The arrays to inspect.
  *   @optional
- * @param funcOrProp {function}: Function/propname invoked per element; defaults to `identity`.
+ * @param funcOrPath {function}: `(val) => criteria`; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of filtered values.
@@ -6937,8 +6791,8 @@ export function xor(arrays) {
  * @example `xorBy([2.1, 1.2], [2.3, 3.4], Math.floor); // => [1.2, 3.4]`
  * @example `xorBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'); // => [{ 'x': 2 }]`
  */
-export function xorBy(arrays, iteratee) {
-  if (false) { xorBy(arrays, iteratee); }
+export function xorBy(arrays, funcOrPath) {
+  if (false) { xorBy(arrays, funcOrPath); }
   throw 'TODO: implement xorBy';
 }
 
@@ -6999,66 +6853,66 @@ export function zip(arrays) {
 // export function zipObject(keylist, valuelist) {}
 
 // lodash
-/** Like `fromPairs` except that it accepts two arrays,
- * one of property identifiers and one of corresponding values.
+/** Like `fromPairs` except that it accepts two arrays, one of keys and one of corresponding
+ * values.
  *
- * @param props {array}: ] The property identifiers; defaults to `[`.
+ * @param keylist {array}: Defaults to `[]`.
  *   @optional
- * @param values {array}: ] The property values; defaults to `[`.
+ * @param valuelist {array}: Defaults to `[]`.
  *   @optional
  *
- * @returns {map}: the new object.
+ * @returns {map}: the new map.
  *
  * @example `zipObject(['a', 'b'], [1, 2]); // => { 'a': 1, 'b': 2 }`
  */
-export function zipObject(props, values) {
-  if (false) { zipObject(props, values); }
+export function zipObject(keylist, valuelist) {
+  if (false) { zipObject(keylist, valuelist); }
   throw 'TODO: implement zipObject';
 }
 
 // lodash
-/** Like `zipObject` except that it supports property paths.
+/** Like `zipObject` except that each entry of `keylist` is an `anypath` @see `getAt`, not a
+ * literal key.
  *
- * @param props {array}: ] The property identifiers; defaults to `[`.
+ * @param keylist {array}: Each entry an `anypath`; defaults to `[]`.
  *   @optional
- * @param values {array}: ] The property values; defaults to `[`.
+ * @param valuelist {array}: Defaults to `[]`.
  *   @optional
  *
- * @returns {map}: the new object.
+ * @returns {map}: the new map.
  *
- * @example `zipObjectDeep(['a.b[0].c', 'a.b[1].d'], [1, 2]); // => { 'a': { 'b': [{ 'c': 1 }, { 'd': 2 }] } }`
+ * @example `zipObjectDeep(['a.b.0.c', 'a.b.1.d'], [1, 2]); // => { 'a': { 'b': [{ 'c': 1 }, { 'd': 2 }] } }`
  */
-export function zipObjectDeep(props, values) {
-  if (false) { zipObjectDeep(props, values); }
+export function zipObjectDeep(keylist, valuelist) {
+  if (false) { zipObjectDeep(keylist, valuelist); }
   throw 'TODO: implement zipObjectDeep';
 }
 
 // TODO-clxnUtils
-/** `zip` *(std)* on `arrList`, passing each grouped row through `funcOrProp` before collecting it --
+/** `zip` *(std)* on `arrList`, passing each grouped row through `combiner` before collecting it --
  * the same shape as `unzipWith`, under lodash's name for the zipping direction.
  *
  * @example `zipWith([[1, 2], [10, 20]], (row) => sum(row)); // => [11, 22]`
  */
-export function zipWith(arrList, funcOrProp) {
-  if (false) { zipWith(arrList, funcOrProp); }
+export function zipWith(arrList, combiner) {
+  if (false) { zipWith(arrList, combiner); }
   throw 'TODO: implement zipWith';
 }
 
 // TODO-clxnUtils
-/** Like `zip` except that it accepts `funcOrProp` to specify
- * how grouped values should be combined. The function/propname is invoked with the
- * elements of each group: (...group).
+/** Like `zip` except that it accepts `combiner` to specify how grouped values should be
+ * combined; invoked with the elements of each group: (...group).
  *
  * @param arrays {array}: The arrays to process.
  *   @optional
- * @param funcOrProp {function}: Function to combine grouped values; defaults to `identity`.
+ * @param combiner {function}: Invoked with the array of values collected at each position; defaults to `identity`.
  *   @optional
  *
  * @returns {array}: the new array of grouped elements.
  *
  * @example `zipWith([1, 2], [10, 20], [100, 200], function(a, b, c) { return a + b + c; }); // => [111, 222]`
  */
-export function zipWith2(arrays, iteratee) {
-  if (false) { zipWith2(arrays, iteratee); }
+export function zipWith2(arrays, combiner) {
+  if (false) { zipWith2(arrays, combiner); }
   throw 'TODO: implement zipWith2';
 }

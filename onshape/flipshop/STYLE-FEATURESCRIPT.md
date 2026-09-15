@@ -56,7 +56,7 @@ segments. There is no string interpolation, but everything pretty-prints nicely.
 
 **Sorting** Use one of these, as appropriate:
 * `orderBy`    -- accepts a custom iteratee, direction, comparator. sorts array or map values, comparing recursively. Preferred in most cases
-* `orderByAny` -- accepts a custom iteratee, direction; will not fail even if the data is heterogenous. Use this only if that laxity is desireable
+* `orderAnyBy` -- accepts a custom iteratee, direction; will not fail even if the data is heterogenous. Use this only if that laxity is desireable
 * `sort` (*std*) -- a builtin, but requires you to make your own comparator
 * `tolerantSort` (*std*) -- a builtin that (like our default) uses tolerant ordering by default.
 

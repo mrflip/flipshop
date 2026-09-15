@@ -197,9 +197,9 @@ buckets above.
 ### Sort
 
 `cmp`/`cmpTo` give every FeatureScript type a total-ish ordering (comparing incompatible types
-throws, except through `cmpAny`), and `orderBy`/`orderAnyBy` sort a collection by a computed key
-on top of that — lodash's `sortBy` is the single-iteratee case of `orderBy` with no `comparator`
-override, so it isn't ported separately.
+throws, except through `cmpAny`), and `orderBy`/`orderAnyBy` sort a collection by one or more
+computed keys on top of that — lodash's `sortBy` is the single-axis case of `orderBy` with no
+`orders` or `comparators` override, so it isn't ported separately.
 
 | Function Name    | Lodash         | Description                                                                                                 | Caveats                                                                                                       |
 | ---------------- | -------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -208,8 +208,8 @@ override, so it isn't ported separately.
 | `cmp` / `cmpTo`  | ≈              | Three-way comparison (`-1`/`0`/`1`) between two values of the same type. | Comparing incompatible types throws; comparing strings is nutty in FeatureScript -- it's not built in so we have a hack, via `strOrderBy`. |
 | `cmpAny`         | ≈              | Three-way comparison (`-1`/`0`/`1`), returns a total order on any combination of values — falls back to comparing by type when the types themselves differ. | Never throws, unlike `cmp`. |
 | `cmpMapByKeysOnly` | —            | Compares two maps by their key lists alone, ignoring values. | `cmpTo` on two maps uses this first, then breaks ties by comparing values. |
-| `orderBy` / `sortBy` | ≡          | `vals` (array or map, keys discarded) stably sorted by a computed key. | Lodash's `orderBy` accepts one-or-many iteratees and orders; this accepts just one of each — the single-iteratee case is what lodash calls `sortBy`, so there's no separate port of that name. |
-| `orderAnyBy`     | —              | `orderBy`, with `cmpAny` as the comparator, so mixed/incompatible types across results never throw. | |
+| `orderBy` / `sortBy` | ≡          | `collection` (array or map, keys discarded) stably sorted by one `funcOrPath` per sort axis, each with its own `order` and `comparator`. | An array `funcOrPaths` is always a list of axes, so a deep path needs its dotkey spelling (`"a.b"`, not `["a", "b"]`). The single-axis case is what lodash calls `sortBy`, so there's no separate port of that name. |
+| `orderAnyBy`     | —              | `orderBy`, with `cmpAny` standing in wherever a `comparator` goes unnamed, so mixed/incompatible types across results never throw. | |
 | ~~sortedUniq~~ / ~~sortedUniqBy~~ | ≡ | `uniq`/`uniqBy`, optimized for sorted input. | Redundant with `uniqBy`/std `deduplicate` at this project's scale. |
 | ~~sortedIndex~~ / ~~sortedIndexBy~~ / ~~sortedIndexOf~~ / ~~sortedLastIndex~~ / ~~sortedLastIndexBy~~ / ~~sortedLastIndexOf~~ | `sortedIndex*` family | Binary-search insertion points into an already-sorted array. | std's `sort(arr, compareFunction)` makes this possible for numbers, but the 6-function family is a lot of surface for an optimization this codebase has no hot path for. |
 

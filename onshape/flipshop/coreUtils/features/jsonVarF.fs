@@ -223,17 +223,3 @@ precondition {
     });
   }
 });
-
-// == [Function values] --
-// Only the EditLogic functions get a dispatch entry: jsonVarF/keylistF/sizeofF/valuesAtF/splatF
-// are `export const`-bound defineFeature values already, so they're nameable first-class values
-// on their own — the dispatch-map workaround is for `export function`-declared names like these.
-
-export const JsonVarFuncs = {
-  "keylistEditLogic":  (context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) =>
-    keylistEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters),
-  "sizeofEditLogic":   (context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) =>
-    sizeofEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters),
-  "valuesAtEditLogic": (context, id, oldDefinition, newDefinition, isCreating, specifiedParameters) =>
-    valuesAtEditLogic(context, id, oldDefinition, newDefinition, isCreating, specifiedParameters),
-};
