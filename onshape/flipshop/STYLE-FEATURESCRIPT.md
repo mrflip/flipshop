@@ -382,16 +382,91 @@ function boxForBounds(minH is ValueWithUnits, maxH is ValueWithUnits,
 
 Bulleted lists use `*` at the top level and `-` (indented two spaces per level) for sub-lists.
 
-```
-/** drawShape
- * * circle: draws a circle
- * * polygon: based on number of sides:
- *   - will error if sides is 2 or less.
- */
-```
-
 Use `/** */` for doc blocks,  `/* */` for TODOs and import-group labels; `//` for same-line clarifications and commented-out
 code.
+
+### Doc Blocks
+
+Focus on what the end user needs to know.
+Do NOT describe the internals of the function, or make notes about its development, or describe future work, in a function's doc string.
+
+Preferred style:
+* @example on one line, if short enough; otherwise, split to multiple lines, indented by two spaces.
+* Elide unneccesary articles, self-mentions, and fluff. `Array/map to merge as described by \`keypath\`` is preferred over `An array or map that this function will combine at the location described by keypath`
+* A `@param` block describes that parameter's role, not its actions -- describe the function's story in the header. Bad: `d]each succeeding element is used as a path element follows: first, ...` Good: `dd
+* First line should be a `/** Brief statement of function if that's truly enough */`, or `/** Description of function, continuing on following lines, but worded and line-break'ed so the reader can get\n` ... the picture.
+* Put things in the order, as warranted; (fields are as params):
+  - header, with `Defaults to ...` and `@seeAlso`, as warranted;
+  - `@param`, with description, `@fields`, `@eg` (if warranted), `@optional` (if needed);
+  - `@returns`, separated by a newline if there are examples;
+  - `@examples`, don't be stingy.
+
+Hard requirements of Featurescript: you **must** follow this structure
+
+* In every section:
+  - Only keyboard characters are allowed anywhere in the docstring (i.e. 7-bit ascii visible). Replace em dash `—` with `--`
+  - A backtick must terminate at end of line which is crazy but whatever, do your best
+* Header should tell the overall story of the function.
+  - It mostly doesn't seem to mind our current markdown-ish. However:
+  - Bulleted lists must be separated by an empty (apart from the left star) line, as seen below
+* `@seeAlso [refname]`, **must** come right after the intro(?) -- not ~~`@see`~~. Only do the simple form with the name, don't add parameters
+* `@param argName {type}: (...prose)` or `@param value: (...prose)` Put the colons tight with the name or type. Type can be a typedef or builtin.
+  - argName **must** match the actual name in the function, or it's omitted.
+  - `@eg` to supply an example value
+  - `@optional` for an overload eliding that param or field
+  - An `@optional` token must be the only thing on its line.
+* `param keywordarg {{\n ...` for a map of options, using...
+* `@field fieldname {type}: (...prose) ` or `@field fieldname: (...prose) ` -- similar to @param
+* `@returns: (...prose) ` or `@returns {type}: (...prose) `
+* `@example` **must** be followed by a backtick'ed segment, eg `@example \`foo(x, y, z) // => true\` blah blah`.
+  - You can continue on the next line with a two-space indent.
+  - the `@example` directive must be repeated at the start of each line
+
+Here's a Katamari Damacy doc block gathered from various Onshape-authored functions:
+
+```
+/** Demonstrates docstrings; otherwise, does nothing useful. Specifically, it will:
+ *
+ * * Templates the string in `recipe.template` using `recipe`'s other fields;
+ *   each matching `#hashmark` token in the template string is replaced
+ *   with the value from `recipe` (e.g. `this is #myValue, what do you think?`)
+ *
+ * * Meanwhile, since this is several methods smushed together, merges `recipe` into `defaults`
+ *   at the `keypath` location, falling back to `newNode` as described.
+ *
+ * * Finally, throws all of that away, and some weird stuff with intersections
+ *   of `entities` and somebody named Ray happens.
+ *
+ * * Discards all intermediate work and returns its input
+ *
+ * @seeAlso [mergeMaps]
+ *
+ * @param recipe: Map with field `template` and any number of identifier-shaped other fields.
+ *   See [TemplateString] docs for more info.
+ *   @eg `{ "template": "Value of #myValue", "myValue": 42 }`
+ * @param defaults: Array/map to merge as described by `keypath`.
+ *   If `defaults` is neither array nor map, and `keypath` is empty (i.e. no merge is possible), `newNode` is used.
+ * @param keypath {array}: String keys (current level is a map) or array indices (current level is an array) that sequentially descend to the merge location within `defaults`.
+ * @param newNode: Merged into `defaults` at the `keypath` location. If both `newNode` and
+ *   the node at the `keypath` location are maps, they will be combined with `mergeMaps`.
+ * @param opts {{
+ *   @field entities {Query}: Target entities. If bodies are provided, the result will contain intersections
+ *     for individual entities owned by the body.
+ *   @field closest {boolean}: Get only the closest intersection with any of the entities? Defaults to `true`.
+ *     @optional
+ *   @field includeIntersectionsBehind {boolean}: Return intersections that are behind the ray origin?
+ *     Defaults to `false`. Cannot be set to `true` if `closest` is `true`.
+ *     @optional
+ * }}
+ * @returns {array}: An array of [RaycastResult]s for each intersection in front of the ray, ordered from closest to farthest.
+ * @example `{ 'template': 'Length = #len', 'len': foot }` formatted as `Length = 12 in` if document units are inches.
+ * @example `{ 'template': '###var# bar', 'var': 'foo' }` formatted as `#foobar`.
+*/
+export function foo(recipe is map, defaults, keypath is array, newNode, opts is map) {
+    if (recipe is string) { return foo(recipe, defaults, keypath, newNode, opts); }
+    return [recipe, defaults, keypath, newNode, opts];
+}
+```
 
 ### Function preambles (`/** */` docblocks)
 
@@ -496,7 +571,7 @@ block is the one place an opening brace goes on its own line.
 
 ```featurescript
 annotation { "Name":  "Item X size" }
-isLength(definition.item_x_size, {(millimeter) : [tinySizeVal, 10, hugeSizeVal]} as LengthBoundSpec);
+isLength(definition.item_x_size, {(millimeter): [tinySizeVal, 10, hugeSizeVal]} as LengthBoundSpec);
 ```
 
 `UIHint` values always go in an array, even a single one:
