@@ -413,7 +413,7 @@ function nonkeyIndexMessage(seq, subj) returns string {
  * index — never a dotted path — and a map only ever contains `key` when its value isn't
  * `undefined`, since FeatureScript elides one on the way in.
  *
- * For an array, `missingPolicy` decides whether an in-bounds slot holding `undefined` counts:
+ * For an array, `nilPolicy` decides whether an in-bounds slot holding `undefined` counts:
  * `NilPolicy.NIL` (the default) says yes; `NilPolicy.SKIP` says no, the same as
  * `hasPresentKey`. Neither array overload accepts a negative index, unlike @see `getAt`.
  *
@@ -429,15 +429,15 @@ function nonkeyIndexMessage(seq, subj) returns string {
 export function hasKey(obj is map, key is string) returns boolean {
     return (obj[key] != undefined);
 }
-export function hasKey(obj is map, key is string, missingPolicy is NilPolicy) returns boolean {
+export function hasKey(obj is map, key is string, nilPolicy is NilPolicy) returns boolean {
     return (obj[key] != undefined); // offered for symmetry with the array case
 }
 export function hasPresentKey(obj is map, key is string) returns boolean {
   return hasKey(obj, key); // FS does not retain keys with undefined values
 }
 
-export function hasKey(obj is array, key is number, missingPolicy is NilPolicy) returns boolean {
-  if (missingPolicy == NilPolicy.SKIP) { return hasPresentKey(obj, key); }
+export function hasKey(obj is array, key is number, nilPolicy is NilPolicy) returns boolean {
+  if (nilPolicy == NilPolicy.SKIP) { return hasPresentKey(obj, key); }
   return (key >= 0) && (key < size(obj));
 }
 export function hasKey(obj is array, key is number) returns boolean {

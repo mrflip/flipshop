@@ -223,3 +223,25 @@ precondition {
     });
   }
 });
+
+
+// lodash
+/** Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @param value: The value to compare.
+ * @param other: The other value to compare.
+ *
+ * @returns {boolean}: `true` if the values are equivalent, else `false`.
+ *
+ * @example `var object = { 'a': 1 }; var other = { 'a': 1 }; eq(object, object); // => true`
+ * @example `eq(object, other); // => false`
+ * @example `eq('a', 'a'); // => true`
+ * @example `eq('a', Object('a')); // => false`
+ * @example `eq(NaN, NaN); // => true`
+ */
+export function eq(value, other) {
+  if (false) { eq(value, other); }
+  throw 'TODO: implement eq';
+}

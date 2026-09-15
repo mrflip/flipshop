@@ -351,7 +351,7 @@ export const HasKeyMapCases = [
   [[ { a: 1 },          "b" ], false ],
   [[ { a: undefined },  "a" ], false, 'FeatureScript elides an undefined value on write, so there is no key here to find'],
   //
-  [[ { a: 1 }, "a", NilPolicy.SKIP],          true,  'missingPolicy never changes the answer for a map'],
+  [[ { a: 1 }, "a", NilPolicy.SKIP],          true,  'nilPolicy never changes the answer for a map'],
   [[ { a: 1 }, "a", NilPolicy.NIL], true],
   [[ {},       "a", NilPolicy.SKIP],          false],
 ];
@@ -542,7 +542,7 @@ function runForEachBreakTests(context is Context, verbose is boolean) returns ma
 }
 
 /**
- * BREAK under the `keylist` and `missingPolicy` overloads: `keylist` order (not `keys(bag)`
+ * BREAK under the `keylist` and `nilPolicy` overloads: `keylist` order (not `keys(bag)`
  * order) is what BREAK stops early against, and a SKIP'd undefined entry does not consume a
  * `seq` slot on the way to the match.
  */

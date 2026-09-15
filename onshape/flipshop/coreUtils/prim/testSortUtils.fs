@@ -291,11 +291,9 @@ function runCmpThreadingTests(context is Context, verbose is boolean) returns ma
 // orderBy(collection, funcOrPaths?, orders?, comparators?) sorts an array's elements, or a map's
 // values (keys discarded), by each funcOrPath's result for each -- defaulting to one identity
 // axis, ascending, via cmp. Every arity below the full 4 is a plain defaulting wrapper, so
-// exercising each arity once is exercising the whole chain; the bulk of these cases instead probe
-// a lone funcOrPath's three forms (function/string/map), the multi-axis forms and how orders and
-// comparators spread across them (bare value broadcast, short array padded, the order=0 neuter
-// axis), stability of ties, and that a comparator is handed a funcOrPath's *results*, not the
-// original elements.
+// exercising each arity once exercises the whole chain; the cases below are grouped by which
+// generosity they're pinning down. orderBy threads cmp's own latitude rather than adding to it,
+// so the criteria-type group samples that rather than restating the cmp* suites above.
 
 const SortUsers = [
   { "user": 'fred',   "age": 48 },
@@ -303,28 +301,59 @@ const SortUsers = [
   { "user": 'fred',   "age": 40 },
   { "user": 'barney', "age": 36 },
 ];
+const NestedBs    = [{ "a": { "b": 3 } }, { "a": { "b": 1 } }, { "a": { "b": 2 } }];
+const CellRows    = [{ "cells": [1, 9] }, { "cells": [1, 2] }, { "cells": [5] }];
+const FlagRows    = [{ "a": 1, "n": 'first' }, { "a": 2, "n": 'second' }, { "a": 1, "n": 'third' }];
+const TolerantTies = [{ "n": 1, "tag": 'b' }, { "n": 1 + 1e-14, "tag": 'a' }];
 
 export const OrderByCases = [
-  [[[3, 1, 2]],                                   [1, 2, 3],  'default: ascending, by identity, via cmp -- the 1-arg form'],
-  [[[3, 1, 2], identity, -1],                     [3, 2, 1],  'order = -1 sorts descending'],
-  [[[3, 1, 2], identity, 0],                      [3, 1, 2],  'order = 0 is a neuter pass-through -- stable, so the input comes back unchanged'],
-  [[[3, 1, 2], []],                               [1, 2, 3],  'an empty funcOrPaths names no axis at all, which is identity'],
-  [[[10, 5, 20], (val, _seq) => -val],            [20, 10, 5], 'function funcOrPath: ascending by -val sorts descending by val -- the 2-arg form'],
-  [
-    [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n"],
-    [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
-    'string funcOrPath is a property accessor',
-  ],
-  [
-    [[{ "a": 1, "b": "X" }, { "a": 9, "b": "Y" }, { "a": 1, "b": "Z" }], { "a": 1 }],
-    [{ "a": 9, "b": "Y" }, { "a": 1, "b": "X" }, { "a": 1, "b": "Z" }],
-    'map funcOrPath is a matches rule; false sorts before true; elements with equal criteria keep their original relative order (stability)',
-  ],
+  // -- the arity chain, and the default each level fills in --
+  [[[3, 1, 2]],                                   [1, 2, 3],   'the 1-arg form: one identity axis, ascending, via cmp'],
+  [[[10, 5, 20], (val, _seq) => -val],            [20, 10, 5], 'the 2-arg form: ascending by -val sorts descending by val'],
+  [[[3, 1, 2], identity, -1],                     [3, 2, 1],   'the 3-arg form: order = -1 sorts descending'],
   [
     [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n", 1, (aa, bb) => aa - bb],
     [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
-    'the 4-arg form: a custom comparator receives the already-extracted numeric criteria, not the original maps -- subtracting a map would throw',
+    'the 4-arg form: a comparator receives the already-extracted criteria, not the original elements -- subtracting a map would throw',
   ],
+
+  // -- funcOrPaths: every form iteratee coerces, plus the getAt latitude a string path carries --
+  [
+    [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "n"],
+    [{ "n": 1 }, { "n": 2 }, { "n": 3 }],
+    'a string funcOrPath is a property accessor',
+  ],
+  [[NestedBs, "a.b"],   [NestedBs[1], NestedBs[2], NestedBs[0]], 'a string funcOrPath is a getAt dotkey, so it reaches into nested structure'],
+  [[CellRows, "cells.-1"], [CellRows[1], CellRows[2], CellRows[0]], 'a getAt path segment may be a negative index, counting from the end -- sorts on each row last cell, 2 then 5 then 9'],
+  [
+    [[{ "a": 1, "b": "X" }, { "a": 9, "b": "Y" }, { "a": 1, "b": "Z" }], { "a": 1 }],
+    [{ "a": 9, "b": "Y" }, { "a": 1, "b": "X" }, { "a": 1, "b": "Z" }],
+    'a map funcOrPath is a matches rule; false sorts before true; equal criteria keep their original relative order (stability)',
+  ],
+  [
+    [FlagRows, [["a", 1]]],
+    [FlagRows[1], FlagRows[0], FlagRows[2]],
+    'a [path, srcValue] array is a matchesProperty rule -- reachable only nested inside the axis list, since a bare array is read as a list of axes',
+  ],
+  [[[3, 1, 2], 7],   [1, 2, 3],   'a funcOrPath iteratee cannot coerce falls back to identity'],
+  [[[3, 1, 2], []],  [1, 2, 3],   'an empty funcOrPaths names no axis at all, which is also identity'],
+  [
+    [[{ "n": 3 }, { "n": 1 }], ["n"]],
+    [{ "n": 1 }, { "n": 3 }],
+    'a one-element funcOrPaths is the same single axis as the bare funcOrPath -- the array/lone-value boundary',
+  ],
+  [
+    [[{ "n": 3 }, { "n": 1 }, { "n": 2 }], "nope"],
+    [{ "n": 3 }, { "n": 1 }, { "n": 2 }],
+    'a path no element has yields undefined criteria throughout, which cmp reads as all-equal -- stable, so the input comes back unchanged',
+  ],
+  [
+    [[{ "n": 3 }, { "n": 1 }], ["nope", "n"]],
+    [{ "n": 1 }, { "n": 3 }],
+    'an axis that ties every element outright just hands the decision to the next axis',
+  ],
+
+  // -- multiple axes --
   [
     [SortUsers, ["user", "age"], [1, -1]],
     [SortUsers[3], SortUsers[1], SortUsers[0], SortUsers[2]],
@@ -336,30 +365,77 @@ export const OrderByCases = [
     'two axes, no orders: both ascending -- barney 34, barney 36, fred 40, fred 48',
   ],
   [
+    [SortUsers, [(val, _ckey) => val.age < 40, "age"]],
+    [SortUsers[2], SortUsers[0], SortUsers[1], SortUsers[3]],
+    'axes mix forms freely -- a function axis (the 40-and-overs first, since false sorts before true) then a string one, so fred 40, fred 48, barney 34, barney 36',
+  ],
+
+  // -- orders: bare broadcast, per-axis array, short, long, gapped, and the neuter axis --
+  [
     [SortUsers, ["user", "age"], -1],
     [SortUsers[0], SortUsers[2], SortUsers[3], SortUsers[1]],
     'a bare orders number broadcasts to every axis -- both descending, so fred 48, fred 40, barney 36, barney 34',
   ],
+  [[[3, 1, 2], identity, -5],  [3, 2, 1],   'only an order sign is read, not its magnitude -- the comparator result is merely multiplied through'],
   [
     [SortUsers, ["user", "age"], [-1]],
     [SortUsers[2], SortUsers[0], SortUsers[1], SortUsers[3]],
     'orders shorter than funcOrPaths: user descending as asked, and the unspoken-for age axis ascending -- fred 40, fred 48, barney 34, barney 36',
   ],
   [
+    [SortUsers, ["user", "age"], [-1, undefined]],
+    [SortUsers[2], SortUsers[0], SortUsers[1], SortUsers[3]],
+    'an undefined slot inside orders is the same as running off its end -- that axis sorts ascending',
+  ],
+  [
+    [[{ "n": 3 }, { "n": 1 }], "n", [-1, 1, 1]],
+    [{ "n": 3 }, { "n": 1 }],
+    'orders longer than funcOrPaths: the surplus is ignored rather than inventing axes',
+  ],
+  [[[3, 1, 2], identity, 0],   [3, 1, 2],   'order = 0 is a neuter pass-through -- stable, so the input comes back unchanged'],
+  [
     [SortUsers, ["user", "age"], [1, 0]],
     [SortUsers[1], SortUsers[3], SortUsers[0], SortUsers[2]],
-    'order = 0 ignores the age axis outright, leaving each user group in its original relative order -- barney 34, barney 36, fred 48, fred 40',
+    'order = 0 ignores the age axis outright -- its comparator never runs, leaving each user group in its original relative order',
   ],
+
+  // -- comparators: bare broadcast, per-axis array, short, long, gapped --
   [
     [[{ "a": 1, "b": 2 }, { "a": 1, "b": 1 }, { "a": 2, "b": 9 }], ["a", "b"], 1, [(aa, bb) => bb - aa]],
     [{ "a": 2, "b": 9 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }],
     'comparators shorter than funcOrPaths: axis a uses the reversing comparator given for it, axis b falls back to cmp',
   ],
   [
-    [SortUsers, [(val, _ckey) => val.age < 40, "age"]],
-    [SortUsers[2], SortUsers[0], SortUsers[1], SortUsers[3]],
-    'axes mix forms freely -- a function axis (the 40-and-overs first, since false sorts before true) then a string one, so fred 40, fred 48, barney 34, barney 36',
+    [[{ "a": 1, "b": 2 }, { "a": 1, "b": 1 }], ["a", "b"], 1, [undefined, undefined]],
+    [{ "a": 1, "b": 1 }, { "a": 1, "b": 2 }],
+    'an undefined slot inside comparators falls back to cmp, same as running off its end',
   ],
+  [
+    [[{ "n": 3 }, { "n": 1 }], "n", 1, [cmp, cmp, cmp]],
+    [{ "n": 1 }, { "n": 3 }],
+    'comparators longer than funcOrPaths: the surplus is ignored',
+  ],
+  [[[1, "2", 0], identity, 1, cmpAny],  [0, 1, "2"], 'cmpAny handed to orderBy outright is the documented way to allow mixed types without reaching for orderAnyBy'],
+
+  // -- criteria types, sampling the orderings cmp threads through --
+  [[[3 * meter, 1 * meter, 2 * meter]],  [1 * meter, 2 * meter, 3 * meter], 'ValueWithUnits criteria sort numerically'],
+  [
+    [[[1, 2, 3], [1, 2], [1, 3]]],
+    [[1, 2], [1, 2, 3], [1, 3]],
+    'array criteria compare pairwise, and the array that runs out first sorts earlier',
+  ],
+  [
+    [[{ "b": 1 }, { "a": 9 }, { "a": 1 }]],
+    [{ "a": 1 }, { "a": 9 }, { "b": 1 }],
+    'map criteria compare by key list first, then value by value',
+  ],
+  [
+    [TolerantTies, ["n", "tag"]],
+    [TolerantTies[1], TolerantTies[0]],
+    'cmp compares numbers with tolerance, so criteria 1e-14 apart tie and the tag axis decides -- without tolerance the input order would stand',
+  ],
+
+  // -- collection shapes --
   [[{ "z": 3, "a": 1, "m": 2 }],                  [1, 2, 3],  'a map is sorted by its values; keys are discarded'],
   [
     [{ "aaa": 1, "b": 2, "c": 3 }, (val, key) => length(key)],
@@ -373,7 +449,7 @@ export const OrderByCases = [
     'the (val, ckey) shape holds for every axis of a multi-axis map sort -- "b" (length 1) leads, then the "aa"/"cc" tie breaks '
     ~ 'on the second axis, descending by value, so 3 before 1',
   ],
-  [[[3 * meter, 1 * meter, 2 * meter]],           [1 * meter, 2 * meter, 3 * meter], 'ValueWithUnits sort via the default cmp comparator'],
+  [[[7]],                                         [7],        'a one-element array comes back as itself'],
   [[[]],                                          [],         'empty array sorts to an empty array'],
   [[{}],                                          [],         'empty map sorts to an empty array'],
 ];
@@ -386,11 +462,22 @@ function runOrderByTests(context is Context, verbose is boolean) returns map {
   });
 }
 
+// Where orderBy declines to be generous. Each of these is cmp's or FeatureScript's own strictness
+// surfacing through orderBy, not a check orderBy performs itself.
 export const OrderByErrorCases = [
-  [[[1, "2", 3]], "Execution error", 'the default comparator is cmp, so mixed number/string criteria throws exactly as cmp does; see orderAnyBy for a version that never throws'],
+  [[[1, "2", 3]],                    "Execution error", 'the default comparator is cmp, so mixed number/string criteria throw exactly as cmp does; see orderAnyBy for a version that never throws'],
+  [[[[1, 2], 3]],                    "Execution error", 'an array criteria against a number is the same incompatible-types throw'],
+  [[[{ "a": 1 }, { "b": 2 }], "a"],  "Execution error", 'a path only some elements have leaves undefined criteria facing present ones, and undefined compares with nothing but itself'],
+  [[[1, 2, 3], (val) => val],        "Execution error", 'each funcOrPath is invoked as (val, ckey), and FeatureScript calls a function with exactly its declared arity'],
+  [['nope'],                         "Execution error", 'a collection is an array or a map -- a string is neither'],
 ];
 function runOrderByErrorTests(context is Context, verbose is boolean) returns map {
-  return runTests(context, "orderBy errors", verbose, OrderByErrorCases, function(args is array) { return attempt(() => orderBy(args[0])); });
+  return runTests(context, "orderBy errors", verbose, OrderByErrorCases, function(args is array) {
+    return attempt(function() {
+      if (size(args) == 1) { return orderBy(args[0]); }
+      return orderBy(args[0], args[1]);
+    });
+  });
 }
 
 // == [orderAnyBy] ==
@@ -402,6 +489,26 @@ export const OrderAnyByCases = [
   [[[3, 1, 2]],                [1, 2, 3],   'same-type values still sort ascending, same as orderBy'],
   [[[3, 1, 2], identity, -1],  [3, 2, 1],   'order still controls direction'],
   [[{ "a": "x", "b": 1 }],     [1, "x"],    'map values sorted via cmpAny, discarding keys -- number sorts before string'],
+  [
+    [[3, undefined, 1]],
+    [undefined, 1, 3],
+    'undefined has the lowest fstypenum, so it sorts ahead of everything rather than throwing as it would under cmp',
+  ],
+  [
+    [[{ "a": 1 }, { "b": 2 }], "a"],
+    [{ "b": 2 }, { "a": 1 }],
+    'the same tolerance covers a path only some elements have -- the undefined criteria sort first instead of throwing',
+  ],
+  [
+    [[[1, 2], 3, 'x']],
+    [3, 'x', [1, 2]],
+    'across wholly different types the fstypenum ladder decides: number, then string, then array',
+  ],
+  [
+    [[{ "a": 1 }, [9], 2]],
+    [2, [9], { "a": 1 }],
+    'and it keeps deciding all the way up the ladder -- array before map',
+  ],
   [
     [[{ "a": 1, "b": "X" }, { "a": 1, "b": 2 }, { "a": 0, "b": 9 }], ["a", "b"], [-1, 1]],
     [{ "a": 1, "b": 2 }, { "a": 1, "b": "X" }, { "a": 0, "b": 9 }],

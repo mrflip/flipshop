@@ -11,7 +11,7 @@ import(path : "607f97fc690581579d1d4a08", version : "6afa9ed6ec4a413d9bf06340");
  * no path traversal — each entry of `keylist` is a literal key or index, not a dotted path — and
  * an array index must be non-negative and in bounds.
  *
- * `missingPolicy` decides what happens at a key/index with nothing there: `NIL` (the
+ * `nilPolicy` decides what happens at a key/index with nothing there: `NIL` (the
  * default) fills the slot with `undefined`, so the result stays the same length as `keylist`;
  * `SKIP` drops the slot instead, so the result can come back shorter.
  *
@@ -24,8 +24,8 @@ export function valuesAt(arr is array, keylist is array) returns array {
   return mapValues(keylist, (seq is number, _) => hasKey(arr, seq) ? arr[seq] : undefined);
 }
 
-export function valuesAt(arr is array, keylist is array, missingPolicy is NilPolicy) returns array {
-  if (missingPolicy == NilPolicy.NIL) {
+export function valuesAt(arr is array, keylist is array, nilPolicy is NilPolicy) returns array {
+  if (nilPolicy == NilPolicy.NIL) {
     return mapValues(keylist, (seq is number, _) => hasKey(arr, seq) ? arr[seq] : undefined);
   }
   const result = new box([]);
@@ -33,8 +33,8 @@ export function valuesAt(arr is array, keylist is array, missingPolicy is NilPol
   return result[];
 }
 
-export function valuesAt(bag is map, keylist is array, missingPolicy is NilPolicy) returns array {
-  if (missingPolicy == NilPolicy.NIL) {
+export function valuesAt(bag is map, keylist is array, nilPolicy is NilPolicy) returns array {
+  if (nilPolicy == NilPolicy.NIL) {
     return mapValues(keylist, (key is string, _) => bag[key]);
   }
   const result = new box([]);
@@ -55,7 +55,7 @@ export function valuesAt(bag is map, keylist is array) returns array {
  * `func(val, seq)` (array). Unlike lodash's `forEach`, where an iteratee may exit early by
  * returning `false`, iteration here stops only when `func` returns `NextStepAction.BREAK`.
  *
- * `missingPolicy` (`NIL`, the default, or `SKIP`) decides whether an entry whose value
+ * `nilPolicy` (`NIL`, the default, or `SKIP`) decides whether an entry whose value
  * is `undefined` gets visited at all. A `keylist` overload walks exactly those keys, in that
  * order, instead of `keys(bag)`.
  *
@@ -64,8 +64,8 @@ export function valuesAt(bag is map, keylist is array) returns array {
  *     if (key == "b") { return NextStepAction.BREAK; }
  *   }); // visits "a" then "b"; "c" is never reached
  */
-export function forEach(bag is map, keylist is array, missingPolicy is NilPolicy, func is function) {
-  if (missingPolicy == NilPolicy.SKIP) {
+export function forEach(bag is map, keylist is array, nilPolicy is NilPolicy, func is function) {
+  if (nilPolicy == NilPolicy.SKIP) {
       for (var key in keylist) {
         const val = bag[key];
         if (val == undefined) { continue; }
@@ -81,7 +81,7 @@ export function forEach(bag is map, keylist is array, missingPolicy is NilPolicy
   }
 }
 
-export function forEach(bag is map, missingPolicy is NilPolicy, func is function) {
+export function forEach(bag is map, nilPolicy is NilPolicy, func is function) {
     return forEach(bag, keys(bag), NilPolicy.NIL, func);
 }
 
@@ -97,8 +97,8 @@ export function forEach(bag is map, func is function) {
   return forEach(bag, keys(bag), func);
 }
 
-export function forEach(arr is array, missingPolicy is NilPolicy, func is function) {
-  if (missingPolicy == NilPolicy.SKIP) {
+export function forEach(arr is array, nilPolicy is NilPolicy, func is function) {
+  if (nilPolicy == NilPolicy.SKIP) {
       for (var seq = 0; seq < size(arr); seq += 1) {
         if (arr[seq] == undefined) { continue; }
         const result = func(arr[seq], seq);
@@ -124,9 +124,9 @@ export function forEach(arr is array, func is function) {
  * for a map (a `SKIP`'d entry consumes a `keylist` slot but not a `seq` one) — `seq` fills both
  * trailing slots for an array, `func(val, seq, seq)`, matching the map callback's arity.
  */
-export function forEach3(bag is map, keylist is array, missingPolicy is NilPolicy, func is function) {
+export function forEach3(bag is map, keylist is array, nilPolicy is NilPolicy, func is function) {
   var seq = 0;
-  if (missingPolicy == NilPolicy.SKIP) {
+  if (nilPolicy == NilPolicy.SKIP) {
       for (var key in keylist) {
         const val = bag[key];
         if (val == undefined) { continue; }
@@ -143,7 +143,7 @@ export function forEach3(bag is map, keylist is array, missingPolicy is NilPolic
       }
   }
 }
-export function forEach3(bag is map, missingPolicy is NilPolicy, func is function) {
+export function forEach3(bag is map, nilPolicy is NilPolicy, func is function) {
   return forEach3(bag, keys(bag), NilPolicy.NIL, func);
 }
 export function forEach3(bag is map, keylist is array, func is function) {
@@ -158,8 +158,8 @@ export function forEach3(bag is map, keylist is array, func is function) {
 export function forEach3(bag is map, func is function) {
   return forEach3(bag, keys(bag), func);
 }
-export function forEach3(arr is array, missingPolicy is NilPolicy, func is function) {
-  if (missingPolicy == NilPolicy.SKIP) {
+export function forEach3(arr is array, nilPolicy is NilPolicy, func is function) {
+  if (nilPolicy == NilPolicy.SKIP) {
       for (var seq = 0; seq < size(arr); seq += 1) {
         if (arr[seq] == undefined) { continue; }
         const result = func(arr[seq], seq, seq);
@@ -210,8 +210,8 @@ export function forEachRight(bag is map, func is function) {
  * one dispatch: `func` is `func(val, key)` for a map or `func(val, seq)` for an array.
  * `mapValues3` instead hands `func` all three of `val`, `key`, and a 0-based visit-count `seq`
  * (for an array, `seq` fills both slots) when a map form needs to distinguish visit order from
- * key order. The `keylist` and `missingPolicy` overloads follow `forEach`'s rules: a `keylist`
- * walks exactly those keys, and `missingPolicy` decides whether an `undefined` value is mapped
+ * key order. The `keylist` and `nilPolicy` overloads follow `forEach`'s rules: a `keylist`
+ * walks exactly those keys, and `nilPolicy` decides whether an `undefined` value is mapped
  * (`NIL`, the default) or its key dropped from the result entirely (`SKIP`). `func` is
  * coerced through `iteratee` @see `iteratee` — `mapValues(users, 'name')` extracts a `name`
  * field from each.
@@ -221,16 +221,16 @@ export function forEachRight(bag is map, func is function) {
  *   // => { "fred": 80, "pebbles": 2 }
  *   mapValues([4, 8], function(n) { return n * n; }); // => [16, 64]
  */
-export function mapValues(bag is map, keylist is array, missingPolicy is NilPolicy, func) returns map {
+export function mapValues(bag is map, keylist is array, nilPolicy is NilPolicy, func) returns map {
   const fn = iteratee(func);
   const result = new box({});
-  forEach(bag, keylist, missingPolicy, (val, key is string) => { result[][key] = fn(val, key); });
+  forEach(bag, keylist, nilPolicy, (val, key is string) => { result[][key] = fn(val, key); });
   return result[];
 }
-export function mapValues3(bag is map, keylist is array, missingPolicy is NilPolicy, func) returns map {
+export function mapValues3(bag is map, keylist is array, nilPolicy is NilPolicy, func) returns map {
   const fn = iteratee(func);
   const result = new box({});
-  forEach3(bag, keylist, missingPolicy, (val, key is string, seq is number) => { result[][key] = fn(val, key, seq); });
+  forEach3(bag, keylist, nilPolicy, (val, key is string, seq is number) => { result[][key] = fn(val, key, seq); });
   return result[];
 }
 
@@ -246,11 +246,11 @@ export function mapValues3(bag is map, keylist is array, func) returns map {
   forEach3(bag, keylist, (val, key is string, seq is number) => { result[][key] = fn(val, key, seq); });
   return result[];
 }
-export function mapValues(bag is map, missingPolicy is NilPolicy, func) returns map {
-  return mapValues(bag, keys(bag), missingPolicy, func);
+export function mapValues(bag is map, nilPolicy is NilPolicy, func) returns map {
+  return mapValues(bag, keys(bag), nilPolicy, func);
 }
-export function mapValues3(bag is map, missingPolicy is NilPolicy, func) returns map {
-  return mapValues3(bag, keys(bag), missingPolicy, func);
+export function mapValues3(bag is map, nilPolicy is NilPolicy, func) returns map {
+  return mapValues3(bag, keys(bag), nilPolicy, func);
 }
 export function mapValues(bag is map, func) returns map {
   return mapValues(bag, keys(bag), func);
@@ -259,19 +259,19 @@ export function mapValues3(bag is map, func) returns map {
   return mapValues3(bag, keys(bag), func);
 }
 
-export function mapValues(arr is array, missingPolicy is NilPolicy, func) returns array {
+export function mapValues(arr is array, nilPolicy is NilPolicy, func) returns array {
   const fn = iteratee(func);
   var result = new box(makeArray(size(arr)));
-  forEach(arr, missingPolicy, (val, seq is number) => {
+  forEach(arr, nilPolicy, (val, seq is number) => {
       result[][seq] = fn(val, seq);
   });
   return result[];
 }
 
-export function mapValues3(arr is array, missingPolicy is NilPolicy, func) returns array {
+export function mapValues3(arr is array, nilPolicy is NilPolicy, func) returns array {
   const fn = iteratee(func);
   var result = new box(makeArray(size(arr)));
-  forEach(arr, missingPolicy, (val, seq is number) => {
+  forEach(arr, nilPolicy, (val, seq is number) => {
       result[][seq] = fn(val, seq, seq);
   });
   return result[];
